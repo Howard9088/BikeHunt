@@ -160,10 +160,10 @@ async function testInitialSnapshotBypassesBrowserCache() {
 async function testCachedApiRechecksFxAndEligibility() {
   const h = await harness();
   assert.equal((await h.request(new URL('https://owner.github.io/api/fx'))).stale, false);
-  h.setNow(START + 3600000);
-  assert.equal((await h.request('/api/fx')).stale, false, 'Exactly one hour remains valid');
+  h.setNow(START + 86400000);
+  assert.equal((await h.request('/api/fx')).stale, false, 'Exactly 24 hours remains valid');
   const reads = h.calls.length;
-  h.setNow(START + 3600001);
+  h.setNow(START + 86400001);
   assert.equal((await h.request('/api/fx')).stale, true);
   assert.equal(h.calls.length, reads, 'Cached API calls must recheck without a network request');
   assert.equal((await h.request('/api/updates')).fx.stale, true);
@@ -186,6 +186,9 @@ async function testCachedApiRechecksFxAndEligibility() {
 
 async function testFxAgeDateAndTimezoneBoundaries() {
   const cases = [
+    ['hourly recheck due is not stale', {fetched_at: new Date(START - 3600001).toISOString()}, false],
+    ['daily validity exceeded', {fetched_at: new Date(START - 86400001).toISOString()}, true],
+    ['China midnight keeps UTC reference valid', {fetched_at: '2026-10-14T02:00:00+08:00', rate_date: '2026-10-13'}, false],
     ['future 300 seconds', {fetched_at: new Date(START + 300000).toISOString()}, false],
     ['future over 300 seconds', {fetched_at: new Date(START + 300001).toISOString()}, true],
     ['seven day rate', {rate_date: '2026-10-07'}, false],

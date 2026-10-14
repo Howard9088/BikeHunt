@@ -163,6 +163,27 @@ class CatalogTests(unittest.TestCase):
             self.assertEqual(result.rates["USD"], Decimal(7))
             self.assertEqual(request.call_count, 3)
 
+    def test_daily_fx_validity_is_separate_from_hourly_refresh(self):
+        payload = {"rates": {"USD": "7"}, "fetched_at": (NOW-timedelta(hours=2)).isoformat(),
+                   "rate_date": NOW.date().isoformat()}
+        self.assertFalse(snapshot(payload).stale)
+        self.assertTrue(snapshot({**payload, "fetched_at": (NOW-timedelta(hours=25)).isoformat()}).stale)
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder)/"fx.json"
+            atomic_json(path, payload)
+            provider = FxProvider(path)
+            refreshed = {**payload, "fetched_at": NOW.isoformat()}
+            with patch.object(provider, "_fetch", return_value=refreshed) as request:
+                result = provider.get()
+            request.assert_called_once()
+            self.assertFalse(result.stale)
+            self.assertEqual(result.rate_date, payload["rate_date"])
+            atomic_json(path, payload)
+            with patch.object(provider, "_fetch", side_effect=OSError("offline")), patch("app.fx.time.sleep"):
+                fallback = provider.get()
+            self.assertTrue(fallback.stale)
+            self.assertEqual(fallback.fetched_at.isoformat(), payload["fetched_at"])
+
     def test_corrupted_or_future_fx_never_marked_fresh(self):
         self.assertTrue(snapshot({"rates":{"USD":"NaN"}}).stale)
         self.assertTrue(snapshot({"rate_date":(NOW+timedelta(days=3)).date().isoformat(),
@@ -171,3 +192,4 @@ class CatalogTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+

@@ -11,7 +11,7 @@ function verifiedAge(timestamp,now){if(typeof timestamp!=='string'||!/^\d{4}-\d{
 function stockFresh(offer,now=Date.now()){const age=verifiedAge(offer.fetched_at,now);return Number.isFinite(age)&&age>=0&&age<=STOCK_MAX_AGE_MS}
 function quoteFresh(offer,now=Date.now()){const age=verifiedAge(offer.fetched_at,now);const until=offer.price_valid_until;return Number.isFinite(age)&&age>=0&&age<=QUOTE_MAX_AGE_MS&&(!until||isoDay(until)!==null&&isoDay(until)>=Math.floor(now/86400000))}
 function publishedOfferAvailable(offer,now){return offer.stock==='in_stock'&&offer.collection_state!=='retained'&&stockFresh(offer,now)&&quoteFresh(offer,now)}
-function publishedFxStale(fx,now){const age=now-Date.parse(fx.fetched_at||'');const day=isoDay(fx.rate_date);const dayAge=day===null?null:Math.floor(now/86400000)-day;return !!fx.stale||!/[T ].*(?:Z|[+-]\d{2}:?\d{2})$/i.test(fx.fetched_at||'')||!Number.isFinite(age)||age>3600000||age< -300000||dayAge===null||dayAge<0||dayAge>7}
+function publishedFxStale(fx,now){const age=now-Date.parse(fx.fetched_at||'');const day=isoDay(fx.rate_date);const dayAge=day===null?null:Math.floor(now/86400000)-day;return !!fx.stale||!/[T ].*(?:Z|[+-]\d{2}:?\d{2})$/i.test(fx.fetched_at||'')||!Number.isFinite(age)||age>86400000||age< -300000||dayAge===null||dayAge<0||dayAge>7}
 function refreshPublicInventory(data){
   const now=Date.now(),snapshots=[data.catalog.fx,data.updates.fx,...Object.values(data.details).flatMap(f=>Object.values(f.variants).map(d=>d.fx))];
   const fxStale=snapshots.some(fx=>publishedFxStale(fx,now));snapshots.forEach(fx=>fx.stale=fxStale);

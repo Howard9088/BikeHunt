@@ -19,7 +19,10 @@ from app.catalog.models import FxSnapshot
 from app.catalog.storage import atomic_json
 
 ECB_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
-FX_MAX_AGE_SECONDS = 3600
+# Recheck hourly when a build runs; a successful daily reference remains valid
+# for 24 hours. A failed recheck marks the fallback stale immediately.
+FX_REFRESH_SECONDS = 3600
+FX_MAX_AGE_SECONDS = 86400
 _lock = threading.RLock()
 
 
@@ -52,7 +55,7 @@ def snapshot(payload: dict) -> FxSnapshot:
                       fetched_at=fetched, rates=rates, stale=stale,
                       source=payload.get("source", "European Central Bank"),
                       source_url=payload.get("source_url", ECB_URL),
-                      note="ECB 每日参考汇率；周末及节假日沿用最近公布日期，失败时保留上次成功数据并标记过期。信用卡实际入账汇率及手续费以发卡行为准。")
+                      note="ECB 每日参考汇率；周末及节假日沿用最近公布日期，每小时尝试重新核对，成功核对后有效 24 小时；失败时保留上次成功数据并标记过期。信用卡实际入账汇率及手续费以发卡行为准。")
 
 
 class FxProvider:
@@ -65,8 +68,11 @@ class FxProvider:
             cached: dict = {}
             try:
                 cached = json.loads(self.cache.read_text(encoding="utf-8"))
-                if not force and not snapshot(cached).stale:
-                    return snapshot(cached)
+                cached_snapshot = snapshot(cached)
+                cache_age = ((datetime.now(timezone.utc) - cached_snapshot.fetched_at).total_seconds()
+                             if cached_snapshot.fetched_at else float("inf"))
+                if not force and not cached_snapshot.stale and cache_age <= FX_REFRESH_SECONDS:
+                    return cached_snapshot
             except (OSError, ValueError, TypeError, AttributeError) as exc:
                 logger.warning("汇率缓存不可用 {}", exc)
             for attempt in range(3):
