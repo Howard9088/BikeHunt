@@ -33,8 +33,20 @@ def directories(root: Path) -> dict:
         for entry in data[section]:
             code = entry["code"]
             codes = entry.get("source_codes",[code])
-            entry["offer_count"] = sum(row.source_code in codes for row in offers)
+            source_offers = [row for row in offers if row.source_code in codes]
+            entry["offer_count"] = len(source_offers)
+            entry["product_count"] = len({(row.source_code, row.url.split("?", 1)[0]) for row in source_offers})
+            statuses = []
+            for source_code in codes:
+                try:
+                    statuses.append(json.loads((root / "data/collection_status" / (source_code + ".json")).read_text(encoding="utf-8")))
+                except (OSError, ValueError):
+                    pass
+            entry["catalog_state"] = "pending" if not source_offers else "retained" if statuses and all(x.get("status") == "failed" for x in statuses) else "partial"
+            entry["catalog_coverage"] = [x.get("coverage") for x in statuses if x.get("coverage")]
+            entry["catalog_note"] = "商品尚未接入" if not source_offers else "最近采集失败，保留历史参考" if entry["catalog_state"] == "retained" else "已接入部分商品；不代表完整目录"
             book = rules.get(code, entry["name_zh"])
             entry["rule_count"] = sum(doc.state == "translated" for doc in book.documents)
             entry["rules_state"] = "changed" if any(d.state == "changed" for d in book.documents) else "translated" if entry["rule_count"] else "pending"
     return data
+

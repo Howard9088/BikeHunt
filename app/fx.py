@@ -52,7 +52,7 @@ def snapshot(payload: dict) -> FxSnapshot:
                       fetched_at=fetched, rates=rates, stale=stale,
                       source=payload.get("source", "European Central Bank"),
                       source_url=payload.get("source_url", ECB_URL),
-                      note="参考汇率用于统一比价；信用卡实际入账汇率及手续费以发卡行为准。")
+                      note="ECB 每日参考汇率；周末及节假日沿用最近公布日期，失败时保留上次成功数据并标记过期。信用卡实际入账汇率及手续费以发卡行为准。")
 
 
 class FxProvider:
@@ -107,3 +107,4 @@ class FxProvider:
                 "rate_date": day.attrib["time"], "fetched_at": datetime.now(timezone.utc).isoformat(),
                 "base": "CNY", "rates": {code: str(eur["CNY"] / rate) for code, rate in eur.items()},
                 "meaning": "1 unit of original currency converted to CNY"}
+

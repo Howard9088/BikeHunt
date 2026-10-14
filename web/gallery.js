@@ -13,7 +13,7 @@ function money(value,currency='CNY'){
 }
 function cny(value){return value==null?'人民币待换算':money(value)}
 function timeText(value){if(!value)return '历史缓存 · 采集时间未记录';const d=new Date(value);return Number.isNaN(d.getTime())?'采集时间待确认':new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Shanghai'}).format(d)}
-function updateFxLabel(){const label=document.getElementById('fxDate');label.textContent='汇率 '+(fx.rate_date||'待获取')+(fx.stale?' · 过期缓存':'');label.classList.toggle('stale',!!fx.stale)}
+function updateFxLabel(){const label=document.getElementById('fxDate');label.textContent='汇率 '+(fx.rate_date||'待获取')+(fx.stale?' · 过期缓存':'');label.title=(fx.source||'ECB')+' 每日参考汇率；最近成功核对 '+timeText(fx.fetched_at)+'；周末和节假日沿用最近公布日期。';label.classList.toggle('stale',!!fx.stale)}
 async function getJson(url){const response=await fetch(url);if(!response.ok)throw new Error('请求失败（'+response.status+'）');return response.json()}
 function imageMarkup(url,name,index){
   return '<button class="image-button" type="button" aria-label="查看 '+e(name)+' 的渠道比价"><img '+(index<2?'fetchpriority="high"':'loading="lazy"')+' src="'+e(safeUrl(url))+'" alt="'+e(name)+'"></button><div class="photo-fallback">BikeHunt<span>商品图片暂不可用</span></div>';
@@ -78,16 +78,42 @@ function setView(mode,save=true){
 }
 function clearSearch(){document.getElementById('q').value='';render();document.getElementById('q').focus()}
 function tag(status,label){const style=status==='yes'?'ok':status==='no'?'no':'wait';const text=status==='yes'?'已核实':status==='no'?'不支持':'待核实';return '<span class="tag '+style+'">'+e(label)+' '+text+'</span>'}
+function landedCostMarkup(compared){
+  const landed=compared.landed_cost;
+  const cost=(label,value,total=false)=>'<div'+(total?' class="total"':'')+'><dt>'+e(label)+'</dt><dd>'+e(value==null?'待确认':cny(value))+'</dd></div>';
+  if(!landed)return '<dl class="costs">'+cost('人民币商品价',compared.product_cny)+cost('寄中国运费',compared.shipping_cny)+cost('税费',compared.tax_cny)+cost('已报价费用合计',compared.total_cny,true)+'</dl>';
+  const components=landed.components||[],scenarios=landed.scenarios||[];
+  const sources=[...(landed.evidence||[]),...components.flatMap(c=>c.evidence||[]),...scenarios.flatMap(s=>s.evidence||[])];
+  const uniqueSources=[...new Map(sources.filter(s=>safeUrl(s.url)).map(s=>[s.url,s])).values()];
+  const componentRows=components.map(c=>{
+    const label=c.label+(c.status==='included'?'（已含，新增为零）':c.status==='policy_estimate'?'（政策参考）':'');
+    const value=c.status==='unsupported'?'此渠道不直邮':c.cny==null?'待确认':cny(c.cny);
+    return '<div><dt>'+e(label)+'</dt><dd>'+e(value)+'</dd></div>';
+  }).join('');
+  const scenariosMarkup=scenarios.map(s=>'<div class="summary-box"><h4>单件寄中国预算 · 条件估算</h4><div class="summary-price">'+e(cny(s.subtotal_cny))+'</div>'+
+    '<p>商品 + 整单运费 + 条件税额的小计。实际报关路径未确认，未含待确认费用，不能视为完整到手价。</p>'+
+    '<dl class="costs">'+cost('暂用商品价作为计税基数',s.tax_base_cny)+cost('服装税情景（'+Math.round(Number(s.rate)*100)+'%）',s.payable_tax_cny)+'</dl>'+
+    '<p>'+e(s.waiver_applied?'此单件整票的情景应征税额不超过 50 元，暂按免征计算；海关审价及合单会改变结果。':'整票超过 50 元免征门槛时计全额税，不扣减 50 元。')+'</p></div>').join('');
+  const originalShipping=components.find(c=>c.key==='shipping');
+  return '<dl class="costs">'+componentRows+cost('已知费用小计（不含待确认项）',landed.known_subtotal_cny,true)+
+    (compared.total_cny!=null?cost('已报价费用合计',compared.total_cny,true):'')+'</dl>'+
+    (originalShipping?.original?'<div class="offer-note">运费原币：'+e(money(originalShipping.original.amount,originalShipping.original.currency))+(landed.shipping_scope==='order'?' / 单；单件下单计整单运费，合单不能逐件相加。':'；订单计费范围仍需核实。')+'</div>':'')+
+    (landed.missing?.length?'<div class="offer-note">仍待确认：'+landed.missing.map(e).join('、')+'。未知费用没有按 0 元计入。</div>':'')+
+    scenariosMarkup+
+    '<details><summary>查看运税假设、原币与官方依据</summary>'+
+    components.filter(c=>c.note).map(c=>'<p>'+e(c.label)+'：'+e(c.note)+'</p>').join('')+
+    scenarios.flatMap(s=>s.assumptions||[]).concat(landed.notes||[]).map(note=>'<p>'+e(note)+'</p>').join('')+
+    uniqueSources.map(source=>'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(source.url))+'">'+e(source.title)+'</a> · 核实 '+e(source.checked_on||'日期待确认')+'</p>').join('')+'</details>';
+}
 function offerAvailable(quote,now=Date.now()){const o=quote?.offer;if(!o||o.stock!=='in_stock'||o.collection_state==='retained')return false;const age=now-Date.parse(o.fetched_at||'');const until=o.price_valid_until;return Number.isFinite(age)&&age>=0&&age<=86400000&&(!until||/^\d{4}-\d{2}-\d{2}$/.test(until)&&Number.isFinite(Date.parse(until))&&new Date(until).toISOString().slice(0,10)===until&&until>=new Date(now).toISOString().slice(0,10));}
 function offerMarkup(compared){
   const o=compared.offer;
-  const cost=(label,value,total=false)=>'<div'+(total?' class="total"':'')+'><dt>'+label+'</dt><dd>'+e(value==null?'待确认':cny(value))+'</dd></div>';
   const stock=o.stock==='in_stock'?'有库存':o.stock==='out_of_stock'?'已售罄':'库存待核实';
   return '<div class="offer" data-source="'+e(o.source_code)+'"><div class="offer-top"><div class="source-name">'+e(o.source_name)+'</div><span class="tag '+(compared.eligible?'ok':o.stock==='out_of_stock'?'no':'wait')+'">'+(compared.eligible?'推荐渠道':stock)+'</span></div>'+
     '<div class="source-logistics">'+e(o.sales_region||'渠道报价')+' · 发货地：'+e(o.dispatch_origin||'尚待官方核实')+'</div>'+
     (o.purchase_requirements?.length?'<div class="offer-note">'+o.purchase_requirements.map(e).join(' · ')+'</div>':'')+
     '<div class="price">'+e(money(o.price.amount,o.price.currency))+' <span>≈ '+e(cny(compared.product_cny))+'</span></div>'+
-    '<dl class="costs">'+cost('人民币商品价',compared.product_cny)+cost('寄中国运费',compared.shipping_cny)+cost('税费',compared.tax_cny)+cost('预计总成本',compared.total_cny,true)+'</dl>'+
+    landedCostMarkup(compared)+
     '<div class="checks">'+tag(o.shipping_to_china.status,'直邮中国')+(o.china_issued_card.status==='no'?tag('no','中国发行卡'):o.accepted_card_networks?.length?'<span class="tag ok">支持 '+e(o.accepted_card_networks.join(' / '))+'</span>':tag(o.china_issued_card.status,'银行卡支付'))+'</div>'+
     (o.accepted_card_networks?.length?'<div class="offer-note">中国发行、具备境外支付功能的对应卡种可按此条件使用，招商银行等发卡行均按卡种核对。付款结果以银行授权为准。</div>':'')+
     (compared.reasons.length?'<div class="offer-note">'+compared.reasons.map(e).join(' · ')+'</div>':'')+

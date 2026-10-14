@@ -70,6 +70,10 @@ class Offer(Record):
     original_price: Money | None = None
     shipping: Money | None = None
     tax: Money | None = None
+    # An included-in-price tax must never be added to the product price again.
+    import_tax_handling: Literal["unknown", "included_in_price", "prepaid_separately"] = "unknown"
+    import_tax_evidence: Evidence = Field(default_factory=Evidence)
+    clearance: Money | None = None
     stock: Literal["in_stock", "out_of_stock", "unknown"] = "unknown"
     shipping_to_china: Evidence = Field(default_factory=Evidence)
     china_issued_card: Evidence = Field(default_factory=Evidence)
@@ -98,6 +102,51 @@ class FxSnapshot(Record):
     note: str = ""
 
 
+class CostEvidence(Record):
+    title: str
+    url: str
+    checked_on: str | None = None
+
+
+class CostComponent(Record):
+    key: str
+    label: str
+    original: Money | None = None
+    cny: Decimal | None = None
+    status: Literal["quoted", "policy_estimate", "included", "unknown", "unsupported"] = "unknown"
+    note: str = ""
+    evidence: list[CostEvidence] = Field(default_factory=list)
+
+
+class TaxScenario(Record):
+    code: str
+    label: str
+    rate: Decimal
+    tax_base_cny: Decimal
+    assessed_tax_cny: Decimal
+    payable_tax_cny: Decimal
+    subtotal_cny: Decimal
+    waiver_applied: bool = False
+    assumptions: list[str] = Field(default_factory=list)
+    evidence: list[CostEvidence] = Field(default_factory=list)
+
+
+class LandedCost(Record):
+    destination: Literal["CN"] = "CN"
+    quantity: int = 1
+    shipping_scope: Literal["order", "unknown"] = "unknown"
+    components: list[CostComponent] = Field(default_factory=list)
+    known_subtotal_cny: Decimal | None = None
+    # Only explicit quoted charges can populate this; scenarios remain separate.
+    quoted_total_cny: Decimal | None = None
+    complete: bool = False
+    scenarios: list[TaxScenario] = Field(default_factory=list)
+    missing: list[str] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+    evidence: list[CostEvidence] = Field(default_factory=list)
+    fx_snapshot_id: str
+
+
 class ComparedOffer(Record):
     offer: Offer
     product_cny: Decimal | None
@@ -108,6 +157,7 @@ class ComparedOffer(Record):
     reasons: list[str]
     fx_snapshot_id: str
     discount_pct: int | None = None
+    landed_cost: LandedCost | None = None
 
 
 class VariantChoice(Record):

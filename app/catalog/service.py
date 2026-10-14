@@ -11,6 +11,7 @@ from app.catalog.models import (
 )
 from app.localization import category_of, title_zh
 from app.fit import garment_gender
+from app.landed import convert_money, estimate_landed_cost
 
 QUOTE_MAX_AGE_SECONDS = 86400
 EVIDENCE_MAX_AGE_SECONDS = 30 * 86400
@@ -38,12 +39,7 @@ def same_variant(left: Offer, right: Offer) -> bool:
 
 
 def convert(value: Money | None, fx: FxSnapshot) -> Decimal | None:
-    if value is None:
-        return None
-    rate = fx.rates.get(value.currency)
-    if rate is None or not rate.is_finite() or rate <= 0:
-        return None
-    return (value.amount * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    return convert_money(value, fx)
 
 
 def _age(timestamp: datetime | None, now: datetime) -> float:
@@ -64,10 +60,10 @@ def _price_valid(value: str | None, now: datetime) -> bool:
 
 def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
     """所有成本按传入的同一快照换算，缺项保持 None。"""
-    product = convert(offer.price, fx)
-    shipping = convert(offer.shipping, fx)
-    tax = convert(offer.tax, fx)
-    total = product + shipping + tax if all(x is not None for x in (product, shipping, tax)) else None
+    landed = estimate_landed_cost(offer, fx, now)
+    costs = {component.key: component for component in landed.components}
+    product, shipping, tax = (costs[key].cny for key in ("product", "shipping", "tax"))
+    total = landed.quoted_total_cny
     reasons: list[str] = []
     for check, label in ((offer.shipping_to_china, "直邮中国"),):
         if check.status != "yes":
@@ -103,7 +99,10 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
     if shipping is None:
         reasons.append("中国运费待确认" if offer.shipping is None else "运费币种汇率缺失")
     if tax is None:
-        reasons.append("税费待确认" if offer.tax is None else "税费币种汇率缺失")
+        reasons.append("中国进口税包含／预缴依据待核实" if offer.import_tax_handling != "unknown"
+                       else "税费待确认" if offer.tax is None else "税费币种汇率缺失")
+    if not landed.complete and all(value is not None for value in (product, shipping, tax)):
+        reasons.append("运费与清关等总费用待确认")
     if fx.stale:
         reasons.append("汇率为过期缓存")
     reasons.extend(offer.purchase_requirements)
@@ -115,7 +114,7 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
     return ComparedOffer(offer=offer, product_cny=product, shipping_cny=shipping,
                          tax_cny=tax, total_cny=total, eligible=not reasons,
                          reasons=reasons, fx_snapshot_id=fx.snapshot_id,
-                         discount_pct=discount)
+                         discount_pct=discount, landed_cost=landed)
 
 
 def _identifier(value: str) -> str:

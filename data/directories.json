@@ -38,15 +38,21 @@
       "name_zh": "Castelli 骑行服",
       "official_url": "https://www.castelli-cycling.com",
       "shop_url": "https://www.castelli-cycling.com",
-      "status": "registered"
+      "status": "registered",
+      "source_codes": [
+        "castelli"
+      ]
     },
     {
       "code": "santini",
       "name": "Santini",
       "name_zh": "Santini 队服与骑行服",
       "official_url": "https://www.santinicycling.com",
-      "shop_url": "https://www.santinicycling.com",
-      "status": "registered"
+      "shop_url": "https://www.santinicycling.com/",
+      "status": "registered",
+      "source_codes": [
+        "santini"
+      ]
     },
     {
       "code": "pns",
@@ -77,8 +83,11 @@
       "name": "Fizik",
       "name_zh": "Fizik 锁鞋与坐垫",
       "official_url": "https://www.fizik.com",
-      "shop_url": "https://www.fizik.com",
-      "status": "registered"
+      "shop_url": "https://www.fizik.com/en-us/",
+      "status": "registered",
+      "source_codes": [
+        "fizik"
+      ]
     },
     {
       "code": "oakley",
@@ -126,14 +135,17 @@
         "https://bahraincyclingteam.com/#.c-site-header__branding svg"
       ],
       "logo_checked_at": "2026-10-14T09:52:36.823673+00:00",
-      "shop_evidence_url": "https://bahraincyclingteam.com/"
+      "shop_evidence_url": "https://bahraincyclingteam.com/",
+      "source_codes": [
+        "bahrain"
+      ]
     },
     {
       "code": "decathlon",
       "name": "Decathlon CMA CGM Team",
       "name_zh": "迪卡侬–达飞车队",
       "official_url": "https://decathloncmacgmteam.com/",
-      "shop_url": "https://shop.decathloncmacgmteam.com/",
+      "shop_url": "https://shop.decathloncmacgmteam.com/collections/collection-2026",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -145,7 +157,10 @@
         "https://decathloncmacgmteam.com/wp-content/uploads/2025/12/DCT_RVB_WT_Couleurs1.png"
       ],
       "logo_checked_at": "2026-10-14T09:52:38.384063+00:00",
-      "shop_evidence_url": "https://decathloncmacgmteam.com/"
+      "shop_evidence_url": "https://decathloncmacgmteam.com/",
+      "source_codes": [
+        "decathlon"
+      ]
     },
     {
       "code": "ef",
@@ -191,7 +206,7 @@
       "name": "Netcompany INEOS Cycling Team",
       "name_zh": "Netcompany–英力士车队",
       "official_url": "https://www.ineosgrenadiers.com/",
-      "shop_url": "https://store.ineosgrenadiers.com/",
+      "shop_url": "https://store.netcompanyineos.com/collections/on-bike-kit",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -203,7 +218,10 @@
         "https://www.ineosgrenadiers.com/#svg[aria-label=\"Netcompany Logo\"]"
       ],
       "logo_checked_at": "2026-10-14T09:52:36.835673+00:00",
-      "shop_evidence_url": "https://www.ineosgrenadiers.com/"
+      "shop_evidence_url": "https://www.ineosgrenadiers.com/",
+      "source_codes": [
+        "ineos"
+      ]
     },
     {
       "code": "lidl_trek",
@@ -304,7 +322,7 @@
       "name": "Soudal Quick-Step",
       "name_zh": "速的奥–快步车队",
       "official_url": "https://soudal-quickstepteam.com/nl",
-      "shop_url": "https://thewolfpack.shop",
+      "shop_url": "https://thewolfpack.shop/collections/soudal-quick-step",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -316,7 +334,10 @@
         "https://soudal-quickstepteam.com/public/partners/SOQS24_logo_outline.svg"
       ],
       "logo_checked_at": "2026-10-14T09:52:41.000394+00:00",
-      "shop_evidence_url": "https://soudal-quickstepteam.com/nl"
+      "shop_evidence_url": "https://soudal-quickstepteam.com/nl",
+      "source_codes": [
+        "soudal"
+      ]
     },
     {
       "code": "jayco",
@@ -343,7 +364,7 @@
       "name": "Team Picnic PostNL",
       "name_zh": "Picnic–荷兰邮政车队",
       "official_url": "https://www.teampicnicpostnl.com/",
-      "shop_url": "https://teampicnicpostnl.store/",
+      "shop_url": "https://teampicnicpostnl.store/collections/new-season-2026",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -355,7 +376,10 @@
         "https://www.teampicnicpostnl.com/wp-content/uploads/2026/06/2026-Team-Logo-1-scaled.png"
       ],
       "logo_checked_at": "2026-10-14T09:52:43.334749+00:00",
-      "shop_evidence_url": "https://www.teampicnicpostnl.com/"
+      "shop_evidence_url": "https://www.teampicnicpostnl.com/",
+      "source_codes": [
+        "picnic"
+      ]
     },
     {
       "code": "visma",

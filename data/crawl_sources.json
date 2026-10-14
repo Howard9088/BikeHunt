@@ -80,5 +80,164 @@
     "urls": [
       "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY"
     ]
+  },
+  {
+    "code": "fizik",
+    "domains": [
+      "www.fizik.com"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://www.fizik.com/en-us/",
+    "urls": [
+      "https://www.fizik.com/en-us/"
+    ],
+    "max_products": 25,
+    "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。"
+  },
+  {
+    "code": "santini",
+    "domains": [
+      "www.santinicycling.com"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://www.santinicycling.com/",
+    "urls": [
+      "https://www.santinicycling.com/"
+    ],
+    "max_products": 25,
+    "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。"
+  },
+  {
+    "code": "soudal",
+    "domains": [
+      "thewolfpack.shop"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://thewolfpack.shop/collections/soudal-quick-step",
+    "urls": [
+      "https://thewolfpack.shop/collections/soudal-quick-step"
+    ],
+    "max_products": 25,
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+  },
+  {
+    "code": "ineos",
+    "domains": [
+      "store.netcompanyineos.com"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://store.netcompanyineos.com/collections/on-bike-kit",
+    "urls": [
+      "https://store.netcompanyineos.com/collections/on-bike-kit"
+    ],
+    "max_products": 25,
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+  },
+  {
+    "code": "bahrain",
+    "domains": [
+      "alecycling.com"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://alecycling.com/en/collections/ale-x-bahrain-victorious",
+    "urls": [
+      "https://alecycling.com/en/collections/ale-x-bahrain-victorious"
+    ],
+    "max_products": 25,
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+  },
+  {
+    "code": "decathlon",
+    "domains": [
+      "shop.decathloncmacgmteam.com"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://shop.decathloncmacgmteam.com/collections/collection-2026",
+    "urls": [
+      "https://shop.decathloncmacgmteam.com/collections/collection-2026"
+    ],
+    "max_products": 25,
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+  },
+  {
+    "code": "picnic",
+    "domains": [
+      "teampicnicpostnl.store"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://teampicnicpostnl.store/collections/new-season-2026",
+    "urls": [
+      "https://teampicnicpostnl.store/collections/new-season-2026"
+    ],
+    "max_products": 25,
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+  },
+  {
+    "code": "castelli",
+    "domains": [
+      "www.castelli-cycling.com"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://www.castelli-cycling.com",
+    "urls": [
+      "https://www.castelli-cycling.com"
+    ],
+    "max_products": 10,
+    "scope_note": "首批最多 10 款商品的有界样本，未覆盖完整品牌目录。"
+  },
+  {
+    "code": "assos",
+    "domains": [
+      "www.assos.com"
+    ],
+    "parser": "assos",
+    "urls": [
+      "https://www.assos.com/int/equipe-r-jersey-s11-ogat-nimbo-edition-11-20-500-18.html",
+      "https://www.assos.com/int/equipe-r-jersey-s11-ogat-33-26-368-99.html",
+      "https://www.assos.com/int/equipe-rs-collective-13-jersey-s11-11-20-430-17.html",
+      "https://www.assos.com/int/mille-gt-jersey-s11-evo-ef-11-20-454-99.html",
+      "https://www.assos.com/int/mille-gt-jersey-s11-evo-11-20-432-3r.html",
+      "https://www.assos.com/int/mille-gto-jersey-s11-11-20-434-6q.html"
+    ],
+    "scope_note": "首批 6 款商品的逐尺码价格与库存；未覆盖全品牌目录。",
+    "max_products": 6,
+    "coverage_complete": false
+  },
+  {
+    "code": "pns",
+    "domains": [
+      "pasnormalstudios.com"
+    ],
+    "parser": "pns",
+    "urls": [
+      "https://pasnormalstudios.com/eu/products/mens-escapism-jersey-dark-olive",
+      "https://pasnormalstudios.com/eu/products/mens-escapism-long-cargo-bibs-dark-olive",
+      "https://pasnormalstudios.com/eu/products/womens-escapism-cargo-bibs-dark-olive",
+      "https://pasnormalstudios.com/eu/products/mens-mechanism-thermal-long-sleeve-jersey-2-0-linen",
+      "https://pasnormalstudios.com/eu/products/mens-mechanism-thermal-long-bibs-black",
+      "https://pasnormalstudios.com/eu/products/womens-mechanism-thermal-jacket-black"
+    ],
+    "scope_note": "首批 6 款商品的逐尺码价格与库存；未覆盖全品牌目录。",
+    "max_products": 6,
+    "coverage_complete": false
+  },
+  {
+    "code": "kask",
+    "domains": [
+      "www.kask.com"
+    ],
+    "parser": "kask",
+    "urls": [
+      "https://www.kask.com/en-it/Protone-Icon/CHE00097-.html",
+      "https://www.kask.com/en-it/Mojito%C2%B3/CHE00076-.html",
+      "https://www.kask.com/en-it/Sintesi/CHE00100-.html",
+      "https://www.kask.com/en-it/Elemento/CHE00101-.html",
+      "https://www.kask.com/en-it/Valegro/CHE00052-.html",
+      "https://www.kask.com/en-it/Utopia-Y/CHE00104-.html",
+      "https://www.kask.com/en-it/Nirvana/CHE00109-.html"
+    ],
+    "scope_note": "首批 7 款公路头盔；每款仅采集页面当前选中的颜色/认证/尺码，其余尺码与颜色未覆盖。",
+    "max_products": 7,
+    "coverage_complete": false
   }
 ]

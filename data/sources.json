@@ -10,10 +10,9 @@
     "china_shipping": {
       "status": "no",
       "scope": "site",
-      "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
-      "evidence_url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
-      "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266",
-      "checked_at": "2026-10-14T08:54:28.748754+00:00"
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-USA-UK-and-Europe",
+      "checked_at": "2026-10-14T16:35:28.648316+00:00",
+      "note": "MAAP 当前国际官网不直邮中国大陆，由当地合作伙伴服务。"
     },
     "china_credit_card": {
       "status": "unverified",
@@ -58,8 +57,11 @@
     "enabled": true,
     "collection_strategy": "scrapling_public_product_pages",
     "china_shipping": {
-      "status": "unverified",
-      "note": "逐商品中国配送政策尚未核实。"
+      "status": "no",
+      "scope": "site",
+      "evidence_url": "https://www.teamcycles.com/pages/delivery/",
+      "checked_at": "2026-10-14T16:35:28.648328+00:00",
+      "note": "官方配送页限定英国；不支持中国大陆直邮。"
     },
     "china_credit_card": {
       "status": "unverified",
@@ -75,8 +77,11 @@
     "enabled": true,
     "collection_strategy": "scrapling_public_jsonld",
     "china_shipping": {
-      "status": "per_item",
-      "note": "需逐商品核实目的地及品牌区域限制；英国免运费不适用于中国。"
+      "status": "no",
+      "scope": "site",
+      "evidence_url": "https://www.sigmasports.com/item/Specialized/S-Works-7-Vent-Road-Cycling-Shoes/Q53V",
+      "checked_at": "2026-10-14T16:35:28.648332+00:00",
+      "note": "当前官网地区提示：国际配送仅限欧洲市场；不支持中国大陆直邮。"
     },
     "china_credit_card": {
       "status": "unverified",
@@ -199,10 +204,10 @@
     "collection_strategy": "scrapling_public_jsonld",
     "china_shipping": {
       "status": "no",
-      "checked_at": "2026-10-14T10:22:29.947046+00:00",
-      "evidence_url": "https://poc.com/en-us/terms-and-conditions",
-      "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca",
-      "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。"
+      "scope": "site",
+      "evidence_url": "https://poc.com/en/faq",
+      "checked_at": "2026-10-14T16:35:28.648334+00:00",
+      "note": "官方列出的配送地区不包含中国大陆，并明确不允许包裹转运服务。"
     },
     "china_credit_card": {
       "status": "unverified",
@@ -246,7 +251,7 @@
       "checked_at": "2026-10-14T08:54:46.099995+00:00",
       "scope": "site",
       "evidence_url": "https://www.teamvismaleaseabike.com/shop-delivery/",
-      "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+      "note": "中国运费每订单47.95欧元（单件估算按一单一件）；UPS预计4–7工作日。进口税及清关费另计。商品原站显示含VAT，不能擅自扣除。",
       "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
     },
     "china_shipping_cost": {
@@ -293,5 +298,201 @@
     },
     "sales_region": "韩国站报价",
     "rules_code": "rapha"
+  },
+  {
+    "code": "fizik",
+    "name": "Fizik 美国官网",
+    "type": "brand_official",
+    "base_url": "https://www.fizik.com",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "美国站 USD 报价",
+    "brand": "Fizik"
+  },
+  {
+    "code": "santini",
+    "name": "Santini 官方商城",
+    "type": "brand_official",
+    "base_url": "https://www.santinicycling.com",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "意大利站 EUR 报价",
+    "brand": "Santini"
+  },
+  {
+    "code": "soudal",
+    "name": "Soudal Quick-Step 官方商城",
+    "type": "team_official",
+    "base_url": "https://thewolfpack.shop",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "欧洲站 EUR 报价"
+  },
+  {
+    "code": "ineos",
+    "name": "Netcompany INEOS 官方商城",
+    "type": "team_official",
+    "base_url": "https://store.netcompanyineos.com",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "英国站 GBP 报价"
+  },
+  {
+    "code": "bahrain",
+    "name": "Bahrain Victorious 官方队服系列",
+    "type": "team_official",
+    "base_url": "https://alecycling.com",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "欧洲站 EUR 报价"
+  },
+  {
+    "code": "decathlon",
+    "name": "Decathlon CMA CGM 官方商城",
+    "type": "team_official",
+    "base_url": "https://shop.decathloncmacgmteam.com",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "欧洲站 EUR 报价"
+  },
+  {
+    "code": "picnic",
+    "name": "Team Picnic PostNL 官方商城",
+    "type": "team_official",
+    "base_url": "https://teampicnicpostnl.store",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "欧洲站 EUR 报价"
+  },
+  {
+    "code": "castelli",
+    "name": "Castelli 官方商城",
+    "brand": "Castelli",
+    "type": "brand_official",
+    "base_url": "https://www.castelli-cycling.com",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "官网默认 AF 市场（EUR）；未核实其他市场，当前不可购买不代表全球售罄"
+  },
+  {
+    "code": "assos",
+    "name": "ASSOS 国际官网",
+    "brand": "ASSOS",
+    "type": "brand_official",
+    "base_url": "https://www.assos.com",
+    "currency": "USD",
+    "sales_region": "国际站 USD 报价",
+    "enabled": true,
+    "collection_strategy": "official_embedded_product_variants",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送及运费尚未核实，当前市场商品价不代表可直邮中国。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    }
+  },
+  {
+    "code": "pns",
+    "name": "Pas Normal Studios 欧洲官网",
+    "brand": "Pas Normal Studios",
+    "type": "brand_official",
+    "base_url": "https://pasnormalstudios.com",
+    "currency": "EUR",
+    "sales_region": "欧洲站 EUR 报价",
+    "enabled": true,
+    "collection_strategy": "official_embedded_product_variants",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送及运费尚未核实，当前市场商品价不代表可直邮中国。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    }
+  },
+  {
+    "code": "kask",
+    "name": "KASK 意大利英文官网",
+    "brand": "KASK",
+    "type": "brand_official",
+    "base_url": "https://www.kask.com",
+    "currency": "EUR",
+    "sales_region": "意大利站 EUR 报价",
+    "enabled": true,
+    "collection_strategy": "official_selected_product_variant",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送及运费尚未核实，当前市场商品价不代表可直邮中国。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    }
   }
 ]

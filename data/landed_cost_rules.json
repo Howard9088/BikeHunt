@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "checked_on": "2026-10-14",
+  "review_after_days": 30,
+  "shipping": {
+    "visma": {
+      "amount": "47.95",
+      "currency": "EUR",
+      "scope": "order",
+      "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+      "checked_on": "2026-10-14",
+      "note": "中国大陆每单运费 47.95 欧元；UPS，预计 4–7 个工作日。按一件商品单独下单计全额运费，合单不可逐件重复相加。进口税费及清关费用另付。",
+      "clearance_extra": true,
+      "price_note": "保留商城展示价及原币种；条款称展示价含 VAT，未经中国地址结账核实，不自动扣除境外 VAT。",
+      "terms_url": "https://www.teamvismaleaseabike.com/shop-terms-conditions/"
+    }
+  },
+  "personal_postal_clothing": {
+    "rate": "0.20",
+    "parcel_value_limit_cny": "2000",
+    "parcel_tax_waiver_cny": "50",
+    "categories": ["jerseys", "bibs", "jackets"],
+    "evidence": [
+      {
+        "title": "海关进出境邮件常见问题：B02018–22、B02046",
+        "url": "https://online.customs.gov.cn/ociswebserver/pages/jcjybcx/question.html",
+        "checked_on": "2026-10-14"
+      }
+    ],
+    "assumptions": [
+      "仅作条件情景：一件服装单独下单、整票只有这一件、数量合理且个人自用。",
+      "实际报关路径未确认；只有海关按个人寄递物品并归类为服装时，20% 综合税率情景才适用。UPS 等承运商名称不能证明报关路径。",
+      "以商品展示价按当前参考汇率折算后，暂代海关计税价格；不假设自动退还境外 VAT。海关审价、归类和计税汇率可改变税额。",
+      "整票应征税额不超过 50 元时才按免征情景计；超过则计全额税，不减去 50 元。合单必须整票重算。",
+      "情景小计含商品、整单运费和上述条件税额，未含未知清关／代垫手续费、可能的额外保险及银行卡费用。"
+    ]
+  },
+  "cbec": {
+    "automatic_estimate_enabled": false,
+    "transaction_limit_cny": "5000",
+    "annual_limit_cny": "26000",
+    "note": "跨境电商零售进口是独立的合资格报关渠道。普通境外官网订单不能自动套用 9.1%。须确认清单及渠道资格、个人额度和商品税率；9.1% 仅是适用 13% 增值税、无消费税且满足优惠条件时的示例。计税基础包括货价、运费及保险费。本页面不默认套用该税率。",
+    "evidence": [
+      {
+        "title": "跨境电商零售进口税收政策与适用条件（财关税〔2016〕18号）",
+        "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5203746/content.html",
+        "checked_on": "2026-10-14"
+      },
+      {
+        "title": "跨境电商现行限值调整（财关税〔2018〕49号）",
+        "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5202372/content.html",
+        "checked_on": "2026-10-14"
+      }
+    ]
+  }
+}
