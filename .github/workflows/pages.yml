@@ -91,9 +91,12 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+          name: bikehunt-pages-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Deploy public website
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: bikehunt-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Verify public release receipt
         run: python scripts/verify_public_release.py
