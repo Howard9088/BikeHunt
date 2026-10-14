@@ -232,7 +232,9 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
         requested, final = urlsplit(url), urlsplit(final_url)
         if (final.scheme != "https" or final.hostname != requested.hostname
                 or final.path.rstrip("/") != requested.path.rstrip("/")):
-            raise CollectionError("Shopify request redirected outside the exact source/market path")
+            raise CollectionError("Shopify request redirected outside the exact source/market path: "
+                                  + requested.path + " -> " + final.scheme + "://"
+                                  + (final.hostname or "") + final.path)
         if raw_dir is not None:
             raw_dir.mkdir(parents=True, exist_ok=True)
             name = source["code"] + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + suffix

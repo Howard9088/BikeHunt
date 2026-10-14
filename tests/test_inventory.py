@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from app.catalog.models import ProductIdentity
-from app.catalog.service import ComparisonCatalog
+from app.catalog.service import ComparisonCatalog, compare_offer
 from app.collectors.variants import parse_rapha, parse_visma
 from app.community import Community
 from test_catalog import NOW, make_fx, make_offer
@@ -35,6 +35,51 @@ class InventoryTests(unittest.TestCase):
         detail=store.compare(card.product_id)
         self.assertEqual(detail.identity.size,"S")
         self.assertEqual([v.size for v in detail.variants if v.in_stock],["S"])
+
+    def test_one_hour_stock_boundary_keeps_historical_price(self):
+        for elapsed, available in [(3599.999, True), (3600, True), (3600.001, False), (86400, False)]:
+            with self.subTest(elapsed=elapsed):
+                offer = make_offer(fetched_at=NOW-timedelta(seconds=elapsed))
+                catalog = ComparisonCatalog([offer], make_fx(), NOW)
+                card = catalog.search()[0]
+                detail = catalog.compare(card.product_id)
+                compared = compare_offer(offer, make_fx(), NOW)
+                self.assertEqual(catalog.available(offer), available)
+                self.assertEqual(compared.eligible, available)
+                self.assertEqual(card.available_sizes, ["M"] if available else [])
+                self.assertEqual(card.stock_state, "in_stock" if available else "unknown")
+                self.assertEqual(card.reference_stock, "in_stock" if available else "unknown")
+                self.assertEqual(detail.variants[0].in_stock, available)
+                self.assertTrue(all(color.in_stock == available for color in detail.colors))
+                self.assertEqual(card.reference_price, offer.price)
+                self.assertIsNotNone(card.reference_cny)
+                self.assertNotIn("报价已过期", compared.reasons)
+                self.assertNotIn("已售罄", compared.reasons)
+                if not available:
+                    self.assertIsNone(detail.recommended_offer_id)
+                    self.assertEqual(card.status, "库存核实已过期")
+                    self.assertIn("库存核实已过期；等待重新核实", compared.reasons)
+
+    def test_stock_timestamps_fail_closed(self):
+        for timestamp in [None, NOW.replace(tzinfo=None), NOW+timedelta(microseconds=1)]:
+            with self.subTest(timestamp=timestamp):
+                offer = make_offer(fetched_at=timestamp)
+                catalog = ComparisonCatalog([offer], make_fx(), NOW)
+                self.assertFalse(catalog.available(offer))
+                self.assertFalse(compare_offer(offer, make_fx(), NOW).eligible)
+                self.assertEqual(catalog.search()[0].available_sizes, [])
+                self.assertEqual(catalog.search()[0].stock_state, "unknown")
+
+    def test_stock_expires_separately_from_quote_and_other_sizes(self):
+        old = make_offer("old", fetched_at=NOW-timedelta(hours=2))
+        fresh = make_offer("fresh", identity=old.identity.model_copy(update={"size":"L"}))
+        catalog = ComparisonCatalog([old, fresh], make_fx(), NOW)
+        card = catalog.search()[0]
+        self.assertEqual(card.available_sizes, ["L"])
+        self.assertEqual(card.stock_state, "in_stock")
+        self.assertEqual(catalog.compare(card.product_id).identity.size, "L")
+        old_price = old.model_copy(update={"fetched_at":NOW-timedelta(days=1, microseconds=1)})
+        self.assertIn("报价已过期", compare_offer(old_price, make_fx(), NOW).reasons)
 
     def test_visma_each_size_keeps_its_own_price_and_stock(self):
         html='''<h1>Mock Cycling Jersey Men</h1><script type="application/ld+json">{"@type":"Product","name":"Mock jersey","brand":"Mock","image":"https://example.org/_1200x630_crop_/preview.jpg","offers":{"price":"85.00","priceCurrency":"EUR","url":"https://example.org/item"}}</script>
@@ -82,3 +127,4 @@ class InventoryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+

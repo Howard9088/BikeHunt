@@ -21,6 +21,7 @@ from loguru import logger
 from app.catalog.storage import OfferRepository
 from app.collectors.parsers import parse_jsonld, parse_teamcycles
 from app.collectors.variants import parse_rapha, parse_visma
+from app.collectors.woocommerce import parse_woocommerce
 from app.collectors.shopify import collect_shopify_catalog
 from app.collectors.embedded_catalogs import parse_assos, parse_pns, parse_kask
 from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
@@ -89,10 +90,14 @@ def collect_source(settings: dict, repository: OfferRepository, source_map: dict
             raw_path = ROOT / "data" / "raw" / (code + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + ".html")
             raw_path.parent.mkdir(exist_ok=True)
             raw_path.write_bytes(response.body)
-            parse = {"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask}.get(settings["parser"],parse_jsonld)
+            parse = {"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask}.get(settings["parser"],parse_jsonld)
             parsed = parse(response.body.decode("utf-8", errors="replace"), source, url, fetched_at)
             if not parsed:
                 raise CollectionError("No validated per-variant offers; snapshot not replaced")
+            if settings.get("product_level_only"):
+                parsed = [row.model_copy(update={"stock": "unknown",
+                    "sales_region": source.get("sales_region", ""),
+                    "purchase_requirements": row.purchase_requirements + ["仅商品级报价；逐尺码库存尚未核实"]}) for row in parsed]
             declared_gender = settings.get("gender_by_url", {}).get(url)
             if declared_gender in ("male", "female", "unisex") and settings.get("gender_evidence_url"):
                 parsed = [row.model_copy(update={"identity": row.identity.model_copy(

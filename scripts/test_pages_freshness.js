@@ -53,6 +53,7 @@ async function harness(payload = snapshot()) {
   let now = START;
   let publication = structuredClone(payload);
   let poll;
+  let offline = false;
   const calls = [];
   const events = [];
   class MockDate extends Date {
@@ -69,6 +70,7 @@ async function harness(payload = snapshot()) {
         const url = String(input);
         calls.push({url, init});
         if (url.includes('/data/site-data.json')) {
+          if (offline) throw new Error('offline');
           return new Response(JSON.stringify(publication), {headers: {'Content-Type': 'application/json'}});
         }
         return new Response('external request');
@@ -86,6 +88,7 @@ async function harness(payload = snapshot()) {
     context, calls, events,
     setNow(value) { now = value; },
     publish(value) { publication = structuredClone(value); },
+    setOffline(value) { offline = value; },
     async request(url) {
       const response = await context.window.fetch(url);
       assert.equal(response.status, 200);
@@ -146,19 +149,22 @@ async function testFxAgeDateAndTimezoneBoundaries() {
 
 async function testInventoryAndColorsExpireTogether() {
   const h = await harness();
-  h.setNow(START + 86400000);
+  h.setNow(START + 3600000);
   let detail = await h.request('/api/catalog/red');
-  assert.equal(detail.variants[0].in_stock, true, 'Quote exactly 24 hours old remains available');
-  h.setNow(START + 86400001);
+  assert.equal(detail.variants[0].in_stock, true, 'Stock exactly one hour old remains available');
+  h.setNow(START + 3600001);
   detail = await h.request('/api/catalog/red');
   assert.equal(detail.variants[0].in_stock, false);
   assert.equal(detail.colors.every(color => color.in_stock === false), true);
-  assert.ok(detail.offers[0].reasons.includes('报价已过期'));
+  assert.ok(detail.offers[0].reasons.includes('库存核实已过期；等待重新核实'));
+  assert.ok(!detail.offers[0].reasons.includes('报价已过期'));
+  assert.ok(!detail.offers[0].reasons.includes('已售罄'));
   const catalog = await h.request('/api/catalog');
   assert.deepEqual(catalog.items[0].available_sizes, []);
   assert.equal(catalog.items[0].stock_state, 'unknown');
+  assert.equal(catalog.items[0].status, '库存核实已过期');
   const data = snapshot();
-  data.details.blue.variants['blue-M'].offers[0].offer.fetched_at = new Date(START - 86400001).toISOString();
+  data.details.blue.variants['blue-M'].offers[0].offer.fetched_at = new Date(START - 3600001).toISOString();
   const mixed = await harness(data);
   const colors = (await mixed.request('/api/catalog/red')).colors;
   assert.deepEqual(colors.map(color => color.in_stock), [true, false], 'Other colors use their own families');
@@ -179,7 +185,7 @@ async function testSamePublicationNotifiesOnFreshnessChanges() {
   assert.equal(h.events.length, 1, 'Repeated expired snapshots do not generate repeated alerts');
   h.setNow(START + 86400001);
   await h.poll();
-  assert.equal(h.events.length, 2, 'Inventory expiry also notifies without a new generated_at');
+  assert.equal(h.events.length, 2, 'Historical quote expiry also notifies without a new generated_at');
   assert.equal(h.events[1].detail.freshnessChanged, true);
 }
 
@@ -226,14 +232,52 @@ async function testSoldOutAndFailedRefreshInvalidateActions() {
   assert.ok(h.events.some(x => x.detail.freshnessChanged), 'Refresh invalidates open purchase flows even without event IDs');
 }
 
+async function testStockTimestampBoundariesFailClosed() {
+  const cases = [
+    ['exact hour', new Date(START - 3600000).toISOString(), true],
+    ['past hour', new Date(START - 3600001).toISOString(), false],
+    ['missing', null, false],
+    ['date only', '2026-10-14', false],
+    ['missing timezone', '2026-10-14T12:00:00', false],
+    ['future', new Date(START + 1).toISOString(), false],
+    ['invalid date', '2026-02-30T12:00:00Z', false],
+    ['explicit offset', '2026-10-14T20:00:00+08:00', true],
+  ];
+  for (const [label, timestamp, expected] of cases) {
+    const data = snapshot();
+    data.details.red.variants['red-M'].offers[0].offer.fetched_at = timestamp;
+    const h = await harness(data);
+    const detail = await h.request('/api/catalog/red');
+    assert.equal(detail.variants[0].in_stock, expected, label);
+    assert.equal(detail.offers[0].eligible, expected, label + ' eligibility');
+    assert.equal(detail.colors[0].in_stock, expected, label + ' colors');
+  }
+}
+
+async function testOfflinePollStillExpiresStock() {
+  const h = await harness();
+  h.setOffline(true);
+  h.setNow(START + 3600001);
+  await h.poll();
+  assert.equal(h.events.length, 1, 'Offline clock expiry must still notify open dialogs');
+  assert.equal(h.events[0].detail.freshnessChanged, true);
+  const cached = vm.runInContext('publicLastData', h.context);
+  assert.equal(cached.details.red.variants['red-M'].variants[0].in_stock, false);
+  assert.equal(cached.catalog.items[0].stock_state, 'unknown');
+  assert.equal(cached.catalog.items[0].status, '库存核实已过期');
+  await h.poll();
+  assert.equal(h.events.length, 1, 'Repeated offline polls remain quiet');
+}
+
 async function main() {
   for (const test of [testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
     testInventoryAndColorsExpireTogether, testSamePublicationNotifiesOnFreshnessChanges,
-    testPublicationCursorNeverMovesBackwards, testSoldOutAndFailedRefreshInvalidateActions]) {
+    testPublicationCursorNeverMovesBackwards, testSoldOutAndFailedRefreshInvalidateActions,
+    testStockTimestampBoundariesFailClosed, testOfflinePollStillExpiresStock]) {
     await test();
     console.log('PASS ' + test.name);
   }
-  console.log('Pages freshness: 6 regression groups passed.');
+  console.log('Pages freshness: 8 regression groups passed.');
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });

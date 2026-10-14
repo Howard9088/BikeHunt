@@ -2,7 +2,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8'),index=fs.readFileSync('web/index.html','utf8');
 new vm.Script(gallery);new vm.Script(flows);
-const helper=gallery.slice(gallery.indexOf('function offerAvailable('),gallery.indexOf('function offerMarkup('));
+const helper=gallery.slice(gallery.indexOf('function inventoryVerified('),gallery.indexOf('function offerMarkup('));
 const context={Date,Number};vm.createContext(context);vm.runInContext(helper,context);
 const fresh={offer:{stock:'in_stock',fetched_at:new Date().toISOString()}};
 assert.equal(context.offerAvailable(fresh),true);

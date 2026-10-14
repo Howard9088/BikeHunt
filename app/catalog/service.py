@@ -14,6 +14,7 @@ from app.fit import garment_gender
 from app.landed import convert_money, estimate_landed_cost
 
 QUOTE_MAX_AGE_SECONDS = 86400
+STOCK_MAX_AGE_SECONDS = 3600
 EVIDENCE_MAX_AGE_SECONDS = 30 * 86400
 
 
@@ -86,6 +87,8 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
         reasons.append("最近采集失败；保留历史报价，库存待重新核实")
     if offer.stock != "in_stock":
         reasons.append("已售罄" if offer.stock == "out_of_stock" else "库存待核实")
+    if offer.stock == "in_stock" and not 0 <= _age(offer.fetched_at, now) <= STOCK_MAX_AGE_SECONDS:
+        reasons.append("库存核实已过期；等待重新核实")
     if not 0 <= _age(offer.fetched_at, now) <= QUOTE_MAX_AGE_SECONDS:
         reasons.append("报价已过期" if offer.fetched_at else "旧缓存未记录采集时间")
     if offer.price_valid_until:
@@ -157,7 +160,7 @@ class ComparisonCatalog:
     def available(self, offer: Offer) -> bool:
         return (offer.collection_state != "retained"
                 and offer.stock == "in_stock"
-                and 0 <= _age(offer.fetched_at, self.now) <= QUOTE_MAX_AGE_SECONDS
+                and 0 <= _age(offer.fetched_at, self.now) <= STOCK_MAX_AGE_SECONDS
                 and _price_valid(offer.price_valid_until, self.now))
 
     @staticmethod
@@ -230,9 +233,11 @@ class ComparisonCatalog:
                 source_codes=sorted(sources),
                 reference_price=reference.offer.price, reference_cny=reference.product_cny,
                 reference_source=reference.offer.source_name, discount_pct=reference.discount_pct,
-                reference_stock=reference.offer.stock, reference_collection_state=reference.offer.collection_state, fetched_at=reference.offer.fetched_at,
+                reference_stock=reference.offer.stock if self.available(reference.offer) or reference.offer.stock != "in_stock" else "unknown", reference_collection_state=reference.offer.collection_state, fetched_at=reference.offer.fetched_at,
                 recommended_total_cny=recommended.total_cny if recommended else None,
-                status="公开条件与费用已齐" if recommended else "渠道待核实",
+                status="公开条件与费用已齐" if recommended else "库存核实已过期" if not in_stock and any(
+                    x.offer.stock == "in_stock" and not 0 <= _age(x.offer.fetched_at, self.now) <= STOCK_MAX_AGE_SECONDS
+                    for x in all_compared) else "渠道待核实",
                 available_sizes=[v.size for v in detail.variants if v.in_stock and v.size],
                 stock_state="in_stock" if in_stock else "out_of_stock" if all(x.offer.stock=="out_of_stock" for x in all_compared) else "unknown",
                 purchase_requirements=sorted({r for v in variants for x in v for r in x.purchase_requirements}),

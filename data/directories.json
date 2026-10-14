@@ -167,7 +167,7 @@
       "name": "EF Education – EasyPost",
       "name_zh": "EF 教育–EasyPost 车队",
       "official_url": "https://www.efprocycling.com/",
-      "shop_url": "https://www.efprocycling.shop",
+      "shop_url": "https://efprocycling.shop/us/",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -180,7 +180,10 @@
       ],
       "logo_checked_at": "2026-10-14T11:06:47.712229+00:00",
       "shop_evidence_url": "https://www.efprocycling.com/",
-      "logo_evidence_url": "https://www.lavuelta.es/es/equipo/EFE/ef-education-easypost"
+      "logo_evidence_url": "https://www.lavuelta.es/es/equipo/EFE/ef-education-easypost",
+      "source_codes": [
+        "ef_team_shop"
+      ]
     },
     {
       "code": "groupama",
@@ -199,7 +202,10 @@
         "https://www.equipecycliste-groupama-fdj.fr/app/themes/groupamafdj_v2/build/images/logo-2026/logo-2026.67c05d4c.svg"
       ],
       "logo_checked_at": "2026-10-14T09:52:38.357951+00:00",
-      "shop_evidence_url": "https://www.equipecycliste-groupama-fdj.fr/"
+      "shop_evidence_url": "https://www.equipecycliste-groupama-fdj.fr/",
+      "source_codes": [
+        "groupama"
+      ]
     },
     {
       "code": "ineos",
@@ -228,7 +234,7 @@
       "name": "Lidl – Trek",
       "name_zh": "Lidl–崔克车队",
       "official_url": "https://racing.trekbikes.com/teams/lidl-trek",
-      "shop_url": "https://instagram.com/trekraceshop",
+      "shop_url": "https://www.santinicycling.com/collections/lidl-trek",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -240,7 +246,10 @@
         "https://racing.trekbikes.com/teams/lidl-trek#.logo-lidltrek svg"
       ],
       "logo_checked_at": "2026-10-14T09:52:36.841673+00:00",
-      "shop_evidence_url": "https://racing.trekbikes.com/teams/lidl-trek"
+      "shop_evidence_url": "https://www.santinicycling.com/en/pages/partnerships",
+      "source_codes": [
+        "lidl_trek"
+      ]
     },
     {
       "code": "lotto",
@@ -285,7 +294,7 @@
       "name": "NSN Cycling Team",
       "name_zh": "NSN 车队",
       "official_url": "https://nsncyclingteam.com/",
-      "shop_url": null,
+      "shop_url": "https://www.ekoi.com/en-ae/2350-nsn",
       "status": "shop_check_pending",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -296,7 +305,12 @@
       "logo_source_urls": [
         "https://nsncyclingteam.com/wp-content/uploads/2025/11/NSN-Cycling-Team-crunch-400x151.png"
       ],
-      "logo_checked_at": "2026-10-14T09:52:39.101837+00:00"
+      "logo_checked_at": "2026-10-14T09:52:39.101837+00:00",
+      "shop_evidence_url": "https://nsncyclingteam.com/our-gear/",
+      "evidence_note": "Parent previously verified official Our Gear link; product and collection rechecked here.",
+      "source_codes": [
+        "nsn"
+      ]
     },
     {
       "code": "redbull",
@@ -405,7 +419,7 @@
       "name": "UAE Team Emirates XRG",
       "name_zh": "阿联酋航空 XRG 车队",
       "official_url": "https://www.uaeteamemirates.com/",
-      "shop_url": "https://www.pissei.com/en/man/uae-team-emirates-collection/",
+      "shop_url": "https://www.pissei.com/en/man/uae-team-emirates-collection-xrg/",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -417,7 +431,10 @@
         "https://www.uaeteamemirates.com/wp-content/uploads/2017/03/logo-uae.png"
       ],
       "logo_checked_at": "2026-10-14T09:52:42.601727+00:00",
-      "shop_evidence_url": "https://www.uaeteamemirates.com/"
+      "shop_evidence_url": "https://www.uaeteamemirates.com/",
+      "source_codes": [
+        "uae"
+      ]
     },
     {
       "code": "unox",

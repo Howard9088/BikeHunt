@@ -494,5 +494,79 @@
       "status": "unknown",
       "note": "中国大陆发行信用卡可用性尚未核实。"
     }
+  },
+  {
+    "code": "groupama",
+    "name": "Groupama–FDJ UNITED / Bioracer 官方队服",
+    "type": "team_official",
+    "base_url": "https://shop.bioracer.com",
+    "enabled": true,
+    "collection_strategy": "shopify_public_feed_plus_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    },
+    "sales_region": "欧洲站 EUR 报价"
+  },
+  {
+    "code": "ef_team_shop",
+    "name": "EF 车队官方商城美国站",
+    "base_url": "https://efprocycling.shop/us",
+    "brand": "EF Pro Cycling",
+    "currency": "USD",
+    "sales_region": "美国",
+    "type": "team_official",
+    "enabled": true,
+    "collection_strategy": "scrape_public_pages",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "未验证美国商城直邮中国规则"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "未验证中国发行银行卡的具体支付限制"
+    }
+  },
+  {
+    "code": "uae",
+    "name": "UAE / PISSEI 官方商城",
+    "brand": "PISSEI",
+    "type": "team_official",
+    "base_url": "https://www.pissei.com",
+    "currency": "USD",
+    "sales_region": "美国市场 USD 报价",
+    "enabled": true,
+    "collection_strategy": "public_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送与运费尚未核实；当前报价不代表可直邮中国。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行银行卡可用性尚未核实。"
+    }
+  },
+  {
+    "code": "nsn",
+    "name": "NSN / Ekoï 官方商城",
+    "brand": "Ekoï",
+    "type": "team_official",
+    "base_url": "https://www.ekoi.com",
+    "currency": "USD",
+    "sales_region": "阿联酋站 USD 报价",
+    "enabled": true,
+    "collection_strategy": "public_product_jsonld",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送与运费尚未核实；当前报价不代表可直邮中国。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行银行卡可用性尚未核实。"
+    }
   }
 ]
