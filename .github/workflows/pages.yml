@@ -1,0 +1,90 @@
+name: Publish BikeHunt Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: bikehunt-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BIKEHUNT_PUBLIC_URL: https://howard9088.github.io/BikeHunt/
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            data/offers
+            data/rules
+            data/fx_latest.json
+            data/public_updates.json
+            data/collection_status
+            storage/updates.sqlite3
+            storage/policy_raw
+            storage/policy_history
+          key: bikehunt-crawl-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: bikehunt-crawl-
+      - name: Install crawler and test dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Restore public event cursor
+        run: python scripts/seed_updates.py
+      - name: Validate core modules
+        run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Validate published snapshot freshness
+        run: node scripts/test_pages_freshness.js
+      - name: Collect public prices and stocks
+        run: python scripts/collect_offers.py
+      - name: Check policy changes once daily
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import datetime, timezone, timedelta
+          from app.policies import collect_rules
+          import json
+          root = Path.cwd()
+          dates = [datetime.fromisoformat(json.loads(p.read_text())['checked_at']) for p in (root/'data/rules').glob('*.json')]
+          if not dates or datetime.now(timezone.utc)-min(dates) >= timedelta(days=1):
+              print(json.dumps(collect_rules(root), ensure_ascii=False))
+          PY
+      - name: Build public interactive website
+        run: python scripts/build_pages.py
+      - uses: actions/cache/save@v6
+        if: always()
+        with:
+          path: |
+            data/offers
+            data/rules
+            data/fx_latest.json
+            data/public_updates.json
+            data/collection_status
+            storage/updates.sqlite3
+            storage/policy_raw
+            storage/policy_history
+          key: bikehunt-crawl-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy public website
+        id: deployment
+        uses: actions/deploy-pages@v4

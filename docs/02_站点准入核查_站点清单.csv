@@ -1,0 +1,83 @@
+﻿﻿站点,国家,品类,结账币种是否含CNY,支付方式,中国卡是否可用,是否直邮中国,税负方式,限制,价格水平,采集可行性,判定,推荐优先级,主来源URL
+Team Visma | Lease a Bike 官网商店,荷兰,队服、骑行服、配件,否,Visa/Mastercard/Amex、PayPal、iDEAL（Adyen 收单）,是（附官方风控提示）,是（官方配送表列 China 运费 €47.95 承运 UPS）,到岸缴税,整车不可邮寄；不强制第三方支付,骑行衫 €85.00 ≈ ¥638；对华运费 €47.95 ≈ ¥360,robots 允许抓取；无 sitemap 声明；反爬中等,有条件合格,★★,https://www.teamvismaleaseabike.com/shop-delivery/
+INEOS Grenadiers 官方商店,英国,队服、骑行服,未能证实,Global-e 受理 mastercard/visa/amex/paypal,是（官方列卡种）,间接（排除名单不含中国且覆盖 100+ 目的地）,DDP预收,结账可选预付关税；未选预付则到岸缴税,未取到单品单价,Shopify 标准 robots；/sitemap.xml 可用；反爬低,有条件合格,★,https://store.netcompanyineos.com/pages/shipping-policy
+Red Bull-BORA-hansgrohe 官方商店,德国,队服、骑行服,否,未能证实,未能证实,否（官方配送国家表无中国大陆）,必须转运,官方配送国家表以香港替代；名单外国家不可下单,冬季毛球帽 €29.95；队版卫衣 €54.95,robots 禁交易与账户路径并屏蔽部分爬虫；sitemap-index 可用,不合格,—,https://customerservice.redbullshop.com/hc/en-us/sections/27269814144413-Shipping-and-delivery
+Soudal Quick-Step（The Wolfpack Webshop）,比利时,队服、骑行服,否,页面称多种安全支付方式（未逐条列出）,是（附官方风控提示）,未能证实（全站无配送政策页）,必须转运,配送信息未在任何官方页披露,2026 水壶 €7.50；满 €100 免运,Shopify 标准 robots；/sitemap.xml 实测可解析；反爬低,未能证实,★,https://thewolfpack.shop/pages/payment
+Groupama-FDJ United 官方商店,法国,队服、骑行服,未能证实,未能证实,未能证实,未能证实,必须转运,站点内容无法正常取回,未查到,robots 未取到有效内容；店铺域内容无法解析,未能证实,★,https://www.equipecycliste-groupama-fdj.fr/en/faq/
+UAE Team Emirates XRG（Emirates Official Store）,阿联酋,队服、骑行服,否,Visa/MasterCard/American Express,是（官方列卡种）,间接（全球统一 USD 25 直邮 未点名中国）,到岸缴税,进口税与关税由客户付给承运商；仅换货不退款,骑行衫 $109.00 ≈ ¥729；国际运费 $25 ≈ ¥167,robots 仅禁 /umbraco/；无 sitemap 声明；反爬低,有条件合格,★,https://www.emirates.store/shipping-policy
+Alpecin-Premier Tech 官方队服渠道,比利时,队服,未能证实,未能证实,未能证实,未能证实（无独立商城 队服经 KALAS 发售）,必须转运,无独立官方商店,复刻骑行衫经 Canyon 发售 €99.99 ≈ ¥750,robots 两次实抓均失败,未能证实,★,https://www.alpecin-premiertech.com/news/merci-poupou-tdf2026
+Movistar Team 官方商店（Deporvillage 运营）,西班牙,队服、骑行服,未能证实,未能证实,未能证实,未能证实,必须转运,官方队站未披露配送地,未查到,官方队站无独立商店域；Deporvillage 帮助页与 robots 被拦截,未能证实,★,https://movistarteam.com/pagina-principal-del-sitio-2
+Santini 官方直营店,意大利,骑行服、队服,否,PayPal 或信用卡（信用卡经 Banca Sella）,是（官方列卡种）,间接（官方「Reste du monde」档 满 €300 免运）,到岸缴税,价格为 DAP 不含目的地增值税与关税；非欧退货 €300 以下运费自理,未取到单品单价；免运门槛 €300,Shopify robots 禁交易与政策路径；sitemap 可用；反爬低—中,有条件合格,★,https://www.santinicycling.com/en/pages/termini-e-condizioni-di-vendita
+Bioracer 官方直营店,比利时,骑行服、队服,否,未能证实（官方配送与退货页未列支付方式）,未能证实,间接（非欧 €34.95；不配送名单不含中国）,到岸缴税,不配送 Belarus 等 11 国；本地税费自负,Icon Jersey $96.00 ≈ ¥642,Shopify 标准 robots；sitemap 可用；反爬低,未能证实,★,https://shop.bioracer.com/shipping-and-returns/
+Gobik 官方直营店,西班牙,骑行服、队服,未能证实,未能证实（官方未公布支付方式清单）,未能证实,间接（官方「Resto del mundo」档 €20）,到岸缴税,关税与税费由买家承担；≥€500 须签收,Gossy 短袖骑行衫 €146.00 ≈ ¥1095,Shopify 标准 robots；sitemap 可用；反爬低,未能证实,★,https://gobik.com/policies/shipping-policy
+Vermarc 官方直营店,比利时,骑行服、队服,否,未能证实（官方未公布支付方式清单）,未能证实,间接（官方列欧盟以外 €30）,到岸缴税,DDU 发出；清关费用由客户承担,未取到单品价,robots 实抓返回空；Brikl 类平台,未能证实,★,https://www.shop.vermarcsport.com/conditions
+Kalas 官方直营店,捷克,骑行服、队服,否,未能证实,未能证实,未能证实（仅称销往 50 多国）,必须转运,定制款不支持尺码原因退换,女式长袖骑行衫 EVO 原 €139 现 €125.10 ≈ ¥938,robots 两次实抓失败；商品页由 UUID 子域承载,未能证实,★,https://kalas.cc
+Rapha（含 RCC）,英国,骑行服、配件,否,Visa/Mastercard/Amex/JCB/Discover/UnionPay 仅贷记/Diners、PayPal、Apple Pay,是（官方列银联贷记卡与主流卡种）,间接（配送表未列中国大陆 且不接受转运地址）,到岸缴税,不接受转运代理与 PO Box；DDP 名单不含中国大陆,Pro Team 锁鞋 US$380.00 ≈ ¥2542,robots 禁搜索与交易路径；sitemap 含 zh-ap/zh-tw 无 cn；反爬中等,有条件合格,★,https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options
+Assos,瑞士,骑行服、配件,未能证实,VISA/Mastercard/American Express、PayPal（Adyen 收单）,是（官方列卡种 未列银联）,间接（官方设 REST OF THE WORLD EUR 档）,到岸缴税,非 DDP 名单目的地按 DAP 发出 费用自负,未取到单品价,robots 主要放行；sitemap 含 cn 子图；反爬低—中,有条件合格,★,https://www.assos.com/gb/customer-service/?section=shipping
+MAAP,澳大利亚,骑行服、配件,未能证实,未能证实,未能证实,否（官方载明中国大陆仅由本地合作伙伴服务）,必须转运,已停止配送国家含 Iran 等 9 国；maap.cc 不向中国大陆发货,未查到,robots 允许；products.json 实测失败,不合格,—,https://support.maap.cc/
+Le Col,英国,骑行服、配件,未能证实,debit/credit card、PayPal、Google Pay,是（官方列卡种）,间接（DHL 国际快递至全球主要地区 无国别白名单）,到岸缴税,不投递 PO Box 与 BFPO；非英订单可能被要求提供英国地址,Sport Cargo Bib Tights II £200.00,shopify robots；products.json 实测可用,有条件合格,★,https://lecol.cc/fr-tt/pages/lecol-faqs
+Castelli,意大利,骑行服、队服,否,未能证实,未能证实,否（官方配送国家表无中国大陆）,必须转运,不配送 DOM-TOM 及 San Marino 等,未取到单品价,robots 限时抓取 Request-rate 1/10 Crawl-delay 10；反爬最强,不合格,—,https://www.castelli-cycling.com/IT/en/customer-service/shipping-times-and-costs
+Pas Normal Studios,丹麦,骑行服、配件,未能证实,Mastercard/VISA/Dankort/American Express/Klarna,是（卡片交易 100% 3DS）,间接（官方称全球配送 FedEx/UPS/DHL）,到岸缴税,DDP 仅英瑞挪；其余地区进口税客户自负,未查到,Shopify 默认 robots；反爬低,有条件合格,★,https://pasnormalstudios.com/pages/faq
+La Passione,意大利,骑行服、配件,未能证实,未能证实,未能证实,未能证实,必须转运,未见关税与税费承担条款原文,未查到,robots 本身禁止自动访问,未能证实,★,https://www.lapassione.cc/pages/terms-conditions
+Isadore,斯洛伐克,骑行服、配件,是,Visa/Mastercard/American Express/Diners 或 AliPay、PayPal,是（官方明列支付宝）,是（官方 FAQ 单列 Japan & China 档 80 CNY）,到岸缴税,除英国与瑞士外关税税费不含在价内 由收件人承担,标准配送 80 CNY；快递 200 CNY；满 1200 CNY 免运,robots 显式 Disallow /zh/；反爬低,合格,★★,https://isadore.com/faq
+Q36.5,意大利,骑行服、配件,未能证实,Visa 与 Mastercard（仅接受 3DS 交易）,是（官方列卡种 强制 3DS）,是（官方 International Zone 2 名单含 China）,到岸缴税,无法投递邮政信箱；以色列与澳大利亚仅快递,未查到,robots 允许商品页；sitemap 无中国站；反爬低,合格,★★,https://www.q36-5.com/en-us/c/shipping-delivery/
+Alé,意大利,骑行服、配件,未能证实,未能证实,未能证实,否（Rest of World 四组名单均无中国大陆）,必须转运,仅配送名单内国家,未查到,robots 全站开放；公开 agents.md 与 UCP/MCP 端点,不合格,—,https://alecycling.com/en-us/pages/spedizioni-e-consegna
+Sportful,意大利,骑行服、配件,未能证实,未能证实,未能证实,否（官方配送国家表无中国大陆）,必须转运,仅配送站内可选国家,未查到,Shopify 默认 robots；sitemap 可用,不合格,—,https://www.sportful.com/IT/en/customer-service/shipping-times-and-costs
+Café du Cycliste,法国,骑行服、配件,否,银行卡或 PayPal,是（官方条款列银行卡与 PayPal）,间接（官方称全球配送 设 International 档）,到岸缴税,非欧盟非英国订单关税由客户承担,未查到,Shopify 默认 robots；sitemap 可用,有条件合格,★,https://www.cafeducycliste.com/pages/shipping
+Attaquer,澳大利亚,骑行服、配件,是,未能证实,未能证实,是（官方配送表含 China 行 DHL Express）,到岸缴税,robots 政策段明确反对自动化爬取与代下单,免运门槛 ¥2200 CNY；快递 ¥150 CNY,robots 允许商品页；政策层面反对自动化结账,未能证实,★,https://attaquercycling.com/pages/shipping
+Black Sheep Cycling,澳大利亚,骑行服、配件,未能证实,未能证实,未能证实,未能证实（官网未发布国际配送条款）,必须转运,/policies/ 被 robots 禁止抓取,未查到,Shopify 默认 robots；反爬低,未能证实,★,https://au.blacksheep.cc/policies/shipping-policy
+Velocio,美国,骑行服、配件,未能证实,未能证实（官方未公布支付方式清单）,未能证实,间接（intl.velocio.cc 面向 EU & International）,DDP预收,国际订单结账即含税含关税；DHL 不投递邮政信箱,国际运费 EUR 25；满 EUR 150 免运,robots 允许商品页；sitemap 可用；反爬低,未能证实,★,https://support.velocio.cc/hc/en-us/articles/360059193513-Shipping-Options
+Pedla,澳大利亚,骑行服、配件,未能证实,未能证实,未能证实,间接（国际满 AUD 400 免运 DHL Express）,到岸缴税,不能寄往俄罗斯私人或住宅地址,未查到,Shopify 默认 robots；sitemap 可用,未能证实,★,https://thepedla.com/pages/shipping
+Ostroy,美国,骑行服、配件,未能证实,major credit cards、PayPal、Amazon Pay、Apple Pay、Google Pay,是（官方列主流卡种）,间接（官方称 ship just about everywhere Global-E 为 merchant of record）,到岸缴税,robots 政策段明确反对自动化爬取与自动化结账,境外满 $400 免运费,Shopify 默认 robots；反爬低,有条件合格,★,https://ostroy.com/pages/faq
+Giordana,美国/意大利,骑行服、配件,未能证实,未能证实,未能证实,间接（官方称已支持全球多国配送）,到岸缴税,未查到,未查到,robots 全站开放；公开 agents.md 与 UCP 只读入口,未能证实,★,https://giordanacycling.com/pages/faq
+Eliel,美国,骑行服、配件,未能证实,未能证实,未能证实,间接（官方明示支持国际配送 未点名中国）,到岸缴税,结账与下单须买家实时授权；国际订单不享免运,未查到,robots 欢迎 agent 抓取；公开 agents.md 与 UCP/MCP 通道,未能证实,★,https://www.elielcycling.com/pages/faqs
+Ornot,美国,骑行服、配件,未能证实,未能证实,未能证实,未能证实（官网未发布配送政策正文）,必须转运,未查到,未查到,robots 抓取失败,未能证实,★,https://www.ornotbike.com/policies/shipping-policy
+Bike24,德国,器材、配件、整车,否,信用卡（官方请境外客户用信用卡）Mastercard/Visa/Amex、PayPal,是（官方请境外客户用信用卡）,是（中国标准运费 29.99 €）,到岸缴税,整车货运表未含中国,未抓到单品单价,robots 实测 商品页可抓无 Crawl-delay；禁 /ajax.php /api/* /search?* /checkout/* /topic/* /cycling/bike/*,合格,★★,https://www.bike24.com/shipping.html
+Bike-Discount / H&S Bike-Discount,德国,器材、配件、整车,否,Kreditkarte、PayPal、Amazon Pay、Vorkasse,是（官方列 Kreditkarte）,未能证实（未取得中国专属运费）,到岸缴税,整车对非欧盟普遍不可承运；Radon 整车由该店销售,未抓到单品单价,robots 允许商品页；Zendesk 帮助中心；反爬中等,未能证实,★,https://support.bike-discount.de/de/support/solutions/folders/7000042624
+Bike-Components,德国,器材、配件,否,未能证实（支付页被 robots 拦截）,未能证实,是（官方运费页列中国标准 54.99 €）,到岸缴税,整车不寄中国,未抓到单品单价,robots 覆盖较广且支付方式页属被禁路径；反爬中等,未能证实,★,https://www.bike-components.de/en/shipping-costs
+Rose Bikes,德国,整车、配件、骑行服,否,MasterCard/VISA/Apple Pay；PayPal 仅限欧盟内,是（官方列卡种）,是（官方配送国家清单含 China）,到岸缴税,PayPal 仅限欧盟内,未抓到单品单价,robots 允许商品与类目页；反爬中等,合格,★★,https://www.rosebikes.com/shipping
+R2-Bike,德国,器材、配件,否,MasterCard/VISA,是（官方列卡种）,是（官方配送清单含中华人民共和国）,到岸缴税,非欧盟订单加收 1%；成品整车有最小起订提示,未抓到单品单价,robots 允许商品页；无公开商品 API；反爬中等,合格,★★,https://r2-bike.com/Shipping
+Fahrrad.de（含已并入的 Bikester）,德国,整车、配件、骑行服,否,PayPal、信用卡、Klarna,是（官方列卡种）,否（官方仅发德奥瑞比法荷列支敦士登）,必须转运,仅上述 7 国,未抓到单品单价,robots 允许商品页；反爬中等,不合格,—,https://www.fahrrad.de/pages/versandinformationen
+Wiggle,英国,不适用,不适用,不适用,不适用,否（域名已不再承载独立商城）,必须转运,原站点与购物车已不存在,不适用,无需采集,不合格,—,https://www.wiggle.com/
+Chain Reaction Cycles,英国,不适用,不适用,不适用,不适用,否（域名已不再承载独立商城）,必须转运,原站点与购物车已不存在,不适用,无需采集,不合格,—,https://www.chainreactioncycles.com/
+ProBikeKit,英国,不适用,不适用,不适用,不适用,否（域名已不再承载独立商城）,必须转运,原站点与购物车已不存在,不适用,无需采集,不合格,—,https://www.probikekit.com/
+Evans Cycles（承接 Wiggle/CRC/PBK）,英国,整车、配件、骑行服,否,Mastercard/VISA/American Express 及 Alipay,是（官方明列支付宝）,间接（设有非英国客户条款 无国别清单）,到岸缴税,非英国订单进口税与清关费由买家承担,未抓到单品单价,robots 含国家化路径；反爬低—中,有条件合格,★,https://help.evanscycles.com/hc/en-gb/articles/6018058318495-Terms-Conditions-non-UK-customers
+Merlin Cycles,英国,整车、配件、骑行服,是,American Express/Mastercard/Visa（Braintree 收单）,是（官方列卡种）,是（官方运费页国家清单含 China 承运 UPS）,到岸缴税,整车国际寄送按 UPS 政策与体积计费,未抓到单品单价,robots 允许商品页；反爬低—中,合格,★★,https://www.merlincycles.com/en-us/shipping-postage.html
+Sigma Sports,英国,整车、配件、骑行服,未能证实,UnionPay 银联、Alipay 支付宝、Visa/Mastercard/Amex/PayPal（Global-e 结算）,是（官方明列银联与支付宝）,间接（经 Global-e/DHL 国际配送 未列国别）,DDP预收,结账可选预付关税；未选则到岸缴税,未抓到单品单价,robots 允许商品页；反爬低—中,有条件合格,★,https://www.sigmasports.com/payment-and-delivery
+Tredz,英国,整车、配件、骑行服,否,未能证实,未能证实,未能证实（配送页仅覆盖英国）,必须转运,站点未提供跨境选项,未抓到单品单价,robots 可读；反爬低—中,未能证实,★,https://www.tredz.co.uk/help-advice/customer-service/delivery-returns/delivery-info
+Bikeinn / Tradeinn,西班牙,整车、配件、骑行服,未能证实,Visa/Mastercard/Amex/JCB/Maestro/Visa Electron、PayPal/Apple Pay/Google Pay（Adyen 收单）,是（官方列卡种）,间接（官方称全球发货 设简体中文入口）,到岸缴税,整车跨境受承运与体积限制,未抓到单品单价,robots 可读；商品库规模大须控并发,有条件合格,★,https://www.tradeinn.com/bikeinn/en/help/st
+Deporvillage,西班牙,整车、配件、骑行服,未能证实,未能证实,未能证实,未能证实,必须转运,站点对自动访问封锁明显,未能证实,robots 实测被拦截,未能证实,★,https://www.deporvillage.com/
+Alltricks,法国,整车、配件、骑行服,否,CB/Visa/Mastercard/American Express/Bancontact（Hipay 处理）,是（官方列卡种）,是（官方 Delivery 页 country=CN 显示 China 承运 Colissimo）,到岸缴税,整车跨境受承运限制；税负归属官方未明示,未抓到单品单价,robots 可读；国家化查询参数可复用,合格,★★,https://www.alltricks.com/delivery?country=CN
+Lordgun,意大利,器材、配件,未能证实,未能证实,未能证实,未能证实,必须转运,站点对自动访问封锁明显,未能证实,robots 被拦截,未能证实,★,https://www.lordgun.com/
+Mantel,荷兰,整车、配件、骑行服,否,未能证实,未能证实,否（官方口径为欧洲 15 国配送网络）,必须转运,仅欧洲配送网络内国家,未抓到单品单价,robots 可读；反爬低—中,不合格,—,https://supplychain.mantel.com/
+Canyon 中国站（canyon.com.cn）,中国,整车、配件、骑行服,是,Visa/Mastercard/UnionPay 银联/Apple Pay/微信支付,是（官方列银联与境内方式）,是（中国大陆境内配送 承运 DHL Express）,DDP预收,本地化站点 车型与库存受区域配置约束,人民币标价 无跨境运费与关税附加,robots 允许商品页；反爬低—中,合格,★★★,https://www.canyon.com.cn/zh-cn/%E5%AE%A2%E6%88%B7%E6%9C%8D%E5%8A%A1/%E9%80%81%E8%B4%A7-%E9%80%81%E8%BE%BE/shipping.html
+Canyon 国际站（canyon.com）,德国,整车、配件,未能证实,未能证实,未能证实,未能证实（本轮仅取得 robots.txt）,必须转运,不沿用中国站结论,未能证实,robots.txt 可读；其余未验证,未能证实,★,https://www.canyon.com/robots.txt
+Cube（cube.eu）,德国,整车、配件,否,不适用（品牌零直销）,不适用,否（官方仅通过选定专业经销商销售）,必须转运,品牌直销渠道不存在,不适用,robots 可读但仅产品展示页,不合格,—,https://www.cube.eu/hu/support/customer-support/international
+Radon（radon-bikes.de）,德国,整车,否,未能证实（结账在 Bike-Discount 完成）,未能证实,未能证实（中国行取值未取得）,必须转运,品牌站仅作展示 交易在 Bike-Discount,未抓到单品单价,robots.txt 可读；价格须在 Bike-Discount 侧采集,未能证实,★,https://www.radon-bikes.de/robots.txt
+Ribble Cycles,英国,整车、配件,未能证实,未能证实,未能证实,未能证实（可配送国家清单未公布）,DDP预收,可配送国家清单未公开,未抓到单品单价,robots 可读；反爬低—中,未能证实,★,https://helpcentre.ribblecycles.co.uk/en/support/solutions/articles/22000289236-international-delivery-costs-and-timescales
+Orbea,西班牙,整车、配件,未能证实,未能证实,未能证实,否（官方规定整车与外部电池须经销商自提）,必须转运,整车只走经销商自提,未能证实,CMS 域承载配送政策；反爬低—中,不合格,—,https://cms.orbea.com/en-be/p/shipping
+Pinarello,意大利,整车、配件,未能证实,未能证实,未能证实,未能证实,必须转运,配送政策未取到,未能证实,robots.txt 可读；其余未验证,未能证实,★,https://www.pinarello.com/robots.txt
+Colnago,意大利,整车、配件,未能证实,未能证实（官方发货页未列支付方式）,未能证实,未能证实（整车仅门店自提或厂方交付；配件全球配送 10 天）,到岸缴税,整车不可跨境；配件可跨境,未抓到单品单价,robots 可读；反爬低—中,未能证实,★,https://www.colnago.com/en-us/shipments-and-returns
+Bianchi,意大利,整车、配件,未能证实,未能证实,未能证实,未能证实,必须转运,配送政策未取到,未能证实,robots.txt 可读；其余未验证,未能证实,★,https://www.bianchi.com/robots.txt
+Wilier,意大利,整车、配件,未能证实,信用卡与 PayPal（官方 T&C）,是（官方 T&C 列卡种与 PayPal）,未能证实（T&C 未列目的地国清单）,到岸缴税,未查到,未能证实,robots 可读；反爬低—中,未能证实,★,https://www.wilier.com/en/terms-and-conditions
+Factor,英国,整车、配件,未能证实,未能证实,未能证实,未能证实,必须转运,配送政策未取到,未能证实,robots.txt 可读；其余未验证,未能证实,★,https://factorbikes.com/robots.txt
+Look,法国,整车、配件,未能证实,未能证实,未能证实,未能证实,必须转运,配送政策未取到,未能证实,robots.txt 可读；其余未验证,未能证实,★,https://www.lookcycle.com/robots.txt
+BMC,瑞士,整车、配件,未能证实,未能证实,未能证实,未能证实,必须转运,配送政策未取到,未能证实,robots.txt 可读；其余未验证,未能证实,★,https://www.bmc-switzerland.com/robots.txt
+Storck,德国,整车、配件,未能证实,未能证实,未能证实,未能证实（站点抓取失败）,必须转运,站点不可达,未能证实,须先人工确认站点是否存活,未能证实,★,https://www.storck-bikes.com/robots.txt
+Simplon,奥地利,整车、配件,未能证实,未能证实,未能证实,未能证实,必须转运,配送政策未取到,未能证实,robots.txt 可读；其余未验证,未能证实,★,https://www.simplon.com/robots.txt
+Specialized 中国官网,中国,整车、配件、骑行服,是,支付宝与微信支付（不接受国际信用卡）,否（官方仅境内支付方式）,是（中国大陆配送 承运顺丰）,DDP预收,本地化站点 仅境内支付与境内履约,人民币标价 无跨境费用,robots 可读；反爬低—中,不合格,—,https://www.specialized.com.cn/cn/zh/faq
+Specialized 国际站（specialized.com）,美国,整车、配件、骑行服,未能证实,未能证实,未能证实,否（官方原文仅送货至美国境内实体地址）,必须转运,仅美国境内实体地址 不含 PO Box,未能证实,robots 可读；反爬低—中,不合格,—,https://www.specialized.com/cz/en/faq
+Trek（含 Lidl-Trek 队服渠道）,美国,整车、配件、队服,否,未能证实,未能证实,否（各区域站仅送本国且不接受转运地址）,必须转运,各区域站仅送本国；不接受转运代理地址,中国站队服 ¥888 与 ¥1280,robots 可读；区域站结构与商品字典一致,不合格,—,https://www.trekbikes.com/jp/ja_JP/customer_service/
+Giant 官方商城（e.giant.com.cn）,中国,整车、配件,是,未能证实（中国商城支付方式清单未取得）,未能证实,是（中国境内配送）,DDP预收,境内站点 对跨境无官方说明,人民币标价,robots 可读；反爬低—中,未能证实,★,https://e.giant.com.cn/
+Scott,瑞士,整车、配件,未能证实,未能证实,未能证实,未能证实（robots 含 /cn/zh/ 中国站但无跨境说明）,必须转运,存在中国本地站 跨境路径未说明,未能证实,robots.txt 可读；反爬低—中,未能证实,★,https://www.scott-sports.com/robots.txt
+Merida 美利达,中国台湾/中国大陆,整车、配件,未能证实,未能证实,未能证实,未能证实（中国由 merida.cn 本地运营）,必须转运,跨境路径未说明,未能证实,robots 可读；反爬低—中,未能证实,★,https://www.merida.cn/
+Cannondale,美国,整车、配件,未能证实,未能证实,未能证实,否（官方明文不发货美国与加拿大以外）,必须转运,仅美国与加拿大,未能证实,robots 可读；反爬低—中,不合格,—,https://support.cannondale.com/hc/en-us/articles/1500009060141-Shipping-and-Pickup-Information
+Buycycle,德国,二手整车,否,未能证实,未能证实,否（官方配送国家清单不含中国）,必须转运,仅清单内国家,未能证实,robots 可读；反爬低—中,不合格,—,https://buycycle.zendesk.com/hc/en-us/articles/20377496513937-Where-do-you-ship
+Bike Exchange,澳大利亚,二手/新整车,未能证实,未能证实,未能证实,未能证实（平台型 配送由各商户决定）,必须转运,平台无统一跨境履约口径,未能证实,robots 可读；商品结构化程度不一,未能证实,★,https://www.bikeexchange.com/
+Bikesale,美国,二手整车,未能证实,未能证实,未能证实,未能证实,必须转运,跨境政策未取得,未能证实,robots 可读；反爬低—中,未能证实,★,https://www.bikesale.com/
+亚马逊海外购,美国/德国/英国/日本,全品类,是,国际信用卡（官方帮助页原文）,是,是（官方明示中国除港澳台地区之外全境配送）,DDP预收,电脑端自 2024 年 1 月 27 日起不再提供购物服务；仅手机端与微信小程序可用；整车不在海外购清单内,人民币展示 含预估进口税费,robots 对商品页开放；受端限制,合格,★★★,https://www.amazon.cn/b?node=1941366071
+Amazon.com 官网直邮（非海外购通道）,美国,全品类,未能证实,国际信用卡（同亚马逊口径）,是（同亚马逊口径）,未能证实（中国是否适用 Import Fees Deposit 无官方原文）,DDP预收,通道适用性未证实 须与海外购通道区分,USD 标价,robots 对商品页开放；反爬强,未能证实,★,https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=G9UHGT37MYD2EJPL
+eBay（GSP / EIS）,美国,全品类（含二手整车）,未能证实,间接（中国卡无官方说明）,间接（银联为机构转述）,是（官方可送达国家清单含 China/CN）,到岸缴税,GSP/EIS 单件上限 US$2500；发货地须为美国或加拿大,卖家定价 波动大,robots 对商品页部分开放；反爬强,有条件合格,★,https://pages.ebay.com/international-shipping/cn/
+Jenson USA,美国,整车、配件,未能证实,未能证实（官方仅提及国际银行转账）,未能证实,间接（国际订单经 UPS/USPS/FedEx）,到岸缴税,整车跨境受承运限制,未能证实,robots 可读；反爬低—中,未能证实,★,https://www.jensonusa.com/customer-service/faqs
+Backcountry / Competitive Cyclist,美国,整车、配件、骑行服,未能证实,未能证实,未能证实,未能证实（可配送国家清单未取得）,到岸缴税,跨境政策未取得,未能证实,robots 可读；反爬中等,未能证实,★,https://www.competitivecyclist.com/info/shipping-policy
+BikeTiresDirect,美国,轮胎、配件、整车（美境）,未能证实,未能证实,未能证实,间接（官方提供国际空邮与快递选项）,到岸缴税,国际订单运费与可达性须逐单确认,未能证实,robots 可读；反爬低—中,未能证实,★,https://www.biketiresdirect.com/shipping

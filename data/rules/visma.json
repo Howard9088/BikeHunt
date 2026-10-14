@@ -1,0 +1,53 @@
+{
+  "source_code": "visma",
+  "name": "维斯玛车队官方商城",
+  "version": 6,
+  "checked_at": "2026-10-14T11:09:17.042556Z",
+  "documents": [
+    {
+      "key": "shipping",
+      "title_zh": "官方商城配送与运费",
+      "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+      "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b",
+      "checked_at": "2026-10-14T11:09:14.276256Z",
+      "summary_zh": [
+        "官方配送表明确列出中国：运费 47.95 欧元，预计 4–7 个工作日，亚洲地区使用 UPS。",
+        "买家另行承担进口关税、税费和清关费用，47.95 欧元不是包税到手价。",
+        "若订单同时包含现货和预售品，全部商品会等预售品可发货后一起寄出。",
+        "发货确认邮件包含物流追踪号码，可用于查询包裹。"
+      ],
+      "state": "translated",
+      "translated_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+    },
+    {
+      "key": "payment",
+      "title_zh": "官方商城支付方式",
+      "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+      "content_hash": "a5702e17b6cb2fa04d18fe23dc78082275729d6467626f9231f47378d0dbd128",
+      "checked_at": "2026-10-14T11:09:15.665442Z",
+      "summary_zh": [
+        "支持 Visa、Mastercard、American Express 信用卡，以及 PayPal、iDeal 和礼品卡。",
+        "信用卡支付由 Adyen 验证。iDeal 面向其列出的荷兰银行，不是中国信用卡支付方式。",
+        "中国发行且具备境外支付功能的相应卡种可按上述条件使用；跨国发卡或多次失败付款可能触发支付风控，是否成功以发卡行授权为准。",
+        "支付失败后先检查是否已扣款；已扣款但未收到确认时，应联系原商城客服核对，避免重复支付。"
+      ],
+      "state": "translated",
+      "translated_hash": "a5702e17b6cb2fa04d18fe23dc78082275729d6467626f9231f47378d0dbd128"
+    },
+    {
+      "key": "returns",
+      "title_zh": "退换货规则",
+      "url": "https://www.teamvismaleaseabike.com/shop-returns/",
+      "content_hash": "83c174e4b75cf9915d7419c846539f09e7d7d30db69818b4009e345652a75076",
+      "checked_at": "2026-10-14T11:09:17.042556Z",
+      "summary_zh": [
+        "商品须完整、未使用、未损坏并保留原包装。",
+        "不能直接换一个尺码：先退回原商品，再在商城重新订购。",
+        "退货运费由买家承担；欧洲之外寄回时还需留意海关及清关费用。",
+        "个人定制商品的退换限制应在下单前核对原商城条款。"
+      ],
+      "state": "translated",
+      "translated_hash": "83c174e4b75cf9915d7419c846539f09e7d7d30db69818b4009e345652a75076"
+    }
+  ]
+}

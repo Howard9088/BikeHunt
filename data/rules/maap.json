@@ -1,0 +1,37 @@
+{
+  "source_code": "maap",
+  "name": "MAAP 官网",
+  "version": 2,
+  "checked_at": "2026-10-14T11:08:57.676104Z",
+  "documents": [
+    {
+      "key": "shipping",
+      "title_zh": "配送、运费与税费",
+      "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+      "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266",
+      "checked_at": "2026-10-14T11:08:56.635732Z",
+      "summary_zh": [
+        "中国大陆和韩国由当地合作伙伴服务，maap.cc 不直接配送；不要把此商城当作中国直邮渠道。",
+        "订单从澳大利亚墨尔本仓库发货，只在周一至周五的工作日出库。",
+        "进口关税及当地税费由收货人承担；拒付可能导致退运并扣除产生的费用。",
+        "订单以澳元扣款，发卡行可能收取境外交易及换汇费用，MAAP 不承担这些银行费用。",
+        "其他配送地区按区域计费：第 1 区低于 500 澳元收 45 澳元；第 2 区收 25 澳元；第 3 区收 40 澳元；第 4 区低于 2000 澳元收 75 澳元。上述区域规则不适用于中国大陆。"
+      ],
+      "state": "translated",
+      "translated_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+    },
+    {
+      "key": "payment",
+      "title_zh": "支付方式与信用卡",
+      "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+      "content_hash": "bec47589754492887360994bf56a772d128128f2c6246f2f2c44dc6fa28783b1",
+      "checked_at": "2026-10-14T11:08:57.676104Z",
+      "summary_zh": [
+        "支持 Visa、Mastercard、American Express 信用卡，以及 MAAP 礼品卡、Apple Pay 和 Google Pay。",
+        "中国发行且支持境外消费的相应卡种可按上述支付条件核对，包括招商银行等银行的信用卡；实际付款需由发卡行授权。"
+      ],
+      "state": "translated",
+      "translated_hash": "bec47589754492887360994bf56a772d128128f2c6246f2f2c44dc6fa28783b1"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "product_urls": [
+      "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/"
+    ],
+    "source_url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+    "checked_at": "2026-10-14T10:46:00+00:00",
+    "gender": "male",
+    "rows": [
+      {"size":"XS", "chest_cm":{"maximum":94,"max_inclusive":false}, "description_zh":"胸围小于 94 厘米；腰围小于 84 厘米"},
+      {"size":"S", "chest_cm":{"minimum":94,"maximum":98}, "description_zh":"胸围 94–98 厘米；腰围 84–88 厘米"},
+      {"size":"M", "chest_cm":{"minimum":98,"maximum":102}, "description_zh":"胸围 98–102 厘米；腰围 88–92 厘米"},
+      {"size":"L", "chest_cm":{"minimum":102,"maximum":106}, "description_zh":"胸围 102–106 厘米；腰围 92–96 厘米"},
+      {"size":"XL", "chest_cm":{"minimum":106,"maximum":111}, "description_zh":"胸围 106–111 厘米；腰围 96–101 厘米"},
+      {"size":"XXL", "chest_cm":{"minimum":111,"maximum":117}, "description_zh":"胸围 111–117 厘米；腰围 101–107 厘米"},
+      {"size":"XXXL", "chest_cm":{"minimum":117,"min_inclusive":false}, "description_zh":"胸围大于 117 厘米；腰围大于 107 厘米"}
+    ]
+  }
+]

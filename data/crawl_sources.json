@@ -1,0 +1,84 @@
+[
+  {
+    "code": "maap",
+    "domains": [
+      "maap.cc"
+    ],
+    "parser": "jsonld",
+    "gender_evidence_url": "https://maap.cc/collections/archive-sale-man",
+    "urls": [
+      "https://maap.cc/collections/archive-sale-man",
+      "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black"
+    ],
+    "gender_by_url": {
+      "https://maap.cc/collections/archive-sale-man": "male",
+      "https://maap.cc/products/evade-pro-base-jersey-2-0-black": "male",
+      "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica": "male",
+      "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black": "male"
+    }
+  },
+  {
+    "code": "teamcycles",
+    "domains": [
+      "www.teamcycles.com"
+    ],
+    "parser": "teamcycles",
+    "urls": [
+      "https://www.teamcycles.com/clothing/jerseys/maap-evade-pro-base-20-short-sleeve-cycling-jersey-in-black__29729"
+    ]
+  },
+  {
+    "code": "sigmasports",
+    "domains": [
+      "www.sigmasports.com"
+    ],
+    "parser": "jsonld",
+    "urls": [
+      "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI"
+    ]
+  },
+  {
+    "code": "poc",
+    "domains": [
+      "poc.com"
+    ],
+    "parser": "jsonld",
+    "urls": [
+      "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt"
+    ]
+  },
+  {
+    "code": "visma",
+    "domains": [
+      "www.teamvismaleaseabike.com"
+    ],
+    "parser": "visma",
+    "urls": [
+      "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/"
+    ]
+  },
+  {
+    "code": "rapha",
+    "domains": [
+      "www.rapha.cc"
+    ],
+    "parser": "rapha",
+    "urls": [
+      "https://www.rapha.cc/jp/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "https://www.rapha.cc/jp/en/product/rcc-womens-pro-team-bib-shorts-ii---regular/AFR01RGDNY"
+    ]
+  },
+  {
+    "code": "rapha_kr",
+    "domains": [
+      "www.rapha.cc"
+    ],
+    "parser": "rapha",
+    "urls": [
+      "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY"
+    ]
+  }
+]

@@ -1,0 +1,106 @@
+[
+  {
+    "code": "maap",
+    "name": "MAAP 官网",
+    "domains": [
+      "support.maap.cc"
+    ],
+    "documents": [
+      {
+        "key": "shipping",
+        "title_zh": "配送、运费与税费",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "selector": ".article-body"
+      },
+      {
+        "key": "payment",
+        "title_zh": "支付方式与信用卡",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "selector": ".article-body"
+      }
+    ]
+  },
+  {
+    "code": "rapha",
+    "name": "Rapha 官网",
+    "domains": [
+      "support.rapha.cc"
+    ],
+    "documents": [
+      {
+        "key": "shipping",
+        "title_zh": "亚太配送规则",
+        "url": "https://support.rapha.cc/en/articles/26-apac-canada-shipping-options",
+        "selector": "article",
+        "allow_dynamic": true
+      },
+      {
+        "key": "payment",
+        "title_zh": "结账与支付规则",
+        "url": "https://support.rapha.cc/en/articles/516-checkout-and-payment-support",
+        "selector": "article",
+        "allow_dynamic": true
+      }
+    ]
+  },
+  {
+    "code": "visma",
+    "name": "维斯玛车队官方商城",
+    "domains": [
+      "www.teamvismaleaseabike.com"
+    ],
+    "documents": [
+      {
+        "key": "shipping",
+        "title_zh": "官方商城配送与运费",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "selector": "main"
+      },
+      {
+        "key": "payment",
+        "title_zh": "官方商城支付方式",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "selector": "main"
+      },
+      {
+        "key": "returns",
+        "title_zh": "退换货规则",
+        "url": "https://www.teamvismaleaseabike.com/shop-returns/",
+        "selector": "main"
+      }
+    ]
+  },
+  {
+    "code": "poc",
+    "name": "POC 美国站",
+    "domains": [
+      "poc.com"
+    ],
+    "documents": [
+      {
+        "key": "shipping",
+        "title_zh": "发货仓库、配送国家与税费",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "selector": "main",
+        "start_marker": "ORDER PROCESS & CONFIRMATION",
+        "end_marker": "POC ONLINE STORE RETURN PROCESS"
+      },
+      {
+        "key": "payment",
+        "title_zh": "银行卡与支付方式",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "selector": "main",
+        "start_marker": "PAYMENT METHODS",
+        "end_marker": "ORDER PROCESS & CONFIRMATION"
+      },
+      {
+        "key": "returns",
+        "title_zh": "特价商品退货与售后",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "selector": "main",
+        "start_marker": "POC ONLINE STORE RETURN PROCESS",
+        "end_marker": "GOVERNING LAW"
+      }
+    ]
+  }
+]

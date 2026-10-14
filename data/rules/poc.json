@@ -1,0 +1,52 @@
+{
+  "source_code": "poc",
+  "name": "POC 美国站",
+  "version": 3,
+  "checked_at": "2026-10-14T11:09:20.523888Z",
+  "documents": [
+    {
+      "key": "shipping",
+      "title_zh": "发货仓库、配送国家与税费",
+      "url": "https://poc.com/en-us/terms-and-conditions",
+      "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca",
+      "checked_at": "2026-10-14T11:09:19.102383Z",
+      "summary_zh": [
+        "美国站条款说明订单在两个工作日内处理，从美国华盛顿州仓库发货；配送时间按所选方式和目的地计算。",
+        "公开配送国家名单没有中国大陆，不能作为中国直邮渠道；不要把日本站或欧美站可买等同于可寄中国。",
+        "不配送邮政信箱、海外转寄地址或包裹转运公司，不符合配送规则的订单可能取消。",
+        "美国部分地区及加拿大的税费按结账地址核算，不能把这些安排套用到中国。"
+      ],
+      "state": "translated",
+      "translated_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+    },
+    {
+      "key": "payment",
+      "title_zh": "银行卡与支付方式",
+      "url": "https://poc.com/en-us/terms-and-conditions",
+      "content_hash": "da5b6e933dc912115f0070f4744701b077e4ca142692c4196e81abfc19833248",
+      "checked_at": "2026-10-14T11:09:19.513484Z",
+      "summary_zh": [
+        "公开支持 Visa、Mastercard、银联 UnionPay、Maestro 和 American Express 信用卡或借记卡。",
+        "通过 Adyen 处理银行卡支付，需要发卡行授权和安全验证；中国发行的对应卡种按境外支付功能核对。",
+        "PayPal 和 Klarna 仅在部分地区提供，不能把它们当作所有地区都可用的支付方式。"
+      ],
+      "state": "translated",
+      "translated_hash": "da5b6e933dc912115f0070f4744701b077e4ca142692c4196e81abfc19833248"
+    },
+    {
+      "key": "returns",
+      "title_zh": "特价商品退货与售后",
+      "url": "https://poc.com/en-us/terms-and-conditions",
+      "content_hash": "4a6409022bc799a7f276da84af8302a59c9fd66d5532108f59586b991cd851f3",
+      "checked_at": "2026-10-14T11:09:20.523888Z",
+      "summary_zh": [
+        "美国站条款规定收到的商品须保持全新、未使用、原标签和包装齐全；退货前需要获得退货授权编号 RMA。",
+        "折扣达到或超过 40% 的商品被列为最终销售品，条款说明不能退货；特价购买前务必核对这一点。",
+        "普通退货需在订单日期起 30 天内联系；直接换货不提供，须先退款再重新下单。",
+        "退款回到原付款账户，收到退货并处理后可能需最多 10 个工作日；退货运费及免费资格取决于地区和会员状态。"
+      ],
+      "state": "translated",
+      "translated_hash": "4a6409022bc799a7f276da84af8302a59c9fd66d5532108f59586b991cd851f3"
+    }
+  ]
+}

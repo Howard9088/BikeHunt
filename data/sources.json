@@ -1,0 +1,297 @@
+[
+  {
+    "code": "maap",
+    "name": "MAAP 官网",
+    "type": "brand_official",
+    "base_url": "https://maap.cc",
+    "priority": 1,
+    "collection_strategy": "scrape_public_pages",
+    "enabled": true,
+    "china_shipping": {
+      "status": "no",
+      "scope": "site",
+      "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+      "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266",
+      "checked_at": "2026-10-14T08:54:28.748754+00:00"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "scope": "site",
+      "methods": [
+        "Visa",
+        "MasterCard",
+        "American Express",
+        "Apple Pay",
+        "Google Pay"
+      ],
+      "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
+    },
+    "accepted_card_networks": [
+      "Visa",
+      "Mastercard",
+      "American Express"
+    ],
+    "card_networks_evidence": {
+      "status": "yes",
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+      "checked_at": "2026-10-14T08:54:29.513928+00:00",
+      "content_hash": "bec47589754492887360994bf56a772d128128f2c6246f2f2c44dc6fa28783b1",
+      "note": "官方公布接受的银行卡卡组织；中国发行的卡按卡种及境外支付功能核对，实际付款以银行授权为准。"
+    },
+    "dispatch_origin": "澳大利亚墨尔本仓库",
+    "dispatch_origin_evidence": {
+      "status": "yes",
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+      "checked_at": "2026-10-14T08:54:28.748754+00:00",
+      "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266",
+      "note": "MAAP 官方配送规则明确列出 Melbourne warehouse。"
+    }
+  },
+  {
+    "code": "teamcycles",
+    "name": "Team Cycles",
+    "type": "cycling_retailer",
+    "base_url": "https://www.teamcycles.com",
+    "currency": "GBP",
+    "enabled": true,
+    "collection_strategy": "scrapling_public_product_pages",
+    "china_shipping": {
+      "status": "unverified",
+      "note": "逐商品中国配送政策尚未核实。"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    }
+  },
+  {
+    "code": "sigmasports",
+    "name": "Sigma Sports",
+    "type": "cycling_retailer",
+    "base_url": "https://www.sigmasports.com",
+    "currency": "GBP",
+    "enabled": true,
+    "collection_strategy": "scrapling_public_jsonld",
+    "china_shipping": {
+      "status": "per_item",
+      "note": "需逐商品核实目的地及品牌区域限制；英国免运费不适用于中国。"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。"
+    }
+  },
+  {
+    "code": "rapha",
+    "name": "Rapha 日本站",
+    "type": "brand_official",
+    "base_url": "https://www.rapha.cc",
+    "priority": 1,
+    "collection_strategy": "scrape_public_pages",
+    "enabled": true,
+    "china_shipping": {
+      "status": "verify",
+      "scope": "destination",
+      "note": "日本站本地价格及免邮门槛不代表直邮中国已确认，仍需核对目的地。",
+      "evidence_url": "https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options"
+    },
+    "china_credit_card": {
+      "status": "verify",
+      "scope": "checkout",
+      "methods": [],
+      "note": "进入推荐前按中国大陆发行信用卡做可用性验证。"
+    },
+    "sales_region": "日本站报价"
+  },
+  {
+    "code": "amazon_us",
+    "name": "Amazon 美国",
+    "type": "marketplace",
+    "base_url": "https://www.amazon.com",
+    "priority": 1,
+    "market": "US",
+    "currency": "USD",
+    "collection_strategy": "official_affiliate_api_preferred",
+    "enabled": true,
+    "china_shipping": {
+      "status": "per_item",
+      "scope": "item",
+      "note": "Amazon 是否可配送中国必须逐商品、逐卖家判断。"
+    },
+    "china_credit_card": {
+      "status": "per_item",
+      "scope": "checkout",
+      "note": "支付与风控需逐商品结账路径验证。"
+    }
+  },
+  {
+    "code": "amazon_uk",
+    "name": "Amazon 英国",
+    "type": "marketplace",
+    "base_url": "https://www.amazon.co.uk",
+    "priority": 1,
+    "market": "GB",
+    "currency": "GBP",
+    "collection_strategy": "official_affiliate_api_preferred",
+    "enabled": true,
+    "china_shipping": {
+      "status": "per_item",
+      "scope": "item",
+      "note": "Amazon 是否可配送中国必须逐商品、逐卖家判断。"
+    },
+    "china_credit_card": {
+      "status": "per_item",
+      "scope": "checkout",
+      "note": "支付与风控需逐商品结账路径验证。"
+    }
+  },
+  {
+    "code": "amazon_de",
+    "name": "Amazon 德国",
+    "type": "marketplace",
+    "base_url": "https://www.amazon.de",
+    "priority": 1,
+    "market": "DE",
+    "currency": "EUR",
+    "collection_strategy": "official_affiliate_api_preferred",
+    "enabled": true,
+    "china_shipping": {
+      "status": "per_item",
+      "scope": "item",
+      "note": "Amazon 是否可配送中国必须逐商品、逐卖家判断。"
+    },
+    "china_credit_card": {
+      "status": "per_item",
+      "scope": "checkout",
+      "note": "支付与风控需逐商品结账路径验证。"
+    }
+  },
+  {
+    "code": "amazon_jp",
+    "name": "Amazon 日本",
+    "type": "marketplace",
+    "base_url": "https://www.amazon.co.jp",
+    "priority": 1,
+    "market": "JP",
+    "currency": "JPY",
+    "collection_strategy": "official_affiliate_api_preferred",
+    "enabled": true,
+    "china_shipping": {
+      "status": "per_item",
+      "scope": "item",
+      "note": "Amazon 是否可配送中国必须逐商品、逐卖家判断。"
+    },
+    "china_credit_card": {
+      "status": "per_item",
+      "scope": "checkout",
+      "note": "支付与风控需逐商品结账路径验证。"
+    }
+  },
+  {
+    "code": "poc",
+    "name": "POC 美国站",
+    "brand": "POC",
+    "type": "brand_official",
+    "base_url": "https://poc.com",
+    "enabled": true,
+    "collection_strategy": "scrapling_public_jsonld",
+    "china_shipping": {
+      "status": "no",
+      "checked_at": "2026-10-14T10:22:29.947046+00:00",
+      "evidence_url": "https://poc.com/en-us/terms-and-conditions",
+      "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca",
+      "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "note": "中国大陆发卡行支付可用性尚待核实。"
+    },
+    "sales_region": "美国站报价",
+    "dispatch_origin": "美国华盛顿州仓库（美国站条款）",
+    "dispatch_origin_evidence": {
+      "status": "yes",
+      "checked_at": "2026-10-14T10:22:29.947046+00:00",
+      "evidence_url": "https://poc.com/en-us/terms-and-conditions",
+      "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca",
+      "note": "美国站条款的公开发货仓库信息。"
+    },
+    "accepted_card_networks": [
+      "Visa",
+      "Mastercard",
+      "UnionPay",
+      "Maestro",
+      "American Express"
+    ],
+    "card_networks_evidence": {
+      "status": "yes",
+      "checked_at": "2026-10-14T10:22:30.794524+00:00",
+      "evidence_url": "https://poc.com/en-us/terms-and-conditions",
+      "content_hash": "da5b6e933dc912115f0070f4744701b077e4ca142692c4196e81abfc19833248",
+      "note": "美国站支付条款公开接受的卡种，实际付款以发卡行授权为准。"
+    }
+  },
+  {
+    "code": "visma",
+    "name": "维斯玛车队官方商城",
+    "brand": "Team Visma | Lease a Bike",
+    "type": "team_official",
+    "base_url": "https://www.teamvismaleaseabike.com/shop/",
+    "prefer_page_heading": true,
+    "enabled": true,
+    "collection_strategy": "scrapling_public_jsonld",
+    "china_shipping": {
+      "status": "yes",
+      "checked_at": "2026-10-14T08:54:46.099995+00:00",
+      "scope": "site",
+      "evidence_url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+      "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+      "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+    },
+    "china_shipping_cost": {
+      "amount": "47.95",
+      "currency": "EUR"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+      "evidence_url": "https://www.teamvismaleaseabike.com/shop-payment/"
+    },
+    "accepted_card_networks": [
+      "Visa",
+      "Mastercard",
+      "American Express"
+    ],
+    "card_networks_evidence": {
+      "status": "yes",
+      "evidence_url": "https://www.teamvismaleaseabike.com/shop-payment/",
+      "checked_at": "2026-10-14T08:54:47.625756+00:00",
+      "content_hash": "a5702e17b6cb2fa04d18fe23dc78082275729d6467626f9231f47378d0dbd128",
+      "note": "官方公布接受的银行卡卡组织；中国发行的卡按卡种及境外支付功能核对，实际付款以银行授权为准。"
+    }
+  },
+  {
+    "code": "rapha_kr",
+    "name": "Rapha 韩国站",
+    "type": "brand_official",
+    "base_url": "https://www.rapha.cc",
+    "priority": 1,
+    "collection_strategy": "scrape_public_pages",
+    "enabled": true,
+    "china_shipping": {
+      "status": "verify",
+      "scope": "destination",
+      "note": "日本站本地价格及免邮门槛不代表直邮中国已确认，仍需核对目的地。",
+      "evidence_url": "https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options"
+    },
+    "china_credit_card": {
+      "status": "verify",
+      "scope": "checkout",
+      "methods": [],
+      "note": "进入推荐前按中国大陆发行信用卡做可用性验证。"
+    },
+    "sales_region": "韩国站报价",
+    "rules_code": "rapha"
+  }
+]

@@ -1,0 +1,743 @@
+{
+  "source_code": "sigmasports",
+  "collected_at": "2026-10-14T11:23:36.102375+00:00",
+  "offers": [
+    {
+      "offer_id": "e50180f3dc3dedcb1737",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": null,
+        "mpn": null,
+        "size": "XS",
+        "color": "Antartica",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Antartica",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1758595",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/0cc403e6ea8a493ac815d6e18479da8d5f60136c-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "106.99",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "352d3a967ab36d4990b3",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": null,
+        "mpn": null,
+        "size": "S",
+        "color": "Antartica",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - S / Antartica",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1694979",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/0cc403e6ea8a493ac815d6e18479da8d5f60136c-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "106.99",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "eb7976835627c8de9ae6",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": null,
+        "mpn": null,
+        "size": "M",
+        "color": "Antartica",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - M / Antartica",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1694980",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/0cc403e6ea8a493ac815d6e18479da8d5f60136c-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "106.99",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "fdb7a043c6c0f70eec01",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": null,
+        "mpn": null,
+        "size": "L",
+        "color": "Antartica",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - L / Antartica",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1694981",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/0cc403e6ea8a493ac815d6e18479da8d5f60136c-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "106.99",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "794e4f0070f3286b476f",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": null,
+        "mpn": null,
+        "size": "XL",
+        "color": "Antartica",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XL / Antartica",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1694982",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/0cc403e6ea8a493ac815d6e18479da8d5f60136c-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "106.99",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "0fa98aef5fd2c869e505",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": null,
+        "mpn": null,
+        "size": "XXL",
+        "color": "Antartica",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XXL / Antartica",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1758596",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/0cc403e6ea8a493ac815d6e18479da8d5f60136c-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "106.99",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "26c94e6c7d34d1902165",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": null,
+        "mpn": null,
+        "size": "XS",
+        "color": "Black",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Black",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1758593",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/42307c6047cf41143e89bcc0f5a751016295822d-1000x1000.jpg?v=1790179533",
+      "price": {
+        "amount": "85",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "07fb160ca332b2116c3e",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": "9344029785595",
+        "mpn": null,
+        "size": "XS",
+        "color": "Ghost Gray",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Ghost Gray",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1843051",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/1374bcb3b3ff41392c4a22e5ac647ffbff6f5980-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "103",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "d510c5b843adb56e6ffc",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": "9344276562147",
+        "mpn": null,
+        "size": "XS",
+        "color": "Mauve",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Mauve",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1869148",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/67743df2f333e3fe8dbe4bc03d7c08ac38676f7f-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "92",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "09273a7af4440e00aaf7",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": "9344277302841",
+        "mpn": null,
+        "size": "XS",
+        "color": "Meadow",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Meadow",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1869021",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/9a3d51b1f8c467cdf02cea54a1c16329866e59ed-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "92",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "644a3cf65ca66a10498f",
+      "source_code": "sigmasports",
+      "source_name": "Sigma Sports",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base 2.0 Short Sleeve Jersey",
+        "gtin": "9344275821443",
+        "mpn": null,
+        "size": "XS",
+        "color": "Midnight",
+        "year": null,
+        "gender": null
+      },
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Midnight",
+      "url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1868894",
+      "image": "https://cdn.shopify.com/s/files/1/0956/0827/5290/files/113b64931ea84350789a2b94d384aa40ee4a3152-1800x2025.png?v=1790179534",
+      "price": {
+        "amount": "92",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "公开接受国际信用卡不足以确认中国大陆发行卡可用。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:36.089359Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1694970",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    }
+  ]
+}

@@ -1,0 +1,437 @@
+{
+  "brands": [
+    {
+      "code": "maap",
+      "name": "MAAP",
+      "name_zh": "MAAP 骑行服",
+      "official_url": "https://maap.cc",
+      "shop_url": "https://maap.cc",
+      "status": "registered"
+    },
+    {
+      "code": "rapha",
+      "name": "Rapha",
+      "name_zh": "Rapha 骑行服",
+      "official_url": "https://www.rapha.cc",
+      "shop_url": "https://www.rapha.cc",
+      "status": "registered",
+      "logo_images": [
+        "/web/assets/brands/rapha.svg"
+      ],
+      "logo_theme": "light",
+      "source_codes": [
+        "rapha",
+        "rapha_kr"
+      ]
+    },
+    {
+      "code": "assos",
+      "name": "ASSOS",
+      "name_zh": "ASSOS 骑行服",
+      "official_url": "https://www.assos.com",
+      "shop_url": "https://www.assos.com",
+      "status": "registered"
+    },
+    {
+      "code": "castelli",
+      "name": "Castelli",
+      "name_zh": "Castelli 骑行服",
+      "official_url": "https://www.castelli-cycling.com",
+      "shop_url": "https://www.castelli-cycling.com",
+      "status": "registered"
+    },
+    {
+      "code": "santini",
+      "name": "Santini",
+      "name_zh": "Santini 队服与骑行服",
+      "official_url": "https://www.santinicycling.com",
+      "shop_url": "https://www.santinicycling.com",
+      "status": "registered"
+    },
+    {
+      "code": "pns",
+      "name": "Pas Normal Studios",
+      "name_zh": "PNS 骑行服",
+      "official_url": "https://pasnormalstudios.com",
+      "shop_url": "https://pasnormalstudios.com",
+      "status": "registered"
+    },
+    {
+      "code": "poc",
+      "name": "POC",
+      "name_zh": "POC 头盔与护具",
+      "official_url": "https://poc.com",
+      "shop_url": "https://poc.com",
+      "status": "registered"
+    },
+    {
+      "code": "kask",
+      "name": "KASK",
+      "name_zh": "KASK 骑行头盔",
+      "official_url": "https://www.kask.com",
+      "shop_url": "https://www.kask.com",
+      "status": "registered"
+    },
+    {
+      "code": "fizik",
+      "name": "Fizik",
+      "name_zh": "Fizik 锁鞋与坐垫",
+      "official_url": "https://www.fizik.com",
+      "shop_url": "https://www.fizik.com",
+      "status": "registered"
+    },
+    {
+      "code": "oakley",
+      "name": "Oakley",
+      "name_zh": "Oakley 骑行眼镜",
+      "official_url": "https://www.oakley.com",
+      "shop_url": "https://www.oakley.com",
+      "status": "registered"
+    }
+  ],
+  "teams": [
+    {
+      "code": "alpecin",
+      "name": "Alpecin – Premier Tech",
+      "name_zh": "欧倍青–Premier Tech 车队",
+      "official_url": "https://www.alpecin-premiertech.com/",
+      "shop_url": "https://www.alpecin-premiertech.com/webshops/",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/alpecin_0_86e06a2d6f.png"
+      ],
+      "logo_theme": "outline",
+      "logo_source_urls": [
+        "https://www.alpecin-premiertech.com/uploads/xlogo.png.pagespeed.ic.saeZ39w8-_.png"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:39.127236+00:00",
+      "shop_evidence_url": "https://www.alpecin-premiertech.com/"
+    },
+    {
+      "code": "bahrain",
+      "name": "Bahrain Victorious",
+      "name_zh": "巴林胜利车队",
+      "official_url": "https://bahraincyclingteam.com/",
+      "shop_url": "https://alecycling.com/en/collections/ale-x-bahrain-victorious",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/bahrain_0_a5b3ccc006.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://bahraincyclingteam.com/#.c-site-header__branding svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:36.823673+00:00",
+      "shop_evidence_url": "https://bahraincyclingteam.com/"
+    },
+    {
+      "code": "decathlon",
+      "name": "Decathlon CMA CGM Team",
+      "name_zh": "迪卡侬–达飞车队",
+      "official_url": "https://decathloncmacgmteam.com/",
+      "shop_url": "https://shop.decathloncmacgmteam.com/",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/decathlon_0_f4ca638bc1.webp"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://decathloncmacgmteam.com/wp-content/uploads/2025/12/DCT_RVB_WT_Couleurs1.png"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:38.384063+00:00",
+      "shop_evidence_url": "https://decathloncmacgmteam.com/"
+    },
+    {
+      "code": "ef",
+      "name": "EF Education – EasyPost",
+      "name_zh": "EF 教育–EasyPost 车队",
+      "official_url": "https://www.efprocycling.com/",
+      "shop_url": "https://www.efprocycling.shop",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/ef_mark_c3b00b33fc.png"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://img.aso.fr/core_app/img-cycling-vue-png/efe/27584/0%3A0%2C400%3A400-300-0-70/16f13"
+      ],
+      "logo_checked_at": "2026-10-14T11:06:47.712229+00:00",
+      "shop_evidence_url": "https://www.efprocycling.com/",
+      "logo_evidence_url": "https://www.lavuelta.es/es/equipo/EFE/ef-education-easypost"
+    },
+    {
+      "code": "groupama",
+      "name": "Groupama – FDJ United",
+      "name_zh": "Groupama–法国博彩车队",
+      "official_url": "https://www.equipecycliste-groupama-fdj.fr/",
+      "shop_url": "https://shop.bioracer.com/fr/collections/groupama-fdj-united-1",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/groupama_0_cbcff1295e.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.equipecycliste-groupama-fdj.fr/app/themes/groupamafdj_v2/build/images/logo-2026/logo-2026.67c05d4c.svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:38.357951+00:00",
+      "shop_evidence_url": "https://www.equipecycliste-groupama-fdj.fr/"
+    },
+    {
+      "code": "ineos",
+      "name": "Netcompany INEOS Cycling Team",
+      "name_zh": "Netcompany–英力士车队",
+      "official_url": "https://www.ineosgrenadiers.com/",
+      "shop_url": "https://store.ineosgrenadiers.com/",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/ineos_0_f0d2d48e17.svg"
+      ],
+      "logo_theme": "dark",
+      "logo_source_urls": [
+        "https://www.ineosgrenadiers.com/#svg[aria-label=\"Netcompany Logo\"]"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:36.835673+00:00",
+      "shop_evidence_url": "https://www.ineosgrenadiers.com/"
+    },
+    {
+      "code": "lidl_trek",
+      "name": "Lidl – Trek",
+      "name_zh": "Lidl–崔克车队",
+      "official_url": "https://racing.trekbikes.com/teams/lidl-trek",
+      "shop_url": "https://instagram.com/trekraceshop",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/lidl_trek_0_13358bd62c.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://racing.trekbikes.com/teams/lidl-trek#.logo-lidltrek svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:36.841673+00:00",
+      "shop_evidence_url": "https://racing.trekbikes.com/teams/lidl-trek"
+    },
+    {
+      "code": "lotto",
+      "name": "Lotto Intermarché",
+      "name_zh": "乐透–Intermarché 车队",
+      "official_url": "https://www.lotto-intermarche.be/nl/shop",
+      "shop_url": "https://www.lotto-intermarche.be/nl/shop",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/lotto_0_e04a3622b5.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.lotto-intermarche.be/front/images/2026/lotto-intermarche-cycling-team-logo.svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:39.580635+00:00",
+      "shop_evidence_url": "https://www.lotto-intermarche.be/nl/shop"
+    },
+    {
+      "code": "movistar",
+      "name": "Movistar Team",
+      "name_zh": "移动之星车队",
+      "official_url": "https://movistarteam.com/",
+      "shop_url": "https://www.tradeinn.com/bikeinn/es/movistar_team",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/movistar_0_bdb057865f.svg"
+      ],
+      "logo_theme": "dark",
+      "logo_source_urls": [
+        "https://movistarteam.com/wp-content/uploads/2021/12/movistarteam-logo-blanco.svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:40.876855+00:00",
+      "shop_evidence_url": "https://movistarteam.com/"
+    },
+    {
+      "code": "nsn",
+      "name": "NSN Cycling Team",
+      "name_zh": "NSN 车队",
+      "official_url": "https://nsncyclingteam.com/",
+      "shop_url": null,
+      "status": "shop_check_pending",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/nsn_0_388de6fcc6.png"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://nsncyclingteam.com/wp-content/uploads/2025/11/NSN-Cycling-Team-crunch-400x151.png"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:39.101837+00:00"
+    },
+    {
+      "code": "redbull",
+      "name": "Red Bull – BORA – hansgrohe",
+      "name_zh": "红牛–博拉–汉斯格雅车队",
+      "official_url": "https://www.redbullborahansgrohe.com/en/",
+      "shop_url": "https://www.redbullshop.com/c/redbullborahansgrohe/",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/redbull_0_2aa8d55df6.png"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://img.redbull.com/images/c_limit,w_4000/e_trim:1:transparent/w_450/bo_5px_solid_rgb:00000000/q_auto:best,f_auto/redbullcom/2025/3/14/suqweinuzdevvqavuqrg/red-bull-bora-hansgrohe-logo-dark"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:39.909199+00:00",
+      "shop_evidence_url": "https://www.redbullborahansgrohe.com/en/"
+    },
+    {
+      "code": "soudal",
+      "name": "Soudal Quick-Step",
+      "name_zh": "速的奥–快步车队",
+      "official_url": "https://soudal-quickstepteam.com/nl",
+      "shop_url": "https://thewolfpack.shop",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/soudal_0_9283fb3a23.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://soudal-quickstepteam.com/public/partners/SOQS24_logo_outline.svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:41.000394+00:00",
+      "shop_evidence_url": "https://soudal-quickstepteam.com/nl"
+    },
+    {
+      "code": "jayco",
+      "name": "Team Jayco AlUla",
+      "name_zh": "Jayco–AlUla 车队",
+      "official_url": "https://greenedgecycling.com/2026/",
+      "shop_url": "https://shop.greenedgecycling.com/",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/jayco_mark_60f010fc8d.png"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://img.aso.fr/core_app/img-cycling-vue-png/jay/27577/0%3A0%2C400%3A400-300-0-70/e568d"
+      ],
+      "logo_checked_at": "2026-10-14T11:04:29.951239+00:00",
+      "shop_evidence_url": "https://greenedgecycling.com/2026/",
+      "logo_evidence_url": "https://www.lavuelta.es/es/equipo/JAY/team-jayco-alula"
+    },
+    {
+      "code": "picnic",
+      "name": "Team Picnic PostNL",
+      "name_zh": "Picnic–荷兰邮政车队",
+      "official_url": "https://www.teampicnicpostnl.com/",
+      "shop_url": "https://teampicnicpostnl.store/",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/picnic_0_441bc3d543.png"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.teampicnicpostnl.com/wp-content/uploads/2026/06/2026-Team-Logo-1-scaled.png"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:43.334749+00:00",
+      "shop_evidence_url": "https://www.teampicnicpostnl.com/"
+    },
+    {
+      "code": "visma",
+      "name": "Team Visma | Lease a Bike",
+      "name_zh": "维斯玛车队",
+      "official_url": "https://www.teamvismaleaseabike.com/",
+      "shop_url": "https://www.teamvismaleaseabike.com/shop",
+      "status": "verified_shop",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/visma_0_1422ab32ba.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.teamvismaleaseabike.com/images/logos/site-logos/logo.svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:41.755187+00:00",
+      "shop_evidence_url": "https://www.teamvismaleaseabike.com/"
+    },
+    {
+      "code": "uae",
+      "name": "UAE Team Emirates XRG",
+      "name_zh": "阿联酋航空 XRG 车队",
+      "official_url": "https://www.uaeteamemirates.com/",
+      "shop_url": "https://www.pissei.com/en/man/uae-team-emirates-collection/",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/uae_0_6ebae6bed3.png"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.uaeteamemirates.com/wp-content/uploads/2017/03/logo-uae.png"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:42.601727+00:00",
+      "shop_evidence_url": "https://www.uaeteamemirates.com/"
+    },
+    {
+      "code": "unox",
+      "name": "Uno-X Mobility",
+      "name_zh": "Uno-X 车队",
+      "official_url": "https://www.unoxteam.com/",
+      "shop_url": "https://internshop.no/?klubb=109",
+      "status": "official_link_found",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/unox_0_657f383666.png"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://images.squarespace-cdn.com/content/v1/61dc2bca9c37a3548736f95e/86d93cbc-6179-4ab6-a751-3312af47d24b/uno-x_rgb.png?format=1500w"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:42.318672+00:00",
+      "shop_evidence_url": "https://www.unoxteam.com/"
+    },
+    {
+      "code": "astana",
+      "name": "XDS Astana Team",
+      "name_zh": "喜德盛–阿斯塔纳车队",
+      "official_url": "https://xds-astana.com/en/",
+      "shop_url": null,
+      "status": "shop_check_pending",
+      "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
+      "season": 2026,
+      "logo_images": [
+        "/web/assets/teams/astana_0_e23ce1bdc2.svg"
+      ],
+      "logo_theme": "dark",
+      "logo_source_urls": [
+        "https://xds-astana.com/en/#[class*=\"MainBanner_logo\"] svg"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:41.760686+00:00",
+      "shop_evidence_url": "https://xds-astana.com/en/"
+    }
+  ]
+}

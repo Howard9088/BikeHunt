@@ -1,0 +1,3021 @@
+{
+  "source_code": "poc",
+  "collected_at": "2026-10-14T11:23:37.613593+00:00",
+  "offers": [
+    {
+      "offer_id": "c1c18c48f968d692adc7",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830554",
+        "mpn": null,
+        "size": "S",
+        "color": "Uranium Black Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1037-1-puni3oup2.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "07b4f5fd16bf672a46a0",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830493",
+        "mpn": null,
+        "size": "M",
+        "color": "Uranium Black Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1037-1-puni3oup2.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "c1acc4db12460aad6301",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830486",
+        "mpn": null,
+        "size": "L",
+        "color": "Uranium Black Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1037-1-puni3oup2.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "3f03545a4017b6a32ca2",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831223",
+        "mpn": null,
+        "size": "S",
+        "color": "Hydrogen White/Uranium Black Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8347-1-kzi5fd9ag.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "d3366978b9683234803e",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831216",
+        "mpn": null,
+        "size": "M",
+        "color": "Hydrogen White/Uranium Black Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8347-1-kzi5fd9ag.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "2d25f17cfecc43ed54ed",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831209",
+        "mpn": null,
+        "size": "L",
+        "color": "Hydrogen White/Uranium Black Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8347-1-kzi5fd9ag.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "b580c16a5ba6924e594d",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549785946",
+        "mpn": null,
+        "size": "S",
+        "color": "Apatite Navy Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Apatite Navy Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-apatite-navy-matt-fluo-orange-matt-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8913-1-oygqmn.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "a07a50e43501f8c9436d",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549785939",
+        "mpn": null,
+        "size": "M",
+        "color": "Apatite Navy Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Apatite Navy Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-apatite-navy-matt-fluo-orange-matt-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8913-1-oygqmn.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "4c3c54024c87d59cbd9d",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549785922",
+        "mpn": null,
+        "size": "L",
+        "color": "Apatite Navy Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Apatite Navy Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-apatite-navy-matt-fluo-orange-matt-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8913-1-oygqmn.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "c4782af8ba6856f5a2a2",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830479",
+        "mpn": null,
+        "size": "S",
+        "color": "Hydrogen White Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1036-1-cpomkanm9.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "2a58a31053b85d208575",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830462",
+        "mpn": null,
+        "size": "M",
+        "color": "Hydrogen White Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1036-1-cpomkanm9.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "400b0ae089f67d6ee931",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830455",
+        "mpn": null,
+        "size": "L",
+        "color": "Hydrogen White Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1036-1-cpomkanm9.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "4a822e8ffe76fc86bdaf",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549812444",
+        "mpn": null,
+        "size": "S",
+        "color": "Hydrogen White/Fluorescent Orange",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Fluorescent Orange - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-fluorescent-orange",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-9482-1-h28577yr7.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "39c7ffa0dd9fe60fe02c",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549812352",
+        "mpn": null,
+        "size": "M",
+        "color": "Hydrogen White/Fluorescent Orange",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Fluorescent Orange - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-fluorescent-orange",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-9482-1-h28577yr7.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "9c3ad15a945047f1928f",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549812345",
+        "mpn": null,
+        "size": "L",
+        "color": "Hydrogen White/Fluorescent Orange",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Fluorescent Orange - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-fluorescent-orange",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-9482-1-h28577yr7.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "0b1cf9f8ad26f077650f",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549812338",
+        "mpn": null,
+        "size": "S",
+        "color": "Uranium Black Matt/Fluorescent Orange Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Fluorescent Orange Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-fluorescent-orange-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8872-1-o6ojtmgrb.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "95c76f2e89b428b49e8d",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549812321",
+        "mpn": null,
+        "size": "M",
+        "color": "Uranium Black Matt/Fluorescent Orange Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Fluorescent Orange Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-fluorescent-orange-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8872-1-o6ojtmgrb.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "3c96285d452f8040886b",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549812222",
+        "mpn": null,
+        "size": "L",
+        "color": "Uranium Black Matt/Fluorescent Orange Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Fluorescent Orange Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-fluorescent-orange-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8872-1-o6ojtmgrb.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "8b815b77142cb25d126d",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549800823",
+        "mpn": null,
+        "size": "S",
+        "color": "Uranium Black Matt/Hydrogen White w. Logo",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White w. Logo - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-w-logo",
+      "image": "https://poc-images.b-cdn.net/1070_92b3c0e5e5-10870_ventralairmips_8879_uraniumblackmatt_hydrogenwhite_wlogo_1__6724ac972b8c.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "d28d6078f7dbbd14727b",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549800816",
+        "mpn": null,
+        "size": "M",
+        "color": "Uranium Black Matt/Hydrogen White w. Logo",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White w. Logo - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-w-logo",
+      "image": "https://poc-images.b-cdn.net/1070_92b3c0e5e5-10870_ventralairmips_8879_uraniumblackmatt_hydrogenwhite_wlogo_1__6724ac972b8c.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "5d966021edf5e88a0115",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549800809",
+        "mpn": null,
+        "size": "L",
+        "color": "Uranium Black Matt/Hydrogen White w. Logo",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White w. Logo - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-w-logo",
+      "image": "https://poc-images.b-cdn.net/1070_92b3c0e5e5-10870_ventralairmips_8879_uraniumblackmatt_hydrogenwhite_wlogo_1__6724ac972b8c.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "ca0d4d09fe364883fd24",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831001",
+        "mpn": null,
+        "size": "S",
+        "color": "Prismane Red Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Prismane Red Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-prismane-red-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1126-1-mpq3jg31i.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "5fd93fab261b304c35eb",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830790",
+        "mpn": null,
+        "size": "M",
+        "color": "Prismane Red Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Prismane Red Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-prismane-red-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1126-1-mpq3jg31i.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "76467cfef7ada5f1601a",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830691",
+        "mpn": null,
+        "size": "L",
+        "color": "Prismane Red Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Prismane Red Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-prismane-red-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1126-1-mpq3jg31i.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "1a8b9b743b77d868cf28",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549792616",
+        "mpn": null,
+        "size": "S",
+        "color": "Bronzite Brown",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Bronzite Brown - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-bronzite-brown-matt-lazurite-blue-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8882-1-t9jjp0k3r.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "d8895f6c7b952a2274f1",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549792609",
+        "mpn": null,
+        "size": "M",
+        "color": "Bronzite Brown",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Bronzite Brown - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-bronzite-brown-matt-lazurite-blue-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8882-1-t9jjp0k3r.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "658595ef0fe12739a7b3",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549791992",
+        "mpn": null,
+        "size": "L",
+        "color": "Bronzite Brown",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Bronzite Brown - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-bronzite-brown-matt-lazurite-blue-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8882-1-t9jjp0k3r.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "df2f6819782d97cdf6d3",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831032",
+        "mpn": null,
+        "size": "S",
+        "color": "Fluorescent Orange Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Fluorescent Orange Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-fluorescent-orange-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1231-1-w2ri8ujjr.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "0963cdae83977e466657",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831025",
+        "mpn": null,
+        "size": "M",
+        "color": "Fluorescent Orange Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Fluorescent Orange Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-fluorescent-orange-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1231-1-w2ri8ujjr.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "a1442f525488d0c5fbcb",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831018",
+        "mpn": null,
+        "size": "L",
+        "color": "Fluorescent Orange Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Fluorescent Orange Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-fluorescent-orange-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1231-1-w2ri8ujjr.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "b2b97bc7a288c897ea01",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831254",
+        "mpn": null,
+        "size": "S",
+        "color": "Uranium Black Matt/Hydrogen White",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8816-1-t3piug4wc.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "2ee1146dcb642e3808cd",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831247",
+        "mpn": null,
+        "size": "M",
+        "color": "Uranium Black Matt/Hydrogen White",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8816-1-t3piug4wc.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "ab0ddbdc6d21d780b2e6",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831230",
+        "mpn": null,
+        "size": "L",
+        "color": "Uranium Black Matt/Hydrogen White",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-8816-1-t3piug4wc.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "361e3095438b8ba8ad8e",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549800700",
+        "mpn": null,
+        "size": "S",
+        "color": "Hydrogen White/Uranium Black Matt w. Logo",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt w. Logo - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt-w-logo",
+      "image": "https://poc-images.b-cdn.net/1070_7a814cc9b8-10870_ventralairmips_8878_hydrogenwhite_uraniumblackmatt_wlogo_1__8291d142495a.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "b6a0f5eef358f663f7e4",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549799790",
+        "mpn": null,
+        "size": "M",
+        "color": "Hydrogen White/Uranium Black Matt w. Logo",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt w. Logo - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt-w-logo",
+      "image": "https://poc-images.b-cdn.net/1070_7a814cc9b8-10870_ventralairmips_8878_hydrogenwhite_uraniumblackmatt_wlogo_1__8291d142495a.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "467e10ff103afb7bdbf8",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549799783",
+        "mpn": null,
+        "size": "L",
+        "color": "Hydrogen White/Uranium Black Matt w. Logo",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt w. Logo - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt-w-logo",
+      "image": "https://poc-images.b-cdn.net/1070_7a814cc9b8-10870_ventralairmips_8878_hydrogenwhite_uraniumblackmatt_wlogo_1__8291d142495a.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "290",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "a3b89b3ce1148e5ac204",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831155",
+        "mpn": null,
+        "size": "S",
+        "color": "Apatite Navy Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Apatite Navy Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-apatite-navy-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1669-1-acgc2ihjx.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "05f13e66bdb612a16662",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831148",
+        "mpn": null,
+        "size": "M",
+        "color": "Apatite Navy Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Apatite Navy Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-apatite-navy-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1669-1-acgc2ihjx.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "37978c6d8d8292980b7f",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831131",
+        "mpn": null,
+        "size": "L",
+        "color": "Apatite Navy Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Apatite Navy Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-apatite-navy-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1669-1-acgc2ihjx.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "df4d49521d243b51a1d1",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830585",
+        "mpn": null,
+        "size": "S",
+        "color": "Granite Grey Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Granite Grey Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-granite-grey-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1051-1-19j1k3hnk.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "e4f671bc71214e7d6a26",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830578",
+        "mpn": null,
+        "size": "M",
+        "color": "Granite Grey Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Granite Grey Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-granite-grey-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1051-1-19j1k3hnk.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "ea320ffc12f1875e0b59",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549830561",
+        "mpn": null,
+        "size": "L",
+        "color": "Granite Grey Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Granite Grey Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-granite-grey-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1051-1-19j1k3hnk.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "43b8e69f75424855aaaa",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831124",
+        "mpn": null,
+        "size": "S",
+        "color": "Pargasite Green Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Pargasite Green Matt - S",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-pargasite-green-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1468-1-hh7ytyob2.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "cc4d60c202dc6adfc6db",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831117",
+        "mpn": null,
+        "size": "M",
+        "color": "Pargasite Green Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Pargasite Green Matt - M",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-pargasite-green-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1468-1-hh7ytyob2.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "0634fc502bbb00941fe5",
+      "source_code": "poc",
+      "source_name": "POC 美国站",
+      "identity": {
+        "brand": "POC",
+        "model": "Ventral Air MIPS Cycling Helmet",
+        "gtin": "7325549831100",
+        "mpn": null,
+        "size": "L",
+        "color": "Pargasite Green Matt",
+        "year": null,
+        "gender": null
+      },
+      "name": "Ventral Air MIPS Cycling Helmet - Pargasite Green Matt - L",
+      "url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-pargasite-green-matt",
+      "image": "https://poc-images.b-cdn.net/1070_PC10871-1468-1-hh7ytyob2.jpg?w=1200&q=80&auto=format",
+      "price": {
+        "amount": "188.5",
+        "currency": "USD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://poc.com/en-us/terms-and-conditions",
+        "checked_at": "2026-10-14T10:22:29.947046Z",
+        "note": "官网完整配送国家名单没有中国大陆，并禁止转运地址，不能当作中国直邮渠道。",
+        "scope": "site",
+        "content_hash": "8ca7742de015b6df698efd2b10c520b4a4a0441e515fe8521cb389f3a11151ca"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发卡行支付可用性尚待核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:37.601580Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "1070",
+      "identity_evidence": "公开 JSON-LD；商家 SKU 不用作跨站型号",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    }
+  ]
+}

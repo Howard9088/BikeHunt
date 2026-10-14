@@ -1,0 +1,76 @@
+{
+  "source_code": "teamcycles",
+  "collected_at": "2026-10-14T11:23:34.222297+00:00",
+  "offers": [
+    {
+      "offer_id": "53d1982d647cedc1391b",
+      "source_code": "teamcycles",
+      "source_name": "Team Cycles",
+      "identity": {
+        "brand": "Maap",
+        "model": "MAAP Evade Pro Base 2.0 Short Sleeve Cycling Jersey in Black",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "XS",
+        "color": "BLK",
+        "year": null,
+        "gender": null
+      },
+      "name": "MAAP Evade Pro Base 2.0 Short Sleeve Cycling Jersey in Black",
+      "url": "https://www.teamcycles.com/clothing/jerseys/maap-evade-pro-base-20-short-sleeve-cycling-jersey-in-black__29729",
+      "image": "https://www.teamcycles.com/images/map-maj339_blk_evade_20pro_20base_20jersey_202.0_black_pdp_hero_01_desktop_1024x1024.jpg",
+      "price": {
+        "amount": "115.5",
+        "currency": "GBP"
+      },
+      "original_price": {
+        "amount": "165",
+        "currency": "GBP"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "逐商品中国配送政策尚未核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国大陆发行信用卡可用性尚未核实。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:34.216236Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "MAP-MAJ339_BLK",
+      "identity_evidence": "公开 summaryCode、选定 SKU 与 MAAP 官网制造商代码一致",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    }
+  ]
+}

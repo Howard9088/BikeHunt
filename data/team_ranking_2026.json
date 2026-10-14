@@ -1,0 +1,27 @@
+{
+  "season": 2026,
+  "title_zh": "UCI 男子车队世界排名",
+  "ranking_date": "2026-10-13",
+  "checked_at": "2026-10-14T10:45:00+00:00",
+  "source_url": "https://dataride.uci.org/iframe/RankingDetails/238?disciplineId=10&groupId=1&momentId=205931&disciplineSeasonId=464&rankingTypeId=2&categoryId=22&raceTypeId=0",
+  "rows": [
+    {"code": "uae", "rank": 1, "points": "30329.1"},
+    {"code": "redbull", "rank": 2, "points": "25101.59"},
+    {"code": "visma", "rank": 3, "points": "22648.43"},
+    {"code": "decathlon", "rank": 4, "points": "20573.32"},
+    {"code": "lidl_trek", "rank": 5, "points": "18817.4"},
+    {"code": "astana", "rank": 6, "points": "16028.71"},
+    {"code": "bahrain", "rank": 7, "points": "13886.02"},
+    {"code": "ineos", "rank": 8, "points": "12753.59"},
+    {"code": "soudal", "rank": 9, "points": "12217.28"},
+    {"code": "unox", "rank": 10, "points": "12098.63"},
+    {"code": "alpecin", "rank": 11, "points": "11593.72"},
+    {"code": "movistar", "rank": 12, "points": "10637.1"},
+    {"code": "ef", "rank": 13, "points": "10526.27"},
+    {"code": "jayco", "rank": 14, "points": "10405.54"},
+    {"code": "lotto", "rank": 17, "points": "9850.33"},
+    {"code": "nsn", "rank": 18, "points": "9506.33"},
+    {"code": "groupama", "rank": 20, "points": "8979.92"},
+    {"code": "picnic", "rank": 30, "points": "2680"}
+  ]
+}

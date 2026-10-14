@@ -1,0 +1,438 @@
+{
+  "source_code": "rapha_kr",
+  "collected_at": "2026-10-14T11:23:52.278701+00:00",
+  "offers": [
+    {
+      "offer_id": "d1e28300f2eb8ece610c",
+      "source_code": "rapha_kr",
+      "source_name": "Rapha 韩国站",
+      "identity": {
+        "brand": "Rapha",
+        "model": "Men's RCC Pro Team Bib Shorts II - Regular",
+        "gtin": "5059526080824",
+        "mpn": "RBS04RGDNY",
+        "size": "XS",
+        "color": "Dark Navy",
+        "year": null,
+        "gender": "Mens"
+      },
+      "name": "Men's RCC Pro Team Bib Shorts II - Regular",
+      "url": "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "image": "https://media.rapha.cc/image/upload/archive/amplience-image/RBS04RG_DNY_Product_H121_05",
+      "price": {
+        "amount": "231000",
+        "currency": "KRW"
+      },
+      "original_price": {
+        "amount": "330000",
+        "currency": "KRW"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "进入推荐前按中国大陆发行信用卡做可用性验证。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:52.269201Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "RBS04RGDNY",
+      "identity_evidence": "Rapha 官网逐尺码 SKU、GTIN、库存 JSON 与可见尺码一致",
+      "sales_region": "韩国站报价",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "RCC 会员专享，需登录本人会员账号"
+      ]
+    },
+    {
+      "offer_id": "3f5e0d4e1be47376c7b9",
+      "source_code": "rapha_kr",
+      "source_name": "Rapha 韩国站",
+      "identity": {
+        "brand": "Rapha",
+        "model": "Men's RCC Pro Team Bib Shorts II - Regular",
+        "gtin": "5059526080831",
+        "mpn": "RBS04RGDNY",
+        "size": "S",
+        "color": "Dark Navy",
+        "year": null,
+        "gender": "Mens"
+      },
+      "name": "Men's RCC Pro Team Bib Shorts II - Regular",
+      "url": "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "image": "https://media.rapha.cc/image/upload/archive/amplience-image/RBS04RG_DNY_Product_H121_05",
+      "price": {
+        "amount": "231000",
+        "currency": "KRW"
+      },
+      "original_price": {
+        "amount": "330000",
+        "currency": "KRW"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "进入推荐前按中国大陆发行信用卡做可用性验证。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:52.269201Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "RBS04RGDNY",
+      "identity_evidence": "Rapha 官网逐尺码 SKU、GTIN、库存 JSON 与可见尺码一致",
+      "sales_region": "韩国站报价",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "RCC 会员专享，需登录本人会员账号"
+      ]
+    },
+    {
+      "offer_id": "6f70dab2170c3e1cc231",
+      "source_code": "rapha_kr",
+      "source_name": "Rapha 韩国站",
+      "identity": {
+        "brand": "Rapha",
+        "model": "Men's RCC Pro Team Bib Shorts II - Regular",
+        "gtin": "5059526080848",
+        "mpn": "RBS04RGDNY",
+        "size": "M",
+        "color": "Dark Navy",
+        "year": null,
+        "gender": "Mens"
+      },
+      "name": "Men's RCC Pro Team Bib Shorts II - Regular",
+      "url": "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "image": "https://media.rapha.cc/image/upload/archive/amplience-image/RBS04RG_DNY_Product_H121_05",
+      "price": {
+        "amount": "231000",
+        "currency": "KRW"
+      },
+      "original_price": {
+        "amount": "330000",
+        "currency": "KRW"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "进入推荐前按中国大陆发行信用卡做可用性验证。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:52.269201Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "RBS04RGDNY",
+      "identity_evidence": "Rapha 官网逐尺码 SKU、GTIN、库存 JSON 与可见尺码一致",
+      "sales_region": "韩国站报价",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "RCC 会员专享，需登录本人会员账号"
+      ]
+    },
+    {
+      "offer_id": "2412773e3e87c4c55b33",
+      "source_code": "rapha_kr",
+      "source_name": "Rapha 韩国站",
+      "identity": {
+        "brand": "Rapha",
+        "model": "Men's RCC Pro Team Bib Shorts II - Regular",
+        "gtin": "5059526080855",
+        "mpn": "RBS04RGDNY",
+        "size": "L",
+        "color": "Dark Navy",
+        "year": null,
+        "gender": "Mens"
+      },
+      "name": "Men's RCC Pro Team Bib Shorts II - Regular",
+      "url": "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "image": "https://media.rapha.cc/image/upload/archive/amplience-image/RBS04RG_DNY_Product_H121_05",
+      "price": {
+        "amount": "231000",
+        "currency": "KRW"
+      },
+      "original_price": {
+        "amount": "330000",
+        "currency": "KRW"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "进入推荐前按中国大陆发行信用卡做可用性验证。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:52.269201Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "RBS04RGDNY",
+      "identity_evidence": "Rapha 官网逐尺码 SKU、GTIN、库存 JSON 与可见尺码一致",
+      "sales_region": "韩国站报价",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "RCC 会员专享，需登录本人会员账号"
+      ]
+    },
+    {
+      "offer_id": "25601a78deece54a5507",
+      "source_code": "rapha_kr",
+      "source_name": "Rapha 韩国站",
+      "identity": {
+        "brand": "Rapha",
+        "model": "Men's RCC Pro Team Bib Shorts II - Regular",
+        "gtin": "5059526080862",
+        "mpn": "RBS04RGDNY",
+        "size": "XL",
+        "color": "Dark Navy",
+        "year": null,
+        "gender": "Mens"
+      },
+      "name": "Men's RCC Pro Team Bib Shorts II - Regular",
+      "url": "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "image": "https://media.rapha.cc/image/upload/archive/amplience-image/RBS04RG_DNY_Product_H121_05",
+      "price": {
+        "amount": "231000",
+        "currency": "KRW"
+      },
+      "original_price": {
+        "amount": "330000",
+        "currency": "KRW"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "进入推荐前按中国大陆发行信用卡做可用性验证。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:52.269201Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "RBS04RGDNY",
+      "identity_evidence": "Rapha 官网逐尺码 SKU、GTIN、库存 JSON 与可见尺码一致",
+      "sales_region": "韩国站报价",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "RCC 会员专享，需登录本人会员账号"
+      ]
+    },
+    {
+      "offer_id": "10bd1e15b018a7385662",
+      "source_code": "rapha_kr",
+      "source_name": "Rapha 韩国站",
+      "identity": {
+        "brand": "Rapha",
+        "model": "Men's RCC Pro Team Bib Shorts II - Regular",
+        "gtin": "5059526080879",
+        "mpn": "RBS04RGDNY",
+        "size": "XXL",
+        "color": "Dark Navy",
+        "year": null,
+        "gender": "Mens"
+      },
+      "name": "Men's RCC Pro Team Bib Shorts II - Regular",
+      "url": "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "image": "https://media.rapha.cc/image/upload/archive/amplience-image/RBS04RG_DNY_Product_H121_05",
+      "price": {
+        "amount": "231000",
+        "currency": "KRW"
+      },
+      "original_price": {
+        "amount": "330000",
+        "currency": "KRW"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "进入推荐前按中国大陆发行信用卡做可用性验证。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:52.269201Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "RBS04RGDNY",
+      "identity_evidence": "Rapha 官网逐尺码 SKU、GTIN、库存 JSON 与可见尺码一致",
+      "sales_region": "韩国站报价",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "RCC 会员专享，需登录本人会员账号"
+      ]
+    }
+  ]
+}

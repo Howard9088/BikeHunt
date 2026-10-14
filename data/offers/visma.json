@@ -1,0 +1,1007 @@
+{
+  "source_code": "visma",
+  "collected_at": "2026-10-14T11:23:42.303838+00:00",
+  "offers": [
+    {
+      "offer_id": "c19e6010dcebdf6f3980",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+        "gtin": null,
+        "mpn": null,
+        "size": "XS",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/7104316/69038800-512-TVL-Replica-SS-Jersey-2026-Men_01.jpg",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:40.432004Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "df027937b37e0e673add",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+        "gtin": null,
+        "mpn": null,
+        "size": "S",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/7104316/69038800-512-TVL-Replica-SS-Jersey-2026-Men_01.jpg",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:40.432004Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "630af5c3dd4636669ada",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+        "gtin": null,
+        "mpn": null,
+        "size": "M",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/7104316/69038800-512-TVL-Replica-SS-Jersey-2026-Men_01.jpg",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:40.432004Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "224fbfe6d3c5401350d6",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+        "gtin": null,
+        "mpn": null,
+        "size": "L",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/7104316/69038800-512-TVL-Replica-SS-Jersey-2026-Men_01.jpg",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:40.432004Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "9c83a35d8b543178bb90",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+        "gtin": null,
+        "mpn": null,
+        "size": "XL",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/7104316/69038800-512-TVL-Replica-SS-Jersey-2026-Men_01.jpg",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:40.432004Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "3bfb4c4176ad8e99b61b",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+        "gtin": null,
+        "mpn": null,
+        "size": "XXL",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/7104316/69038800-512-TVL-Replica-SS-Jersey-2026-Men_01.jpg",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:40.432004Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "004a2d4e1004c1650b89",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+        "gtin": null,
+        "mpn": null,
+        "size": "XXXL",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/7104316/69038800-512-TVL-Replica-SS-Jersey-2026-Men_01.jpg",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:40.432004Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "39501657f11220db4c26",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men - The Architect",
+        "gtin": null,
+        "mpn": null,
+        "size": "XS",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men - The Architect",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/69068870-512-04_Zwart_Front.jpg",
+      "price": {
+        "amount": "72.00",
+        "currency": "EUR"
+      },
+      "original_price": {
+        "amount": "90.00",
+        "currency": "EUR"
+      },
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:42.295827Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "9e08f035908e0eaa1753",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men - The Architect",
+        "gtin": null,
+        "mpn": null,
+        "size": "S",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men - The Architect",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/69068870-512-04_Zwart_Front.jpg",
+      "price": {
+        "amount": "72.00",
+        "currency": "EUR"
+      },
+      "original_price": {
+        "amount": "90.00",
+        "currency": "EUR"
+      },
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:42.295827Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "d91030331fa4ce7bff25",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men - The Architect",
+        "gtin": null,
+        "mpn": null,
+        "size": "M",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men - The Architect",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/69068870-512-04_Zwart_Front.jpg",
+      "price": {
+        "amount": "72.00",
+        "currency": "EUR"
+      },
+      "original_price": {
+        "amount": "90.00",
+        "currency": "EUR"
+      },
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:42.295827Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "744fa193cd2c1defd691",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men - The Architect",
+        "gtin": null,
+        "mpn": null,
+        "size": "L",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men - The Architect",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/69068870-512-04_Zwart_Front.jpg",
+      "price": {
+        "amount": "72.00",
+        "currency": "EUR"
+      },
+      "original_price": {
+        "amount": "90.00",
+        "currency": "EUR"
+      },
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:42.295827Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "ef021e59d5c1c6738aa5",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men - The Architect",
+        "gtin": null,
+        "mpn": null,
+        "size": "XL",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men - The Architect",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/69068870-512-04_Zwart_Front.jpg",
+      "price": {
+        "amount": "72.00",
+        "currency": "EUR"
+      },
+      "original_price": {
+        "amount": "90.00",
+        "currency": "EUR"
+      },
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:42.295827Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "7c4686882e2c6e962fa1",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men - The Architect",
+        "gtin": null,
+        "mpn": null,
+        "size": "XXL",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men - The Architect",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/69068870-512-04_Zwart_Front.jpg",
+      "price": {
+        "amount": "72.00",
+        "currency": "EUR"
+      },
+      "original_price": {
+        "amount": "90.00",
+        "currency": "EUR"
+      },
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:42.295827Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "fe5d10363f2449fc3a3a",
+      "source_code": "visma",
+      "source_name": "维斯玛车队官方商城",
+      "identity": {
+        "brand": "Team Visma | Lease a Bike",
+        "model": "Cycling jersey men - The Architect",
+        "gtin": null,
+        "mpn": null,
+        "size": "XXXL",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Cycling jersey men - The Architect",
+      "url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "image": "https://d1lk6qpkbduawh.cloudfront.net/_1439xAUTO_resize_center-center_85_none/69068870-512-04_Zwart_Front.jpg",
+      "price": {
+        "amount": "72.00",
+        "currency": "EUR"
+      },
+      "original_price": {
+        "amount": "90.00",
+        "currency": "EUR"
+      },
+      "shipping": {
+        "amount": "47.95",
+        "currency": "EUR"
+      },
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "yes",
+        "url": "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "checked_at": "2026-10-14T08:54:46.099995Z",
+        "note": "中国运费 47.95 欧元，预计 4–7 个工作日，进口税费及清关费用由买家承担。",
+        "scope": "site",
+        "content_hash": "6dca08efdaaaa5fd21708e9e35fd631722977de2a01f4107f748155e119d054b"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://www.teamvismaleaseabike.com/shop-payment/",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:42.295827Z",
+      "price_valid_until": null,
+      "data_kind": "live_snapshot",
+      "family_hint": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    }
+  ]
+}

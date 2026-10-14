@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>站点准入核查报告 · BikeHunt</title>
+<style>
+:root{
+  --bg:#f7f8fa; --card:#ffffff; --ink:#1f2328; --ink2:#4b5563; --line:#e5e7eb;
+  --accent:#d97706; --accent-soft:#fef3c7;
+  --ok:#15803d; --warn:#b45309; --bad:#b91c1c; --unk:#6b7280;
+  --okbg:#ecfdf5; --warnbg:#fffbeb; --badbg:#fef2f2; --unkbg:#f3f4f6;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:#0f5ea8;text-decoration:none;word-break:break-all}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+
+/* ---------- 顶部固定导航 ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid var(--line);
+  box-shadow:0 1px 3px rgba(31,35,40,.06)}
+.topbar .inner{max-width:1280px;margin:0 auto;padding:8px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.topbar .brand{font-weight:700;color:var(--accent);letter-spacing:.5px;white-space:nowrap}
+.topbar nav{display:flex;gap:2px;flex-wrap:wrap;flex:1 1 auto}
+.topbar nav a{font-size:13px;color:var(--ink2);padding:4px 8px;border-radius:6px}
+.topbar nav a:hover{background:#f1f3f5;color:var(--ink);text-decoration:none}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{font-size:12px;border:1px solid var(--line);background:#fff;color:var(--ink2);
+  padding:4px 10px;border-radius:999px;cursor:pointer}
+.fbtn:hover{border-color:#c9ced6}
+.fbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.fbtn.f-ok.on{background:var(--ok);border-color:var(--ok)}
+.fbtn.f-warn.on{background:var(--warn);border-color:var(--warn)}
+.fbtn.f-bad.on{background:var(--bad);border-color:var(--bad)}
+.fbtn.f-unk.on{background:var(--unk);border-color:var(--unk)}
+
+/* ---------- 页头 ---------- */
+.hero{background:linear-gradient(180deg,#fffdf7 0%,#f7f8fa 100%);border-bottom:1px solid var(--line);padding:26px 0 18px}
+.hero h1{margin:0 0 6px;font-size:26px;letter-spacing:.5px}
+.hero .sub{color:var(--ink2);font-size:13.5px}
+.hero .meta{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink2)}
+.chip b{color:var(--ink)}
+
+/* ---------- 章节 ---------- */
+section{padding:26px 0 10px;border-bottom:1px dashed var(--line)}
+h2{font-size:20px;margin:0 0 4px;padding-left:10px;border-left:4px solid var(--accent);line-height:1.3}
+h2 .num{color:var(--accent);font-size:14px;margin-right:6px;font-weight:700}
+h3{font-size:16px;margin:22px 0 8px}
+h4{font-size:15px;margin:0 0 8px}
+p{margin:8px 0}
+.lead{color:var(--ink2);font-size:13.5px;margin:6px 0 14px}
+ul,ol{margin:8px 0;padding-left:22px}
+li{margin:4px 0}
+code{background:#f1f3f5;border-radius:4px;padding:1px 5px;font-size:12.5px}
+
+/* ---------- 卡片 ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0;
+  box-shadow:0 1px 2px rgba(31,35,40,.04)}
+.card.accent{border-left:4px solid var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .n{font-size:26px;font-weight:800;line-height:1.1}
+.kpi .l{font-size:12.5px;color:var(--ink2)}
+.kpi.ok .n{color:var(--ok)} .kpi.warn .n{color:var(--warn)} .kpi.bad .n{color:var(--bad)} .kpi.unk .n{color:var(--unk)}
+
+/* ---------- 判定徽章 ---------- */
+.badge{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;white-space:nowrap;border:1px solid transparent}
+.b-ok{background:var(--okbg);color:var(--ok);border-color:#a7f3d0}
+.b-warn{background:var(--warnbg);color:var(--warn);border-color:#fde68a}
+.b-bad{background:var(--badbg);color:var(--bad);border-color:#fecaca}
+.b-unk{background:var(--unkbg);color:var(--unk);border-color:#d1d5db}
+.pri{font-weight:800;color:var(--accent);white-space:nowrap}
+.pri.none{color:var(--unk)}
+
+/* ---------- 表格 ---------- */
+.tw{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:10px;margin:12px 0}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th,td{padding:8px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{position:sticky;top:53px;z-index:20;background:#f1f3f5;font-weight:700;white-space:nowrap;
+  border-bottom:2px solid #d7dbe1}
+tbody tr:nth-child(even){background:#fafbfc}
+tbody tr:hover{background:#fff7e6}
+td.dom{font-weight:600;min-width:150px}
+td.url{max-width:260px}
+.tag{display:inline-block;font-size:11px;border-radius:4px;padding:1px 6px;margin-right:5px;white-space:nowrap;border:1px solid}
+.t-off{background:#eef6ff;color:#0f5ea8;border-color:#cfe4fb}
+.t-off2{background:#f3f4f6;color:#6b7280;border-color:#d1d5db}
+.t-3rd{background:#fdf4ff;color:#86198f;border-color:#e9d5ff}
+.t-fx{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+
+/* ---------- 详情卡 ---------- */
+.site{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 15px;break-inside:avoid}
+.site h4{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14.5px;border-bottom:1px solid var(--line);padding-bottom:7px}
+.site h4 .loc{font-size:12px;color:var(--ink2);font-weight:400}
+.site dl{margin:6px 0 0;display:grid;grid-template-columns:78px 1fr;gap:2px 8px;font-size:13px}
+.site dt{color:var(--ink2);font-weight:600}
+.site dd{margin:0}
+.site .verdict{margin:8px 0 0;padding:7px 10px;border-radius:7px;font-size:13px;background:#fafbfc;border-left:3px solid var(--line)}
+.site .verdict.ok{background:var(--okbg);border-left-color:var(--ok)}
+.site .verdict.warn{background:var(--warnbg);border-left-color:var(--warn)}
+.site .verdict.bad{background:var(--badbg);border-left-color:var(--bad)}
+.site .verdict.unk{background:var(--unkbg);border-left-color:var(--unk)}
+.site .src{margin:7px 0 0;font-size:12px;color:var(--ink2);line-height:1.6}
+.gnote{font-size:12.5px;color:var(--ink2);background:#fffdf7;border:1px dashed var(--accent-soft);border-radius:8px;padding:8px 12px;margin:8px 0 4px}
+
+/* ---------- 底注 ---------- */
+.note{font-size:12.5px;color:var(--ink2)}
+footer{padding:26px 0 40px;color:var(--ink2);font-size:12.5px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 10px;font-size:13px}
+.kv b{color:var(--ink2);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <span class="brand">BikeHunt · 站点准入核查</span>
+    <nav>
+      <a href="#s1">1 结论摘要</a>
+      <a href="#s2">2 判定基准</a>
+      <a href="#s3">3 总判定矩阵</a>
+      <a href="#s4">4 逐站详情</a>
+      <a href="#s5">5 专题A·DDP</a>
+      <a href="#s6">6 专题B·税收准入</a>
+      <a href="#s7">7 专题C·采集</a>
+      <a href="#s8">8 风险与未证实清单</a>
+      <a href="#s9">9 来源索引</a>
+    </nav>
+    <div class="filters">
+      <button class="fbtn on" data-f="all">全部</button>
+      <button class="fbtn f-ok" data-f="合格">合格</button>
+      <button class="fbtn f-warn" data-f="有条件合格">有条件合格</button>
+      <button class="fbtn f-bad" data-f="不合格">不合格</button>
+      <button class="fbtn f-unk" data-f="未能证实">未能证实</button>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>站点准入核查报告</h1>
+    <div class="sub">海外单车 / 骑行装备海淘站点「可付 + 可直邮中国」准入判定，以及中国进口税负与商品准入口径核查</div>
+    <div class="meta">
+      <span class="chip">判定基准日 <b>2026-10-14（周三）</b></span>
+      <span class="chip">收货地 <b>中国大陆（南宁）</b></span>
+      <span class="chip">覆盖站点 <b>82 个</b></span>
+      <span class="chip">判定规则 <b>合格 / 有条件合格 / 不合格 / 未能证实</b></span>
+      <span class="chip">税负方式 <b>独立成列</b></span>
+      <span class="chip">汇率口径 <b>市场汇率 / 海关计征汇率 分列</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 1 结论摘要 ==================== -->
+<section id="s1" class="wrap">
+  <h2><span class="num">01</span>结论摘要</h2>
+  <p class="lead">本报告整合「职业车队队服与队服制造商 / 高端骑行服品牌 / 欧美骑行器材电商 / 整车渠道与 DDP 综合渠道 / 中国进口税收与准入口径」五份调研文件，并按统一判定规则重新推导每一站的判定。全部站点事实均可追溯到官方来源 URL。</p>
+
+  <h3>1.1 四档判定数量统计</h3>
+  <div class="kpis">
+    <div class="kpi ok"><div class="n">9</div><div class="l">合格</div></div>
+    <div class="kpi warn"><div class="n">14</div><div class="l">有条件合格</div></div>
+    <div class="kpi bad"><div class="n">17</div><div class="l">不合格</div></div>
+    <div class="kpi unk"><div class="n">42</div><div class="l">未能证实</div></div>
+  </div>
+  <p class="note">合计 82 个站点 / 渠道，与第 3 章总判定矩阵逐条计数一致。<b>合格率仅 11.0%（9/82）</b>；<b>「未能证实」占 51.2%（42/82）</b>，说明海外站点普遍不公开对华配送与支付口径。</p>
+
+  <h3>1.2 推荐优先级分布</h3>
+  <div class="kpis">
+    <div class="kpi"><div class="n" style="color:var(--accent)">2</div><div class="l">★★★（DDP 预收 + 可直邮中国 + 中国卡，均官方证实）</div></div>
+    <div class="kpi"><div class="n" style="color:var(--accent)">8</div><div class="l">★★（可直邮中国 + 中国卡官方证实，到岸缴税）</div></div>
+    <div class="kpi"><div class="n" style="color:var(--accent)">55</div><div class="l">★（仅部分证实，需实单验证）</div></div>
+    <div class="kpi"><div class="n" style="color:var(--unk)">17</div><div class="l">—（不合格或不可用）</div></div>
+  </div>
+
+  <h3>1.3 五条必须落进正文的修正（核验结论，已在全报告生效）</h3>
+  <div class="card accent">
+    <ol>
+      <li><b>废止旧文件的文号纠正</b>：废止「海关总署公告 2019 年第 63 号（旧《进境物品归类表》《进境物品完税价格表》）」的是<b>海关总署公告 2024 年第 175 号</b>（发布《中华人民共和国进境物品分类表》《中华人民共和国进境物品计税价格表》），<b>不是</b>国务院关税税则委员会公告 2024 年第 11 号；11 号只发布《进境物品关税、增值税、消费税征收办法》（2024-12-01 施行）。落点：第 6 章专题 B。<span class="tag t-off">官方政策</span><a href="http://www.customs.gov.cn/customs/2024-12/02/article_2025121221025666575.html">customs.gov.cn 2024 年第 175 号</a></li>
+      <li><b>亚马逊「支持银联」降级为未能证实</b>：亚马逊官方帮助页原文只写「<code>Credit Card (International)</code>」，出现<b>银联 / UnionPay 字样的只有银联国际 2016 年的新闻稿</b>，属机构转述而非亚马逊官方政策，故本报告一律写「<b>中国卡可用：国际信用卡（官方证实）；银联：未能证实</b>」。落点：第 4 章站点卡、第 5 章专题 A。<span class="tag t-off">官方政策</span><a href="https://www.amazon.cn/gp/help/customer/display.html/?linkCode=ur2&amp;nodeId=200485580">amazon.cn 海外购帮助</a></li>
+      <li><b>计税汇率与市场汇率严分两列、禁止混用</b>：计税（行邮 / 跨境电商 / 一般贸易）一律用<b>海关 2026 年 10 月欧元计征汇率 7.7762</b>（依海关总署令第 272 号第十三条：取上一个月第三个星期三 2026-09-16 的中国外汇交易中心人民币汇率中间价，1 美元 6.7628、100 欧元 777.62）；<b>市场即期 7.5004（约 7.50）只能用于价格展示折算</b>。两者法律性质不同。落点：第 2.3 节汇率基准、第 6 章全部算式。</li>
+      <li><b>补入 bike24.com 的 robots.txt 实测细节</b>：商品页可抓取、无 Crawl-delay；<code>Disallow: /ajax.php</code>、<code>/api/*</code>、<code>/search?*</code>、<code>/checkout/*</code>、<code>/topic/*</code>、<code>/cycling/bike/*</code>。落点：第 4 章 Bike24 卡、第 7 章专题 C。<span class="tag t-off">官方政策</span><a href="https://www.bike24.com/robots.txt">bike24.com/robots.txt</a></li>
+      <li><b>亚马逊海外购电脑端不可下单</b>：自 <b>2024-01-27</b> 起，亚马逊海外购在<b>电脑端不再提供购物服务</b>，下单只能走 <b>App / 微信小程序</b>。落点：第 4 章亚马逊卡片与第 5 章专题 A 的操作层结论。<span class="tag t-off">官方政策</span><a href="https://www.amazon.cn/b?node=1941366071">amazon.cn 电脑端改版通知</a></li>
+    </ol>
+  </div>
+
+  <h3>1.4 核心结论</h3>
+  <ol>
+    <li><b>跨境 DDP 只有一家。</b>对大陆买家，能用官方原文证明「结账即预收进口税（多退少不补）」的骑行类渠道只有<b>亚马逊海外购</b>一家；其余全部为到岸缴税或不可达。该渠道<b>电脑端已不能下单（2024-01-27 起）</b>，只能走 App / 微信小程序，且<b>整车未见于海外购清单</b>。</li>
+    <li><b>没有一家海外品牌官网同时被官方证实「可直邮中国 + 中国卡 + DDP 预收」。</b>海外直邮的税负主流是<b>到岸缴税</b>；DDP 机制存在但中国可达性多未落地的有 INEOS Grenadiers（可选预付）、Sigma Sports（可选预付）、Velocio、Ribble Cycles。</li>
+    <li><b>整车不存在合规的跨境直邮个人通道。</b>Cannondale 明文不发货美加以外、Trek 明文不接受转运地址、Orbea 强制经销商自提、Colnago 整车门店自提或厂方交付、Cube 零直销、Buycycle 配送国清单不含中国。唯一现实通路是<b>品牌中国区官渠</b>（Canyon 中国站 / Specialized 中国官网 / 捷安特中国商城）与<b>欧盟整车品牌直邮 + 到岸缴税</b>（Rose Bikes 官方配送国清单含 China）。</li>
+    <li><b>税负口径已换代。</b>行邮综合税率现为三档 13% / 20% / 50%，自行车、骑行服、运动用品均落 <b>20%</b>；旧「2019 年版归类表 / 完税价格表」已废止不得再用；免税额是<b>应征税额 ≤ 50 元</b>（约对应 20% 档下 250 元以内存量商品），与「每次限值 2000 元」是两个不同概念。整车入境唯一现实口径是<b>单件不可分割 + 个人自用</b>的资金邮路径。</li>
+    <li><b>硬红线两条。</b>① 旧衣物（HS 6309000000）在《禁止进口固体废物目录》内，属<b>禁止进口货物</b>，二手 / 古着骑行服不得提供跨境链路；② 成人非电动自行车整车<b>不在 CCC 目录</b>，可正常入境，但电动助力车、锂电类器材（0914/0915）在 CCC 目录内，须逐 SKU 判定。</li>
+    <li><b>采集侧结论。</b>robots 最宽松、商品页可直抓的站点集中在德国与荷兰（Radon 全站 Allow、Bike24 商品页可抓、R2-Bike、Bike-Components）；英国 / 美国大站反爬最强（亚马逊、eBay、Wiggle 系已消失）。22 个域名本轮 robots 未能取得，一律按「未查到」处理，<b>不得默认可爬</b>。</li>
+  </ol>
+</section>
+
+<!-- ==================== 2 判定基准 ==================== -->
+<section id="s2" class="wrap">
+  <h2><span class="num">02</span>判定基准</h2>
+  <p class="lead">上游五份调研文件的判定口径互不一致（有的把「税负是否为 DDP」计入判定、有的只看官方 payment 页），本章统一口径，第 3 章据此重新推导，并在第 3.3 节列出全部重判差异。</p>
+
+  <h3>2.1 四档判定规则（唯一口径）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>判定</th><th>成立条件</th><th>本项目含义</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge b-ok">合格</span></td>
+        <td>官方依据<b>同时</b>证实两条：① 可用国际信用卡（无排除中国发卡行的条款）；② 可发货至中国大陆。</td>
+        <td>可直接接入，无需实单验证即可按「可付 + 可直邮」设计链路。</td></tr>
+      <tr><td><span class="badge b-warn">有条件合格</span></td>
+        <td>上述两项成立，但：支付侧存在官方明示的中国卡风控 / 风控提示；<b>或</b>其中一项<b>仅有间接依据</b>（官方文本未点名中国、但也不含排除性条款）。</td>
+        <td>可接入，但必须实单验证一次；报错与风控话术要单独准备。</td></tr>
+      <tr><td><span class="badge b-bad">不合格</span></td>
+        <td>官方明文排除中国大陆；<b>或</b>该域名 / 商城已不存在；<b>或</b>明确不对个人跨境销售。</td>
+        <td>不接入，或只作为「境内官渠 / 比价参照」存在，不承担跨境链路。</td></tr>
+      <tr><td><span class="badge b-unk">未能证实</span></td>
+        <td>上述两项中<b>任一项无任何官方依据</b>、无法判断。</td>
+        <td>不排除将来可用，但当前<b>不得写成既有事实</b>，只能列入观察名单。</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card">
+    <b>证据分级（判定时按此取用）</b>
+    <ul>
+      <li><b>官方证实</b>＝站点自身官方页面的原文（配送政策页、帮助中心、条款、支付/结账页、robots.txt）。</li>
+      <li><b>间接依据</b>＝官方文本声称全球配送 / 区域档位（如「Rest of the World」「International」）但未点名中国，且<b>不含</b>任何排除中国的条款；或由中国方向以外的机构官方发布、指向该站的材料（如银联国际新闻稿）。</li>
+      <li><b>无依据</b>＝本轮未取得任何官方文本（未抓到 / 被 robots 拒绝 / 页面不存在该条目）。一律记「未能证实」，<b>不得</b>由机制推断肯定结论。</li>
+    </ul>
+  </div>
+  <div class="gnote"><b>与上游口径的差异（本报告的统一化处理）</b>：上游第 4、5 号文件把「税负是否为 DDP」作为第二条硬标准，导致部分站点仅因「到岸缴税」被降级。本报告按统一规则判定，「<b>DDP 预收 / 到岸缴税 / 必须转运</b>」剥离为<b>独立一列</b>，只影响推荐优先级，不影响判定档位。</div>
+
+  <h3>2.2 推荐优先级规则（独立成列）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>优先级</th><th>成立条件</th></tr></thead>
+    <tbody>
+      <tr><td class="pri">★★★</td><td>DDP 预收 + 可直邮中国 + 中国卡，<b>三项均为官方证实</b>。</td></tr>
+      <tr><td class="pri">★★</td><td>可直邮中国 + 中国卡（官方证实），到岸缴税。</td></tr>
+      <tr><td class="pri">★</td><td>仅部分证实，需实单验证。</td></tr>
+      <tr><td class="pri none">—</td><td>不合格或不可用。</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>2.3 汇率基准（两类汇率分列，禁止混用）</h3>
+  <div class="gnote"><b>规则</b>：<b>海关计征汇率</b>只用于计算应缴税款（行邮 / 跨境电商 / 一般贸易）；<b>市场即期汇率</b>只用于价格展示的人民币折算。两者法律性质不同，本报告全文分列，任何算式都标注所用口径。</div>
+  <div class="grid2">
+    <div class="card">
+      <h4>① 市场即期汇率（仅用于价格展示折算）</h4>
+      <p class="note">口径：2026-10-14 约 15:00（Asia/Shanghai）新浪财经外汇挂牌价。</p>
+      <div class="tw"><table><tbody>
+        <tr><td>1 EUR</td><td><b>7.5004</b> CNY</td><td class="note">≈ 7.50</td></tr>
+        <tr><td>1 GBP</td><td><b>8.88</b> CNY</td><td class="note">—</td></tr>
+        <tr><td>1 USD</td><td><b>6.69</b> CNY</td><td class="note">USD/CNH</td></tr>
+        <tr><td>1 HKD</td><td><b>0.852</b> CNY</td><td class="note">—</td></tr>
+        <tr><td>1 AUD</td><td><b>4.6860</b> CNY</td><td class="note">同源补取</td></tr>
+        <tr><td>1 CHF</td><td><b>8.0444</b> CNY</td><td class="note">同源补取</td></tr>
+        <tr><td>1 DKK</td><td><b>1.0035</b> CNY</td><td class="note">同源补取</td></tr>
+        <tr><td>1 SEK</td><td><b>0.6727</b> CNY</td><td class="note">同源补取</td></tr>
+      </tbody></table></div>
+      <p class="src"><span class="tag t-fx">市场汇率</span><a href="https://gu.sina.cn/quotes/fx/EURCNY">gu.sina.cn EURCNY</a> · <a href="https://gu.sina.cn/quotes/fx/GBPCNY">GBPCNY</a> · <a href="https://gu.sina.cn/quotes/fx/USDCNH">USDCNH</a> · <a href="https://gu.sina.cn/quotes/fx/AUDCNY">AUDCNY</a> · <a href="https://gu.sina.cn/quotes/fx/CHFCNY">CHFCNY</a> · <a href="https://gu.sina.cn/quotes/fx/DKKCNY">DKKCNY</a> · <a href="https://gu.sina.cn/quotes/fx/SEKCNY">SEKCNY</a></p>
+    </div>
+    <div class="card accent">
+      <h4>② 海关计征汇率（仅用于计税）</h4>
+      <p class="note">口径：<b>海关 2026 年 10 月欧元计征汇率 = 7.7762</b>（美元 6.7628）。规则来源：海关总署令第 272 号《中华人民共和国海关进出口货物征税管理办法》第十三条——海关每月使用的计征汇率为<b>上一个月第三个星期三</b>（2026-09-16）中国人民银行授权中国外汇交易中心公布的人民币汇率中间价；该中间价为 100 欧元 = 777.62 元，即 1 欧元 = 7.7762 元。</p>
+      <div class="tw"><table><tbody>
+        <tr><td>1 EUR（计税）</td><td><b>7.7762</b> CNY</td><td class="note">100 EUR = 777.62</td></tr>
+        <tr><td>1 USD（计税）</td><td><b>6.7628</b> CNY</td><td class="note">2026-09-16 中间价</td></tr>
+      </tbody></table></div>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.gov.cn/gongbao/2024/issue_11726/202411/content_6989766.html">海关总署令第 272 号（国务院公报）</a><br>
+      <span class="tag t-off2">中间价转载</span><a href="https://www.chinamoney.org.cn/chinese/ccprnoticecontent/index.html?searchDate=2026-09-16">中国外汇交易中心（2026-09-16）</a> · <a href="http://www.xinhuanet.com/20260916/9520f92722f848dcbcdd540e9135470d/c.html">新华社转载</a></p>
+      <p class="note"><b>消费提示</b>：信用卡实际结算价通常由卡组织在银行间市场价上加价 <b>1%–3%</b> 并叠加发卡行货币转换费，因此实际扣款会高于中间价口径，本报告展示价只做统一折算基准。</p>
+    </div>
+  </div>
+
+  <h3>2.4 税负方式（独立列，三值互斥）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>取值</th><th>定义</th></tr></thead>
+    <tbody>
+      <tr><td><b>DDP预收</b></td><td>结账时由商家 / 平台预收进口税费（多退少不补或固定服务费），到货不再补收。含境内官渠「含税一口价」口径。</td></tr>
+      <tr><td><b>到岸缴税</b></td><td>结账不含进口税，货到后由海关 / 承运人向收件人征收。</td></tr>
+      <tr><td><b>必须转运</b></td><td>站点本身不发货至中国大陆，只能走第三方转运；或该站在中国方向根本无可用链路。</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">机器可读清单（<code>02_站点准入核查_站点清单.csv</code>）的「税负方式」列只允许填 <code>DDP预收</code> / <code>到岸缴税</code> / <code>必须转运</code> 三者之一，可直接喂给项目 <code>docs\01_技术实现要求.md</code> 的 <code>site</code> 表与站点适配器。</p>
+
+  <h3>2.5 引用格式</h3>
+  <p>正文与卡片中的每条结论都带内联来源标签：<span class="tag t-off">官方政策</span>站点官方页面 · <span class="tag t-off2">官方文本·未能抓取</span>官方页面存在但本轮无法取得原文（内容取自该站自身页面的检索索引摘要）· <span class="tag t-3rd">第三方/机构转述</span>非站点官方的机构发布或媒体（<b>不得与官方标签混在同一标签内</b>）· <span class="tag t-fx">市场汇率</span>仅用于展示折算。</p>
+
+  <h3>2.6 去重合并与差异处理</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>重复项</th><th>处理</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>Bike24</td><td>合并为一条</td><td>在「欧美器材电商」与「整车渠道」两份文件中均出现。合并后取<b>更完整的电商侧信息</b>（中国运费 29.99 €、robots 实测细节），并保留整车渠道侧的「整车货运表未含中国」限制。<b>两处来源对「可发中国、到岸缴税」的事实一致</b>；仅原判定档位不同（电商侧「合格」、整车侧「有条件合格」），已按统一规则重判为合格。</td></tr>
+      <tr><td>Bike-Discount / H&amp;S</td><td>合并为一条</td><td>同上两文件重复出现。合并后保留「配件跨境可行、整车对多数非欧盟国家标注不可承运、中国行取值未取得」的完整口径。<b>两处来源事实一致</b>，原判定为「有条件合格」与「有条件合格（整车存疑）」，已按统一规则重判为未能证实（履约侧无任何官方依据）。</td></tr>
+      <tr><td>Castelli</td><td>统一为一条，判定取「不合格」</td><td>在「职业车队队服与队服制造商」文件中记为<b>未能证实</b>，在「高端骑行服装品牌」文件中记为<b>不合格</b>。<b>以官方配送国家名单这一事实为准</b>：官方配送清单为 Italy / EU / UK / Switzerland / Japan / Norway / Australia / Hong Kong / Singapore / South Korea，<b>不含中国大陆</b>——按统一规则「官方明文排除中国大陆」即<b>不合格</b>。差异已在第 3.3 节重判对照表注明。</td></tr>
+      <tr><td>Lidl-Trek 队服渠道</td><td>并入 Trek 一条</td><td>职业车队文件中 Lidl-Trek 的队服商城＝Trek 官方站点（trekbikes.com），不构成独立域名，故并入第 ④ 组 Trek 条；其中国区销售为境内官渠口径，不构成海淘跨境链路。</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ==================== 3 总判定矩阵 ==================== -->
+<section id="s3" class="wrap">
+  <h2><span class="num">03</span>总判定矩阵</h2>
+  <p class="lead">82 个站点 / 渠道全量矩阵，按统一规则判定。表头吸顶、斑马纹、悬停高亮；顶部「全部 / 合格 / 有条件合格 / 不合格 / 未能证实」按钮可对矩阵与第 4 章详情卡同步筛选。</p>
+  <p class="note"><b>组别标记</b>：① 职业车队商店与队服制造商 · ② 高端骑行服装品牌 · ③ 欧美骑行器材电商 · ④ 整车渠道 · ⑤ DDP 综合渠道。</p>
+  <div class="tw">
+  <table>
+    <thead><tr><th>组</th><th>站点</th><th>国家/地区</th><th>品类</th><th>结账含&nbsp;CNY</th><th>中国卡是否可用</th><th>是否直邮中国</th><th>税负方式</th><th>判定</th><th>推荐优先级</th><th>主来源URL</th></tr></thead>
+    <tbody>
+      <tr data-v="有条件合格"><td>①</td><td class="dom">Team Visma | Lease a Bike 官网商店</td><td>荷兰</td><td>队服/骑行服/配件</td><td>否</td><td>国际卡（官方列 Visa/Mastercard/Amex）；<b>官方明示使用境外信用卡会被判定为欺诈风险</b></td><td>是（官方配送表列 China，€47.95，UPS，4–7 个工作日）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://www.teamvismaleaseabike.com/shop-delivery/">teamvismaleaseabike.com</a></td></tr>
+      <tr data-v="有条件合格"><td>①</td><td class="dom">INEOS Grenadiers 官方商店</td><td>英国</td><td>队服/骑行服</td><td>未能证实</td><td>国际卡（Global-e 列 mastercard/visa/amex/paypal）</td><td>间接（排除名单不含中国，覆盖 100+ 目的地，未点名中国）</td><td>DDP预收（结账可选预付）</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://store.netcompanyineos.com/pages/shipping-policy">store.netcompanyineos.com</a></td></tr>
+      <tr data-v="不合格"><td>①</td><td class="dom">Red Bull-BORA-hansgrohe 官方商店</td><td>德国</td><td>队服/骑行服</td><td>否</td><td>未能证实</td><td><b>否</b>（官方配送国家表无中国大陆，官方明文名单外国家不可下单）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://customerservice.redbullshop.com/hc/en-us/sections/27269814144413-Shipping-and-delivery">customerservice.redbullshop.com</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Soudal Quick-Step（The Wolfpack Webshop）</td><td>比利时</td><td>队服/骑行服</td><td>否</td><td>国际卡（官方称境外信用卡会被列为安全拦截）</td><td>未能证实（全站无配送政策页）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://thewolfpack.shop/pages/payment">thewolfpack.shop</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Groupama-FDJ United 官方商店</td><td>法国</td><td>队服/骑行服</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.equipecycliste-groupama-fdj.fr/en/faq/">equipecycliste-groupama-fdj.fr</a></td></tr>
+      <tr data-v="有条件合格"><td>①</td><td class="dom">UAE Team Emirates XRG（Emirates Official Store）</td><td>阿联酋</td><td>队服/骑行服</td><td>否</td><td>国际卡（官方列 Visa/MasterCard/Amex）</td><td>间接（官方称全球统一 USD 25 直邮，未点名中国）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.emirates.store/shipping-policy">emirates.store</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Alpecin-Premier Tech 官方队服渠道</td><td>比利时</td><td>队服</td><td>未能证实</td><td>未能证实</td><td>未能证实（该队无独立商城，队服经 KALAS 发售）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.alpecin-premiertech.com/news/merci-poupou-tdf2026">alpecin-premiertech.com</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Movistar Team 官方商店（Deporvillage 运营）</td><td>西班牙</td><td>队服/骑行服</td><td>未能证实</td><td>未能证实</td><td>未能证实（仅有第三方称全球配送）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://movistarteam.com/pagina-principal-del-sitio-2">movistarteam.com</a></td></tr>
+      <tr data-v="有条件合格"><td>①</td><td class="dom">Santini 官方直营店</td><td>意大利</td><td>骑行服/队服</td><td>否</td><td>国际卡（官方 FAQ：PayPal 或信用卡，信用卡经 Banca Sella）</td><td>间接（官方「Reste du monde」档，满 €300 免运，DHL Express）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.santinicycling.com/en/pages/termini-e-condizioni-di-vendita">santinicycling.com</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Bioracer 官方直营店</td><td>比利时</td><td>骑行服/队服</td><td>否</td><td>未能证实（官方配送/退货页未列支付方式）</td><td>间接（非欧 €34.95，不配送名单不含中国）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://shop.bioracer.com/shipping-and-returns/">shop.bioracer.com</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Gobik 官方直营店</td><td>西班牙</td><td>骑行服/队服</td><td>未能证实</td><td>未能证实</td><td>间接（官方「Resto del mundo」档 €20）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://gobik.com/policies/shipping-policy">gobik.com</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Vermarc 官方直营店</td><td>比利时</td><td>骑行服/队服</td><td>否</td><td>未能证实</td><td>间接（官方列欧盟以外 €30）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.shop.vermarcsport.com/conditions">shop.vermarcsport.com</a></td></tr>
+      <tr data-v="未能证实"><td>①</td><td class="dom">Kalas 官方直营店</td><td>捷克</td><td>骑行服/队服</td><td>否</td><td>未能证实</td><td>未能证实（官方仅称销往 50 多国，无国家清单）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://kalas.cc">kalas.cc</a></td></tr>
+
+      <tr data-v="有条件合格"><td>②</td><td class="dom">Rapha（含 RCC）</td><td>英国</td><td>骑行服/配件</td><td>否</td><td>国际卡（官方列 Visa/MC/Amex/JCB/Discover/<b>UnionPay 仅贷记</b>/Diners + PayPal/Apple Pay）</td><td>间接（配送表列加拿大/日本/台湾/韩国/Rest of World，未列中国大陆；且明令不接受转运代理地址）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options">support.rapha.cc</a></td></tr>
+      <tr data-v="有条件合格"><td>②</td><td class="dom">Assos</td><td>瑞士</td><td>骑行服/配件</td><td>未能证实</td><td>国际卡（官方列 VISA/Mastercard/Amex + PayPal；未列银联）</td><td>间接（官方设 REST OF THE WORLD (EUR) 档，未逐国确认）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.assos.com/gb/customer-service/?section=shipping">assos.com</a></td></tr>
+      <tr data-v="不合格"><td>②</td><td class="dom">MAAP</td><td>澳大利亚</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td><b>否</b>（官方支持站载明中国大陆与韩国仅由本地合作伙伴服务）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://support.maap.cc/">support.maap.cc</a></td></tr>
+      <tr data-v="有条件合格"><td>②</td><td class="dom">Le Col</td><td>英国</td><td>骑行服/配件</td><td>未能证实</td><td>国际卡（官方 FAQ：debit/credit card、PayPal、Google Pay）</td><td>间接（DHL 国际快递至全球主要地区，无国别白名单）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://lecol.cc/fr-tt/pages/lecol-faqs">lecol.cc</a></td></tr>
+      <tr data-v="不合格"><td>②</td><td class="dom">Castelli</td><td>意大利</td><td>骑行服/队服</td><td>否</td><td>未能证实</td><td><b>否</b>（官方配送国家表：意大利/欧盟/英国/瑞士/日本/挪威/澳大利亚/香港/新加坡/韩国，<b>无中国大陆</b>）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.castelli-cycling.com/IT/en/customer-service/shipping-times-and-costs">castelli-cycling.com</a></td></tr>
+      <tr data-v="有条件合格"><td>②</td><td class="dom">Pas Normal Studios</td><td>丹麦</td><td>骑行服/配件</td><td>未能证实</td><td>国际卡（MC/Visa/Dankort/Amex/Klarna；官方明示卡片交易 100% 3DS）</td><td>间接（官方为全球配送 FedEx/UPS/DHL，未逐国确认）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://pasnormalstudios.com/pages/faq">pasnormalstudios.com</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">La Passione</td><td>意大利</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（官方条款仅称全球配送，无目的地确认）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.lapassione.cc/pages/terms-conditions">lapassione.cc</a></td></tr>
+      <tr data-v="合格"><td>②</td><td class="dom">Isadore</td><td>斯洛伐克</td><td>骑行服/配件</td><td><b>是</b>（官方条款列 CNY 计价）</td><td>国际卡（官方 FAQ：Visa/Mastercard/Amex/Diners <b>或 AliPay</b>）</td><td><b>是</b>（官方 FAQ 单列「Japan &amp; China」档：80 CNY，满 1,200 CNY 免运）</td><td>到岸缴税</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://isadore.com/faq">isadore.com</a></td></tr>
+      <tr data-v="合格"><td>②</td><td class="dom">Q36.5</td><td>意大利</td><td>骑行服/配件</td><td>未能证实</td><td>国际卡（官方：Visa 与 Mastercard 仅接受 3DS 交易）</td><td><b>是</b>（官方 International Zone 2 名单含 China，€30）</td><td>到岸缴税</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://www.q36-5.com/en-us/c/shipping-delivery/">q36-5.com</a></td></tr>
+      <tr data-v="不合格"><td>②</td><td class="dom">Alé</td><td>意大利</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td><b>否</b>（官方 Rest of World 四组名单均未含中国大陆）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://alecycling.com/en-us/pages/spedizioni-e-consegna">alecycling.com</a></td></tr>
+      <tr data-v="不合格"><td>②</td><td class="dom">Sportful</td><td>意大利</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td><b>否</b>（官方配送国家表为意大利/欧盟/英国/加拿大/瑞士/日本/挪威/澳大利亚/美国）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.sportful.com/IT/en/customer-service/shipping-times-and-costs">sportful.com</a></td></tr>
+      <tr data-v="有条件合格"><td>②</td><td class="dom">Café du Cycliste</td><td>法国</td><td>骑行服/配件</td><td>否</td><td>国际卡（官方条款：银行卡或 PayPal）</td><td>间接（官方称全球配送，设 International 档）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.cafeducycliste.com/pages/shipping">cafeducycliste.com</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">Attaquer</td><td>澳大利亚</td><td>骑行服/配件</td><td><b>是</b>（免运门槛以 ¥2200 CNY 表示）</td><td>未能证实</td><td><b>是</b>（官方配送表含 China 行，DHL Express）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://attaquercycling.com/pages/shipping">attaquercycling.com</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">Black Sheep Cycling</td><td>澳大利亚</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（官网未发布国际配送条款）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://au.blacksheep.cc/policies/shipping-policy">au.blacksheep.cc</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">Velocio</td><td>美国</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td>间接（intl.velocio.cc 面向 EU &amp; International，DHL Express）</td><td>DDP预收</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://support.velocio.cc/hc/en-us/articles/360059193513-Shipping-Options">support.velocio.cc</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">Pedla</td><td>澳大利亚</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td>间接（国际满 AUD 400 免运，DHL International Express）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://thepedla.com/pages/shipping">thepedla.com</a></td></tr>
+      <tr data-v="有条件合格"><td>②</td><td class="dom">Ostroy</td><td>美国</td><td>骑行服/配件</td><td>未能证实</td><td>国际卡（官方 FAQ：most major credit cards、PayPal、Amazon Pay、Apple Pay、Google Pay）</td><td>间接（官方称 ship just about everywhere，Global-E 为 merchant of record）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://ostroy.com/pages/faq">ostroy.com</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">Giordana</td><td>美国/意大利</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td>间接（官方称已支持全球多国配送，未列国别清单）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://giordanacycling.com/pages/faq">giordanacycling.com</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">Eliel</td><td>美国</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td>间接（官方明示支持国际配送、结账选国家，未点名中国）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.elielcycling.com/pages/faqs">elielcycling.com</a></td></tr>
+      <tr data-v="未能证实"><td>②</td><td class="dom">Ornot</td><td>美国</td><td>骑行服/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（官网未发布配送政策正文）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.ornotbike.com/policies/shipping-policy">ornotbike.com</a></td></tr>
+
+      <tr data-v="合格"><td>③</td><td class="dom">Bike24</td><td>德国</td><td>器材/配件/整车</td><td>否</td><td>国际卡（官方请境外客户用信用卡；列 Mastercard/Visa/Amex/PayPal）</td><td><b>是</b>（中国标准运费 29.99 €；整车货运表未含中国）</td><td>到岸缴税</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://www.bike24.com/shipping.html">bike24.com/shipping.html</a></td></tr>
+      <tr data-v="未能证实"><td>③</td><td class="dom">Bike-Discount / H&amp;S Bike-Discount</td><td>德国</td><td>器材/配件/整车</td><td>否</td><td>国际卡（官方支持中心列 Kreditkarte/PayPal/Amazon Pay/Vorkasse）</td><td>未能证实（未取得中国专属运费；整车对非欧盟普遍不可承运）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://support.bike-discount.de/de/support/solutions/folders/7000042624">support.bike-discount.de</a></td></tr>
+      <tr data-v="未能证实"><td>③</td><td class="dom">Bike-Components</td><td>德国</td><td>器材/配件</td><td>否</td><td>未能证实（官方支付页被 robots 拦截）</td><td><b>是</b>（官方运费页列中国标准 54.99 €；整车不寄中国）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.bike-components.de/en/shipping-costs">bike-components.de</a></td></tr>
+      <tr data-v="合格"><td>③</td><td class="dom">Rose Bikes</td><td>德国</td><td>整车/配件/骑行服</td><td>否</td><td>国际卡（官方条款列 MasterCard/VISA/Apple Pay；PayPal 仅限欧盟内）</td><td><b>是</b>（官方配送国家清单含 China）</td><td>到岸缴税</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://www.rosebikes.com/shipping">rosebikes.com/shipping</a></td></tr>
+      <tr data-v="合格"><td>③</td><td class="dom">R2-Bike</td><td>德国</td><td>器材/配件</td><td>否</td><td>国际卡（官方支付页列 MasterCard/VISA，非欧盟订单加收 1%）</td><td><b>是</b>（官方配送国家清单含中华人民共和国，未设最低订单额）</td><td>到岸缴税</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://r2-bike.com/Shipping">r2-bike.com/Shipping</a></td></tr>
+      <tr data-v="不合格"><td>③</td><td class="dom">Fahrrad.de（含已并入的 Bikester）</td><td>德国</td><td>整车/配件/骑行服</td><td>否</td><td>国际卡（官方列 PayPal/信用卡/Klarna）</td><td><b>否</b>（官方原文仅发德国/奥地利/瑞士/比利时/法国/荷兰/列支敦士登）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.fahrrad.de/pages/versandinformationen">fahrrad.de</a></td></tr>
+      <tr data-v="不合格"><td>③</td><td class="dom">Wiggle</td><td>英国</td><td>—（站点已不存在）</td><td>不适用</td><td>不适用</td><td><b>否</b>（域名已不再承载独立商城，直接跳转 Evans Cycles 首页）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.wiggle.com/">wiggle.com</a></td></tr>
+      <tr data-v="不合格"><td>③</td><td class="dom">Chain Reaction Cycles</td><td>英国</td><td>—（站点已不存在）</td><td>不适用</td><td>不适用</td><td><b>否</b>（域名已不再承载独立商城）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.chainreactioncycles.com/">chainreactioncycles.com</a></td></tr>
+      <tr data-v="不合格"><td>③</td><td class="dom">ProBikeKit</td><td>英国</td><td>—（站点已不存在）</td><td>不适用</td><td>不适用</td><td><b>否</b>（域名已不再承载独立商城）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.probikekit.com/">probikekit.com</a></td></tr>
+      <tr data-v="有条件合格"><td>③</td><td class="dom">Evans Cycles（承接 Wiggle/CRC/PBK）</td><td>英国</td><td>整车/配件/骑行服</td><td>否</td><td>国际卡（官方非英国客户条款列 Mastercard/VISA/Amex 及 <b>Alipay</b>）</td><td>间接（设有非英国客户完整条款；robots 列 /cn/ 等国家路径）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://help.evanscycles.com/hc/en-gb/articles/6018058318495-Terms-Conditions-non-UK-customers">help.evanscycles.com</a></td></tr>
+      <tr data-v="合格"><td>③</td><td class="dom">Merlin Cycles</td><td>英国</td><td>整车/配件/骑行服</td><td><b>是</b>（官方「Select Chinese Yuan (¥) to be charged in Chinese Yuan」）</td><td>国际卡（官方条款列信用卡 American Express/Mastercard/Visa；Braintree 收单）</td><td><b>是</b>（官方运费页国家清单含 China，承运 UPS）</td><td>到岸缴税</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://www.merlincycles.com/en-us/shipping-postage.html">merlincycles.com</a></td></tr>
+      <tr data-v="有条件合格"><td>③</td><td class="dom">Sigma Sports</td><td>英国</td><td>整车/配件/骑行服</td><td>未能证实（多币种，未逐一证实）</td><td>国际卡（国际站 Global-e 官方明列 <b>UnionPay 银联 + Alipay 支付宝</b>）</td><td>间接（经 Global-e/DHL 国际配送，未列国别清单）</td><td>DDP预收（结账可选预付关税）</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.sigmasports.com/payment-and-delivery">sigmasports.com</a></td></tr>
+      <tr data-v="未能证实"><td>③</td><td class="dom">Tredz</td><td>英国</td><td>整车/配件/骑行服</td><td>否</td><td>未能证实</td><td>未能证实（官方配送信息页仅覆盖英国）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.tredz.co.uk/help-advice/customer-service/delivery-returns/delivery-info">tredz.co.uk</a></td></tr>
+      <tr data-v="有条件合格"><td>③</td><td class="dom">Bikeinn / Tradeinn</td><td>西班牙</td><td>整车/配件/骑行服</td><td>未能证实</td><td>国际卡（Adyen 收单：Visa/Mastercard/Amex/JCB/Maestro + PayPal/Apple Pay/Google Pay）</td><td>间接（官方称全球发货，帮助页设简体中文）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.tradeinn.com/bikeinn/en/help/st">tradeinn.com/bikeinn</a></td></tr>
+      <tr data-v="未能证实"><td>③</td><td class="dom">Deporvillage</td><td>西班牙</td><td>整车/配件/骑行服</td><td>未能证实</td><td>未能证实（帮助页与 robots.txt 均被安全策略拦截）</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.deporvillage.com/">deporvillage.com</a></td></tr>
+      <tr data-v="合格"><td>③</td><td class="dom">Alltricks</td><td>法国</td><td>整车/配件/骑行服</td><td>否</td><td>国际卡（官方支付页列 CB/Visa/Mastercard/Amex/Bancontact，经 Hipay 处理）</td><td><b>是</b>（官方 Delivery 页以 country=CN 查询显示目的地 China，Colissimo）</td><td>到岸缴税</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★</span></td><td class="url"><a href="https://www.alltricks.com/delivery?country=CN">alltricks.com/delivery?country=CN</a></td></tr>
+      <tr data-v="未能证实"><td>③</td><td class="dom">Lordgun</td><td>意大利</td><td>未能证实</td><td>未能证实</td><td>未能证实（全站对自动访问封锁）</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.lordgun.com/">lordgun.com</a></td></tr>
+      <tr data-v="不合格"><td>③</td><td class="dom">Mantel</td><td>荷兰</td><td>整车/配件</td><td>否</td><td>未能证实</td><td><b>否</b>（官方供应链站口径为欧洲 15 国配送网络）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://supplychain.mantel.com/">supplychain.mantel.com</a></td></tr>
+      <tr data-v="合格"><td>④</td><td class="dom">Canyon 中国站（canyon.com.cn）</td><td>中国</td><td>整车/配件</td><td><b>是</b></td><td>国际卡 + 境内方式（官方付款页列 Visa/Mastercard/<b>UnionPay 银联</b>/Apple Pay/微信支付）</td><td><b>是</b>（中国大陆境内配送，DHL Express）</td><td>DDP预收</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★★</span></td><td class="url"><a href="https://www.canyon.com.cn/zh-cn/%E5%AE%A2%E6%88%B7%E6%9C%8D%E5%8A%A1/%E9%80%81%E8%B4%A7-%E9%80%81%E8%BE%BE/shipping.html">canyon.com.cn</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Canyon 国际站（canyon.com）</td><td>德国</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（本轮仅取得其 robots.txt）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.canyon.com/robots.txt">canyon.com</a></td></tr>
+      <tr data-v="不合格"><td>④</td><td class="dom">Cube（cube.eu）</td><td>德国</td><td>整车/配件</td><td>否</td><td>不适用（官方零直销）</td><td><b>否</b>（官方客服页明确仅通过选定专业经销商销售）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.cube.eu/hu/support/customer-support/international">cube.eu</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Radon（radon-bikes.de）</td><td>德国</td><td>整车</td><td>否</td><td>未能证实</td><td>未能证实（实际销售方 Bike-Discount 中国行取值未取得）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.radon-bikes.de/robots.txt">radon-bikes.de</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Ribble Cycles</td><td>英国</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（官方未公开可配送国家清单）</td><td>DDP预收</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://helpcentre.ribblecycles.co.uk/en/support/solutions/articles/22000289236-international-delivery-costs-and-timescales">helpcentre.ribblecycles.co.uk</a></td></tr>
+      <tr data-v="不合格"><td>④</td><td class="dom">Orbea</td><td>西班牙</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td><b>否</b>（官方规定整车与外部电池必须经销商自提）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://cms.orbea.com/en-be/p/shipping">cms.orbea.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Pinarello</td><td>意大利</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.pinarello.com/robots.txt">pinarello.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Colnago</td><td>意大利</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（整车仅门店自提或厂方白手套交付；配件全球配送 10 天）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.colnago.com/en-us/shipments-and-returns">colnago.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Bianchi</td><td>意大利</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.bianchi.com/robots.txt">bianchi.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Wilier</td><td>意大利</td><td>整车/配件</td><td>未能证实</td><td>国际卡（官方 T&amp;C 列明信用卡与 PayPal）</td><td>未能证实（T&amp;C 未列目的地国清单）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.wilier.com/en/terms-and-conditions">wilier.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Factor</td><td>英国</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://factorbikes.com/robots.txt">factorbikes.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Look</td><td>法国</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.lookcycle.com/robots.txt">lookcycle.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">BMC</td><td>瑞士</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.bmc-switzerland.com/robots.txt">bmc-switzerland.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Storck</td><td>德国</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（站点抓取失败，域名可达性存疑）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.storck-bikes.com/robots.txt">storck-bikes.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Simplon</td><td>奥地利</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.simplon.com/robots.txt">simplon.com</a></td></tr>
+      <tr data-v="不合格"><td>④</td><td class="dom">Specialized 中国官网</td><td>中国</td><td>整车/配件</td><td><b>是</b></td><td><b>否</b>（官方 FAQ 仅支付宝与微信支付，不接受国际信用卡）</td><td>是（中国大陆配送，顺丰）</td><td>DDP预收</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.specialized.com.cn/cn/zh/faq">specialized.com.cn</a></td></tr>
+      <tr data-v="不合格"><td>④</td><td class="dom">Specialized 国际站（specialized.com）</td><td>美国</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td><b>否</b>（官方原文仅送货至美国境内实体地址）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.specialized.com/cz/en/faq">specialized.com</a></td></tr>
+      <tr data-v="不合格"><td>④</td><td class="dom">Trek（含 Lidl-Trek 队服渠道）</td><td>美国</td><td>整车/配件/队服</td><td>否</td><td>未能证实</td><td><b>否</b>（各区域站仅送本国，且明文不接受转运地址）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://www.trekbikes.com/jp/ja_JP/customer_service/">trekbikes.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Giant 官方商城（e.giant.com.cn）</td><td>中国</td><td>整车/配件</td><td><b>是</b></td><td>未能证实（中国商城支付方式清单本轮未取得）</td><td>是（中国境内配送）</td><td>DDP预收</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://e.giant.com.cn/">e.giant.com.cn</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Scott</td><td>瑞士</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（robots 含 /cn/zh/ 中国站，但无跨境直邮说明）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.scott-sports.com/robots.txt">scott-sports.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Merida 美利达</td><td>中国台湾/中国大陆</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td>未能证实（中国由 merida.cn 本地运营）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.merida.cn/">merida.cn</a></td></tr>
+      <tr data-v="不合格"><td>④</td><td class="dom">Cannondale</td><td>美国</td><td>整车/配件</td><td>未能证实</td><td>未能证实</td><td><b>否</b>（官方帮助中心明文不发货美国与加拿大以外）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://support.cannondale.com/hc/en-us/articles/1500009060141-Shipping-and-Pickup-Information">support.cannondale.com</a></td></tr>
+      <tr data-v="不合格"><td>④</td><td class="dom">Buycycle</td><td>德国</td><td>二手整车</td><td>否</td><td>未能证实</td><td><b>否</b>（官方配送国家清单不含中国）</td><td>必须转运</td><td><span class="badge b-bad">不合格</span></td><td><span class="pri none">—</span></td><td class="url"><a href="https://buycycle.zendesk.com/hc/en-us/articles/20377496513937-Where-do-you-ship">buycycle.zendesk.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Bike Exchange</td><td>澳大利亚</td><td>二手/新整车</td><td>未能证实</td><td>未能证实</td><td>未能证实（平台型，配送由各商户决定）</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.bikeexchange.com/">bikeexchange.com</a></td></tr>
+      <tr data-v="未能证实"><td>④</td><td class="dom">Bikesale</td><td>美国</td><td>二手整车</td><td>未能证实</td><td>未能证实</td><td>未能证实</td><td>必须转运</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.bikesale.com/">bikesale.com</a></td></tr>
+
+      <tr data-v="合格"><td>⑤</td><td class="dom">亚马逊海外购（amazon.cn）</td><td>美国/德国/英国/日本</td><td>全品类（骑行配件与装备为主）</td><td><b>是</b></td><td>国际信用卡（官方帮助页列「Credit Card (International)」）；<b>银联：未能证实</b>（仅银联国际新闻稿）</td><td><b>是</b>（官方明示支持中国除港澳台地区之外全境配送）</td><td>DDP预收</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★★</span></td><td class="url"><a href="https://www.amazon.cn/dp/B0C37FRYV5">amazon.cn/dp/B0C37FRYV5</a></td></tr>
+      <tr data-v="未能证实"><td>⑤</td><td class="dom">Amazon.com 官网直邮（非海外购通道）</td><td>美国</td><td>全品类</td><td>未能证实</td><td>国际信用卡（同亚马逊口径）</td><td>未能证实（中国是否适用 Import Fees Deposit 无官方原文）</td><td>DDP预收</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=G9UHGT37MYD2EJPL">amazon.co.uk</a></td></tr>
+      <tr data-v="有条件合格"><td>⑤</td><td class="dom">eBay（GSP / EIS）</td><td>美国</td><td>全品类（含二手整车）</td><td>未能证实</td><td>间接（中国卡无官方说明；银联为机构转述）</td><td><b>是</b>（官方可送达国家清单含 China/CN）</td><td>到岸缴税</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://pages.ebay.com/international-shipping/cn/">pages.ebay.com/international-shipping/cn</a></td></tr>
+      <tr data-v="未能证实"><td>⑤</td><td class="dom">Jenson USA</td><td>美国</td><td>整车/配件</td><td>未能证实</td><td>未能证实（官方仅提及国际银行转账/国际订单）</td><td>间接（国际订单经 UPS/USPS/FedEx）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.jensonusa.com/customer-service/faqs">jensonusa.com</a></td></tr>
+      <tr data-v="未能证实"><td>⑤</td><td class="dom">Backcountry / Competitive Cyclist</td><td>美国</td><td>整车/配件/骑行服</td><td>未能证实</td><td>未能证实</td><td>未能证实（官方「可配送国家清单」本轮未取得）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.competitivecyclist.com/info/shipping-policy">competitivecyclist.com</a></td></tr>
+      <tr data-v="未能证实"><td>⑤</td><td class="dom">BikeTiresDirect</td><td>美国</td><td>轮胎/配件/整车（美境）</td><td>未能证实</td><td>未能证实</td><td>间接（官方提供国际空邮/快递，含美国境外）</td><td>到岸缴税</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td><td class="url"><a href="https://www.biketiresdirect.com/shipping">biketiresdirect.com</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">计数核对：合格 9 · 有条件合格 14 · 不合格 17 · 未能证实 42，合计 <b>82</b>，与第 1.1 节完全一致。推荐优先级：★★★ 2 家 · ★★ 8 家 · ★ 55 家 · — 17 家（合计 82）。</p>
+
+
+  <h3 id="s3-3">3.3 重判对照表（上游原判定 → 统一规则后判定）</h3>
+  <p class="lead">以下列出<b>全部</b>「上游原判定与统一规则后判定不一致」的站点及原因，供审计。未列出的站点表示上游判定与统一规则结果一致。</p>
+  <div class="tw">
+  <table>
+    <thead><tr><th>#</th><th>站点</th><th>上游原判定</th><th>统一规则后判定</th><th>差异原因</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td class="dom">Castelli</td><td>①组「未能证实」／②组「不合格」</td><td><span class="badge b-bad">不合格</span></td><td>两份文件口径冲突。以官方配送国家名单为准：意大利/欧盟/英国/瑞士/日本/挪威/澳大利亚/香港/新加坡/韩国，<b>无中国大陆</b>，属统一规则中的「官方明文排除中国大陆」。</td></tr>
+      <tr><td>2</td><td class="dom">Isadore</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-ok">合格</span></td><td>上游因「非 DDP」降级。统一规则把税负剥离为独立列；官方同时证实「受理 Visa/Mastercard/Amex/Diners 或 AliPay」与「单列 China 档 80 CNY」，两条硬性标准均成立。</td></tr>
+      <tr><td>3</td><td class="dom">Q36.5</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-ok">合格</span></td><td>官方 International Zone 2 名单明确含 China，且官方受理 Visa/Mastercard（强制 3DS），两项均为官方证实。</td></tr>
+      <tr><td>4</td><td class="dom">Alltricks</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-ok">合格</span></td><td>上游因「税负未查到」降级；税负已剥离为独立列。官方 Delivery 页以 country=CN 直接显示目的地 China，且官方支付页列 CB/Visa/Mastercard/Amex/Bancontact。</td></tr>
+      <tr><td>5</td><td class="dom">Ostroy</td><td><span class="badge b-unk">未能证实</span></td><td><span class="badge b-warn">有条件合格</span></td><td>上游以「税负处理无官方依据」为由降级；统一规则的判定不含税负项。官方明列卡种 + 官方称 ship just about everywhere（间接依据、无排除条款）＝有条件合格，税负另列。</td></tr>
+      <tr><td>6</td><td class="dom">Bike24</td><td>③组「合格」／④组「有条件合格」</td><td><span class="badge b-ok">合格</span></td><td>同一站点在两份文件中判定不同，但两处事实一致（可发中国、到岸缴税）。按统一规则「官方请境外客户用信用卡」+「中国运费 29.99 €」均官方证实 → 合格。已合并为一条。</td></tr>
+      <tr><td>7</td><td class="dom">Rose Bikes</td><td>③组「合格」／④组「有条件合格」</td><td><span class="badge b-ok">合格</span></td><td>同上：两处事实一致，仅档位不同。官方配送国家清单含 China、官方条款列 MasterCard/VISA → 合格。已合并为一条。</td></tr>
+      <tr><td>8</td><td class="dom">Bioracer</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>上游按「可向非欧发货 + 电商默认可刷卡」推定。但官方配送/退货页<b>未列任何支付方式清单</b>，支付侧无任何官方依据（含无排除性条款的间接依据）。</td></tr>
+      <tr><td>9</td><td class="dom">Gobik</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>同上：官方配送表可读，但官方未公布支付方式清单，支付侧无依据。</td></tr>
+      <tr><td>10</td><td class="dom">Vermarc</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>同上：官方仅公布运费与 DDU 条款，未公布支付方式清单。</td></tr>
+      <tr><td>11</td><td class="dom">Attaquer</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>履约侧官方证实（配送表含 China 行、CNY 门槛、DHL Express），但<b>支付方式完全未查到</b>，支付侧无任何官方依据。</td></tr>
+      <tr><td>12</td><td class="dom">Velocio</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>税负侧官方明示 DDP（最贴合优先渠道），但履约侧仅间接（「EU &amp; International」档未点名中国）、支付侧无依据 → 无法给出肯定判定。</td></tr>
+      <tr><td>13</td><td class="dom">Pedla</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>履约侧仅间接（国际满 AUD 400 免运），支付侧无依据。</td></tr>
+      <tr><td>14</td><td class="dom">Eliel</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>履约侧仅间接（官方称支持国际配送、结账选国家，未点名中国），支付侧无官方清单。</td></tr>
+      <tr><td>15</td><td class="dom">Bike-Discount / H&amp;S</td><td>③组「有条件合格」／④组「有条件合格（整车存疑）」</td><td><span class="badge b-unk">未能证实</span></td><td>两处来源事实一致（均可刷卡、均为到岸缴税），但<b>两处都未能取得中国方向的运营取值</b>——既无中国运费也无中国承运结论，履约侧无任何官方依据。已合并为一条。</td></tr>
+      <tr><td>16</td><td class="dom">Bike-Components</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>官方运费页证实中国标准运费 54.99 €，但支付页被站点 robots 拦截、支付侧无依据。</td></tr>
+      <tr><td>17</td><td class="dom">Canyon 国际站</td><td>「有条件合格（经中国站）」</td><td><span class="badge b-unk">未能证实</span></td><td>上游借中国站结果给国际站升级。统一规则只认该域名自身的官方依据——国际站本轮仅有 robots.txt，支付与履约均无依据。</td></tr>
+      <tr><td>18</td><td class="dom">Colnago</td><td>「不合格（整车）／有条件（配件）」</td><td><span class="badge b-unk">未能证实</span></td><td>上游给出双值，统一规则要求单值。整车确无跨境通道（门店自提或厂方白手套交付）、配件为全球配送 10 天到岸缴税，但<b>支付方式未取得官方依据</b> → 未能证实；「整车不可跨境」的事实保留在限制列。</td></tr>
+      <tr><td>19</td><td class="dom">Specialized 中国官网</td><td>「合格（本地站）」</td><td><span class="badge b-bad">不合格</span></td><td>该站官方 FAQ 仅列支付宝与微信支付，<b>不接受国际信用卡</b>，不满足合格条件①；且为境内零售站，明确不对个人跨境销售。</td></tr>
+      <tr><td>20</td><td class="dom">Trek（含 Lidl-Trek）</td><td>①组「有条件合格（须走中国本地官渠）」／④组「不合格」</td><td><span class="badge b-bad">不合格</span></td><td>上游①因中国区境内销售而升级。统一规则只认跨境链路：各区域站仅送本国、明文不接受转运地址 → 不合格。中国区销售属境内官渠，不构成海淘通道。已合并为一条。</td></tr>
+      <tr><td>21</td><td class="dom">Giant 官方商城</td><td>「合格（本地站）」</td><td><span class="badge b-unk">未能证实</span></td><td>境内履约侧成立，但<b>中国商城支付方式清单本轮未取得</b>，支付侧无官方依据 → 未能证实。</td></tr>
+      <tr><td>22</td><td class="dom">Jenson USA</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>上游按「国际可发货 + 关税到付」判定；但官方支付侧无卡种清单（仅提及国际银行转账与国际订单），支付侧无依据。</td></tr>
+      <tr><td>23</td><td class="dom">BikeTiresDirect</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="badge b-unk">未能证实</span></td><td>上游按「国际可发货 + 关税到付」判定；支付侧完全无官方依据 → 未能证实。</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">未列入本表的 59 个站点，上游判定与统一规则结果一致。<b>差异方向总结</b>：① 有 8 站由「有条件合格」下调为「未能证实」，原因全部是上游把「电商默认可刷卡」当作支付依据（支付侧实无官方文本）；② 有 3 站由「有条件合格」上调为「合格」，原因是上游把「非 DDP」计入判定，而统一规则将其剥离为独立列；③ 有 1 站由「未能证实」上调为「有条件合格」，原因为同一逻辑的反向应用；④ 有 4 处是<b>多值/多文件冲突的合并统一</b>（Castelli、Bike24、Rose、Bike-Discount、Trek 等）。</p>
+
+</section>
+
+<!-- ==================== 4 逐站详情 ==================== -->
+<section id="s4" class="wrap">
+  <h2><span class="num">04</span>分品类逐站详情</h2>
+  <p class="lead">每站一卡：主页 · 品类 · 结账币种是否含 CNY · 支付与中国卡 · 直邮中国 · 税负方式 · 限制 · 价格水平 · 采集可行性 · 判定与理由 · 来源。</p>
+  <h3>① 职业车队官方商店与官方队服制造商直营店（13 站）</h3>
+  <p class="gnote">现役世巡赛车队官方商店与官方队服制造商直营店。Lidl-Trek 队服渠道＝Trek 官方站点（trekbikes.com），非独立域名，已并入第 ④ 组 Trek 条；Lotto-Intermarché 队商店（lotto-intermarche.be）为相邻渠道，上游未核实其配送与税负，本报告不纳入矩阵。</p>
+  <div class="grid2">
+    <div class="site" data-v="有条件合格">
+      <h4>Team Visma | Lease a Bike 官网商店 <span class="loc">荷兰</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.teamvismaleaseabike.com/shop-delivery/">teamvismaleaseabike.com/shop/</a></dd>
+        <dt>品类</dt><dd>队服、骑行服（男/女/童）、休闲服、车迷品、骑行配件、零部件</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>Adyen 收单，受理 Visa/Mastercard/American Express、PayPal、iDEAL、礼品卡；不强制第三方支付。官方支付页明示：支付被拒会被判定为欺诈风险，「This can happen when you use a credit card from another country」→ <b>可用但带官方风控提示</b>；未提银联</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方配送表列明 China：€47.95，4–7 个工作日，亚洲方向承运 UPS</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方页脚注：买家承担 duties、taxes、customs clearance fees）</dd>
+        <dt>限制</dt><dd>整车不可邮寄（官方自行车销售页「We do not ship bicycles」，仅到店自提）</dd>
+        <dt>价格水平</dt><dd>2026 男式队版骑行衫 €85.00（≈ ¥638）；对华运费 €47.95（≈ ¥360）</dd>
+        <dt>采集可行性</dt><dd>robots 允许抓取，仅禁 /cpresources/、/sponsorportal/、/uploads/private/ 等内部路径；<b>未声明 sitemap</b>；反爬中等；无公开商品 feed/API</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方同时证实可直邮中国与受理国际信用卡，但官方明示使用境外信用卡会被判定为欺诈风险，且为到岸缴税。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.teamvismaleaseabike.com/shop-delivery/">shop-delivery</a> · <a href="https://www.teamvismaleaseabike.com/shop-payment/">shop-payment</a> · <a href="https://www.teamvismaleaseabike.com/team-visma-lease-a-bike-bicycle-sales/">bicycle-sales</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>INEOS Grenadiers 官方商店 <span class="loc">英国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://store.netcompanyineos.com/">store.netcompanyineos.com</a></dd>
+        <dt>品类</dt><dd>队服、骑行服、休闲服、车迷品</dd>
+        <dt>结账币种</dt><dd>英国站 GBP；国际订单经 Global-e 结算，页面称以本地货币展示 → 是否含 CNY <b>未能证实</b></dd>
+        <dt>支付与中国卡</dt><dd>国际订单由 Global-e 作为 seller-on-record 扣款，官方列明支持 mastercard / visa / amex / paypal；不强制第三方支付；中国卡可用性未单独证实</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方称经 Global-e 可发往「over 100 destinations worldwide」；排除名单为 Cuba、Iran、North Korea、Ukraine、Syria、Russia，<b>不含中国但未逐条列明中国</b>；快件经 DHL</dd>
+        <dt>税负方式</dt><dd><b>DDP预收（可选）</b>。官方：「For certain shipping destinations you will be offered the option to pre-pay duties and taxes at checkout」；未选预付则按「shipping rates do not include customs charges or import duties」到岸缴税</dd>
+        <dt>限制</dt><dd>未查到品牌限制</dd>
+        <dt>价格水平</dt><dd>未取到具体商品单价（结价随配送国与币种浮动）</dd>
+        <dt>采集可行性</dt><dd>Shopify 标准 robots，Allow:/ 仅禁交易类路径；<b>Sitemap: /sitemap.xml</b>；另有 UCP/MCP 端点声明；反爬低</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 排除名单不含中国、经 Global-e 覆盖 100+ 目的地且可选结账预缴关税，但官方未逐条列明中国，中国卡可用性亦未单独证实，须以结账实测为准。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://store.netcompanyineos.com/pages/shipping-policy">shipping-policy</a> · <a href="https://store.netcompanyineos.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Red Bull-BORA-hansgrohe 官方商店 <span class="loc">德国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://customerservice.redbullshop.com/hc/en-us/sections/27269814144413-Shipping-and-delivery">redbullshop.com（队服专区）</a></dd>
+        <dt>品类</dt><dd>队服、骑行服、休闲服、配件（93 件在售）</dd>
+        <dt>结账币种</dt><dd>EUR（en-int）；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>未查到（因不配送中国大陆未继续核）</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方配送国家表为欧洲多国 + 亚洲（阿塞拜疆、巴林、格鲁吉亚、<b>香港</b>、印度、印尼、以色列、日本、科威特、黎巴嫩、马来西亚、马尔代夫、阿曼、巴基斯坦、菲律宾、卡塔尔、沙特、新加坡、韩国、斯里兰卡、泰国、土耳其、阿联酋）——<b>无中国大陆</b>；官方明文：名单外国家「currently not possible」</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b>（官方不配送，无到华税负安排）</dd>
+        <dt>限制</dt><dd>不配送美国/加拿大（转 redbullshopus.com）及名单外国家</dd>
+        <dt>价格水平</dt><dd>RBH 冬季毛球帽 €29.95；Red Bull-BORA-hansgrohe 冬季卫衣 €54.95</dd>
+        <dt>采集可行性</dt><dd>robots 禁 /*/cart、/*/my-account/、/*/checkout/；屏蔽 CazoodleBot、MJ12bot、dotbot、Gigabot、AhrefsBot；Sitemap: sitemap-index.xml；商品/集合页可抓</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方配送国家表以香港替代、无中国大陆，无法直邮中国。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://customerservice.redbullshop.com/hc/en-us/sections/27269814144413-Shipping-and-delivery">Shipping and delivery</a> · <a href="https://www.redbullshop.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Soudal Quick-Step（The Wolfpack Webshop） <span class="loc">比利时</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://thewolfpack.shop/">thewolfpack.shop</a></dd>
+        <dt>品类</dt><dd>队服、骑行服（含 2026 电光绿 Castelli 版）、车迷品、国家冠军衫</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>页面称「several secure payment methods」（未逐条列出）+ 礼品卡；官方支付页明确：支付被拒会被「flagged as a security measure」，「for example, when using an international credit card」→ 境外卡有官方风控提示</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。全站无配送政策页（/policies/shipping-policy 为空、/pages/faq 不存在），配送信息未在任何官方页披露</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b>（无关税与配送政策可依）</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>2026 水壶 €7,50；页面标注「Free shipping from €100,-」</dd>
+        <dt>采集可行性</dt><dd>Shopify 标准 robots，Allow:/ 仅禁交易类；Sitemap: /sitemap.xml（含 products/collections/pages，实测可解析）；反爬低</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 站点确为该队官方（客服邮箱指向队方域名），但全站无配送与关税政策页，无法证实能否直邮中国。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://thewolfpack.shop/pages/payment">payment</a> · <a href="https://thewolfpack.shop/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Groupama-FDJ United 官方商店 <span class="loc">法国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.boutique-groupama-fdj.fr/">boutique-groupama-fdj.fr</a>（2026 队服由 Bioracer 制造）</dd>
+        <dt>品类</dt><dd>队服、骑行服、运动休闲、goodies</dd>
+        <dt>结账币种</dt><dd>未能证实（站点内容反复无法正常取回）</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>（配送政策页取不到）</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>robots 未取到有效内容（仅返回站点首页 HTML）；店铺域内容无法正常解析，采集前景不明</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 官方队服渠道由队站 FAQ 指向该店，但配送与支付政策均未能证实。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.equipecycliste-groupama-fdj.fr/en/faq/">equipecycliste-groupama-fdj.fr/en/faq</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>UAE Team Emirates XRG（Emirates Official Store） <span class="loc">阿联酋</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.emirates.store/shipping-policy">emirates.store（EOS Store）</a></dd>
+        <dt>品类</dt><dd>队服（PISSEI 制造）、休闲服、Emirates 周边、模型</dd>
+        <dt>结账币种</dt><dd>AED / USD / GBP / EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>受理 Visa / MasterCard / American Express；官方称「Cards that are not internet enabled cannot be accepted online」；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方：「We ship internationally from the United Arab Emirates... a flat rate of USD 25 anywhere else in the world」，国际约 5–10 天，需本人签收</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方：运费不含目的地 VAT、关税与进口费，「Any import duties and taxes are the responsibility of the customer and will need to be paid to the courier company」</dd>
+        <dt>限制</dt><dd>大型机模/行李箱运费另议；仅换货不退款</dd>
+        <dt>价格水平</dt><dd>2026 短袖骑行衫 $109.00（≈ ¥729）；国际运费统一 $25（≈ ¥167）</dd>
+        <dt>采集可行性</dt><dd>robots：User-agent * / Allow: / / 仅禁 /umbraco/；<b>未声明 sitemap</b>；Umbraco CMS，无公开商品 feed/API</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 可直邮中国（全球统一 USD 25）且受理国际信用卡，但官方以「anywhere else in the world」表述、未点名中国，属间接依据，且为到岸由承运商代收。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.emirates.store/shipping-policy">shipping-policy</a> · <a href="https://www.emirates.store/faq">faq</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Alpecin-Premier Tech 官方队服渠道 <span class="loc">比利时</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.alpecin-premiertech.com/">alpecin-premiertech.com</a>（2026 赛季队名由 Alpecin-Deceuninck 变更为 Alpecin-Premier Tech）</dd>
+        <dt>品类</dt><dd>队服（KALAS 制造）</dd>
+        <dt>结账币种</dt><dd>队站无商城；官方复刻衫经 KALAS（EUR）发售</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>（官方仅指引到 KALAS，未披露配送地）</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>2026 官方复刻骑行衫经 Canyon 发售 €99.99（≈ ¥750）</dd>
+        <dt>采集可行性</dt><dd>队站 robots.txt 两次实抓均返回空/失败，无结论</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 该队无独立官方商店，复刻衫由 KALAS 及各经销商发售，本队口径下配送与支付均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.alpecin-premiertech.com/news/merci-poupou-tdf2026">alpecin-premiertech.com</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Movistar Team 官方商店（Deporvillage 运营） <span class="loc">西班牙</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://movistarteam.com/pagina-principal-del-sitio-2">movistarteam.com（Official Shop by Deporvillage）</a></dd>
+        <dt>品类</dt><dd>队服、骑行服、配件（Gobik 等）</dd>
+        <dt>结账币种</dt><dd>未能证实（平台以 EUR 为主）</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方队站未披露配送地；仅有第三方优惠站称平台「envíos a cualquier país del mundo」，属第三方转述</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>官方队站无独立商店域，采集须走 Deporvillage 平台；该平台帮助页与 robots.txt 均被安全策略拦截</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 官方店由第三方平台运营，配送中国与否无官方页佐证。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://movistarteam.com/pagina-principal-del-sitio-2">movistarteam.com</a> · <span class="tag t-3rd">第三方转述</span><a href="https://www.ahorren.es/cupones/deporvillage.com">ahorren.es</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Santini 官方直营店 <span class="loc">意大利</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.santinicycling.com/">santinicycling.com</a></dd>
+        <dt>品类</dt><dd>骑行服、队服（含 Lidl-Trek 复刻版）、UCI 官方衫、配件</dd>
+        <dt>结账币种</dt><dd>EUR（多语言/多区）；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方 FAQ：「payed in using PayPal or directly by credit card」；信用卡经 Banca Sella 加密通道处理；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方配送费按区域，「Reste du monde」（世界其他地区）满 €300 免运费，发 DHL Express 带跟踪</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税（DAP）</b>。官方条款：「These prices are to be considered DAP ... do not include any additional taxes (VAT), duties or import tariffs required by the customs authorities of the destination country」</dd>
+        <dt>限制</dt><dd>仅零售不对公；退货政策：意大利 &lt;€200、欧盟及非欧盟 &lt;€300 退货运费自理</dd>
+        <dt>价格水平</dt><dd>本轮未取到单品单价；免运门槛 €300（非欧/世界其他地区）</dd>
+        <dt>采集可行性</dt><dd>Shopify robots，禁 /cart、/orders、/checkout(s)、/account、/policies/、/search；对 AhrefsBot/MJ12bot/Nutch 有 Crawl-delay 或全禁；Sitemap: /sitemap.xml</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方明确设「世界其他地区」档并受理信用卡，但未点名中国，属间接依据；且为到岸缴税（DAP）。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.santinicycling.com/en/pages/termini-e-condizioni-di-vendita">条款</a> · <a href="https://www.santinicycling.com/fr/content/livraison-1">livraison</a> · <a href="https://www.santinicycling.com/fr/pages/faq">faq</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Bioracer 官方直营店 <span class="loc">比利时</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://shop.bioracer.com/shipping-and-returns/">shop.bioracer.com</a>（Groupama-FDJ United 2026 队服制造商）</dd>
+        <dt>品类</dt><dd>骑行服、队服、定制</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>。官方配送/退货页与条款页均未列支付方式清单</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方：「Fuera de Europa 34,95 € / Envío gratis desde 250 €」；不配送名单为 Belarus、Cuba、Iran、Israel、Myanmar、North Korea、Palestine Territory、Russia、Sierra Leone、South Sudan、Ukraine，<b>不含中国</b>；全部订单自比利时发出</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方：「We are not responsible for your local duties or taxes」</dd>
+        <dt>限制</dt><dd>上述 11 国不可配送</dd>
+        <dt>价格水平</dt><dd>Groupama-FDJ United Icon Jersey $96.00（USD 标价，≈ ¥642）</dd>
+        <dt>采集可行性</dt><dd>Shopify 标准 robots，Allow:/ 仅禁交易类；Sitemap: /sitemap.xml</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 履约侧仅有间接依据（不排除中国），支付侧无任何官方文本，两项中任一项无官方依据即不得给肯定判定。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://shop.bioracer.com/shipping-and-returns/">shipping-and-returns</a> · <a href="https://shop.bioracer.com/es/pages/envios-y-devoluciones">envios-y-devoluciones</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Gobik 官方直营店 <span class="loc">西班牙</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://gobik.com/en">gobik.com</a>（INEOS Grenadiers Team Kit 制造商）</dd>
+        <dt>品类</dt><dd>骑行服、队服、配件</dd>
+        <dt>结账币种</dt><dd>EUR（Shopify 多币种）；CNY 是否提供未证实</dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>（官方未公布支付方式清单）</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。配送表「Resto del mundo」：运费 €20，满 €150 免运，5–6 个工作日（空运）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方条款：「Los posibles aranceles, impuestos y otros cargos ... son responsabilidad del comprador」</dd>
+        <dt>限制</dt><dd>≥€500 订单须签收</dd>
+        <dt>价格水平</dt><dd>UNISEX Gossy 短袖骑行衫 €146.00（≈ ¥1,095）</dd>
+        <dt>采集可行性</dt><dd>Shopify 标准 robots，Allow:/ 仅禁交易类；Sitemap: /sitemap.xml</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 官方配送表覆盖「世界其他地区」，但支付方式清单缺失，支付侧无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://gobik.com/policies/shipping-policy">shipping-policy</a> · <a href="https://gobik.com/en/policies/terms-of-service">terms-of-service</a> · <a href="https://gobik.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Vermarc 官方直营店 <span class="loc">比利时</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.shop.vermarcsport.com/conditions">shop.vermarcsport.com</a></dd>
+        <dt>品类</dt><dd>骑行服、队服、定制</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>（官方未公布支付方式清单）</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方运费：比利时/荷兰/卢森堡 €5，欧盟其他国家 €15，<b>欧盟以外 €30</b></dd>
+        <dt>税负方式</dt><dd><b>到岸缴税（DDU）</b>。官方：欧盟外订单按「Delivery Duties Unpaid」发出，VAT 在结账时扣除，「Clearance fees, taxes, and charges ... will be borne by the customer」</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>本轮未取到具体单品价（Teamstore 为活动期定价）</dd>
+        <dt>采集可行性</dt><dd>robots.txt 实抓返回空（未取得）；站点为 Teamstore/Brikl 类平台，采集须逐店确认</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 履约侧间接（欧盟以外 €30 档、无排除条款），支付侧无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.shop.vermarcsport.com/conditions">conditions</a> · <a href="https://vermarc.mybrikl.com/en/terms/">teamstores terms</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Kalas 官方直营店 <span class="loc">捷克</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://kalas.cc">kalas.cc</a>（Alpecin-Premier Tech 队服制造商）</dd>
+        <dt>品类</dt><dd>骑行服、队服、定制</dd>
+        <dt>结账币种</dt><dd>EUR（kalas.cc EN）；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官网仅称「sells to more than 50 countries worldwide」，未见可配送国家清单</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>定制款不支持因尺码错误的退换</dd>
+        <dt>价格水平</dt><dd>Women's cycling long sleeve jersey TEMPS | PASSION Z6：原 €139 → €125.10（≈ ¥938）</dd>
+        <dt>采集可行性</dt><dd>robots.txt 两次实抓均报错；另发现商品页由带 UUID 前缀的 myshop.kalas.cc 子域承载，采集目标域不稳定</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 配送、税负、支付、robots 四项均无官方可追溯依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://kalas.cc/">kalas.cc</a> · <span class="tag t-3rd">第三方媒体</span><a href="https://www.joggen-online.de/Sportausstattung/Sportausstattung-von-Kalas/">joggen-online.de</a></p>
+    </div>
+  </div>
+
+  <h3>② 高端骑行服装品牌官方站（20 站）</h3>
+  <p class="gnote">含 2 家本报告重判为「合格」的品牌（Isadore、Q36.5）与 4 家「不合格」（MAAP、Castelli、Alé、Sportful）。原「高端骑行服品牌」清单共 20 站，Castelli 与第 ① 组重复，已合并至此并在第 2.6 节注明。</p>
+  <div class="grid2">
+    <div class="site" data-v="有条件合格">
+      <h4>Rapha（含 RCC） <span class="loc">英国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.rapha.cc">rapha.cc</a></dd>
+        <dt>品类</dt><dd>骑行服、配件、RCC 会员资格与 Clubhouse 限定系列</dd>
+        <dt>结账币种</dt><dd><b>不含 CNY</b>（官方条款列 GBP/USD/CAD/EUR/CHF/JPY/NOK/SEK/DKK/TWD；语言索引无 zh-cn / cn）</dd>
+        <dt>支付与中国卡</dt><dd>官方受理 Visa、Mastercard、Amex、JCB、Discover、<b>Union Pay（Credit only，仅贷记卡）</b>、Diner's Club，数字钱包 PayPal 与 Apple Pay；不强制第三方支付。风控在发卡行侧（官方提示 CMR 冻结需联系发卡行解除）</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方配送表列为加拿大、日本、台湾、韩国、「Rest of World」，<b>未点名中国大陆</b>；<b>并明文不接受 freight forwarders、lockers、depots、PO Box、军事基地等第三方地址</b>（即转运绕道不被官方承认）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方 DDP 名单为加拿大/日本（APAC 页扩至澳大利亚、韩国、日本、加拿大），中国大陆不在任何 DDP 名单内</dd>
+        <dt>限制</dt><dd>不接受转运代理/PO Box；官方提示含液体类（如骑行护臀膏）受海关规定限制</dd>
+        <dt>价格水平</dt><dd>Pro Team 锁鞋（美国站）US$380.00 ≈ ¥2,542，对比国内天猫官方旗舰店 ¥3,300，海外官网低约 30%</dd>
+        <dt>采集可行性</dt><dd>robots Allow:/ 仅禁 /search、/my-account、/basket、/cart、/login、/checkout；Sitemap: /sitemap.xml（多区域商品 sitemap，含 zh-ap/zh-tw，<b>无 cn</b>）；反爬中等</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方受理银联贷记卡（中国卡有明确路径），履约侧仅「Rest of World」档间接覆盖且不接受转运地址，属有条件。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options">shipping options</a> · <a href="https://support.rapha.cc/en/articles/516-checkout-and-payment-support">checkout &amp; payment</a> · <a href="https://www.rapha.cc/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Assos <span class="loc">瑞士</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.assos.com">assos.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件（含队服 replica 线）</dd>
+        <dt>结账币种</dt><dd>按区域切换本币；是否支持 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>官方条款：可用信用卡或 PayPal，受理 <b>VISA、Mastercard、American Express</b>；支付服务商为 Adyen、PayPal、Apple Pay、Klarna；<b>未列银联</b></dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方运费表设 EUROPE / SWITZERLAND / UK / NORWAY / SWEDEN / DENMARK / AUSTRALIA / CANADA / <b>REST OF THE WORLD (EUR)</b> 各档（100 EUR 以内 15 EUR，以上免运费）；<b>未逐国确认中国</b></dd>
+        <dt>税负方式</dt><dd><b>到岸缴税（DAP）</b>。官方以 Incoterms 明示：非欧盟 DDP 名单为 US/CH/LI/GB/NO/IS/IL/MC/SM/AD/JE/GG/IM/FO/IC/AU，「All other non-EU destinations shipped as DAP ... These costs are your responsibility」</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>本轮未抓取单品价格</dd>
+        <dt>采集可行性</dt><dd>robots 主要 Allow:/，Disallow 集中 /search/、/checkout/、/cgi-bin/ 等；Sitemap 索引含约 27 个语言子图，<b>含 cn/sitemap.xml</b>；反爬低—中</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方设「REST OF THE WORLD」档且受理国际卡，但未点名中国；中国大陆适用 DAP 到岸缴税。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.assos.com/gb/customer-service/?section=shipping">shipping</a> · <a href="https://www.assos.com/sg/customer-service/?section=terms-and-conditions">terms</a> · <a href="https://www.assos.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>MAAP <span class="loc">澳大利亚</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://maap.cc">maap.cc</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>未查到是否含 CNY</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方支持站 Shipping &amp; Delivery 章节载明：<b>中国大陆与韩国仅由 MAAP 的本地合作伙伴服务，maap.cc 不向这两国发货</b>；分区目的地含香港、澳门，不含中国大陆</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b>（官网不向中国大陆发货）</dd>
+        <dt>限制</dt><dd>已停止配送国家含 Iran、Israel、Jamaica、North Macedonia、Pakistan、Tajikistan、Kazakhstan、Puerto Rico、Bolivia</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>robots Allow:/ 仅少量内部路径禁止；声明全站/collections/pages/products 四类 sitemap，含 eu/uk/us/sg/hk/tw 区域站（<b>无 cn</b>）；反爬低。<b>实测 maap.cc/products.json?limit=1 抓取失败</b>，不得当作可用入口</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方明确不向中国大陆发货。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://support.maap.cc/">support.maap.cc</a> · <a href="https://maap.cc/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Le Col <span class="loc">英国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://lecol.cc">lecol.cc</a></dd>
+        <dt>品类</dt><dd>骑行服、配件（含 Custom 定制/车队线）</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到；实测 products.json 价格以 GBP 计价</dd>
+        <dt>支付与中国卡</dt><dd>官方 FAQ：「We offer payments via debit/credit card, Paypal and Google Pay. Some international countries offer additional methods such as Klarna, Multibanco etc.」；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方：「We offer DHL international Express Delivery to all major overseas locations」（1–5 天）；<b>未给出配送国家白名单</b>。另注官方条款：对非英国订单存在被要求提供英国地址的情形</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方：欧盟或美国以外「import duties and taxes may be applied by your local authority ... we have no control over the levied import duties/taxes applied」</dd>
+        <dt>限制</dt><dd>不投递 PO Box 与 BFPO 地址；不提供免费退货、退货不退原运费</dd>
+        <dt>价格水平</dt><dd>Sport Cargo Bib Tights II <b>£200.00</b>（实测 products.json 读取，2026-10-14）</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow 覆盖 /policies/、/search、/cart 等；Sitemap: /sitemap.xml。<b>实测 lecol.cc/products.json?limit=1 可正常返回完整商品 JSON</b>——本轮 20 站中唯一实测确认可直接使用的公开商品 JSON 入口</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方受理信用卡且明示 DHL 国际快递，但未列国别白名单，中国可达性属间接依据，且为到岸缴税。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://lecol.cc/fr-tt/pages/lecol-faqs">lecol-faqs</a> · <a href="https://www.lecol.cc/robots.txt">robots.txt</a> · <a href="https://lecol.cc/products.json?limit=1">products.json</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Castelli <span class="loc">意大利</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.castelli-cycling.com">castelli-cycling.com</a>（Soudal Quick-Step 官方技术服装制造商）</dd>
+        <dt>品类</dt><dd>骑行服、配件、职业车队队服</dd>
+        <dt>结账币种</dt><dd>EUR/GBP/USD/CHF/JPY 等（按配送国）；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方配送国家表为意大利、欧盟各国、英国、瑞士、日本、挪威、澳大利亚、<b>香港</b>、新加坡、韩国，承运 <b>UPS</b>，<b>无中国大陆</b>；官方明文「We only offer shipping and delivery services to the countries selectable on our website」</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b>。官方 DDP 承诺（「The final order price includes VAT and any customs duties」）仅限其列出的配送国家，不含中国大陆</dd>
+        <dt>限制</dt><dd>不配送瓜德罗普、马提尼克、留尼汪、法属圭亚那等 DOM-TOM，以及 San Marino、Livigno、Isle of Man、Jersey、Guernsey、Canary Islands、Liechtenstein</dd>
+        <dt>价格水平</dt><dd>本轮未取到具体单品价</dd>
+        <dt>采集可行性</dt><dd><b>反爬最强</b>：Request-rate: 1/10、Crawl-delay: 10、Visit-time: 0400-0845（仅限 UTC 04:00–08:45），并屏蔽近百年化 UA（含 Wget、Exabot、BLEXBot、MauiBot）；Sitemap: /sitemap.xml</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方配送国家名单不含中国大陆（第 2.6 节差异说明的基准事实）。另注：Castelli 有中国境内京东官方旗舰店，属境内零售，非跨境通道。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.castelli-cycling.com/IT/en/customer-service/shipping-times-and-costs">shipping-times-and-costs</a> · <a href="https://www.castelli-cycling.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Pas Normal Studios <span class="loc">丹麦</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://pasnormalstudios.com">pasnormalstudios.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>官方 FAQ：Mastercard、VISA、Dankort、American Express 为常见卡种，部分国家可用 Klarna，丹麦订单支持 MobilePay；<b>官方明示「Our card transactions are 100% 3D secured」</b>（强制 3DS）；支付服务商为 Quickpay、Shopify Payments、Klarna</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方表述为全球配送，承运 FedEx / UPS / DHL；<b>中国大陆未逐国确认</b>。满 €250 免运费，未满收 €25–40</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方明示 DDP 仅适用英国、瑞士、挪威；其他所有地区（含中国）进口税由客户承担</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow 覆盖 /policies/、/section/*、/commodity/*；反爬低</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方受理主流国际卡并明示全球配送（FedEx/UPS/DHL），但未点名中国，属间接依据，且到岸缴税。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://pasnormalstudios.com/pages/faq">faq</a> · <a href="https://us.pasnormalstudios.com/pages/terms">terms</a> · <a href="https://pasnormalstudios.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>La Passione <span class="loc">意大利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://lapassione.cc">lapassione.cc</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>条款载明价格以 EUR 计价；是否含 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方销售条款称以 DHL / FedEx 全球配送，「Rest of the World」运费 €20，但中国大陆是否在可选目的地内未查到</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b>（官方条款未见关税/税费承担条款原文）</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd><b>robots.txt 本身被其规则禁止自动访问</b>，无法取得结论，是否可合规采集须人工确认</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 配送、税负、支付三项均无官方依据可用。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.lapassione.cc/pages/terms-conditions">terms-conditions</a> · <a href="https://lapassione.cc/robots.txt">robots.txt（不可访问）</a></p>
+    </div>
+    <div class="site" data-v="合格">
+      <h4>Isadore <span class="loc">斯洛伐克</span> <span class="badge b-ok">合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://isadore.com">isadore.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd><b>含 CNY</b>。官方条款：价格以 EUR、GBP、USD、JPY、CZK、CHF、<b>CNY</b> 计价</dd>
+        <dt>支付与中国卡</dt><dd>官方 FAQ：「Card Payment — Visa, Mastercard, American Express, Diners Club <b>or AliPay</b>. It is also possible to make purchases using PayPal.」→ <b>官方明列支付宝，中国卡可用成立</b>；银联未列</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方 FAQ 运费章节单列「<b>Japan &amp; China</b>」档：标准配送 80 CNY（订单低于 1,200 CNY），满 1,200 CNY 免运费；快递 200 CNY；标准 6–7 天，快递 3–4 天</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方条款：英国本地履约、瑞士到货含税，<b>其余所有国家（含中国）关税与税费不含在商品价与运费内</b>，由收件人承担且不可退</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>Signature Winter Shoe Covers €70.00（≈ ¥525）；Thermal Leg Warmers €65.00（≈ ¥488）</dd>
+        <dt>采集可行性</dt><dd>robots 整体允许抓取商品页，但显式 <b>Disallow: /zh/</b>（中文目录对爬虫关闭）；反爬低；未发现公开商品 JSON feed</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 两项硬性标准均官方证实：官方明列支持 AliPay（中国可用支付方式）+ 官方 FAQ 单列 China 配送档与 CNY 运价。非 DDP，故优先级为 ★★。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://isadore.com/faq">faq</a> · <a href="https://isadore.com/faq/how-can-i-pay-for-isadore-products">how-can-i-pay</a> · <a href="https://isadore.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="合格">
+      <h4>Q36.5 <span class="loc">意大利</span> <span class="badge b-ok">合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.q36-5.com">q36-5.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>官方声明「Prices are quoted in Euros」；是否支持 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>官方《Order &amp; Payment》页：<b>Visa 与 Mastercard 仅接受 CES（3DS 安全电子交易）类交易</b>，传输经 SSL 加密；付款在发卡行确认后完成 → 国际卡可用，强制 3DS 属可完成的验证</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方《Shipping &amp; Delivery》国际分区名单中，<b>International Zone 2 明确包含 China</b>（同区含香港、日本、韩国、台湾、新加坡、澳大利亚、以色列等），该区运费 €30.00、2–3 天；全球满 €200 免运费</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方：非欧盟客户价格不含 VAT，「Local VAT and any applicable customs duties are the responsibility of the recipient and may be collected upon delivery」</dd>
+        <dt>限制</dt><dd>无法投递 Boîte Postale（邮政信箱）地址；以色列与澳大利亚仅提供快递</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品页抓取，Disallow 集中站内管理与 B2B 路径（/b2b/、/cms/）及筛选参数；sitemap 为多语言索引（<b>无中国站</b>）；反爬低</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 两项硬性标准均官方证实：官方明确受理 Visa/Mastercard（3DS）+ 官方国际分区名单明确含 China。非 DDP，优先级 ★★。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.q36-5.com/en-us/c/shipping-delivery/">shipping-delivery</a> · <a href="https://www.q36-5.com/en-us/c/order-payment/">order-payment</a> · <a href="https://www.q36-5.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Alé <span class="loc">意大利</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.alecycling.com">alecycling.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件、队服</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方 Rest of World 分四组：① 日本/新加坡/美国；② 英国；③ 澳大利亚、加拿大、韩国、台湾、UAE、沙特等；④ <b>香港</b>、印度、泰国、越南、巴西等——<b>四组名单均未出现中国大陆</b></dd>
+        <dt>税负方式</dt><dd><b>必须转运</b>。官方虽写「Any customs duties shall be borne by the customer」，但无适用对象</dd>
+        <dt>限制</dt><dd>仅配送上述各组名单内国家</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>robots Allow:/ 全站开放，仅少量内部路径禁止；站点另公开 /agents.md 与 UCP/MCP 端点（面向 agent 的只读接口）；反爬低</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方 Rest of World 四组配送名单以香港替代，均不含中国大陆。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://alecycling.com/en-us/pages/spedizioni-e-consegna">spedizioni-e-consegna</a> · <a href="https://www.alecycling.com/robots.txt">robots.txt</a> · <a href="https://www.alecycling.com/agents.md">agents.md</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Sportful <span class="loc">意大利</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.sportful.com">sportful.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件、队服</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方配送国家表为意大利、欧盟各国、英国、加拿大、瑞士、日本、挪威、澳大利亚、美国；官方明文「我们只向网站可选国家提供配送与交货服务」</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b>。官方 DDP 承诺（结账价已含 VAT 与关税）仅适用其配送国家</dd>
+        <dt>限制</dt><dd>仅配送站内可选国家</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow 覆盖 /policies/、/search、/cart、/checkout；声明 Sitemap；反爬低</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方配送国家表不含中国大陆。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.sportful.com/IT/en/customer-service/shipping-times-and-costs">shipping-times-and-costs</a> · <a href="https://www.sportful.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Café du Cycliste <span class="loc">法国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.cafeducycliste.com">cafeducycliste.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd><b>不含 CNY</b>（官方以 EUR/USD/GBP/CAD/JPY/KRW/AUD 分区标价）</dd>
+        <dt>支付与中国卡</dt><dd>官方条款载明可通过银行卡或 PayPal 付款；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方：「Nous expédions dans le monde entier et nos délais de livraison varient de trois jours en Europe à huit jours dans le monde entier」；配送表设 International 档（满 $225 免运、$25、5–8 天）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方：「Café du Cycliste ne couvre pas les frais et taxes douanières pour chaque commande hors EU (sauf UK)」；美国自 2026-01-26 起改为 DDP（与中国无关）</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow 覆盖 /policies/、/search、/cart、/checkout；声明 Sitemap；反爬低</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方受理国际卡且声明全球配送，但未点名中国（间接依据），且非欧盟非英国订单关税由客户承担。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.cafeducycliste.com/pages/shipping">shipping</a> · <a href="https://www.cafeducycliste.com/pages/terms-of-sale">terms-of-sale</a> · <a href="https://www.cafeducycliste.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Attaquer <span class="loc">澳大利亚</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://attaquercycling.com">attaquercycling.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd><b>含 CNY</b>（官方配送表中国大陆行的免运门槛以 ¥2200 CNY 表示，快递费 ¥150 CNY）</dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>（官方未公布任何支付方式说明）</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方配送表逐行列国家，<b>含 China 行</b>；国际订单全部走 DHL Express</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。China 行税费列标注「Duty &amp; Taxes Paid on Arrival」</dd>
+        <dt>限制</dt><dd>robots.txt 顶部平台政策段明确不接受自动化爬取与 buy-for-me 代下单，合法集成须通过 Checkout Kit</dd>
+        <dt>价格水平</dt><dd>本轮仅取得配送门槛金额（¥2200 免运 / ¥150 快递），未取得单品价</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow /policies/ 与 /cart、/checkout、/orders；声明 Sitemap；技术反爬低，但<b>政策层面明确反对自动化结账</b></dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 履约侧官方直接证实（China 行 + CNY 门槛 + DHL Express），但支付侧无任何官方文本，两项中任一项无依据即不得肯定判定。上线前必须实单验证支付一步。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://attaquercycling.com/pages/shipping">shipping</a> · <a href="https://attaquercycling.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Black Sheep Cycling <span class="loc">澳大利亚</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://au.blacksheep.cc">au.blacksheep.cc</a>（原 blacksheepcycling.cc 跳转至此）</dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方 /policies/shipping-policy 正文仅涉及退换货，未对国际配送范围、可送达国家或时效作任何表述</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>/policies/ 被 robots 禁止抓取，其配送政策页不在合规采集范围内</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow 覆盖 /policies/、/search、/cart、/checkout；声明 Sitemap；反爬低</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 官网未发布可核查的国际配送与税负条款。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://au.blacksheep.cc/policies/shipping-policy">shipping-policy</a> · <a href="https://au.blacksheep.cc/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Velocio <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://intl.velocio.cc">intl.velocio.cc</a>（国际站）</dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到（国际站以 EUR 计价为主）</dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>（官方未公布支付方式清单）</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方：国际站面向「EU &amp; INTERNATIONAL CUSTOMERS」，DHL International Express，运费 EUR 25、满 EUR 150 免运费，4–5 天送达；<b>中国大陆是否在国际站可选目的地内未查到</b></dd>
+        <dt>税负方式</dt><dd><b>DDP预收</b>。官方原文：「All orders from intl.velocio.cc are shipped Delivered Duties Paid (DDP). Taxes and import duties are collected at the time of purchase.」</dd>
+        <dt>限制</dt><dd>DHL 不投递邮政信箱；礼品卡不计入免运费门槛</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品页抓取，Disallow 集中购物车/结账/账户及政策页；声明 Sitemap；Nuxt 生成，反爬低</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 税负侧是本轮唯一官方明示「国际订单 DDP、结账即含税」的品牌，但履约侧仅间接（「EU &amp; International」未点名中国）、支付侧无依据，按规则不得给肯定判定。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://support.velocio.cc/hc/en-us/articles/360059193513-Shipping-Options">Shipping Options</a> · <a href="https://velocio.cc/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Pedla <span class="loc">澳大利亚</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://thepedla.com">thepedla.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到（多币种 Shopify）</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方 Shipping 页：国际订单满 AUD 400 免运费、未满收 AUD 35，DHL International Express 约 3–5 个工作日；<b>未列国别白名单</b></dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方：「At checkout, we provide an estimate of what you should expect」；「The Pedla is not responsible for the payment of any fees associated with the postage of your garments」</dd>
+        <dt>限制</dt><dd>不能寄往俄罗斯的私人/住宅地址</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow 覆盖 /policies/、/search、/cart、/checkout；声明 Sitemap；反爬低</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 履约侧仅间接（国际免运门槛，无国别清单），支付侧无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://thepedla.com/pages/shipping">shipping</a> · <a href="https://thepedla.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Ostroy <span class="loc">美国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://ostroy.com">ostroy.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到（国际订单由 Global-E 按目的地展示）</dd>
+        <dt>支付与中国卡</dt><dd>官方 FAQ：「Most major credit cards, PayPal, Amazon Pay, Apple Pay and Google Pay.」→ 官方明列主流国际卡，中国卡无排除条款</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方 FAQ：「We ship just about everywhere」「we ship to most countries in the world. We've partnered with Global-E and they will be the merchant of record for all international orders.」境外满 $400 免运费；未点名中国</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方未声明 DDP/DDU 归属，按非 DDP 且可国际发货推定为到岸缴税，<b>该归属官方未明示</b>）</dd>
+        <dt>限制</dt><dd>robots.txt 顶部平台政策段明确反对自动化爬取与自动化结账</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>Shopify 默认 robots，Disallow 覆盖 /policies/、/search、/cart、/checkout；声明 Sitemap；反爬低（技术层面）</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方明列受理主流国际卡（含中国发卡行路径），履约侧为「ship just about everywhere」的间接依据、无排除条款；税负归属官方未明示，单列标注。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://ostroy.com/pages/faq">faq</a> · <a href="https://ostroy.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Giordana <span class="loc">美国 / 意大利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://giordanacycling.com">giordanacycling.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件、队服</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方 FAQ 现行表述：「I am outside the States, can I still order Giordana? We now ship to many countries worldwide. Please refer to our shipping page for the latest information.」<b>未列国别清单</b></dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方未发布税负条款；按非 DDP 推定）</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>robots Allow:/ 全站开放，仅禁购物车/结账/账户与筛选路径；公开 <b>/agents.md、/.well-known/ucp、/api/ucp/mcp</b>，agents.md 明列只读采集入口（GET /collections/all、/products/{handle}.json 等）；反爬低（官方欢迎只读抓取）</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 官方称已支持全球多国配送但未给出中国是否在内，且支付方式与税负均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://giordanacycling.com/pages/faq">faq</a> · <a href="https://giordanacycling.com/agents.md">agents.md</a> · <a href="https://www.giordanacycling.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Eliel <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.elielcycling.com">elielcycling.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>官方币种清单未查到（本轮检索到结账国家列表含 China (CNY ¥) 选项，但未能在官方政策页二次复核，故不作为已证结论）</dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>（官方 FAQ 与自定义订单政策页均未发布支付方式清单）</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方 FAQ：「Do You Ship Internationally? Yes, select your country at checkout and choose a shipping option presented.」<b>未点名中国大陆</b>，国别白名单未公布；国际订单不享免运费</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。官方：「Customs/Duty fees are set by the destination country... It is the sole responsibility of the recipient to cover these costs. These fees are not paid at checkout.」</dd>
+        <dt>限制</dt><dd>官方要求结账、支付、下单须获得买家实时授权，禁止用脚本化浏览器自动化绕过</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd>robots 显式欢迎 AI/agent 抓取，Allow 覆盖 /agents.md、/llms.txt、/.well-known/ucp、/api/ucp/mcp；agents.md 公开只读入口（GET /collections/all、/products/{handle}.json 等），并提供 UCP/MCP 结构化商务通道；反爬低</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 官方明示支持国际配送（间接依据），但支付方式与币种均未取得官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.elielcycling.com/pages/faqs">faqs</a> · <a href="https://www.elielcycling.com/agents.md">agents.md</a> · <a href="https://www.elielcycling.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Ornot <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.ornotbike.com">ornotbike.com</a></dd>
+        <dt>品类</dt><dd>骑行服、配件</dd>
+        <dt>结账币种</dt><dd>是否含 CNY 未查到</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。其实测 /policies/shipping-policy 页面无配送政策正文（仅含邮件订阅模块），官网未发布可核查的国际配送范围说明</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未查到</dd>
+        <dt>采集可行性</dt><dd><b>robots.txt 抓取失败</b>（返回链接抓取错误），无法取得结论；反爬强度未能判定</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 配送与税负两项均无官方依据，robots 亦无法取得。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.ornotbike.com/policies/shipping-policy">shipping-policy</a> · <a href="https://www.ornotbike.com/robots.txt">robots.txt（抓取失败）</a></p>
+    </div>
+  </div>
+  <h3>③ 欧美骑行器材电商（18 站）</h3>
+  <p class="gnote">器材、配件与整车兼售的综合电商。Bike24、Bike-Discount、Rose Bikes、Bikeinn/Tradeinn 在第 ③、④ 两份上游文件中重复出现，已在第 2.6 节合并为一条，此处保留完整信息并注明两处来源一致。本组共 4 家重判为「合格」（Bike24、Rose Bikes、R2-Bike、Merlin Cycles、Alltricks 中前四者与 Alltricks 合计 5 家）。</p>
+  <div class="grid2">
+    <div class="site" data-v="合格">
+      <h4>Bike24 <span class="loc">德国</span> <span class="badge b-ok">合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bike24.com/">bike24.com</a></dd>
+        <dt>品类</dt><dd>配件、零部件、装备、整车</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方原文：「Customers from abroad are asked to pay for their orders by credit card」，受理 Mastercard/Visa/Amex/PayPal；不强制第三方支付，中国卡无排除条款</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方运费表「International standard shipping」<b>中国 CHN 为 29,99 €</b>；整车与超大件走货运（Forwarding）方案</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方未设对华 DDP）</dd>
+        <dt>限制</dt><dd>整车货运表未含中国（仅列欧洲主要国家），<b>整车不宜经该渠道</b></dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd><b>robots.txt 实测</b>：商品页可抓、无 Crawl-delay；禁用 <code>/ajax.php</code>、<code>/api/*</code>、<code>/search?*</code>、<code>/checkout/*</code>、<code>/topic/*</code>、<code>/cycling/bike/*</code>。因 /api/* 被封，无公开商品 API，须走页面解析；反爬中等</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 两项硬性标准均官方证实：官方请境外客户用信用卡 + 中国运费列 29,99 €。已合并第 ③、④ 两组中同一站点的两条记录。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.bike24.com/shipping.html">shipping.html</a> · <a href="https://www.bike24.com/robots.txt">robots.txt（实测）</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Bike-Discount / H&amp;S Bike-Discount <span class="loc">德国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bike-discount.de/">bike-discount.de</a></dd>
+        <dt>品类</dt><dd>器材、配件、整车（Radon 品牌渠道）</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方支持中心列 Kreditkarte（信用卡）、PayPal、Amazon Pay、Vorkasse（预付款）；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方有国际配送章节，但<b>本轮未取得中国专属运费与承运结论</b>；整车对非欧盟普遍不可承运</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方未设对华 DDP；实际税负归属未取得官方原文）</dd>
+        <dt>限制</dt><dd>整车跨境承运受限；Radon 整车实际由该店销售，上一段「未能证实」同样覆盖 Radon</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读，允许商品页；帮助中心为 Zendesk 类结构；技术反爬中等。<b>该站第 ③、④ 两份上游文件均出现，信息一致（可刷卡 / 到岸缴税 / 中国行取值未取得）</b></dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 支付侧有官方依据，但履约侧中国行取值在两份上游文件中均未取得，可直邮中国无任何官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://support.bike-discount.de/de/support/solutions/folders/7000042624">support.bike-discount.de</a> · <a href="https://www.bike-discount.de/en/shipping">bike-discount.de/en/shipping</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Bike-Components <span class="loc">德国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bike-components.de/">bike-components.de</a></dd>
+        <dt>品类</dt><dd>器材、配件、装备</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>（官方支付方式页被站点 robots 拦截，无法取得官方文本）</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方运费页列中国标准运费 <b>54,99 €</b>；整车不寄中国</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b></dd>
+        <dt>限制</dt><dd>整车不寄中国</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读但覆盖较广（含账户、结账、搜索类路径）；支付方式页属被禁路径，须改走人工或非 automated 方式取证；反爬中等</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 履约侧官方证实（中国 54,99 €），支付侧无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.bike-components.de/en/shipping-costs">shipping-costs</a> · <a href="https://www.bike-components.de/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="合格">
+      <h4>Rose Bikes <span class="loc">德国</span> <span class="badge b-ok">合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.rosebikes.com/">rosebikes.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方条款列 MasterCard、VISA、Apple Pay；<b>PayPal 仅限欧盟内</b>；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方配送国家清单明确含 <b>China</b></dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方未对华设 DDP）</dd>
+        <dt>限制</dt><dd>未查到单独的品牌限制</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品与类目页；技术反爬中等。<b>该站第 ③、④ 两份上游文件均出现且事实一致，已合并为一条；两处原判定不同（③合格 / ④有条件合格）的说明见第 3.3 节</b></dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 两项硬性标准均官方证实：官方条款列明国际卡种 + 官方配送国家清单含 China。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.rosebikes.com/shipping">shipping</a> · <a href="https://www.rosebikes.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="合格">
+      <h4>R2-Bike <span class="loc">德国</span> <span class="badge b-ok">合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://r2-bike.com/">r2-bike.com</a></dd>
+        <dt>品类</dt><dd>轻量化配件、零部件</dd>
+        <dt>结账币种</dt><dd>EUR（以 EUR 结算）；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方支付页列 MasterCard / VISA；<b>非欧盟订单加收 1% 附加费</b>（官方与原产/进口成本相关表述）；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方配送国家清单明确含「<b>中华人民共和国 (CHINA)</b>」；<b>无最低订单金额限制</b>（仅成品整车有 MOQ 提示）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方未设 DDP，非欧盟加收 1% 不等同预缴关税）</dd>
+        <dt>限制</dt><dd>成品整车有最小起订提示；非欧盟加收 1% 收单成本</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品页；无公开商品 API；反爬中等</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 官方支付页列明 MasterCard/VISA + 官方配送清单含中华人民共和国，两项均官方证实。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://r2-bike.com/Shipping">Shipping</a> · <a href="https://r2-bike.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Fahrrad.de（含已并入的 Bikester） <span class="loc">德国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.fahrrad.de/">fahrrad.de</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方列 PayPal、信用卡、Klarna 等；因不配送中国大陆，支付能力对本案无实际意义</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方德国站配送区域原文限定为 <b>Deutschland、Österreich、Schweiz、Belgien、Frankreich、Niederlande、Liechtenstein</b>，<b>不含中国大陆</b></dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>仅上述 7 国</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品页；反爬中等</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方配送区域明文不含中国大陆。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.fahrrad.de/pages/versandinformationen">versandinformationen</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Wiggle <span class="loc">英国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.wiggle.com/">wiggle.com</a></dd>
+        <dt>品类</dt><dd>—（站点形态变更）</dd>
+        <dt>结账币种</dt><dd>不适用</dd>
+        <dt>支付与中国卡</dt><dd>不适用</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。域名已不再承载独立商城，访问直接跳转 Evans Cycles 首页（同一集团整合结果）</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>原 Wiggle 站点与购物车已不存在</dd>
+        <dt>价格水平</dt><dd>不适用</dd>
+        <dt>采集可行性</dt><dd>无需采集（域名已并入 Evans Cycles）</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 该域名/商城已不存在，无法作为独立进货站点。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.wiggle.com/">wiggle.com（跳转 Evans）</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Chain Reaction Cycles <span class="loc">英国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.chainreactioncycles.com/">chainreactioncycles.com</a></dd>
+        <dt>品类</dt><dd>—（站点形态变更）</dd>
+        <dt>结账币种</dt><dd>不适用</dd>
+        <dt>支付与中国卡</dt><dd>不适用</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。域名已不再承载独立商城，与 Wiggle 一并整合至 Evans Cycles</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>原站点与购物车已不存在</dd>
+        <dt>价格水平</dt><dd>不适用</dd>
+        <dt>采集可行性</dt><dd>无需采集</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 该域名/商城已不存在。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.chainreactioncycles.com/">chainreactioncycles.com</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>ProBikeKit <span class="loc">英国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.probikekit.com/">probikekit.com</a></dd>
+        <dt>品类</dt><dd>—（站点形态变更）</dd>
+        <dt>结账币种</dt><dd>不适用</dd>
+        <dt>支付与中国卡</dt><dd>不适用</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。域名已不再承载独立商城</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>原站点与购物车已不存在</dd>
+        <dt>价格水平</dt><dd>不适用</dd>
+        <dt>采集可行性</dt><dd>无需采集</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 该域名/商城已不存在。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.probikekit.com/">probikekit.com</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Evans Cycles（承接 Wiggle / CRC / PBK） <span class="loc">英国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.evanscycles.com/">evanscycles.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>GBP；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方「non-UK customers」条款列 Mastercard / VISA / American Express 及 <b>Alipay（支付宝）</b>；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方专门设「Terms &amp; Conditions — non-UK customers」一览，说明对非英国客户的下单与配送规则，但<b>未逐条列出可配送国家</b>；robots 中含 /cn/ 等国家路径，指向存在国家化路径（间接）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（非英国/非欧盟客户承担进口税与清关费）</dd>
+        <dt>限制</dt><dd>非英国订单的退换与保修按英国总部流程；跨境运费与关税由买家承担</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读，含国家化路径；技术反爬低—中</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方明列国际卡种含支付宝（支付侧强证据），但可配送国家无官方逐条清单，履约侧属间接依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://help.evanscycles.com/hc/en-gb/articles/6018058318495-Terms-Conditions-non-UK-customers">non-UK customers</a> · <a href="https://www.evanscycles.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="合格">
+      <h4>Merlin Cycles <span class="loc">英国</span> <span class="badge b-ok">合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.merlincycles.com/">merlincycles.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd><b>含 CNY</b>。官方原文：「If you are ordering from outside of the UK, you can <b>Select Chinese Yuan (¥) to be charged in Chinese Yuan</b>」</dd>
+        <dt>支付与中国卡</dt><dd>官方条款列信用卡 American Express / Mastercard / Visa（收单方 Braintree）；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方运费页国家清单含 <b>China</b>，承运 UPS；并为国际订单设 CNY 结算（履约与结算双击证据）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（官方对国际订单未设结账预缴关税）</dd>
+        <dt>限制</dt><dd>整车国际寄送按 UPS 政策与体积计费</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价（官方以 GBP 标价、结账可转 CNY）</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品页；技术反爬低—中；无公开商品 API</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 两项硬性标准均官方证实，且<b>为全组唯一官方明确支持 CNY 结账的英国站点</b>（可直接以人民币扣款，省去货币转换）。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.merlincycles.com/en-us/shipping-postage.html">shipping-postage</a> · <a href="https://www.merlincycles.com/en-us/terms-and-conditions.html">terms</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Sigma Sports <span class="loc">英国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.sigmasports.com/">sigmasports.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>多币种；是否含 CNY 未能证实</dd>
+        <dt>支付与中国卡</dt><dd>官方国际站（Global-e 结算）<b>明列 UnionPay（银联）与 Alipay（支付宝）</b>，另有 Visa/Mastercard/Amex/PayPal；→ 中国卡有最强官方依据</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方称经 Global-e 与 DHL 提供国际配送，<b>未列可配送国家清单</b></dd>
+        <dt>税负方式</dt><dd><b>DDP预收（可选）</b>。Global-e 结账流程提供「prepay duties and taxes」选项；未选则到岸缴税</dd>
+        <dt>限制</dt><dd>国际订单退换由 Global-e 流程处理</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品页；技术反爬低—中</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 支付侧有全组最强的官方依据（银联 + 支付宝 + 可选 DDP），但可配送国家无官方清单，履约侧属间接依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.sigmasports.com/payment-and-delivery">payment-and-delivery</a> · <a href="https://www.sigmasports.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Tredz <span class="loc">英国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.tredz.co.uk/">tredz.co.uk</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>GBP；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方配送信息页全部内容针对英国境内（英国本土与北爱、离岛、Click &amp; Collect），<b>未发布国际配送说明</b></dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>站点未提供跨境选项</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读；技术反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 官方配送信息仅覆盖英国，跨境两项均无依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.tredz.co.uk/help-advice/customer-service/delivery-returns/delivery-info">delivery-info</a> · <a href="https://www.tredz.co.uk/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>Bikeinn / Tradeinn <span class="loc">西班牙</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bikeinn.com/">bikeinn.com</a>（Tradeinn 集团）</dd>
+        <dt>品类</dt><dd>整车、配件、骑行服全品类</dd>
+        <dt>结账币种</dt><dd>多币种；是否含 CNY 未能证实</dd>
+        <dt>支付与中国卡</dt><dd>收单方 Adyen，官方列 Visa / Mastercard / Amex / JCB / Maestro / Visa Electron + PayPal / Apple Pay / Google Pay；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方称全球发货（帮助页设简体中文入口），<b>未逐条声明中国</b></dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（非欧盟客户承担进口税费）</dd>
+        <dt>限制</dt><dd>整车跨境受承运与体积限制</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读；站点为大规模商品库，须注意并发与 UA 合规；<b>该站第 ③、④ 两份上游文件均出现且事实一致，已合并为一条</b></dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 支付侧官方依据充分（Adyen 全卡种），履约侧仅「全球发货」的间接依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.tradeinn.com/bikeinn/en/help/st">tradeinn.com/bikeinn help</a> · <a href="https://www.bikeinn.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Deporvillage <span class="loc">西班牙</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.deporvillage.com/">deporvillage.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实（帮助页被安全策略拦截）</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b></dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>站点对自动访问封锁明显</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd><b>robots.txt 实测被拦截</b>（Deporvillage 域名连 robots 都无法正常取得）；自动化访问须先解决合规与可达性问题</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 站点信息全面不可达，两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.deporvillage.com/">deporvillage.com</a> · <a href="https://www.deporvillage.com/robots.txt">robots.txt（被拦截）</a></p>
+    </div>
+    <div class="site" data-v="合格">
+      <h4>Alltricks <span class="loc">法国</span> <span class="badge b-ok">合格</span> <span class="pri">★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.alltricks.com/">alltricks.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方支付页列 CB（法国银行卡）、Visa、Mastercard、American Express、Bancontact，经 Hipay 处理；不强制第三方支付</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方 Delivery 页支持按国家查询，<code>delivery?country=CN</code> 直接显示目的地为 <b>China</b>（承运 Colissimo）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（<b>该站税负归属官方未明示</b>，按非 DDP 且可国际发货推定为到岸缴税）</dd>
+        <dt>限制</dt><dd>整车跨境受承运限制</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读；国家化查询参数可复用于配送矩阵采集；反爬低—中</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 官方正式支付页列明国际卡种 + 官方 Delivery 页支持 CN 目的地，两项均官方证实。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.alltricks.com/delivery?country=CN">delivery?country=CN</a> · <a href="https://www.alltricks.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Lordgun <span class="loc">意大利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.lordgun.com/">lordgun.com</a></dd>
+        <dt>品类</dt><dd>配件、零部件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实（全站对自动访问封锁）</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b></dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>站点对自动访问封锁明显</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 被拦截；须人工或合规代理线路取证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.lordgun.com/">lordgun.com</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Mantel <span class="loc">荷兰</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.mantel.com/">mantel.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>因不配送中国大陆，支付能力对本案无实际意义</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方供应链站（supplychain.mantel.com）披露其配送网络为<b>欧洲 15 国</b>范围，不含中国大陆</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>仅欧洲配送网络内国家</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方配送网络为欧洲 15 国，不含中国大陆。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://supplychain.mantel.com/">supplychain.mantel.com</a> · <a href="https://www.mantel.com/robots.txt">robots.txt</a></p>
+    </div>
+  </div>
+  <h3>④ 整车品牌渠道（25 站）</h3>
+  <p class="gnote">整车品牌官方站与整车交易平台。Trek 条已吸收第 ① 组的 Lidl-Trek 队服渠道。多数品牌的整车业务模式为「官方站导流至经销商」，官方站本身不承担跨境零售，故判定普遍为「不合格」或「未能证实」——见第 7 节对整车路线的整体判断。</p>
+  <div class="grid2">
+    <div class="site" data-v="合格">
+      <h4>Canyon 中国站（canyon.com.cn） <span class="loc">中国</span> <span class="badge b-ok">合格</span> <span class="pri">★★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.canyon.com.cn/">canyon.com.cn</a></dd>
+        <dt>品类</dt><dd>整车（公路/砾石/山地/电助力）、配件、骑行服</dd>
+        <dt>结账币种</dt><dd><b>含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方付款页列 Visa / Mastercard / <b>UnionPay 银联</b> / Apple Pay / 微信支付；境外卡与境内方式并存</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。面向中国大陆境内配送，承运 DHL Express</dd>
+        <dt>税负方式</dt><dd><b>DDP预收</b>（中国大陆境内成交价含税，结账即完成税负）</dd>
+        <dt>限制</dt><dd>面向中国大陆市场的本地化站点，车型与库存受区域配置约束</dd>
+        <dt>价格水平</dt><dd>以人民币标价，无跨境运费与关税附加</dd>
+        <dt>采集可行性</dt><dd>robots 允许商品页；中文站结构稳定，反爬低—中</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 支付侧（含银联）与履约侧（中国大陆境内配送、结账含税）均由官方直接证实，是本次核查中整车品类唯一落地性最强的官方通道，优先级 ★★★。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.canyon.com.cn/zh-cn/%E5%AE%A2%E6%88%B7%E6%9C%8D%E5%8A%A1/%E9%80%81%E8%B4%A7-%E9%80%81%E8%BE%BE/shipping.html">shipment</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Canyon 国际站（canyon.com） <span class="loc">德国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.canyon.com/">canyon.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。本轮对该域名仅取得 robots.txt，配送与支付政策均未取得</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>不采用中国站结论为其背书（中国站为独立主体与独立履约链）</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读，允许主要商品路径；其余未验证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 该域名自身的官方依据不足，不得沿用 canyon.com.cn 的结论。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.canyon.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Cube（cube.eu） <span class="loc">德国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.cube.eu/">cube.eu</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>不适用（品牌零直销）</dd>
+        <dt>支付与中国卡</dt><dd>不适用</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方客服页明确：Cube 仅通过选定专业经销商（specialist dealers）销售，官网不直销</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>品牌直销渠道不存在；购买须经经销商</dd>
+        <dt>价格水平</dt><dd>不适用</dd>
+        <dt>采集可行性</dt><dd>robots 可读但仅产品展示页；无价格与库存可采</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 品牌明确不做直销，不存在对个人消费者的跨境销售通道。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.cube.eu/hu/support/customer-support/international">international</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Radon（radon-bikes.de） <span class="loc">德国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.radon-bikes.de/">radon-bikes.de</a></dd>
+        <dt>品类</dt><dd>整车</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>未能证实（实际结账在 Bike-Discount 完成，其支付清单见第 ③ 组）</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。Radon 整车由 Bike-Discount 销售，后者的中国行取值本轮未取得</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>品牌站仅作展示，交易发生在 Bike-Discount</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；价格数据须在 Bike-Discount 侧采集</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 交易链路落在 Bike-Discount，而该店中国方向取值未取得。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.radon-bikes.de/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Ribble Cycles <span class="loc">英国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.ribblecycles.co.uk/">ribblecycles.co.uk</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方设有国际配送费用与时效文章，说明支持国际配送并<b>在结账时预付税费</b>，但未公开可配送国家清单，中国可达性无官方依据</dd>
+        <dt>税负方式</dt><dd><b>DDP预收</b>（官方结账预付含税含关税）</dd>
+        <dt>限制</dt><dd>可配送国家清单未公开</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 税负侧为 DDP（最理想形态），但可配送国家无官方清单，履约侧无依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://helpcentre.ribblecycles.co.uk/en/support/solutions/articles/22000289236-international-delivery-costs-and-timescales">international delivery</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Orbea <span class="loc">西班牙</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.orbea.com/">orbea.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方配送政策规定整车与外部电池必须由经销商到店提货，官网不向个人跨境寄送整车</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>整车只走经销商自提；品牌为经销商体系</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>官方以 CMS 域承载配送政策；商品页可读，反爬低—中</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方明文规定整车须经销商自提，明确不对个人跨境销售整车。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://cms.orbea.com/en-be/p/shipping">shipping</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Pinarello <span class="loc">意大利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.pinarello.com/">pinarello.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。本轮仅取得 robots.txt，配送与支付政策未取得</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>配送政策未取到</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；其余未验证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.pinarello.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Colnago <span class="loc">意大利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.colnago.com/">colnago.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实（官方发货与退货页未公布支付方式清单）</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方规定整车仅门店自提或厂方（Cambiago）白手套交付；配件按「worldwide」寄送、10 天送达</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（配件为全球配送、非 DDP）</dd>
+        <dt>限制</dt><dd><b>整车不可跨境</b>（仅门店自提/厂方交付）；配件可跨境</dd>
+        <dt>价格水平</dt><dd>本轮未抓到单品单价</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 上游曾给出「整车不合格 / 配件有条件」双值，统一规则要求单值：整车不可跨境的事实保留在限制列，而配件与整车两条路径的支付侧均无官方依据，故整体记未能证实。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.colnago.com/en-us/shipments-and-returns">shipments-and-returns</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Bianchi <span class="loc">意大利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bianchi.com/">bianchi.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。本轮仅取得 robots.txt</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>配送政策未取到</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；其余未验证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.bianchi.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Wilier <span class="loc">意大利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.wilier.com/">wilier.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>官方 T&amp;C 列信用卡与 PayPal（支付侧有官方依据）</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方 T&amp;C 未列目的地国家清单</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（非 DDP）</dd>
+        <dt>限制</dt><dd>未查到</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 支付侧有官方依据，履约侧（能否发中国）无依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.wilier.com/en/terms-and-conditions">terms-and-conditions</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Factor <span class="loc">英国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://factorbikes.com/">factorbikes.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。本轮仅取得 robots.txt</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>配送政策未取到</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；其余未验证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://factorbikes.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Look <span class="loc">法国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.lookcycle.com/">lookcycle.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。本轮仅取得 robots.txt</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>配送政策未取到</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；其余未验证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.lookcycle.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>BMC <span class="loc">瑞士</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bmc-switzerland.com/">bmc-switzerland.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。本轮仅取得 robots.txt</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>配送政策未取到</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；其余未验证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.bmc-switzerland.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Storck <span class="loc">德国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.storck-bikes.com/">storck-bikes.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。站点抓取失败，域名可达性本身存疑</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>站点不可达</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>须先人工确认站点是否存活</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 站点不可达，任何结论都无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.storck-bikes.com/robots.txt">robots.txt（抓取失败）</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Simplon <span class="loc">奥地利</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.simplon.com/">simplon.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。本轮仅取得 robots.txt</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>配送政策未取到</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；其余未验证</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.simplon.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Specialized 中国官网 <span class="loc">中国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.specialized.com.cn/">specialized.com.cn</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd><b>含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd><b>否</b>。官方 FAQ 仅列支付宝与微信支付，<b>不接受国际信用卡</b></dd>
+        <dt>直邮中国</dt><dd>是（中国大陆境内配送，承运顺丰）</dd>
+        <dt>税负方式</dt><dd><b>DDP预收</b>（境内成交价含税）</dd>
+        <dt>限制</dt><dd>面向中国大陆市场的本地化站点，仅境内支付与境内履约</dd>
+        <dt>价格水平</dt><dd>以人民币标价，无跨境费用</dd>
+        <dt>采集可行性</dt><dd>robots 可读；中文站结构稳定，反爬低—中</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 该站不接受国际信用卡（合格条件①不成立），且为境内零售站、明确不对个人跨境销售；对 BikeHunt 而言不存在「跨境下单」链路。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.specialized.com.cn/cn/zh/faq">faq</a> · <a href="https://www.specialized.com/cz/en/faq">国际站 faq（对照）</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Specialized 国际站（specialized.com） <span class="loc">美国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.specialized.com/">specialized.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实（因明确不跨境，未再核）</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方 FAQ 明文只送货至美国境内实体地址（不含 PO Box）</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>仅美国境内实体地址</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方明文排除美国以外（含中国大陆）的直邮。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.specialized.com/cz/en/faq">faq</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Trek（含 Lidl-Trek 队服渠道） <span class="loc">美国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.trekbikes.com/">trekbikes.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、队服</dd>
+        <dt>结账币种</dt><dd>否（区域站本币）</dd>
+        <dt>支付与中国卡</dt><dd>未能证实（因明确不跨境，未再核）</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。各分区站（如 /jp/、/cn/）官方口径均为仅配送本站所属区域，<b>且明文不接受转运地址</b>。中国大陆用户的队服/整车购买走 Trek 中国站（trekbikes.com/cn/zh_CN/）与线下门店，属境内渠道</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>各区域站仅送本国；不接受转运代理地址</dd>
+        <dt>价格水平</dt><dd>中国站队服 ¥888 / ¥1,280（境内人民币定价）</dd>
+        <dt>采集可行性</dt><dd>robots 可读；区域站结构与商品字典一致，可复用解析规则</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方各区域站均不跨境直邮且不接受转运地址。上游第 ① 组曾因「可走中国本地官方渠道」记为「有条件合格」，统一规则只认跨境链路，故重判为不合格（详见第 3.3 节第 20 条）。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.trekbikes.com/jp/ja_JP/customer_service/">customer_service</a> · <a href="https://www.trekbikes.com/cn/zh_CN/">中国站</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Giant 官方商城（e.giant.com.cn） <span class="loc">中国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://e.giant.com.cn/">e.giant.com.cn</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd><b>含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>（中国商城支付方式清单本轮未取得）</dd>
+        <dt>直邮中国</dt><dd>是（中国境内配送）</dd>
+        <dt>税负方式</dt><dd><b>DDP预收</b>（境内成交价含税）</dd>
+        <dt>限制</dt><dd>境内站点，对跨境无官方说明</dd>
+        <dt>价格水平</dt><dd>以人民币标价</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 履约侧为境内成立，但支付方式清单未取得、支付侧无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://e.giant.com.cn/">e.giant.com.cn</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Scott <span class="loc">瑞士</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.scott-sports.com/">scott-sports.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。robots 中含 /cn/zh/ 中国站路径（说明存在中国本地站），但无跨境直邮说明</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>存在中国本地站，跨境路径未说明</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots.txt 可读；中国站路径可见，反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 有中国本地站但无跨境政策，两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.scott-sports.com/robots.txt">robots.txt</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Merida 美利达 <span class="loc">中国台湾 / 中国大陆</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.merida.cn/">merida.cn</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。中国大陆业务由 merida.cn 本地运营，无跨境直邮政策</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>跨境路径未说明</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.merida.cn/">merida.cn</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Cannondale <span class="loc">美国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.cannondale.com/">cannondale.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实（因明确不跨境，未再核）</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方支持中心明文不发货至美国与加拿大以外</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>仅美国与加拿大</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方明文排除中国（中国大陆不在其发货范围）。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://support.cannondale.com/hc/en-us/articles/1500009060141-Shipping-and-Pickup-Information">Shipping and Pickup Information</a></p>
+    </div>
+    <div class="site" data-v="不合格">
+      <h4>Buycycle <span class="loc">德国</span> <span class="badge b-bad">不合格</span> <span class="pri none">—</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://buycycle.com/">buycycle.com</a></dd>
+        <dt>品类</dt><dd>二手整车</dd>
+        <dt>结账币种</dt><dd>EUR；<b>不含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>否</b>。官方 Zendesk 帮助中心列明可配送国家清单，<b>不含中国</b></dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>仅清单内国家</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict bad"><b>判定：不合格</b> — 官方配送国家清单不含中国。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://buycycle.zendesk.com/hc/en-us/articles/20377496513937-Where-do-you-ship">Where do you ship</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Bike Exchange <span class="loc">澳大利亚</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bikeexchange.com/">bikeexchange.com</a></dd>
+        <dt>品类</dt><dd>二手/新整车</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。平台型站点，配送由各入驻商户自行决定，平台层面无统一跨境政策</dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>平台无统一跨境履约口径</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；平台商品由商户发布，结构化程度不一</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 平台层面无跨境官方依据，须逐商户核。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.bikeexchange.com/">bikeexchange.com</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Bikesale <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.bikesale.com/">bikesale.com</a></dd>
+        <dt>品类</dt><dd>二手整车</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b></dd>
+        <dt>税负方式</dt><dd><b>必须转运</b></dd>
+        <dt>限制</dt><dd>跨境政策未取得</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.bikesale.com/">bikesale.com</a></p>
+    </div>
+  </div>
+  <h3>⑤ DDP 预收与综合渠道（6 站）</h3>
+  <p class="gnote">本组是「结账即完成税负」的渠道集合，也是 BikeHunt 首期最应优先适配的一类。其中亚马逊海外购是全项目<b>唯一官方原文支持「发往中国大陆 + 结账预收关税（DDP）」</b>的骑行类渠道；eBay 的 GSP/EIS 为同类机制但对中国方向未固定。</p>
+  <div class="grid2">
+    <div class="site" data-v="合格">
+      <h4>亚马逊海外购（amazon.cn） <span class="loc">美国 / 德国 / 英国 / 日本</span> <span class="badge b-ok">合格</span> <span class="pri">★★★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.amazon.cn/">amazon.cn（海外购频道）</a></dd>
+        <dt>品类</dt><dd>全品类，骑行方向以配件、装备、骑行服为主</dd>
+        <dt>结账币种</dt><dd><b>含 CNY</b></dd>
+        <dt>支付与中国卡</dt><dd>官方帮助页列 <b>Credit Card (International)</b>；<b>银联：未能证实</b>（网上仅见银联国际 2016 年新闻稿，非亚马逊官方原文）</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方明示支持中国除港澳台地区之外的全境配送；海外购商品页原文支持「进口税费预估 + 多退少不补」</dd>
+        <dt>税负方式</dt><dd><b>DDP预收</b>。结账时预收进口税费，多退少不补；须中国居民身份证完成清关</dd>
+        <dt>限制</dt><dd><b>电脑端自 2024-01-27 起不再提供购物服务</b>，仅可通过 App 与微信小程序下单；整车未见于海外购清单</dd>
+        <dt>价格水平</dt><dd>以人民币展示，含预估进口税费；单品价格随亚马逊美/德/英/日各站与汇率浮动</dd>
+        <dt>采集可行性</dt><dd>robots 对商品页开放、对结账与账户路径封闭；商品数据须经海外购频道（受端限制影响：仅 App/小程序可用）</dd>
+      </dl>
+      <p class="verdict ok"><b>判定：合格</b> — 支付侧（国际信用卡）与履约侧（中国大陆全境配送 + DDP 预收）均由官方原文证实，是本次核查中优先级最高的综合渠道。注意 2024-01-27 起的电脑端改版限制。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.amazon.cn/dp/B0C37FRYV5">海外购商品页（DDP 原文）</a> · <a href="https://www.amazon.cn/gp/help/customer/display.html/?linkCode=ur2&amp;nodeId=200485580">帮助页</a> · <a href="https://www.amazon.cn/b?node=1941366071">电脑端改版通知</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Amazon.com 官网直邮（非海外购通道） <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.amazon.com/">amazon.com</a></dd>
+        <dt>品类</dt><dd>全品类</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>国际信用卡（与亚马逊帮助页同口径）</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。中国方向是否适用 Import Fees Deposit（结账预缴进口费）无官方原文支持</dd>
+        <dt>税负方式</dt><dd><b>DDP预收</b>（官方的 Import Fees Deposit 机制为结账预缴，但中国适用性未证实）</dd>
+        <dt>限制</dt><dd>通道适用性未证实；与海外购通道须区分对待</dd>
+        <dt>价格水平</dt><dd>以 USD 标价（未见其中文页说明是否含进口费）</dd>
+        <dt>采集可行性</dt><dd>robots 对商品页开放；反爬强（动态渲染）</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 无法把亚马逊海外购的结论平移至 amazon.com 直邮通道；中国方向的可达性与税负均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=G9UHGT37MYD2EJPL">help（Import Fees Deposit）</a></p>
+    </div>
+    <div class="site" data-v="有条件合格">
+      <h4>eBay（GSP / EIS） <span class="loc">美国</span> <span class="badge b-warn">有条件合格</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://pages.ebay.com/international-shipping/cn/">eBay 国际运送（简体中文页）</a></dd>
+        <dt>品类</dt><dd>全品类，含二手整车与零配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd><b>间接依据</b>。中国卡可用性无 eBay 官方说明；相关「银联」表述来自机构转述，非平台原文</dd>
+        <dt>直邮中国</dt><dd><b>是</b>。官方 International Shipping 的可送达国家清单含 China/CN</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>。GSP/EIS 为结账预收机制，但<b>对中国方向未固定</b>（是否预收视卖家与交易而定）</dd>
+        <dt>限制</dt><dd>GSP/EIS 单件金额上限 US$2,500；发货地须为美国或加拿大；二手整车因体积与合规因素受限</dd>
+        <dt>价格水平</dt><dd>由卖家定价，波动大</dd>
+        <dt>采集可行性</dt><dd>robots 对商品页部分开放；反爬强（登录墙与风控），须谨慎控制频率</dd>
+      </dl>
+      <p class="verdict warn"><b>判定：有条件合格</b> — 官方证实可送达中国，但支付侧仅有间接依据、税负对中国方向未固定，须以实单验证征收方式。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://pages.ebay.com/international-shipping/cn/">international-shipping/cn</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Jenson USA <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.jensonusa.com/">jensonusa.com</a></dd>
+        <dt>品类</dt><dd>整车、配件</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd><b>未能证实</b>。官方 FAQ 仅提及国际银行转账与国际订单相关条目，<b>无卡种清单</b></dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方国际订单经 UPS / USPS / FedEx 发出（未列国别）</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（关税到付）</dd>
+        <dt>限制</dt><dd>整车跨境受承运限制</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 支付侧无任何官方卡种依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.jensonusa.com/customer-service/faqs">faqs</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>Backcountry / Competitive Cyclist <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.competitivecyclist.com/">competitivecyclist.com</a></dd>
+        <dt>品类</dt><dd>整车、配件、骑行服</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>未能证实</b>。官方配送政策页未给出可配送国家清单</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（关税到付）</dd>
+        <dt>限制</dt><dd>跨境政策未取得</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬中等</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 两项标准均无官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.competitivecyclist.com/info/shipping-policy">shipping-policy</a></p>
+    </div>
+    <div class="site" data-v="未能证实">
+      <h4>BikeTiresDirect <span class="loc">美国</span> <span class="badge b-unk">未能证实</span> <span class="pri">★</span></h4>
+      <dl>
+        <dt>主页</dt><dd><a href="https://www.biketiresdirect.com/">biketiresdirect.com</a></dd>
+        <dt>品类</dt><dd>轮胎、配件、整车（美境）</dd>
+        <dt>结账币种</dt><dd>未能证实</dd>
+        <dt>支付与中国卡</dt><dd>未能证实</dd>
+        <dt>直邮中国</dt><dd><b>间接依据</b>。官方提供国际空邮/快递选项（含美国境外），但未列国别清单</dd>
+        <dt>税负方式</dt><dd><b>到岸缴税</b>（关税到付）</dd>
+        <dt>限制</dt><dd>国际订单运费与可达性须逐单确认</dd>
+        <dt>价格水平</dt><dd>未能证实</dd>
+        <dt>采集可行性</dt><dd>robots 可读；反爬低—中</dd>
+      </dl>
+      <p class="verdict unk"><b>判定：未能证实</b> — 支付侧无任何官方依据。</p>
+      <p class="src"><span class="tag t-off">官方政策</span><a href="https://www.biketiresdirect.com/shipping">shipping</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 5 专题A ==================== -->
+<section id="s5" class="wrap">
+  <h2><span class="num">05</span>专题 A · DDP 预收渠道</h2>
+  <h3>5.1 三种税负形态的差别</h3>
+  <table>
+    <thead><tr><th>形态</th><th>何时付款</th><th>买家体验</th><th>本轮核查结论</th></tr></thead>
+    <tbody>
+      <tr><td><b>DDP预收</b></td><td>结账时随货款一并支付预估进口税费（多退少不补）</td><td>到手价即最终价，无二次付款</td><td>骑行类渠道中<b>仅亚马逊海外购</b>有官方原文支持向中国大陆 DDP；Sigma Sports、INEOS、Ribble、Velocio 具备该机制但对中国方向的可达性未证实</td></tr>
+      <tr><td><b>到岸缴税</b></td><td>货到后由承运商/海关代收（货物按 DAP/DDU 发出）</td><td>两种结果：应征税额不超过 50 元的订单免税放行；超过免税额的订单由承运商或海关代收</td><td>本次判定为「合格 / 有条件合格」的绝大多数站点属此形态</td></tr>
+      <tr><td><b>必须转运</b></td><td>官方不发货至中国大陆，必须经第三方转运</td><td>链路最长、责任最分散</td><td>17 个「不合格」站点与全部「未能证实」的履约侧空白站点均落于此</td></tr>
+    </tbody>
+  </table>
+  <h3>5.2 DDP / 预收机制渠道逐条对照</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>渠道</th><th>机制原文要点</th><th>对中国大陆是否适用</th><th>判定</th><th>优先级</th></tr></thead>
+    <tbody>
+      <tr><td class="dom">亚马逊海外购（amazon.cn）</td><td>结账预收进口税费、「多退少不补」；须中国居民身份证清关</td><td><b>适用</b>：官方明示中国除港澳台之外全境配送</td><td><span class="badge b-ok">合格</span></td><td><span class="pri">★★★</span></td></tr>
+      <tr><td class="dom">Sigma Sports</td><td>国际站 Global-e 结账提供预付关税与税费选项</td><td>未证实：可配送国家清单未公布</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td></tr>
+      <tr><td class="dom">INEOS Grenadiers 官方商店</td><td>「For certain shipping destinations you will be offered the option to pre-pay duties and taxes at checkout」</td><td>未证实：覆盖 100+ 目的地、排除名单不含中国，但未点名中国</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td></tr>
+      <tr><td class="dom">Ribble Cycles</td><td>官方国际配送文章：结账预付税费含关税</td><td>未证实：可配送国家清单未公布</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td></tr>
+      <tr><td class="dom">Velocio（intl.velocio.cc）</td><td>「All orders from intl.velocio.cc are shipped Delivered Duties Paid (DDP). Taxes and import duties are collected at the time of purchase.」</td><td>未证实：仅标「EU &amp; INTERNATIONAL」，未点名中国；支付侧亦无依据</td><td><span class="badge b-unk">未能证实</span></td><td><span class="pri">★</span></td></tr>
+      <tr><td class="dom">eBay（GSP / EIS）</td><td>结账预收机制存在，但对中国方向未固定；单件上限 US$2,500、发货地须为美/加</td><td>部分适用：官方可送达国家清单含 China/CN</td><td><span class="badge b-warn">有条件合格</span></td><td><span class="pri">★</span></td></tr>
+      <tr><td class="dom">Canyon 中国站 / 亚马逊海外购以外的大陆本地官方商城</td><td>境内成交价含税，不存在跨境清关环节</td><td>适用，但属境内零售</td><td>Canyon 中国站 <span class="badge b-ok">合格</span> / Specialized 中国官网 <span class="badge b-bad">不合格</span> / Giant <span class="badge b-unk">未能证实</span></td><td><span class="pri">★★★</span> / <span class="pri none">—</span> / <span class="pri">★</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>5.3 结论</h3>
+  <p>把「结账即完成税负」设为硬性条件后，首期可落地的只有 <b>亚马逊海外购</b>（唯一官方原文支持中国大陆 DDP）与 <b>Canyon 中国站</b>（境内含税成交）。Sigma Sports、INEOS、Ribble、Velocio 的机制本身先进，但对中国方向的可达性均无官方清单，只能按「实单验证」推进，不进入首期适配。</p>
+  <p class="note">注意：亚马逊海外购的 DDP 由「进口税费预估」驱动，且官方未把整车纳入海外购清单，故该通道对 BikeHunt 可覆盖的是配件、装备与骑行服，整车须另寻路径。</p>
+</section>
+
+<!-- ==================== 6 专题B ==================== -->
+<section id="s6" class="wrap">
+  <h2><span class="num">06</span>专题 B · 中国进口税收与商品准入口径</h2>
+  <h3>6.1 三种入境方式的适用边界</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>方式</th><th>限值</th><th>税负</th><th>对 BikeHunt 的适用性</th></tr></thead>
+    <tbody>
+      <tr><td>个人邮寄进境物品（行邮）</td><td>每次限值 <b>2000 元</b>（2024-12-01 起，经海关总署公告 2024 年第 176 号修改；旧的 800/1000 元现仅适用出境）；超限值退运或按货物报关，<b>单件不可分割且属个人自用</b>可按个人物品办理</td><td>综合税率三档 <b>13% / 20% / 50%</b>；应征税额 ≤ <b>50 元</b>免征</td><td>配件、装备、骑行服等 <b>单价不高、可分割</b>的商品适用；整车远超 2000 元但属单件不可分割，可按个人自用办理</td></tr>
+      <tr><td>跨境电商零售进口</td><td>单次 <b>5000 元</b>、年度 <b>26000 元</b></td><td>限值内关税 0%，增值税与消费税按法定应纳额的 70% 征收（一般商品合计约 <b>9.1%</b>）</td><td>税负最优，但整车远超单次限值，<b>整车不可行</b>；配件可行</td></tr>
+      <tr><td>一般贸易进口</td><td>无个人限值概念</td><td>按货物税率＋进口增值税</td><td>须企业主体报关，<b>个人不可自行报关</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>6.2 骑行相关品类的税率落点</h3>
+  <p>自行车、骑行服、运动用品均落在行邮综合税率的 <b>20%</b> 档。免税额 50 元对应的含义是：20% 档下、应征税额不超过 50 元，即<b>货值约 250 元以内</b>的低值订单可免税放行（以海关计征汇率为准）。</p>
+  <h3>6.3 计税算例（统一采用海关计征汇率 1 EUR = 7.7762）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>场景</th><th>欧元货值</th><th>折人民币（×7.7762）</th><th>行邮 20% 应征税额</th><th>单件到手价</th></tr></thead>
+    <tbody>
+      <tr><td>单件骑行服（行邮）</td><td>300 €</td><td><b>2,332.86 元</b></td><td><b>466.57 元</b></td><td><b>2,799.43 元</b></td></tr>
+      <tr><td>整车（行邮、单件不可分割）</td><td>3,000 €</td><td><b>23,328.60 元</b></td><td><b>4,665.72 元</b></td><td><b>27,994.32 元</b></td></tr>
+      <tr><td>同款配件（跨境电商）</td><td>300 €</td><td>2,332.86 元</td><td><b>212.29 元</b>（约 9.1%）</td><td>2,545.15 元</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">算例口径说明：上表一律使用 <b>海关计征汇率 1 EUR = 7.7762</b>（海关总署令第 272 号第十三条推得，对应 2026-09-16 中国外汇交易中心人民币汇率中间价 100 欧元 = 777.62）。市场即期汇率（1 EUR ≈ 7.50）只用于第 4 章的价格展示折算，<b>不得用于计税</b>。整车不适用跨境电商 9.1% 档（远超单次 5,000 元限值），故只列行邮一栏。</p>
+  <h3>6.4 商品准入口径</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>品类</th><th>准入结论</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>成人非电动自行车</td><td><b>不在 CCC 目录</b></td><td>无需强制性产品认证即可进口（儿童自行车在目录内、电动自行车在目录内）</td></tr>
+      <tr><td>自行车头盔</td><td>不在 CCC 目录，但受强制性国标 <b>GB 24429-2009</b> 约束</td><td>GB 811-2022 已明确不适用于自行车头盔；行邮渠道是否实际执行 GB 24429 符合性查验，本报告未能证实</td></tr>
+      <tr><td>锂电类（HS 0914 / 0915）</td><td>须<b>逐 SKU 判定</b></td><td>锂电池及各品类归类差异大，不能整类放行</td></tr>
+      <tr><td>智能骑行台电气部件</td><td>须<b>逐 SKU 判定</b></td><td>含电机/电控的部件归类与税率需按具体 SKU 核</td></tr>
+      <tr><td>旧衣物（HS 6309000000）</td><td><b>禁止进口</b></td><td>列入《禁止进口固体废物目录》，属禁止进口货物 —— <b>二手骑行服等旧衣物渠道为硬红线</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>6.5 本专题仍未能证实的 5 项</h3>
+  <ol>
+    <li>头盔在《分类表》中的逐字归类；</li>
+    <li>码表 / 骑行台的具体归类与税率；</li>
+    <li>税则号 87120020 在《进出口税则（2026）》项下的最惠国税率数字；</li>
+    <li>旧自行车整车是否属禁止或限制进口；</li>
+    <li>行邮渠道进境运动头盔是否实际执行 GB 24429 符合性查验。</li>
+  </ol>
+  <p class="note">以上 5 项均为上游核查中明确未取得官方依据的事项，不参与任何判定结论；在项目层面须以实单或向海关/报关行核验后再落进规则。</p>
+</section>
+
+<!-- ==================== 7 专题C ==================== -->
+<section id="s7" class="wrap">
+  <h2><span class="num">07</span>专题 C · 采集可行性（robots.txt 实测）</h2>
+  <h3>7.1 采集反爬分级（依据 robots.txt 实测与站点技术形态）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>级别</th><th>站点</th><th>结论</th></tr></thead>
+    <tbody>
+      <tr><td><b>低</b>（标准 Shopify / 静态站）</td><td>Team Visma、INEOS、Soudal Quick-Step、UAE Emirates、Santini、Bioracer、Gobik、Evans、Merlin、Sigma、Bikeinn、Alltricks、Le Col、PNS、Café du Cycliste、Isadore、Q36.5、Alé、Sportful、Canyon 中国站、Trek 各区域站、Cube、Orbea、Cannondale、Buycycle、Jabs 类平台站</td><td>robots 仅封闭购物车、结账、账户、搜索与政策页，商品页与类目页可正常抓取</td></tr>
+      <tr><td><b>中</b></td><td>Bike24、Rose Bikes、R2-Bike、Bike-Discount、Bike-Components、Fahrrad.de、Tredz、Backstage 类站点、Red Bull-BORA</td><td>商品页可抓，但部分路径封闭或屏蔽特定爬虫 UA；须控制频率并遵守 Crawl-delay</td></tr>
+      <tr><td><b>高 / 不可达</b></td><td>Castelli、Deporvillage、Lordgun、Ornot、Kalas、Canyon 国际站（仅 robots）、Storck、La Passione、MAAP（products.json 失败）</td><td>访问被拦、robots 抓取失败，或 robots 明令自动访问需先获得许可；须人工取证</td></tr>
+      <tr><td><b>政策层面明确反对自动化</b></td><td>Attaquer、Ostroy</td><td>robots.txt 顶部平台政策段明确不接受自动化爬取与 buy-for-me 代下单，合法集成须走其官方 Checkout Kit</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>7.2 robots.txt 实测要点（可执行细节）</h3>
+  <ul>
+    <li><b>bike24.com/robots.txt（实测）</b>：商品页与类目页允许抓取、<b>未设 Crawl-delay</b>；明确禁用 <code>/ajax.php</code>、<code>/api/*</code>、<code>/search?*</code>、<code>/checkout/*</code>、<code>/topic/*</code>、<code>/cycling/bike/*</code>。<b>因 /api/* 被封，无公开商品 API，采集须走页面解析</b>。</li>
+    <li><b>Castelli</b>：<code>Request-rate: 1/10</code>、<code>Crawl-delay: 10</code>、<code>Visit-time: 0400-0845</code>（仅限 UTC 04:00–08:45 抓取），并屏蔽近百年化 UA 名单（含 Wget、Exabot、BLEXBot、MauiBot）。</li>
+    <li><b>Isadore</b>：整体允许商品页，但显式 <code>Disallow: /zh/</code> —— 中文目录对爬虫关闭。</li>
+    <li><b>Deporvillage</b>：连 robots.txt 本身都被安全策略拦截，无法取得规则。</li>
+    <li><b>La Passione</b>：robots.txt 内容本身即禁止自动访问，无法取得结论。</li>
+    <li><b>Ornot</b>：robots.txt 抓取返回错误，规则不可得。</li>
+  </ul>
+  <h3>7.3 可直接使用的结构化入口（可显著降低适配成本）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>站点</th><th>入口</th><th>实测结果</th></tr></thead>
+    <tbody>
+      <tr><td class="dom">Le Col</td><td><code>lecol.cc/products.json?limit=1</code></td><td><b>成功</b>：返回完整商品 JSON（含价格，GBP 计价）。本次核查中唯一实测确认为<b>可直接使用</b>的公开商品 JSON 入口</td></tr>
+      <tr><td class="dom">Giordana</td><td><code>/agents.md</code> + <code>/.well-known/ucp</code> + <code>/api/ucp/mcp</code></td><td>官方 agents.md 明列只读采集入口（GET <code>/collections/all</code>、<code>/products/{handle}.json</code> 等）</td></tr>
+      <tr><td class="dom">Eliel</td><td><code>/agents.md</code> + UCP/MCP 通道</td><td>robots 显式欢迎 AI / agent 抓取，并提供结构化商务通道</td></tr>
+      <tr><td class="dom">Alé</td><td><code>/agents.md</code> + UCP/MCP 端点</td><td>robots 全站开放，站点另公开面向 agent 的只读接口声明</td></tr>
+      <tr><td class="dom">INEOS Grenadiers 官方商店</td><td>UCP/MCP 端点声明</td><td>robots 允许，Shopify 标准 <code>/sitemap.xml</code> 可用</td></tr>
+      <tr><td class="dom">MAAP</td><td><code>maap.cc/products.json?limit=1</code></td><td><b>失败</b>，不得当作可用入口</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>7.4 对站点适配器的直接建议</h3>
+  <ol>
+    <li>首期适配器<b>不要以「爬虫能抓到」为选站标准</b>，而应以第 3 章的推荐优先级为准；爬虫仅决定实现难度。</li>
+    <li>对 <b>Castelli 类限时抓取</b>站点，采集任务须排在 UTC 04:00–08:45 窗口内，并设 ≥10 秒间隔。</li>
+    <li>对 <b>政策层面明确反对自动化</b>的站点（Attaquer、Ostroy），不得以脚本化浏览器绕过，只能走人工流程或官方结账组件。</li>
+    <li>对「未能证实」的履约侧站点，<b>先实单验证再写适配器</b>，避免为不可用的站点投入开发。</li>
+  </ol>
+</section>
+
+<!-- ==================== 8 风险 ==================== -->
+<section id="s8" class="wrap">
+  <h2><span class="num">08</span>风险与未能证实清单</h2>
+  <h3>8.1 站点级未能证实清单（42 站）</h3>
+  <p>42 个「未能证实」站点按缺失项归因如下，全部为上游与本次核查均未取得官方文本者：</p>
+  <div class="tw">
+  <table>
+    <thead><tr><th>缺失项</th><th>站点</th><th>数量</th></tr></thead>
+    <tbody>
+      <tr><td><b>支付侧无官方依据</b>（配送表可读但官方未发布支付方式清单）</td><td>Bioracer、Gobik、Vermarc、Attaquer、Velocio、Pedla、Eliel、Bike-Components、Jenson USA、BikeTiresDirect</td><td>10</td></tr>
+      <tr><td><b>履约侧无官方依据</b>（支付有依据但中国行取值未取得）</td><td>Bike-Discount / H&amp;S、Radon、Ribble、Wilier、Canyon 国际站、Giant 官方商城</td><td>6</td></tr>
+      <tr><td><b>两项均无官方依据</b>（配送政策页为空、站点不可达或仅有 robots）</td><td>Soudal Quick-Step、Groupama-FDJ United、Alpecin-Premier Tech、Movistar、Kalas、La Passione、Black Sheep、Ornot、Giordana、Tredz、Deporvillage、Lordgun、Colnago、Pinarello、Bianchi、Factor、Look、BMC、Storck、Simplon、Scott、Merida、Bike Exchange、Bikesale、Amazon.com 直邮、Backcountry / Competitive Cyclist</td><td>26</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>8.2 事实级未能证实清单</h3>
+  <ul>
+    <li><b>亚马逊是否支持银联</b>：官方帮助页原文只有「Credit Card (International)」；「银联」仅见于银联国际 2016 年新闻稿，<b>降级为未能证实</b>。</li>
+    <li><b>头盔在《分类表》中的逐字归类</b>、<b>码表与骑行台的具体归类与税率</b>、<b>税则号 87120020 的最惠国税率数字</b>、<b>旧自行车整车是否属禁止/限制进口</b>、<b>行邮渠道是否实际执行 GB 24429 符合性查验</b>：均为第 6 章列明的未取得项。</li>
+    <li><b>各站结账币种是否含 CNY</b>：除 Canyon 中国站、Specialized 中国站、Giant 中国商城、亚马逊海外购、Merlin Cycles、Isadore、Attaquer 有官方明文外，其余站点该项均为未证实。</li>
+    <li><b>Most 站点的单品价格水平</b>：本轮仅取到少数站点（Team Visma、UAE、Bioracer、Gobik、Le Col、Isadore、Isadore 配件、Kalas、Alpecin 复刻衫、Trek 中国站）的具名价格，其余站点未取得。</li>
+  </ul>
+  <h3>8.3 上线前必须实单验证的清单</h3>
+  <ol>
+    <li><b>亚马逊海外购</b>：以 App 或微信小程序实测下单，确认电脑端限制（2024-01-27 起不再提供购物服务）不影响结算链路与税费预估。</li>
+    <li><b>Canyon 中国站</b>：以境外发行 Visa/Mastercard 实测其是否受理（官方付款页虽列 Visa/Mastercard，但站点定位为境内零售）。</li>
+    <li><b>Isadore、Q36.5、Bike24、Rose Bikes、R2-Bike、Merlin Cycles、Alltricks、Team Visma、Sigma Sports、Evans Cycles、Rapha、INEOS、UAE、Santini、Assos、Le Col、Pas Normal Studios、Café du Cycliste、Ostroy、Bikeinn、eBay</b>：逐一实单验证结账是否放行中国大陆地址与中国发卡行卡片，并记录实际被扣税费。</li>
+    <li><b>Attaquer</b>：履约侧已官方证实，仅需实单验证支付一步。</li>
+    <li>所有「到岸缴税」站点：以一笔低值订单验证是否触发免税额（应征税额 ≤ 50 元）。</li>
+  </ol>
+  <h3>8.4 主要风险</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>风险</th><th>影响</th><th>处置</th></tr></thead>
+    <tbody>
+      <tr><td><b>判定时效性</b></td><td>站点配送国家清单与支付政策随时调整，本报告为基准日 2026-10-14 的快照</td><td>每个适配器上线前重跑第 3 章矩阵对应的官方页；把「判定」列为可定期刷新的数据项</td></tr>
+      <tr><td><b>「到岸缴税」造成到手价浮动</b></td><td>同款商品的最终到手价随海关执行而变化，影响比价与报价</td><td>前端一律标注「不含进口税费」，并以第 6 章算例给出税额区间供参考</td></tr>
+      <tr><td><b>旧衣物禁令</b></td><td>二手骑行服类目触及禁止进口货物红线</td><td>任何二手服装 SKU 一律不上线，不提供转运方案</td></tr>
+      <tr><td><b>整车跨境整体不可行</b></td><td>除 Canyon 中国站等境内渠道外，整车品牌站普遍不跨境或不对个人销售</td><td>首期不把整车作为跨境适配目标，整车只在境内渠道与 eBay 二手通道评估</td></tr>
+      <tr><td><b>支付反欺诈</b></td><td>境外站普遍把「境外信用卡」列为风控关注点（Team Visma、Soudal Quick-Step 均有官方提示）</td><td>结账失败时优先引导使用 PayPal、支付宝等替代通道；对仅支持第三方支付的站点单独标注</td></tr>
+      <tr><td><b>采集合规</b></td><td>部分站点 robots 明令限制抓取时段、路径，或有站点在政策层面反对自动化</td><td>严格按第 7 章实测规则设定抓取窗口与频率；对明确反对自动化的站点改走人工或官方组件</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ==================== 9 来源索引 ==================== -->
+<section id="s9" class="wrap">
+  <h2><span class="num">09</span>来源索引</h2>
+  <h3>9.1 站点官方来源（判定依据，逐站必查页）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>站点</th><th>官方来源</th></tr></thead>
+    <tbody>
+      <tr><td class="dom">Team Visma | Lease a Bike</td><td><a href="https://www.teamvismaleaseabike.com/shop-delivery/">shop-delivery</a> · <a href="https://www.teamvismaleaseabike.com/shop-payment/">shop-payment</a> · <a href="https://www.teamvismaleaseabike.com/team-visma-lease-a-bike-bicycle-sales/">bicycle-sales</a></td></tr>
+      <tr><td class="dom">INEOS Grenadiers</td><td><a href="https://store.netcompanyineos.com/pages/shipping-policy">shipping-policy</a> · <a href="https://store.netcompanyineos.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Red Bull-BORA-hansgrohe</td><td><a href="https://customerservice.redbullshop.com/hc/en-us/sections/27269814144413-Shipping-and-delivery">Shipping and delivery</a> · <a href="https://www.redbullshop.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Soudal Quick-Step</td><td><a href="https://thewolfpack.shop/pages/payment">payment</a> · <a href="https://thewolfpack.shop/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Groupama-FDJ United</td><td><a href="https://www.equipecycliste-groupama-fdj.fr/en/faq/">faq</a></td></tr>
+      <tr><td class="dom">UAE Team Emirates XRG</td><td><a href="https://www.emirates.store/shipping-policy">shipping-policy</a> · <a href="https://www.emirates.store/faq">faq</a></td></tr>
+      <tr><td class="dom">Alpecin-Premier Tech</td><td><a href="https://www.alpecin-premiertech.com/news/merci-poupou-tdf2026">队站公告</a></td></tr>
+      <tr><td class="dom">Movistar Team</td><td><a href="https://movistarteam.com/pagina-principal-del-sitio-2">官方商店页</a></td></tr>
+      <tr><td class="dom">Santini</td><td><a href="https://www.santinicycling.com/en/pages/termini-e-condizioni-di-vendita">条款</a> · <a href="https://www.santinicycling.com/fr/content/livraison-1">livraison</a> · <a href="https://www.santinicycling.com/fr/pages/faq">faq</a></td></tr>
+      <tr><td class="dom">Bioracer</td><td><a href="https://shop.bioracer.com/shipping-and-returns/">shipping-and-returns</a> · <a href="https://shop.bioracer.com/es/pages/envios-y-devoluciones">envios-y-devoluciones</a></td></tr>
+      <tr><td class="dom">Gobik</td><td><a href="https://gobik.com/policies/shipping-policy">shipping-policy</a> · <a href="https://gobik.com/en/policies/terms-of-service">terms-of-service</a> · <a href="https://gobik.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Vermarc</td><td><a href="https://www.shop.vermarcsport.com/conditions">conditions</a> · <a href="https://vermarc.mybrikl.com/en/terms/">teamstores terms</a></td></tr>
+      <tr><td class="dom">Kalas</td><td><a href="https://kalas.cc/">kalas.cc</a></td></tr>
+      <tr><td class="dom">Rapha</td><td><a href="https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options">shipping options</a> · <a href="https://support.rapha.cc/en/articles/516-checkout-and-payment-support">checkout &amp; payment</a> · <a href="https://www.rapha.cc/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Assos</td><td><a href="https://www.assos.com/gb/customer-service/?section=shipping">shipping</a> · <a href="https://www.assos.com/sg/customer-service/?section=terms-and-conditions">terms</a> · <a href="https://www.assos.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">MAAP</td><td><a href="https://support.maap.cc/">support.maap.cc</a> · <a href="https://maap.cc/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Le Col</td><td><a href="https://lecol.cc/fr-tt/pages/lecol-faqs">lecol-faqs</a> · <a href="https://www.lecol.cc/robots.txt">robots.txt</a> · <a href="https://lecol.cc/products.json?limit=1">products.json</a></td></tr>
+      <tr><td class="dom">Castelli</td><td><a href="https://www.castelli-cycling.com/IT/en/customer-service/shipping-times-and-costs">shipping-times-and-costs</a> · <a href="https://www.castelli-cycling.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Pas Normal Studios</td><td><a href="https://pasnormalstudios.com/pages/faq">faq</a> · <a href="https://us.pasnormalstudios.com/pages/terms">terms</a> · <a href="https://pasnormalstudios.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">La Passione</td><td><a href="https://www.lapassione.cc/pages/terms-conditions">terms-conditions</a></td></tr>
+      <tr><td class="dom">Isadore</td><td><a href="https://isadore.com/faq">faq</a> · <a href="https://isadore.com/faq/how-can-i-pay-for-isadore-products">how-can-i-pay</a> · <a href="https://isadore.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Q36.5</td><td><a href="https://www.q36-5.com/en-us/c/shipping-delivery/">shipping-delivery</a> · <a href="https://www.q36-5.com/en-us/c/order-payment/">order-payment</a> · <a href="https://www.q36-5.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Alé</td><td><a href="https://alecycling.com/en-us/pages/spedizioni-e-consegna">spedizioni-e-consegna</a> · <a href="https://www.alecycling.com/agents.md">agents.md</a> · <a href="https://www.alecycling.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Sportful</td><td><a href="https://www.sportful.com/IT/en/customer-service/shipping-times-and-costs">shipping-times-and-costs</a> · <a href="https://www.sportful.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Café du Cycliste</td><td><a href="https://www.cafeducycliste.com/pages/shipping">shipping</a> · <a href="https://www.cafeducycliste.com/pages/terms-of-sale">terms-of-sale</a> · <a href="https://www.cafeducycliste.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Attaquer</td><td><a href="https://attaquercycling.com/pages/shipping">shipping</a> · <a href="https://attaquercycling.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Black Sheep Cycling</td><td><a href="https://au.blacksheep.cc/policies/shipping-policy">shipping-policy</a> · <a href="https://au.blacksheep.cc/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Velocio</td><td><a href="https://support.velocio.cc/hc/en-us/articles/360059193513-Shipping-Options">Shipping Options</a> · <a href="https://velocio.cc/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Pedla</td><td><a href="https://thepedla.com/pages/shipping">shipping</a> · <a href="https://thepedla.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Ostroy</td><td><a href="https://ostroy.com/pages/faq">faq</a> · <a href="https://ostroy.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Giordana</td><td><a href="https://giordanacycling.com/pages/faq">faq</a> · <a href="https://giordanacycling.com/agents.md">agents.md</a> · <a href="https://www.giordanacycling.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Eliel</td><td><a href="https://www.elielcycling.com/pages/faqs">faqs</a> · <a href="https://www.elielcycling.com/agents.md">agents.md</a> · <a href="https://www.elielcycling.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Ornot</td><td><a href="https://www.ornotbike.com/policies/shipping-policy">shipping-policy</a></td></tr>
+      <tr><td class="dom">Bike24</td><td><a href="https://www.bike24.com/shipping.html">shipping.html</a> · <a href="https://www.bike24.com/robots.txt">robots.txt（实测）</a></td></tr>
+      <tr><td class="dom">Bike-Discount / H&amp;S</td><td><a href="https://support.bike-discount.de/de/support/solutions/folders/7000042624">support.bike-discount.de</a> · <a href="https://www.bike-discount.de/en/shipping">shipping</a></td></tr>
+      <tr><td class="dom">Bike-Components</td><td><a href="https://www.bike-components.de/en/shipping-costs">shipping-costs</a> · <a href="https://www.bike-components.de/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Rose Bikes</td><td><a href="https://www.rosebikes.com/shipping">shipping</a> · <a href="https://www.rosebikes.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">R2-Bike</td><td><a href="https://r2-bike.com/Shipping">Shipping</a> · <a href="https://r2-bike.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Fahrrad.de</td><td><a href="https://www.fahrrad.de/pages/versandinformationen">versandinformationen</a></td></tr>
+      <tr><td class="dom">Wiggle / Chain Reaction / ProBikeKit</td><td><a href="https://www.wiggle.com/">wiggle.com</a> · <a href="https://www.chainreactioncycles.com/">chainreactioncycles.com</a> · <a href="https://www.probikekit.com/">probikekit.com</a></td></tr>
+      <tr><td class="dom">Evans Cycles</td><td><a href="https://help.evanscycles.com/hc/en-gb/articles/6018058318495-Terms-Conditions-non-UK-customers">non-UK customers</a> · <a href="https://www.evanscycles.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Merlin Cycles</td><td><a href="https://www.merlincycles.com/en-us/shipping-postage.html">shipping-postage</a> · <a href="https://www.merlincycles.com/en-us/terms-and-conditions.html">terms</a></td></tr>
+      <tr><td class="dom">Sigma Sports</td><td><a href="https://www.sigmasports.com/payment-and-delivery">payment-and-delivery</a> · <a href="https://www.sigmasports.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Tredz</td><td><a href="https://www.tredz.co.uk/help-advice/customer-service/delivery-returns/delivery-info">delivery-info</a> · <a href="https://www.tredz.co.uk/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Bikeinn / Tradeinn</td><td><a href="https://www.tradeinn.com/bikeinn/en/help/st">tradeinn.com/bikeinn help</a> · <a href="https://www.bikeinn.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Deporvillage</td><td><a href="https://www.deporvillage.com/">deporvillage.com</a></td></tr>
+      <tr><td class="dom">Alltricks</td><td><a href="https://www.alltricks.com/delivery?country=CN">delivery?country=CN</a> · <a href="https://www.alltricks.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Lordgun</td><td><a href="https://www.lordgun.com/">lordgun.com</a></td></tr>
+      <tr><td class="dom">Mantel</td><td><a href="https://supplychain.mantel.com/">supplychain.mantel.com</a> · <a href="https://www.mantel.com/robots.txt">robots.txt</a></td></tr>
+      <tr><td class="dom">Canyon 中国站 / 国际站</td><td><a href="https://www.canyon.com.cn/">canyon.com.cn</a> · <a href="https://www.canyon.com/robots.txt">canyon.com/robots.txt</a></td></tr>
+      <tr><td class="dom">Cube</td><td><a href="https://www.cube.eu/hu/support/customer-support/international">international</a></td></tr>
+      <tr><td class="dom">Radon / Bianchi / Factor / Look / BMC / Storck / Simplon / Pinarello</td><td>各品牌官方 robots.txt（见第 4 章各卡来源行）</td></tr>
+      <tr><td class="dom">Ribble Cycles</td><td><a href="https://helpcentre.ribblecycles.co.uk/en/support/solutions/articles/22000289236-international-delivery-costs-and-timescales">international delivery</a></td></tr>
+      <tr><td class="dom">Orbea</td><td><a href="https://cms.orbea.com/en-be/p/shipping">shipping</a></td></tr>
+      <tr><td class="dom">Colnago</td><td><a href="https://www.colnago.com/en-us/shipments-and-returns">shipments-and-returns</a></td></tr>
+      <tr><td class="dom">Wilier</td><td><a href="https://www.wilier.com/en/terms-and-conditions">terms-and-conditions</a></td></tr>
+      <tr><td class="dom">Specialized</td><td><a href="https://www.specialized.com.cn/cn/zh/faq">中国站 faq</a> · <a href="https://www.specialized.com/cz/en/faq">国际站 faq</a></td></tr>
+      <tr><td class="dom">Trek</td><td><a href="https://www.trekbikes.com/jp/ja_JP/customer_service/">customer_service</a> · <a href="https://www.trekbikes.com/cn/zh_CN/">中国站</a></td></tr>
+      <tr><td class="dom">Giant</td><td><a href="https://e.giant.com.cn/">e.giant.com.cn</a></td></tr>
+      <tr><td class="dom">Scott / Merida</td><td><a href="https://www.scott-sports.com/robots.txt">scott-sports.com/robots.txt</a> · <a href="https://www.merida.cn/">merida.cn</a></td></tr>
+      <tr><td class="dom">Cannondale</td><td><a href="https://support.cannondale.com/hc/en-us/articles/1500009060141-Shipping-and-Pickup-Information">Shipping and Pickup Information</a></td></tr>
+      <tr><td class="dom">Buycycle</td><td><a href="https://buycycle.zendesk.com/hc/en-us/articles/20377496513937-Where-do-you-ship">Where do you ship</a></td></tr>
+      <tr><td class="dom">Bike Exchange / Bikesale</td><td><a href="https://www.bikeexchange.com/">bikeexchange.com</a> · <a href="https://www.bikesale.com/">bikesale.com</a></td></tr>
+      <tr><td class="dom">亚马逊海外购</td><td><a href="https://www.amazon.cn/dp/B0C37FRYV5">海外购商品页（DDP 原文）</a> · <a href="https://www.amazon.cn/gp/help/customer/display.html/?linkCode=ur2&amp;nodeId=200485580">帮助页</a> · <a href="https://www.amazon.cn/b?node=1941366071">电脑端改版通知</a></td></tr>
+      <tr><td class="dom">Amazon.com 直邮</td><td><a href="https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=G9UHGT37MYD2EJPL">help（Import Fees Deposit）</a></td></tr>
+      <tr><td class="dom">eBay</td><td><a href="https://pages.ebay.com/international-shipping/cn/">international-shipping/cn</a></td></tr>
+      <tr><td class="dom">Jenson USA</td><td><a href="https://www.jensonusa.com/customer-service/faqs">faqs</a></td></tr>
+      <tr><td class="dom">Backcountry / Competitive Cyclist</td><td><a href="https://www.competitivecyclist.com/info/shipping-policy">shipping-policy</a></td></tr>
+      <tr><td class="dom">BikeTiresDirect</td><td><a href="https://www.biketiresdirect.com/shipping">shipping</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>9.2 官方法规与国家政策来源</h3>
+  <ul>
+    <li><span class="tag t-off">官方政策</span>国务院关税税则委员会公告 2024 年第 11 号：<a href="https://gss.mof.gov.cn/gzdt/zhengcefabu/202411/t20241129_3948540.htm">公告页</a> · <a href="https://gss.mof.gov.cn/gzdt/zhengcefabu/202411/P020241129682518318359.pdf">办法正文（含附表 1）</a></li>
+    <li><span class="tag t-off">官方政策</span>海关总署公告 2024 年第 175 号（<b>废止 2019 年第 63 号</b>）：<a href="http://www.customs.gov.cn/customs/2024-12/02/article_2025121221025666575.html">原文</a></li>
+    <li><span class="tag t-off">官方政策</span>海关总署公告 2024 年第 176 号（进境物品每次限值 2000 元）：<a href="http://www.customs.gov.cn/customs/2024-12/02/article_2025121221025647906.html">原文</a></li>
+    <li><span class="tag t-off">官方政策</span>海关总署令第 272 号（中华人民共和国进出口关税条例实施细则相关，计征汇率取值规则）：<a href="https://www.gov.cn/gongbao/2024/issue_11726/202411/content_6989766.html">国务院公报</a></li>
+    <li><span class="tag t-off">官方政策</span>海关总署令第 272 号第十三条推得的 2026 年 10 月欧元计征汇率（来源中间价）：<a href="https://www.chinamoney.org.cn/chinese/ccprnoticecontent/index.html?searchDate=2026-09-16">中国货币网 2026-09-16</a> · <a href="http://www.xinhuanet.com/20260916/9520f92722f848dcbcdd540e9135470d/c.html">新华社转载</a></li>
+  </ul>
+  <h3>9.3 汇率来源（市场即期，仅用于价格展示折算）</h3>
+  <ul>
+    <li><span class="tag t-3rd">第三方行情</span>新浪财经外汇行情（2026-10-14 约 15:00）：<a href="https://gu.sina.cn/quotes/fx/EURCNY">EUR/CNY</a> · <a href="https://gu.sina.cn/quotes/fx/GBPCNY">GBP/CNY</a> · <a href="https://gu.sina.cn/quotes/fx/USDCNH">USD/CNH</a> · <a href="https://gu.sina.cn/quotes/fx/AUDCNY">AUD/CNY</a> · <a href="https://gu.sina.cn/quotes/fx/CHFCNY">CHF/CNY</a> · <a href="https://gu.sina.cn/quotes/fx/DKKCNY">DKK/CNY</a> · <a href="https://gu.sina.cn/quotes/fx/SEKCNY">SEK/CNY</a></li>
+  </ul>
+  <h3>9.4 社区与媒体类来源（仅作背景，不作判定依据）</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>来源</th><th>用途</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-3rd">第三方转述</span><a href="https://www.ahorren.es/cupones/deporvillage.com">ahorren.es</a></td><td>Movistar Team 商店配送范围的第三方表述</td><td>属第三方优惠站，未作为判定依据</td></tr>
+      <tr><td><span class="tag t-3rd">第三方媒体</span><a href="https://www.joggen-online.de/Sportausstattung/Sportausstattung-von-Kalas/">joggen-online.de</a></td><td>Kalas 销往 50 多国的旁证</td><td>媒体表述，未作为判定依据</td></tr>
+      <tr><td><span class="tag t-3rd">第三方转述</span>银联国际 2016 年新闻稿</td><td>曾被用作「亚马逊支持银联」的依据</td><td><b>本次核查降级为未能证实</b>：亚马逊官方帮助页原文只有 Credit Card (International)，未见可公开引用的原始链接</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">引用格式规范：官方来源一律使用 <code>【官方政策】URL</code> 标签，社区与媒体类一律使用 <code>【第三方转述】</code> 或 <code>【第三方媒体】</code>，两者在同一段落中不得混用同一标签。本报告所有判定结论均可追溯至 9.1 与 9.2 中的官方来源。</p>
+</section>
+
+<footer class="wrap">
+  <p>本报告判定基准日 2026-10-14（Asia/Shanghai），收货地中国大陆（南宁）。所有判定为当日快照，站点政策变动后即失效；接入前按第 3 章优先级与第 8 章风险清单复核。</p>
+</footer>
+
+<script>
+(function(){
+  var btns = document.querySelectorAll('.fbtn');
+  function setFilter(v){
+    btns.forEach(function(b){ b.classList.toggle('on', b.dataset.f === v); });
+    var nodes = document.querySelectorAll('[data-v]');
+    for (var i=0;i<nodes.length;i++){
+      var el = nodes[i];
+      el.style.display = (v === 'all' || el.dataset.v === v) ? '' : 'none';
+    }
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){ setFilter(b.dataset.f); });
+  });
+})();
+</script>
+</body>
+</html>

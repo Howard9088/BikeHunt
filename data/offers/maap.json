@@ -1,0 +1,2752 @@
+{
+  "source_code": "maap",
+  "collected_at": "2026-10-14T11:23:31.695053+00:00",
+  "offers": [
+    {
+      "offer_id": "f590822e7f265910d484",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "XS",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ339_BLK.Evade-Pro-Base-Jersey-2.0_Black_LP_FLATLAY_u6m9pa.png?v=1725948045",
+      "price": {
+        "amount": "170.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "245.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "e95b6fca5d212816bdfc",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ340_ANT",
+        "size": "XS",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ340_ANT.Evade_20Pro_20Base_20Jersey_202.0_Antartica_LP_FLATLAY..png?v=1725947820",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "245.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "499d26ecd6614bff4ddc",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Elements Pro Race SS Jacket",
+        "gtin": null,
+        "mpn": "MPMJA250825_BLAK",
+        "size": "XS",
+        "color": "BLAK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Elements Pro Race SS Jacket",
+      "url": "https://maap.cc/products/elements-pro-race-ss-jacket-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMJA250825_BLAK.Elements_20Pro_20Race_20SS_20Jacket_LP_FLATLAY.png?v=1757551048",
+      "price": {
+        "amount": "235.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "395.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/elements-pro-race-ss-jacket-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "07d464870df6f3370770",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Elements Pro Race SS Jacket",
+        "gtin": null,
+        "mpn": "MPMJA250825_MULB",
+        "size": "XS",
+        "color": "MULB",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Elements Pro Race SS Jacket",
+      "url": "https://maap.cc/products/elements-pro-race-ss-jacket-mulberry",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMJA250825_MULB.Elements_20Pro_20Race_20SS_20Jacket_LP_FLATLAY.png?v=1757551556",
+      "price": {
+        "amount": "200.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "395.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/elements-pro-race-ss-jacket-mulberry",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "4b78a1e1ba22dfc21c45",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Eclipse Pro Race Jersey",
+        "gtin": null,
+        "mpn": "MPMJE250525_MAGN",
+        "size": "XS",
+        "color": "MAGN",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Eclipse Pro Race Jersey",
+      "url": "https://maap.cc/products/eclipse-pro-race-jersey-magenta",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMJE250525_MAGN.EclipseProRaceJersey_LP_FLATLAY.png?v=1763425178",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "310.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/eclipse-pro-race-jersey-magenta",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "df2f37c3b603d388714e",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Pro Emerge Jersey",
+        "gtin": null,
+        "mpn": "MPMJE253225_ATLR",
+        "size": "XS",
+        "color": "ATLR",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Pro Emerge Jersey",
+      "url": "https://maap.cc/products/emerge-jersey-antler",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMJE253225_ATLR.Emerge_20Jersey_LP_FLATLAY.png?v=1772500952",
+      "price": {
+        "amount": "210.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "265.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/emerge-jersey-antler",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "dce977b242b21d895d5b",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Flow Vest",
+        "gtin": null,
+        "mpn": "MPMVE250625_DKOR",
+        "size": "XS",
+        "color": "DKOR",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Flow Vest",
+      "url": "https://maap.cc/products/flow-vest-dark-ore",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMVE250625_DKOR.Flow_20Vest_LP_FLATLAY.png?v=1757550566",
+      "price": {
+        "amount": "110.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "185.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/flow-vest-dark-ore",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "707b19af7e77bdf42ffb",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Flow Jacket",
+        "gtin": null,
+        "mpn": "MPMJA251025_DKOR",
+        "size": "XS",
+        "color": "DKOR",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Flow Jacket",
+      "url": "https://maap.cc/products/flow-jacket-dark-ore",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMJA251025_DKOR.Flow_20Jacket_LP_FLATLAY.png?v=1757554757",
+      "price": {
+        "amount": "175.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "250.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/flow-jacket-dark-ore",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "8790fa0ee4934ca41ae3",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base LS Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAL166_ANT",
+        "size": "XS",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base LS Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-ls-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAL166_ANT.Evade_20Pro_20Base_20LS_20Jersey_202.0_Antartica_LP_FLATLAY.png?v=1725947625",
+      "price": {
+        "amount": "195.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "275.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-ls-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "8b6fcf706f24f840ddd9",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base LS Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAL167_BLK",
+        "size": "XS",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base LS Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-ls-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAL167_BLK.Evade-Pro-Base-LS-Jersey-2.0_Black_LP_FLATLAY.png?v=1725947606",
+      "price": {
+        "amount": "195.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "275.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-ls-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "d4603af0161112072106",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade X Pro Air LS Jersey 3.0",
+        "gtin": null,
+        "mpn": "MPMLS251725_UNBL",
+        "size": "XS",
+        "color": "UNBL",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade X Pro Air LS Jersey 3.0",
+      "url": "https://maap.cc/products/evade-x-pro-air-ls-jersey-3-0-uniform-blue",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMLS251725_UNBL.Evade_20X_20Pro_20Air_20LS_20Jersey_203.0_LP_FLATLAY.png?v=1753939289",
+      "price": {
+        "amount": "205.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "295.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-x-pro-air-ls-jersey-3-0-uniform-blue",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "0e6b9c5ad10f315ab6de",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Pro Emerge LS Jersey",
+        "gtin": null,
+        "mpn": "MPMLS252425_QKSN",
+        "size": "XS",
+        "color": "QKSN",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Pro Emerge LS Jersey",
+      "url": "https://maap.cc/products/emerge-ls-jersey-quicksand",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMLS252425_QKSN.Emerge_20LS_20Jersey_LP_FLATLAY.png?v=1772503749",
+      "price": {
+        "amount": "205.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "295.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/emerge-ls-jersey-quicksand",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "3517aff37e24d23fbde5",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade X Pro Air Jersey 3.0",
+        "gtin": null,
+        "mpn": "MPMJE252325_SAGE",
+        "size": "XS",
+        "color": "SAGE",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade X Pro Air Jersey 3.0",
+      "url": "https://maap.cc/products/evade-x-pro-air-jersey-3-0-sage",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMJE252325_SAGE.Evade_20X_20Pro_20Air_20Jersey_203.0_LP_FLATLAY.png?v=1753939310",
+      "price": {
+        "amount": "185.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "265.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-x-pro-air-jersey-3-0-sage",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "7872817d898351c7fa6c",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "MAAP X QUOC M3 Pro",
+        "gtin": null,
+        "mpn": "MAUFW250325_MUSK_38",
+        "size": null,
+        "color": "38",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "MAAP X QUOC M3 Pro",
+      "url": "https://maap.cc/products/maap-x-quoc-m3-musk",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAUFW250325_MUSK.MAAP_20X_20QUOC_20M3_LP_FLATLAY.png?v=1747367088",
+      "price": {
+        "amount": "325.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "650.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/maap-x-quoc-m3-musk",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "8523d9c932b14987222a",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Eclipse Pro Race Suit",
+        "gtin": null,
+        "mpn": "MPMSK250225_BERY",
+        "size": "XS",
+        "color": "BERY",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Eclipse Pro Race Suit",
+      "url": "https://maap.cc/products/eclipse-pro-base-roadsuit-berry",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMSK250225_BERY.EclipseProBaseRoadsuit_LP_FLATLAY_e5d5882f-438d-4305-9e77-1ed52d70c5f3.png?v=1768363759",
+      "price": {
+        "amount": "435.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "545.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/eclipse-pro-base-roadsuit-berry",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "6dff92c50b17ffd3472d",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Eclipse Pro Race Suit",
+        "gtin": null,
+        "mpn": "MPMSK250225_ODYS",
+        "size": "XS",
+        "color": "ODYS",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Eclipse Pro Race Suit",
+      "url": "https://maap.cc/products/eclipse-pro-base-roadsuit-odyssey",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMSK250225_ODYS.EclipseProBaseRoadsuit_LP_FLATLAY_f881284b-a7b9-481f-bdc8-c66435bf0562.png?v=1768363743",
+      "price": {
+        "amount": "435.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "545.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/eclipse-pro-base-roadsuit-odyssey",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "c66e1dd3234ab3f4f94e",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Eclipse Pro LS Race Suit",
+        "gtin": null,
+        "mpn": "MPMSK250125_ANTI",
+        "size": "XS",
+        "color": "ANTI",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Eclipse Pro LS Race Suit",
+      "url": "https://maap.cc/products/eclipse-pro-ls-race-suit-antarctica-titanium",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMSK250125_ANTI.Eclipse_20Pro_20LS_20Race_20Suit_LP_FLATLAY.png?v=1761000947",
+      "price": {
+        "amount": "400.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "575.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/eclipse-pro-ls-race-suit-antarctica-titanium",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "7b936d8faf37cc7d4479",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Eclipse Pro LS Race Suit",
+        "gtin": null,
+        "mpn": "MPMSK250125_FROS",
+        "size": "XS",
+        "color": "FROS",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Eclipse Pro LS Race Suit",
+      "url": "https://maap.cc/products/eclipse-pro-base-ls-roadsuit-frost",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMSK250125_FROS.EclipseProBaseLSRoadsuit_LP_FLATLAY_1b7efcc6-08cc-456d-bf95-62758dfeec1e.png?v=1772592103",
+      "price": {
+        "amount": "460.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "575.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/eclipse-pro-base-ls-roadsuit-frost",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "a7b4e0e554cd69a6af3f",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Team Bib Evo Cargo",
+        "gtin": null,
+        "mpn": "MPMBS240225_WHIT",
+        "size": "XS",
+        "color": "WHIT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Team Bib Evo Cargo",
+      "url": "https://maap.cc/products/team-bib-evo-cargo-white",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MPMBS240225_WHIT._LP_FLATLAY.png?v=1770270909",
+      "price": {
+        "amount": "225.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "375.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/team-bib-evo-cargo-white",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "8beadd749ec9512405bb",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Team Bib Evo",
+        "gtin": null,
+        "mpn": "MAP-MAB174_SHDW",
+        "size": "XS",
+        "color": "SHDW",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Team Bib Evo",
+      "url": "https://maap.cc/products/team-bib-evo-bronze-shadow",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAB174_SHDW._LP_FLATLAY.png?v=1770274913",
+      "price": {
+        "amount": "285.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "355.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/team-bib-evo-bronze-shadow",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "78f8989908705e0c0b99",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Apex Deep Winter Bib Tight",
+        "gtin": null,
+        "mpn": "MAP-MAB124_NVY",
+        "size": "XS",
+        "color": "NVY",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Apex Deep Winter Bib Tight",
+      "url": "https://maap.cc/products/maap-apex-deep-winter-tight-navy",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/ApexDeepWinterTights_Navy_LP_FLATLAY.png?v=1734047433",
+      "price": {
+        "amount": "220.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "455.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/maap-apex-deep-winter-tight-navy",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "316c4cbb4216ddaeee04",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Team Evo Thermal Bib Tight",
+        "gtin": null,
+        "mpn": "MAP-MAB120_NVY",
+        "size": "XS",
+        "color": "NVY",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Team Evo Thermal Bib Tight",
+      "url": "https://maap.cc/products/team-evo-thermal-bib-tight-navy",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/Men_sTeamEvoThermalBibTight_Navy_LP_FLATLAY.png?v=1738294516",
+      "price": {
+        "amount": "205.0",
+        "currency": "AUD"
+      },
+      "original_price": {
+        "amount": "415.0",
+        "currency": "AUD"
+      },
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.121349Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/team-evo-thermal-bib-tight-navy",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "f590822e7f265910d484",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "XS",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ339_BLK.Evade-Pro-Base-Jersey-2.0_Black_LP_FLATLAY_u6m9pa.png?v=1725948045",
+      "price": {
+        "amount": "170.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.913612Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "fb31ec67a80355facbb8",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "S",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ339_BLK.Evade-Pro-Base-Jersey-2.0_Black_LP_FLATLAY_u6m9pa.png?v=1725948045",
+      "price": {
+        "amount": "170.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.913612Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "e5e7e4080b69e266958d",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "M",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ339_BLK.Evade-Pro-Base-Jersey-2.0_Black_LP_FLATLAY_u6m9pa.png?v=1725948045",
+      "price": {
+        "amount": "170.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.913612Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "9b531496836005acaaba",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "L",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ339_BLK.Evade-Pro-Base-Jersey-2.0_Black_LP_FLATLAY_u6m9pa.png?v=1725948045",
+      "price": {
+        "amount": "170.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.913612Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "adde68fbfd2b4eb385c1",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "XL",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ339_BLK.Evade-Pro-Base-Jersey-2.0_Black_LP_FLATLAY_u6m9pa.png?v=1725948045",
+      "price": {
+        "amount": "170.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.913612Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "c96a406954d699d3abcb",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ339_BLK",
+        "size": "XXL",
+        "color": "BLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ339_BLK.Evade-Pro-Base-Jersey-2.0_Black_LP_FLATLAY_u6m9pa.png?v=1725948045",
+      "price": {
+        "amount": "170.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:29.913612Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "e95b6fca5d212816bdfc",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ340_ANT",
+        "size": "XS",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ340_ANT.Evade_20Pro_20Base_20Jersey_202.0_Antartica_LP_FLATLAY..png?v=1725947820",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:30.695249Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "3bf9750cc7e2303dd4a9",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ340_ANT",
+        "size": "S",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ340_ANT.Evade_20Pro_20Base_20Jersey_202.0_Antartica_LP_FLATLAY..png?v=1725947820",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:30.695249Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "40c67477d79a4a150e52",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ340_ANT",
+        "size": "M",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ340_ANT.Evade_20Pro_20Base_20Jersey_202.0_Antartica_LP_FLATLAY..png?v=1725947820",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:30.695249Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "4fe964ded00624892a38",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ340_ANT",
+        "size": "L",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ340_ANT.Evade_20Pro_20Base_20Jersey_202.0_Antartica_LP_FLATLAY..png?v=1725947820",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "in_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:30.695249Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "ef749df055ed5433bfb1",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ340_ANT",
+        "size": "XL",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ340_ANT.Evade_20Pro_20Base_20Jersey_202.0_Antartica_LP_FLATLAY..png?v=1725947820",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:30.695249Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "3c0e5bfc2e341681e679",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Evade Pro Base Jersey 2.0",
+        "gtin": null,
+        "mpn": "MAP-MAJ340_ANT",
+        "size": "XXL",
+        "color": "ANT",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Evade Pro Base Jersey 2.0",
+      "url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAJ340_ANT.Evade_20Pro_20Base_20Jersey_202.0_Antartica_LP_FLATLAY..png?v=1725947820",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:30.695249Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "4c7ad80d5ddda7980b4d",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Training Bib 3.0",
+        "gtin": null,
+        "mpn": "MAP-MAB184_UMRNBLK",
+        "size": "XS",
+        "color": "UMRNBLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Training Bib 3.0",
+      "url": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAB184_UMRNBLK.Training_20Bib_2030_Ultramarine_20Black_LP_FLATLAY.png?v=1725866360",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:31.690048Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "649fc9a50f22781f99d9",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Training Bib 3.0",
+        "gtin": null,
+        "mpn": "MAP-MAB184_UMRNBLK",
+        "size": "S",
+        "color": "UMRNBLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Training Bib 3.0",
+      "url": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAB184_UMRNBLK.Training_20Bib_2030_Ultramarine_20Black_LP_FLATLAY.png?v=1725866360",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:31.690048Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "1dc66a423cd332da1033",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Training Bib 3.0",
+        "gtin": null,
+        "mpn": "MAP-MAB184_UMRNBLK",
+        "size": "M",
+        "color": "UMRNBLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Training Bib 3.0",
+      "url": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAB184_UMRNBLK.Training_20Bib_2030_Ultramarine_20Black_LP_FLATLAY.png?v=1725866360",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:31.690048Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "a08e93c0ef51bccdcc18",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Training Bib 3.0",
+        "gtin": null,
+        "mpn": "MAP-MAB184_UMRNBLK",
+        "size": "L",
+        "color": "UMRNBLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Training Bib 3.0",
+      "url": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAB184_UMRNBLK.Training_20Bib_2030_Ultramarine_20Black_LP_FLATLAY.png?v=1725866360",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:31.690048Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "b4466ff1b7d810e2fd92",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Training Bib 3.0",
+        "gtin": null,
+        "mpn": "MAP-MAB184_UMRNBLK",
+        "size": "XL",
+        "color": "UMRNBLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Training Bib 3.0",
+      "url": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAB184_UMRNBLK.Training_20Bib_2030_Ultramarine_20Black_LP_FLATLAY.png?v=1725866360",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:31.690048Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "3c847ccdaf1f1efb8b7f",
+      "source_code": "maap",
+      "source_name": "MAAP 官网",
+      "identity": {
+        "brand": "MAAP",
+        "model": "Training Bib 3.0",
+        "gtin": null,
+        "mpn": "MAP-MAB184_UMRNBLK",
+        "size": "XXL",
+        "color": "UMRNBLK",
+        "year": null,
+        "gender": "male"
+      },
+      "name": "Training Bib 3.0",
+      "url": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "image": "https://cdn.shopify.com/s/files/1/0510/7809/files/MAP-MAB184_UMRNBLK.Training_20Bib_2030_Ultramarine_20Black_LP_FLATLAY.png?v=1725866360",
+      "price": {
+        "amount": "145.0",
+        "currency": "AUD"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "stock": "out_of_stock",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "checked_at": "2026-10-14T08:54:28.748754Z",
+        "note": "MAAP 官方明确说明 maap.cc 不直接配送中国大陆，中国由当地合作伙伴服务。",
+        "scope": "site",
+        "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "checked_at": null,
+        "note": "按 Visa、Mastercard 等卡种及境外支付功能核对，不按发卡银行名字排除；实际交易由发卡行授权。",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-14T11:23:31.690048Z",
+      "price_valid_until": "2026-10-17",
+      "data_kind": "live_snapshot",
+      "family_hint": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "identity_evidence": "MAAP 官网逐规格制造商 SKU；官方款式分区：https://maap.cc/collections/archive-sale-man",
+      "sales_region": "",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    }
+  ]
+}
