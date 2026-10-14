@@ -5,22 +5,23 @@ const publicFetch=window.fetch.bind(window);
 let publicDataPromise=null;
 function mapPublicAssets(value){if(Array.isArray(value))return value.map(mapPublicAssets);if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,mapPublicAssets(v)]));if(typeof value==='string'&&value.startsWith('/web/'))return new URL(value.slice(1),publicRoot).pathname;return value}
 function isoDay(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value))return null;const parsed=Date.parse(value);return Number.isFinite(parsed)&&new Date(parsed).toISOString().slice(0,10)===value?parsed/86400000:null}
-function quoteFresh(offer,now=Date.now()){const age=now-Date.parse(offer.fetched_at||'');const until=offer.price_valid_until;return Number.isFinite(age)&&age>=0&&age<=86400000&&(!until||isoDay(until)!==null&&isoDay(until)>=Math.floor(now/86400000))}
+function quoteFresh(offer,now=Date.now()){const age=now-Date.parse(offer.fetched_at||'');const until=offer.price_valid_until;return offer.collection_state!=='retained'&&Number.isFinite(age)&&age>=0&&age<=86400000&&(!until||isoDay(until)!==null&&isoDay(until)>=Math.floor(now/86400000))}
 function publishedFxStale(fx,now){const age=now-Date.parse(fx.fetched_at||'');const day=isoDay(fx.rate_date);const dayAge=day===null?null:Math.floor(now/86400000)-day;return !!fx.stale||!/[T ].*(?:Z|[+-]\d{2}:?\d{2})$/i.test(fx.fetched_at||'')||!Number.isFinite(age)||age>3600000||age< -300000||dayAge===null||dayAge<0||dayAge>7}
 function refreshPublicInventory(data){
   const now=Date.now(),snapshots=[data.catalog.fx,data.updates.fx,...Object.values(data.details).flatMap(f=>Object.values(f.variants).map(d=>d.fx))];
   const fxStale=snapshots.some(fx=>publishedFxStale(fx,now));snapshots.forEach(fx=>fx.stale=fxStale);
+  for(const family of Object.values(data.details))for(const detail of Object.values(family.variants))for(const q of detail.offers){const o=q.offer,s=data.collection_status?.[o.source_code];if(s&&Date.parse(s.attempted_at)>Date.parse(o.fetched_at||'1970-01-01')&&(s.status==='failed'||s.errors?.some(e=>e.url?.split('?')[0]===o.url?.split('?')[0])))o.collection_state='retained';}
   const familyAvailability={};
   for(const [id,family] of Object.entries(data.details))familyAvailability[id]=Object.fromEntries(Object.entries(family.variants).map(([variantId,detail])=>[variantId,detail.offers.some(q=>q.offer.stock==='in_stock'&&quoteFresh(q.offer,now))]));
   for(const family of Object.values(data.details)){
     for(const detail of Object.values(family.variants)){
       detail.variants.forEach(v=>v.in_stock=!!familyAvailability[detail.product_id][v.variant_id]);
       detail.colors.forEach(color=>color.in_stock=Object.values(familyAvailability[color.product_id]||{}).some(Boolean));
-      for(const quote of detail.offers){const reasons=[];if(!quoteFresh(quote.offer,now))reasons.push('报价已过期');if(fxStale)reasons.push('汇率为过期缓存');if(reasons.length){quote.eligible=false;quote.reasons=[...new Set([...quote.reasons,...reasons])]}}
+      for(const quote of detail.offers){const reasons=[];if(quote.offer.collection_state==='retained')reasons.push('最近采集失败；历史报价不能确认现货');if(quote.offer.stock!=='in_stock')reasons.push(quote.offer.stock==='out_of_stock'?'已售罄':'库存待核实');if(!quoteFresh(quote.offer,now))reasons.push('报价已过期');if(fxStale)reasons.push('汇率为过期缓存');if(reasons.length){quote.eligible=false;quote.reasons=[...new Set([...quote.reasons,...reasons])]}}
       if(!detail.offers.some(q=>q.eligible&&q.offer.offer_id===detail.recommended_offer_id))detail.recommended_offer_id=null;
     }
   }
-  for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);if(!Object.values(familyAvailability[card.product_id]).some(Boolean)&&card.stock_state==='in_stock')card.stock_state='unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status='渠道待核实';}}
+  for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);const allOffers=Object.values(family.variants).flatMap(d=>d.offers);card.stock_state=Object.values(familyAvailability[card.product_id]).some(Boolean)?'in_stock':allOffers.length&&allOffers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status='渠道待核实';}}
 }
 async function loadPublished(force=false){if(!publicDataPromise||force)publicDataPromise=publicFetch(new URL('data/site-data.json'+(force?'?v='+Date.now():''),publicRoot),{cache:force?'no-store':'default'}).then(async response=>{if(!response.ok)throw new Error('已发布商品数据暂时无法读取');return mapPublicAssets(await response.json())}).catch(error=>{publicDataPromise=null;throw error});const data=await publicDataPromise;refreshPublicInventory(data);return data}
 function assessPublishedFit(data,id,profile){
@@ -59,7 +60,7 @@ window.fetch=async(input,init={})=>{
     return new Response(JSON.stringify(result),{headers:{'Content-Type':'application/json'}});
   }catch(error){return new Response(JSON.stringify({detail:error.message}),{status:503,headers:{'Content-Type':'application/json'}})}
 };
-function publishedFreshness(data){return JSON.stringify([data.catalog.fx.stale,data.updates.fx.stale,data.catalog.items.map(p=>[p.stock_state,p.available_sizes,p.recommended_total_cny]),Object.values(data.details).map(f=>Object.values(f.variants).map(d=>[d.fx.stale,d.recommended_offer_id,d.variants.map(v=>v.in_stock),d.colors.map(c=>c.in_stock),d.offers.map(q=>[q.eligible,q.reasons])]))])}
+function publishedFreshness(data){return JSON.stringify([data.catalog.fx.stale,data.updates.fx.stale,data.catalog.items.map(p=>[p.stock_state,p.available_sizes,p.recommended_total_cny]),Object.values(data.details).map(f=>Object.values(f.variants).map(d=>[d.fx.stale,d.recommended_offer_id,d.variants.map(v=>v.in_stock),d.colors.map(c=>c.in_stock),d.offers.map(q=>[q.eligible,q.reasons,q.offer.stock,q.offer.collection_state,q.offer.price,q.offer.fetched_at])]))])}
 let publishedCursor=0,publicationDate='',freshnessState='';
 loadPublished().then(data=>{publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);publicationDate=data.generated_at;freshnessState=publishedFreshness(data)}).catch(()=>{});
 const publishedTimer=setInterval(async()=>{try{const data=await loadPublished(true),nextFreshness=publishedFreshness(data),freshnessChanged=nextFreshness!==freshnessState;const events=data.updates.items.filter(row=>row.id>publishedCursor);publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);if(data.generated_at===publicationDate&&!freshnessChanged&&!events.length)return;publicationDate=data.generated_at;freshnessState=nextFreshness;window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events,freshnessChanged}}));}catch{}},60000);

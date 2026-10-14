@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -33,7 +34,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     index = (web/"index.html").read_text(encoding="utf-8")
     index = index.replace('href="/web/"', 'href="./"').replace('="/web/', '="./web/')
     index = index.replace('<script src="./web/profile.js',
-                          '<script src="./web/pages-adapter.js?v=pages1" defer></script>\n<script src="./web/profile.js')
+                          '<script src="./web/pages-adapter.js?v=safety9" defer></script>\n<script src="./web/profile.js')
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
     (output/"index.html").write_text(index, encoding="utf-8")
     (output/".nojekyll").touch()
@@ -80,6 +81,8 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
     payload = {"generated_at":datetime.now(timezone.utc).isoformat(), "mode":"published_snapshot",
+               "publication":{"commit":os.environ.get("GITHUB_SHA"), "run_id":os.environ.get("GITHUB_RUN_ID"), "trigger":os.environ.get("GITHUB_EVENT_NAME")},
+               "collection_status":{p.stem:json.loads(p.read_text(encoding="utf-8")) for p in (root/"data/collection_status").glob("*.json")},
                "catalog":catalog, "details":details, "directories":directory, "rules":rules,
                "updates":{"items":events, "cursor":max((row["id"] for row in events), default=0),
                           "fx":snapshot.model_dump(mode="json")}, "fit_charts":charts,

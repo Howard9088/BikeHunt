@@ -14,3 +14,5 @@ body.grid-mode .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr
 .gallery{height:calc(100vh - var(--header) - var(--toolbar) - var(--footer));height:calc(100dvh - var(--header) - var(--toolbar) - var(--footer));-webkit-overflow-scrolling:touch}
 body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
 .gallery.gesture-moving{scroll-snap-type:none;scroll-behavior:auto}
+
+.bikehunt-mark{vertical-align:middle;margin-right:7px;flex-shrink:0}.footer #purchaseDisclaimerInfo{font-size:11px;border:0;background:transparent;text-decoration:underline;color:inherit;padding:3px;white-space:nowrap}.footer-description{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:600px){.bikehunt-mark{width:30px;margin-right:4px}.footer-description{max-width:35%}.footer #purchaseDisclaimerInfo{font-size:10px}}
