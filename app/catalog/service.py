@@ -86,6 +86,8 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
         reasons.append("中国发行信用卡核实记录已过期")
     elif card.status != "yes" and not network_supported:
         reasons.append("银行卡支付条件待核实")
+    if offer.collection_state == "retained":
+        reasons.append("最近采集失败；保留历史报价，库存待重新核实")
     if offer.stock != "in_stock":
         reasons.append("已售罄" if offer.stock == "out_of_stock" else "库存待核实")
     if not 0 <= _age(offer.fetched_at, now) <= QUOTE_MAX_AGE_SECONDS:
@@ -154,7 +156,8 @@ class ComparisonCatalog:
         return _identifier(key)
 
     def available(self, offer: Offer) -> bool:
-        return (offer.stock == "in_stock"
+        return (offer.collection_state != "retained"
+                and offer.stock == "in_stock"
                 and 0 <= _age(offer.fetched_at, self.now) <= QUOTE_MAX_AGE_SECONDS
                 and _price_valid(offer.price_valid_until, self.now))
 
@@ -171,6 +174,8 @@ class ComparisonCatalog:
         choices = [VariantChoice(variant_id=self._variant_id(v), size=v[0].identity.size,
                                  source_count=len({x.source_code for x in v}),
                                  in_stock=any(self.available(x) for x in v),
+                                 stock_state="in_stock" if any(self.available(x) for x in v) else
+                                     "out_of_stock" if all(x.stock == "out_of_stock" for x in v) else "unknown",
                                  product_cny_from=min((convert(x.price,self.fx) for x in v
                                      if self.available(x) and convert(x.price,self.fx) is not None), default=None)) for v in variants]
         size_order = {s: i for i, s in enumerate(("XS", "S", "M", "L", "XL", "XXL", "XXXL"))}
@@ -226,7 +231,7 @@ class ComparisonCatalog:
                 source_codes=sorted(sources),
                 reference_price=reference.offer.price, reference_cny=reference.product_cny,
                 reference_source=reference.offer.source_name, discount_pct=reference.discount_pct,
-                reference_stock=reference.offer.stock, fetched_at=reference.offer.fetched_at,
+                reference_stock=reference.offer.stock, reference_collection_state=reference.offer.collection_state, fetched_at=reference.offer.fetched_at,
                 recommended_total_cny=recommended.total_cny if recommended else None,
                 status="公开条件与费用已齐" if recommended else "渠道待核实",
                 available_sizes=[v.size for v in detail.variants if v.in_stock and v.size],
@@ -236,3 +241,4 @@ class ComparisonCatalog:
         cards.sort(key=lambda x: (x.stock_state != "in_stock", -(x.fetched_at.timestamp() if x.fetched_at else 0),
                                   -x.source_count, normalized(x.name), x.product_id))
         return cards
+

@@ -77,6 +77,7 @@ class Offer(Record):
     card_networks_evidence: Evidence = Field(default_factory=Evidence)
     fetched_at: datetime | None = None
     price_valid_until: str | None = None
+    collection_state: Literal["current", "retained"] = "current"
     data_kind: Literal["live_snapshot", "legacy_cache"] = "live_snapshot"
     family_hint: str = ""
     identity_evidence: str = ""
@@ -110,6 +111,7 @@ class ComparedOffer(Record):
 
 
 class VariantChoice(Record):
+    stock_state: Literal["in_stock", "out_of_stock", "unknown"] = "unknown"
     variant_id: str
     size: str | None
     source_count: int
@@ -153,6 +155,7 @@ class ProductCard(Record):
     reference_price: Money
     reference_cny: Decimal | None
     reference_source: str
+    reference_collection_state: Literal["current", "retained"] = "current"
     reference_stock: Literal["in_stock", "out_of_stock", "unknown"]
     fetched_at: datetime | None
     discount_pct: int | None
@@ -161,3 +164,4 @@ class ProductCard(Record):
     available_sizes: list[str] = Field(default_factory=list)
     stock_state: Literal["in_stock", "out_of_stock", "unknown"] = "unknown"
     purchase_requirements: list[str] = Field(default_factory=list)
+

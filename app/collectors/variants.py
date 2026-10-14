@@ -78,42 +78,94 @@ def parse_rapha(html: str, source: dict, url: str, fetched_at: datetime) -> list
     return result
 
 
+def formatted_money(text: str, currency: str):
+    """解析已经标明币种的显示金额；不把逗号小数点丢掉，也不猜测美元种类。"""
+    symbols = {"EUR": "€", "GBP": "£", "USD": "$", "CAD": "$", "AUD": "$",
+               "NZD": "$", "DKK": "kr", "SEK": "kr", "NOK": "kr"}
+    symbol = symbols.get(currency)
+    if not symbol or (symbol not in text and currency not in text):
+        return None
+    value = text.replace(currency, "").replace(symbol, "")
+    value = re.sub(r"\s+", "", value)
+    if not re.fullmatch(r"[0-9]+(?:[.,][0-9]+)*", value):
+        return None
+    if "." in value and "," in value:
+        decimal = "." if value.rfind(".") > value.rfind(",") else ","
+        thousands = "," if decimal == "." else "."
+        integer, fraction = value.rsplit(decimal, 1)
+        if len(fraction) != 2 or not re.fullmatch(r"[0-9]{1,3}(?:" + re.escape(thousands) + r"[0-9]{3})+", integer):
+            return None
+        value = integer.replace(thousands, "") + "." + fraction
+    elif "." in value or "," in value:
+        sep = "." if "." in value else ","
+        parts = value.split(sep)
+        if len(parts) == 2 and len(parts[1]) == 2:
+            value = ".".join(parts)
+        elif 1 <= len(parts[0]) <= 3 and all(len(part) == 3 for part in parts[1:]):
+            value = "".join(parts)
+        else:
+            return None
+    return money(value, currency)
+
+
 def parse_visma(html: str, source: dict, url: str, fetched_at: datetime) -> list[Offer]:
-    """每个可见尺码使用其自己的价格、库存状态和不可变商品选项 ID。"""
+    """商品选项独立报价；使用明确的当前市场币种，不套用固定 EUR JSON-LD。"""
     page = Selector(html)
-    base = parse_jsonld(html,source,url,fetched_at)
+    base = parse_jsonld(html, source, url, fetched_at)
     if not base:
         return []
+    currencies = set()
+    for script in page.css("script::text").getall():
+        currencies.update(re.findall(r"\bapp\.shop\.productCurrency\s*=\s*['\"]([A-Z]{3})['\"]\s*;", script))
+    if len(currencies) > 1:
+        logger.warning("Visma 当前市场币种冲突 {}", url)
+        return []
+    currency = next(iter(currencies), base[0].price.currency)
+    region = page.css('meta[name="shop-country"]::attr(content)').get("")
+    region = region if re.fullmatch(r"[A-Z]{2}", region) else ""
     images = page.css('.product__images .product__image img[src]')
     image = next((node.attrib["src"] for node in images
                   if node.attrib["src"].startswith("https://")
                   and "_crop_" not in node.attrib["src"]), base[0].image)
+    labels = {label.attrib.get("for"): label for label in page.css("label[for]")}
     result = []
-    for node in page.css('input[name="purchasableId"][data-saleprice]'):
-        ident = node.attrib.get("id","")
-        labels = page.css(f'label[for="{ident}"]')
-        size_nodes = labels[0].css('.product__variant__variant') if labels else []
+    seen = set()
+    for node in page.css('input[name="purchasableId"]'):
+        value = node.attrib.get("value", "")
+        if value in seen:
+            continue
+        seen.add(value)
+        label = labels.get(node.attrib.get("id", ""))
+        size_nodes = label.css('.product__variant__variant') if label is not None else []
         size = str(size_nodes[0].get_all_text(strip=True)).strip() if size_nodes else ""
-        if not size or len(size)>10:
-            continue
-        text = node.attrib["data-saleprice"]
-        currency = base[0].price.currency
-        expected_symbol = {"EUR":"€","GBP":"£","USD":"$","DKK":"kr"}.get(currency)
-        if not expected_symbol or expected_symbol not in text:
-            continue
-        price = money(re.sub(r"[^0-9.]","",text),currency)
+        if not value or not size or len(size) > 24:
+            logger.warning("Visma 商品选项缺少 ID 或尺码；保留旧快照 {}", url)
+            return []
+        price = formatted_money(node.attrib.get("data-saleprice", ""), currency)
         if price is None:
-            continue
-        stock_text = node.attrib.get("data-stock","").casefold()
-        can_buy = node.attrib.get("data-purchasable")=="1"
-        stock = "in_stock" if can_buy and ("in stock" in stock_text) else "out_of_stock" if not can_buy else "unknown"
-        original_text = node.attrib.get("data-price","")
-        original = money(re.sub(r"[^0-9.]","",original_text),currency) if expected_symbol in original_text else None
+            logger.warning("Visma 逐规格价格/币种未验证；保留旧快照 {} {}", url, size)
+            return []
+        visible = label.css('.product__variant__price:not(.product__variant__price--old)')
+        if visible and formatted_money(str(visible[-1].get_all_text(strip=True)), currency) != price:
+            logger.warning("Visma 可见价格与商品选项冲突；保留旧快照 {} {}", url, size)
+            return []
+        stock_text = str(Selector(node.attrib.get("data-stock", "")).get_all_text(strip=True)).casefold()
+        can_buy = node.attrib.get("data-purchasable")
+        if can_buy == "1" and "in stock" in stock_text and "disabled" not in node.attrib:
+            stock = "in_stock"
+        elif can_buy == "0" and "in stock" not in stock_text:
+            stock = "out_of_stock"
+        else:
+            stock = "unknown"
+        original = formatted_money(node.attrib.get("data-price", ""), currency)
+        if original and original.amount <= price.amount:
+            original = None
         result.append(base[0].model_copy(update={
-            "offer_id":offer_id(source["code"],url,node.attrib["value"]),
-            "identity":ProductIdentity(brand=base[0].identity.brand,model=base[0].name,size=size),
-            "price":price, "original_price":original,"stock":stock,
-            "image": image,
-            "family_hint":url,"identity_evidence":"官方商品选项的尺码、对应价格、可购买状态及库存提示",
+            "offer_id": offer_id(source["code"], url, value),
+            "identity": ProductIdentity(brand=base[0].identity.brand, model=base[0].name, size=size),
+            "price": price, "original_price": original, "stock": stock,
+            "image": image, "sales_region": f"{region} 市场报价（{currency}）" if region else "",
+            "family_hint": url,
+            "identity_evidence": "官方商品选项的尺码、对应价格、可购买状态及库存提示；当前市场币种：" + currency,
         }))
     return result

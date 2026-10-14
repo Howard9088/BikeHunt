@@ -203,14 +203,38 @@ async function testPublicationCursorNeverMovesBackwards() {
   assert.deepEqual(h.events[1].detail.events.map(event => event.id), [11]);
 }
 
+async function testSoldOutAndFailedRefreshInvalidateActions() {
+  const h = await harness();
+  const changed = snapshot();
+  changed.details.red.variants['red-M'].offers[0].offer.stock = 'out_of_stock';
+  changed.details.blue.variants['blue-M'].offers[0].offer.collection_state = 'retained';
+  h.publish(changed);
+  await h.poll();
+  const red = await h.request('/api/catalog/red');
+  const blue = await h.request('/api/catalog/blue');
+  assert.equal(red.variants[0].stock_state, 'out_of_stock');
+  assert.equal(red.variants[0].in_stock, false);
+  assert.equal(red.offers[0].eligible, false);
+  assert.equal(red.recommended_offer_id, null);
+  assert.equal(blue.variants[0].stock_state, 'unknown');
+  assert.equal(blue.variants[0].in_stock, false);
+  assert.equal(blue.offers[0].eligible, false);
+  assert.ok(blue.offers[0].reasons.some(x => x.includes('最近采集失败')));
+  const cards = (await h.request('/api/catalog')).items;
+  assert.equal(cards[0].stock_state, 'out_of_stock');
+  assert.equal(cards[1].stock_state, 'unknown');
+  assert.ok(h.events.some(x => x.detail.freshnessChanged), 'Refresh invalidates open purchase flows even without event IDs');
+}
+
 async function main() {
   for (const test of [testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
     testInventoryAndColorsExpireTogether, testSamePublicationNotifiesOnFreshnessChanges,
-    testPublicationCursorNeverMovesBackwards]) {
+    testPublicationCursorNeverMovesBackwards, testSoldOutAndFailedRefreshInvalidateActions]) {
     await test();
     console.log('PASS ' + test.name);
   }
-  console.log('Pages freshness: 5 regression groups passed.');
+  console.log('Pages freshness: 6 regression groups passed.');
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });
+

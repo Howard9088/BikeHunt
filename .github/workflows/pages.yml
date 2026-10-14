@@ -90,3 +90,6 @@ jobs:
       - name: Deploy public website
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify public release receipt
+        run: python scripts/verify_public_release.py

@@ -48,7 +48,20 @@ class OfferRepository:
                 payload = json.loads(path.read_text(encoding="utf-8"))
                 for item in payload.get("offers", []):
                     try:
-                        rows.append(Offer.model_validate(item))
+                        row = Offer.model_validate(item)
+                        # Failed refreshes preserve historical values without presenting them as current stock.
+                        status_path = self.data_dir / "collection_status" / (row.source_code + ".json")
+                        try:
+                            status = json.loads(status_path.read_text(encoding="utf-8"))
+                            attempted = datetime.fromisoformat(status.get("attempted_at", ""))
+                            failed_urls = {str(error.get("url", "")).split("?", 1)[0]
+                                           for error in status.get("errors", [])}
+                            failed = status.get("status") == "failed" or row.url.split("?", 1)[0] in failed_urls
+                            if failed and (row.fetched_at is None or attempted > row.fetched_at):
+                                row = row.model_copy(update={"collection_state": "retained"})
+                        except (OSError, ValueError, TypeError):
+                            pass
+                        rows.append(row)
                     except (ValidationError, TypeError) as exc:
                         logger.warning("隔离无效报价 {} {}", path.name, exc)
             except (OSError, json.JSONDecodeError, AttributeError) as exc:
@@ -89,7 +102,7 @@ class OfferRepository:
                 for row in {row.offer_id: row for row in rows}.values()]
 
     def save(self, code: str, offers: list[Offer], fetched_at: datetime,
-             errors: list[dict]) -> None:
+             errors: list[dict], coverage: dict | None = None) -> None:
         """同页成功替换、失败页面保留旧数据；完全失败不覆盖有效快照。"""
         existing = [row for row in self.load() if row.source_code == code
                     and row.data_kind != "legacy_cache"]
@@ -106,6 +119,8 @@ class OfferRepository:
         atomic_json(self.data_dir / "collection_status" / f"{code}.json", {
             "source_code": code, "attempted_at": fetched_at.isoformat(),
             "new_offer_count": len(offers), "retained_offer_count": len(merged),
+            "coverage": coverage,
             "errors": errors, "status": "success" if offers and not errors else
             "partial" if offers else "failed",
         })
+

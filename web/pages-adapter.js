@@ -15,7 +15,7 @@ function refreshPublicInventory(data){
   for(const [id,family] of Object.entries(data.details))familyAvailability[id]=Object.fromEntries(Object.entries(family.variants).map(([variantId,detail])=>[variantId,detail.offers.some(q=>q.offer.stock==='in_stock'&&quoteFresh(q.offer,now))]));
   for(const family of Object.values(data.details)){
     for(const detail of Object.values(family.variants)){
-      detail.variants.forEach(v=>v.in_stock=!!familyAvailability[detail.product_id][v.variant_id]);
+      detail.variants.forEach(v=>{v.in_stock=!!familyAvailability[detail.product_id][v.variant_id];const variant=family.variants[v.variant_id];v.stock_state=v.in_stock?'in_stock':variant&&variant.offers.length&&variant.offers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown'});
       detail.colors.forEach(color=>color.in_stock=Object.values(familyAvailability[color.product_id]||{}).some(Boolean));
       for(const quote of detail.offers){const reasons=[];if(quote.offer.collection_state==='retained')reasons.push('最近采集失败；历史报价不能确认现货');if(quote.offer.stock!=='in_stock')reasons.push(quote.offer.stock==='out_of_stock'?'已售罄':'库存待核实');if(!quoteFresh(quote.offer,now))reasons.push('报价已过期');if(fxStale)reasons.push('汇率为过期缓存');if(reasons.length){quote.eligible=false;quote.reasons=[...new Set([...quote.reasons,...reasons])]}}
       if(!detail.offers.some(q=>q.eligible&&q.offer.offer_id===detail.recommended_offer_id))detail.recommended_offer_id=null;

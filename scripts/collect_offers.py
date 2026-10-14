@@ -7,6 +7,7 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -19,7 +20,34 @@ from loguru import logger
 from app.catalog.storage import OfferRepository
 from app.collectors.parsers import parse_jsonld, parse_teamcycles
 from app.collectors.variants import parse_rapha, parse_visma
-from app.collectors.transport import CollectionError, PublicPageFetcher
+from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
+
+
+def saved_deferrals(data_dir: Path, code: str, now: datetime) -> dict[str, SourceDeferred]:
+    """在服务端指定的恢复时间前，后续定时运行也不再次请求该域。"""
+    try:
+        status = json.loads((data_dir / "collection_status" / f"{code}.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    pending = {}
+    for error in status.get("errors", []):
+        try:
+            until = datetime.fromisoformat(error.get("retry_at", "").replace("Z", "+00:00"))
+            host = urlsplit(error["url"]).hostname
+            if until.tzinfo is not None and until > now and host:
+                if host not in pending or pending[host].retry_at < until:
+                    pending[host] = SourceDeferred(
+                        f"Source remains deferred until {until.isoformat()}", until)
+        except (ValueError, TypeError, KeyError, AttributeError):
+            continue
+    return pending
+
+
+def error_record(url: str, exc: Exception) -> dict:
+    row = {"url": url, "error": str(exc)}
+    if isinstance(exc, SourceDeferred):
+        row["retry_at"] = exc.retry_at.isoformat()
+    return row
 
 
 def main() -> None:
@@ -39,6 +67,7 @@ def main() -> None:
         code = settings["code"]
         source = source_map[code]
         fetcher = PublicPageFetcher(set(settings["domains"]))
+        fetcher.deferred.update(saved_deferrals(ROOT / "data", code, datetime.now(timezone.utc)))
         rows = []
         errors: list[dict] = []
         for url in settings["urls"]:
@@ -61,10 +90,11 @@ def main() -> None:
                 logger.info("{} {} 条逐规格报价", code, len(parsed))
             except Exception as exc:
                 logger.error("来源隔离 {} {} {}", code, url, exc)
-                errors.append({"url": url, "error": str(exc)})
+                errors.append(error_record(url, exc))
         repository.save(code, rows, datetime.now(timezone.utc), errors)
         print(json.dumps({"source": code, "offers": len(rows), "errors": errors}, ensure_ascii=True))
 
 
 if __name__ == "__main__":
     main()
+

@@ -34,7 +34,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     index = (web/"index.html").read_text(encoding="utf-8")
     index = index.replace('href="/web/"', 'href="./"').replace('="/web/', '="./web/')
     index = index.replace('<script src="./web/profile.js',
-                          '<script src="./web/pages-adapter.js?v=safety9" defer></script>\n<script src="./web/profile.js')
+                          '<script src="./web/pages-adapter.js?v=safety10" defer></script>\n<script src="./web/profile.js')
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
     (output/"index.html").write_text(index, encoding="utf-8")
     (output/".nojekyll").touch()
