@@ -139,9 +139,9 @@
       "alecycling.com"
     ],
     "parser": "shopify",
-    "catalog_url": "https://alecycling.com/en/collections/ale-x-bahrain-victorious",
+    "catalog_url": "https://alecycling.com/en-us/collections/ale-x-bahrain-victorious",
     "urls": [
-      "https://alecycling.com/en/collections/ale-x-bahrain-victorious"
+      "https://alecycling.com/en-us/collections/ale-x-bahrain-victorious"
     ],
     "max_products": 25,
     "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
@@ -152,9 +152,9 @@
       "shop.decathloncmacgmteam.com"
     ],
     "parser": "shopify",
-    "catalog_url": "https://shop.decathloncmacgmteam.com/collections/collection-2026",
+    "catalog_url": "https://shop.decathloncmacgmteam.com/en/collections/collection-2026",
     "urls": [
-      "https://shop.decathloncmacgmteam.com/collections/collection-2026"
+      "https://shop.decathloncmacgmteam.com/en/collections/collection-2026"
     ],
     "max_products": 25,
     "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"

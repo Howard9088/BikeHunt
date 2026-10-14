@@ -45,6 +45,13 @@ def shopify_market_currency(html: str) -> str:
     return currencies.pop()
 
 
+def shopify_market_country(html: str) -> str | None:
+    countries = set(re.findall(r"\bShopify\.country\s*=\s*['\"]([A-Z]{2})['\"]\s*;", html))
+    if len(countries) > 1:
+        raise CollectionError("Shopify active market country is contradictory")
+    return next(iter(countries), None)
+
+
 def _catalog_urls(catalog_url: str) -> tuple[str, str]:
     split = urlsplit(catalog_url)
     if (split.scheme != "https" or not split.hostname or split.username or
@@ -191,7 +198,7 @@ def parse_shopify_product(product: dict, html: str, source: dict, page_url: str,
             "name": name, "url": url, "price": quoted, "original_price": original,
             "stock": stock, "image": _image(product, variant, row.image, page_url),
             "family_hint": "shopify:" + product_id,
-            "sales_region": source.get("sales_region", "") or f"{page_currency} 官网市场报价",
+            "sales_region": f"{shopify_market_country(html) or '地区未核实'} 市场 · {page_currency} 报价；未验证其他市场库存",
             "shipping_to_china": evidence(source, "china_shipping"),
             "china_issued_card": evidence(source, "china_credit_card"),
             "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号"
@@ -245,6 +252,7 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
         feed_base, products_root = _catalog_urls(catalog_url)
         market_html = fetch_text(catalog_url, ".html")
         currency = shopify_market_currency(market_html)
+        country = shopify_market_country(market_html)
         feed_url = f"{feed_base}?limit={limit}&page=1"
         payload = json.loads(fetch_text(feed_url, ".json"))
         products = payload.get("products") if isinstance(payload, dict) else None
@@ -257,7 +265,7 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
         urls = [_product_url(product, products_root) for product in products]
         if len(set(urls)) != len(urls):
             raise CollectionError("Shopify feed contains duplicate product handles")
-        result.coverage.update({"feed_url": feed_url, "currency": currency,
+        result.coverage.update({"feed_url": feed_url, "currency": currency, "market_country": country,
             "discovered_product_count": len(products), "feed_exhausted": len(products) < limit})
     except Exception as exc:
         result.errors.append(_error(catalog_url, exc))
@@ -265,6 +273,9 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
     for index, (product, url) in enumerate(zip(products, urls)):
         try:
             html = fetch_text(url, ".html")
+            product_country = shopify_market_country(html)
+            if country and product_country and country != product_country:
+                raise CollectionError("Shopify product country differs from catalog market")
             rows = parse_shopify_product(product, html, source, url, fetched_at, currency)
             if not rows:
                 raise CollectionError("No validated Shopify variants")

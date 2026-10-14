@@ -11,7 +11,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from app.collectors.shopify import collect_shopify_catalog, parse_shopify_product, shopify_market_currency
+from app.collectors.shopify import collect_shopify_catalog, parse_shopify_product, shopify_market_currency, shopify_market_country
 from app.collectors.transport import CollectionError, PublicPageFetcher
 
 NOW = datetime(2026, 10, 14, 16, 0, tzinfo=timezone.utc)
@@ -62,6 +62,21 @@ def fetcher_for(p=None, product_status=200, robots=b"User-agent: *\nAllow: /", h
 
 
 class ShopifyTests(unittest.TestCase):
+    def test_market_label_uses_observed_country_and_currency(self):
+        html = page(currency="USD") + '<script>Shopify.country = "US";</script>'
+        rows = parse_shopify_product(product(), html, {**SOURCE, "sales_region":"欧洲站 EUR 报价"}, URL, NOW)
+        self.assertEqual(rows[0].price.currency, "USD")
+        self.assertIn("US 市场 · USD", rows[0].sales_region)
+        self.assertNotIn("EUR", rows[0].sales_region)
+
+    def test_missing_market_country_is_not_inferred(self):
+        rows = parse_shopify_product(product(), page(), {**SOURCE, "sales_region":"欧洲站"}, URL, NOW)
+        self.assertIn("地区未核实", rows[0].sales_region)
+        self.assertIsNone(shopify_market_country(""))
+        with self.assertRaises(CollectionError):
+            shopify_market_country('<script>Shopify.country="US";Shopify.country="FR";</script>')
+
+
     def test_exact_sizes_prices_stock_and_unverified_policies(self):
         rows = parse_shopify_product(product(), page(), SOURCE, URL, NOW, "EUR")
         self.assertEqual([r.identity.size for r in rows], ["S", "M"])
