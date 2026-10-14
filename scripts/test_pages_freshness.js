@@ -63,7 +63,7 @@ async function harness(payload = snapshot()) {
   const context = vm.createContext({
     URL, Response, Date: MockDate,
     location: {href: 'https://owner.github.io/BikeHunt/'},
-    document: {currentScript: {src: 'https://owner.github.io/BikeHunt/web/pages-adapter.js'}},
+    document: {currentScript: {src: 'https://owner.github.io/BikeHunt/web/pages-adapter.js',dataset:{release:'commit-test'}}},
     CustomEvent: class { constructor(type, options) { this.type = type; this.detail = options.detail; } },
     window: {
       fetch: async (input, init) => {
@@ -96,6 +96,15 @@ async function harness(payload = snapshot()) {
     },
     async poll() { await poll(); },
   };
+}
+
+async function testInitialSnapshotBypassesBrowserCache() {
+  const h=await harness();
+  const first=h.calls.find(c=>c.url.includes('/data/site-data.json'));
+  assert.equal(first.init.cache,'no-store');
+  assert.equal(new URL(first.url).searchParams.get('release'),'commit-test');
+  assert.equal(new URL(first.url).searchParams.get('v'),String(START));
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at,new Date(START).toISOString());
 }
 
 async function testCachedApiRechecksFxAndEligibility() {
@@ -270,14 +279,14 @@ async function testOfflinePollStillExpiresStock() {
 }
 
 async function main() {
-  for (const test of [testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
+  for (const test of [testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
     testInventoryAndColorsExpireTogether, testSamePublicationNotifiesOnFreshnessChanges,
     testPublicationCursorNeverMovesBackwards, testSoldOutAndFailedRefreshInvalidateActions,
     testStockTimestampBoundariesFailClosed, testOfflinePollStillExpiresStock]) {
     await test();
     console.log('PASS ' + test.name);
   }
-  console.log('Pages freshness: 8 regression groups passed.');
+  console.log('Pages freshness: 9 regression groups passed.');
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });

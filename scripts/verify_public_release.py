@@ -28,6 +28,7 @@ for attempt in range(18):
                             assert offer['sales_region'].startswith((coverage['market_country'] + ' 市场', '地区未核实 市场')), 'Published country label conflicts: ' + offer['source_code']
         assert '世巡车队' in html and '骑行车队' not in html
         assert 'bikehunt-mark' in html and 'purchaseDisclaimerInfo' in html
+        assert f'data-release="{expected}"' in html and 'publicationInfo' in html
         print(json.dumps({'verified_public_url':base,'commit':expected,'publication':data['publication'],'generated_at':data['generated_at'],'collection_status':data.get('collection_status',{})}, ensure_ascii=False))
         break
     except Exception as exc:

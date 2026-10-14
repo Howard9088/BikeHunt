@@ -1,6 +1,7 @@
 'use strict';
 window.BIKEHUNT_PAGES=true;
 const publicRoot=new URL('../',document.currentScript.src);
+const pageRelease=document.currentScript.dataset?.release||'unversioned';
 const publicFetch=window.fetch.bind(window);
 let publicDataPromise=null,publicLastData=null;
 function mapPublicAssets(value){if(Array.isArray(value))return value.map(mapPublicAssets);if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,mapPublicAssets(v)]));if(typeof value==='string'&&value.startsWith('/web/'))return new URL(value.slice(1),publicRoot).pathname;return value}
@@ -27,7 +28,7 @@ function refreshPublicInventory(data){
   }
   for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);const allOffers=Object.values(family.variants).flatMap(d=>d.offers);card.stock_state=Object.values(familyAvailability[card.product_id]).some(Boolean)?'in_stock':allOffers.length&&allOffers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status=card.stock_state==='unknown'&&allOffers.some(q=>q.offer.stock==='in_stock'&&!stockFresh(q.offer,now))?'库存核实已过期':'渠道待核实';}if(card.reference_stock==='in_stock'&&(!stockFresh(card,now)||card.reference_collection_state==='retained'))card.reference_stock='unknown';}
 }
-async function loadPublished(force=false){if(!publicDataPromise||force)publicDataPromise=publicFetch(new URL('data/site-data.json'+(force?'?v='+Date.now():''),publicRoot),{cache:force?'no-store':'default'}).then(async response=>{if(!response.ok)throw new Error('已发布商品数据暂时无法读取');return mapPublicAssets(await response.json())}).catch(error=>{publicDataPromise=null;throw error});const data=await publicDataPromise;refreshPublicInventory(data);publicLastData=data;return data}
+async function loadPublished(force=false){if(!publicDataPromise||force)publicDataPromise=publicFetch(new URL('data/site-data.json?release='+encodeURIComponent(pageRelease)+'&v='+Date.now(),publicRoot),{cache:'no-store'}).then(async response=>{if(!response.ok)throw new Error('已发布商品数据暂时无法读取');return mapPublicAssets(await response.json())}).catch(error=>{publicDataPromise=null;throw error});const data=await publicDataPromise;refreshPublicInventory(data);publicLastData=data;window.BIKEHUNT_PUBLICATION={...data.publication,generated_at:data.generated_at};const marker=document.getElementById?.('publicationInfo');if(marker){marker.textContent='数据 '+(data.publication?.commit?.slice(0,7)||'本地');marker.title='发布快照 '+data.generated_at+' · '+(data.publication?.commit||'');}return data}
 function assessPublishedFit(data,id,profile){
   const family=data.details[id];if(!family)throw new Error('商品不存在');const detail=family.variants[family.default];
   if(!['jerseys','bibs','jackets','suits'].includes(detail.category))return {state:'not_applicable',note_zh:'这类装备按自身规格选择。',candidate_sizes:[],required_measurements:[],chart_rows:[]};
