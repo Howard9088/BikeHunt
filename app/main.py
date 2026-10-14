@@ -25,6 +25,7 @@ from app.localization import CATEGORIES
 from app.notifications import PersonalNotifier
 from app.policies import PolicyRepository
 from app.updates import UpdateStore
+from app.update_views import enrich_events
 from app.community import Community
 from app.fit import FitGuideService, ShopperProfile, FitAssessment
 
@@ -141,7 +142,7 @@ def source_rules(source_code: str) -> dict:
 
 @app.get("/api/updates")
 def price_updates(after: int = Query(default=0,ge=0), category: str = "all") -> dict:
-    return {"items":updates.latest(after,category=category),"cursor":updates.cursor(),
+    return {"items":enrich_events(updates.latest(after,limit=100,category=category),catalog()),"cursor":updates.cursor(),
             "fx":fx_provider.get().model_dump(mode="json")}
 
 
@@ -267,3 +268,4 @@ def root() -> RedirectResponse:
 
 app.mount("/data", StaticFiles(directory=str(DATA)), name="data")
 app.mount("/web", StaticFiles(directory=str(WEB), html=True), name="web")
+

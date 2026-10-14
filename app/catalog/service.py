@@ -232,7 +232,8 @@ class ComparisonCatalog:
                 source_count=len(sources), variant_count=len(variants),
                 source_codes=sorted(sources),
                 reference_price=reference.offer.price, reference_cny=reference.product_cny,
-                reference_source=reference.offer.source_name, discount_pct=reference.discount_pct,
+                reference_source=reference.offer.source_name, reference_offer_id=reference.offer.offer_id,
+                discount_pct=reference.discount_pct,
                 reference_stock=reference.offer.stock if self.available(reference.offer) or reference.offer.stock != "in_stock" else "unknown", reference_collection_state=reference.offer.collection_state, fetched_at=reference.offer.fetched_at,
                 recommended_total_cny=recommended.total_cny if recommended else None,
                 status="公开条件与费用已齐" if recommended else "库存核实已过期" if not in_stock and any(

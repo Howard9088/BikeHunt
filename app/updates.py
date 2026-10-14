@@ -10,6 +10,7 @@ from pathlib import Path
 
 from app.catalog.models import Offer
 from app.localization import category_of, title_zh
+from app.update_views import event_product
 
 
 class UpdateStore:
@@ -22,7 +23,9 @@ class UpdateStore:
                 kind TEXT NOT NULL, source_code TEXT NOT NULL, source_name TEXT NOT NULL,
                 offer_id TEXT NOT NULL, name_zh TEXT NOT NULL, category TEXT NOT NULL,
                 old_price TEXT, new_price TEXT NOT NULL, currency TEXT NOT NULL,
-                stock TEXT NOT NULL, observed_at TEXT NOT NULL, url TEXT NOT NULL)""")
+                stock TEXT NOT NULL, observed_at TEXT NOT NULL, url TEXT NOT NULL, product_json TEXT)""")
+            if "product_json" not in {row[1] for row in db.execute("PRAGMA table_info(events)")}:
+                db.execute("ALTER TABLE events ADD COLUMN product_json TEXT")
 
     @contextmanager
     def connect(self) -> Iterator[sqlite3.Connection]:
@@ -51,12 +54,12 @@ class UpdateStore:
                 key = hashlib.sha256(f"{offer.offer_id}|{observed}|{offer.price}|{offer.stock}".encode()).hexdigest()
                 cursor = db.execute("""INSERT OR IGNORE INTO events
                     (event_key,kind,source_code,source_name,offer_id,name_zh,category,old_price,
-                     new_price,currency,stock,observed_at,url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                     new_price,currency,stock,observed_at,url,product_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (key,kind,offer.source_code,offer.source_name,offer.offer_id,title_zh(offer.name),
                      category_of(offer.name),str(old.price.amount) if old and old.price.currency==offer.price.currency else None,
-                     str(offer.price.amount),offer.price.currency,offer.stock,observed,offer.url))
+                     str(offer.price.amount),offer.price.currency,offer.stock,observed,offer.url,json.dumps(event_product(offer),ensure_ascii=False)))
                 if cursor.rowcount:
-                    emitted.append(dict(db.execute("SELECT * FROM events WHERE id=?",(cursor.lastrowid,)).fetchone()))
+                    emitted.append(self.decode(db.execute("SELECT * FROM events WHERE id=?",(cursor.lastrowid,)).fetchone()))
         return emitted
 
     def latest(self, after: int = 0, limit: int = 30, category: str = "all") -> list[dict]:
@@ -68,7 +71,19 @@ class UpdateStore:
                 params.append(category)
             query += " ORDER BY id DESC LIMIT ?"
             params.append(min(100,max(1,limit)))
-            return [dict(row) for row in db.execute(query,params).fetchall()]
+            return [self.decode(row) for row in db.execute(query,params).fetchall()]
+
+    @staticmethod
+    def decode(row) -> dict:
+        event = dict(row)
+        raw = event.pop("product_json", None)
+        try:
+            product = json.loads(raw) if raw else None
+        except (TypeError, ValueError):
+            product = None
+        if product is not None:
+            event["product"] = product
+        return event
 
     def cursor(self) -> int:
         with self.connect() as db:
@@ -77,5 +92,6 @@ class UpdateStore:
     def pending(self, after: int, limit: int = 100) -> list[dict]:
         """从最早未处理事件开始读取，避免批量刷新漏掉 100 条之后的更新。"""
         with self.connect() as db:
-            return [dict(row) for row in db.execute(
+            return [self.decode(row) for row in db.execute(
                 "SELECT * FROM events WHERE id>? ORDER BY id ASC LIMIT ?", (after, limit)).fetchall()]
+

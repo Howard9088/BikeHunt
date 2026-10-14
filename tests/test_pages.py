@@ -15,6 +15,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from app.catalog.storage import atomic_json, OfferRepository
 from app.pages import build_public_site
+from app.catalog.service import ComparisonCatalog
+from app.publication import digest, semantic_projection
 from test_catalog import NOW, make_fx, make_offer
 
 
@@ -33,6 +35,19 @@ class PagesTests(unittest.TestCase):
         (self.root/'config').mkdir()
         (self.root/'config/notifications.json').write_text('{"app_token":"AT_private_do_not_publish"}',encoding='utf-8')
 
+    def test_all_public_assets_are_pinned_to_release_without_editing_source_index(self):
+        commit = "a" * 40
+        index = self.root / "web/index.html"
+        original = Path(__file__).resolve().parents[1].joinpath("web/index.html").read_text(encoding="utf-8")
+        index.write_text(original, encoding="utf-8")
+        with patch.dict(os.environ, {"GITHUB_SHA": commit}):
+            build_public_site(self.root, make_fx())
+        html = (self.root / "_site/index.html").read_text(encoding="utf-8")
+        for asset in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js"):
+            self.assertIn(f'./web/{asset}?v={commit}', html)
+        self.assertIn(f'data-release="{commit}"', html)
+        self.assertEqual(index.read_text(encoding="utf-8"), original)
+
     def test_public_output_keeps_prices_and_all_exact_variants(self) -> None:
         result=build_public_site(self.root,make_fx())
         self.assertEqual(result['products'],1)
@@ -50,66 +65,203 @@ class PagesTests(unittest.TestCase):
         self.assertNotIn('subscribers',content)
 
     def test_project_subdirectory_uses_relative_assets_and_adapter_first(self) -> None:
+        with (self.root/"web/index.html").open("a") as handle:
+            handle.write('<script src="/web/gallery.js?v=old"></script><script src="/web/flows.js?v=old"></script>')
         build_public_site(self.root,make_fx())
         html=(self.root/'_site/index.html').read_text(encoding='utf-8')
         self.assertIn('href="./"',html)
-        self.assertIn('src="./web/profile.js"',html)
+        self.assertIn('src="./web/profile.js?v='+os.environ.get('GITHUB_SHA','local')+'"',html)
         self.assertLess(html.index('pages-adapter.js'),html.index('profile.js'))
+        self.assertIn('src="./web/gallery.js?v='+os.environ.get('GITHUB_SHA','local')+'"', html)
+        self.assertIn('src="./web/flows.js?v='+os.environ.get('GITHUB_SHA','local')+'"', html)
 
-    def test_manifest_matches_exact_snapshot_bytes_and_publication_identity(self) -> None:
-        commit = 'a' * 40
-        with patch.dict(os.environ, {'GITHUB_SHA': commit}):
-            result = build_public_site(self.root, make_fx())
-        output = self.root / '_site'
-        raw = (output / 'data/site-data.json').read_bytes()
+    def build_at(self, at, fx=None, commit="a" * 40):
+        with patch.dict(os.environ, {"GITHUB_SHA": commit}), patch("app.pages.datetime") as clock, \
+                patch("app.pages.ComparisonCatalog", side_effect=lambda offers, snapshot:
+                      ComparisonCatalog(offers, snapshot, at)):
+            clock.now.return_value = at
+            return build_public_site(self.root, fx or make_fx())
+
+    def publication(self):
+        directory = self.root / "_site/data"
+        return (json.loads((directory / "publication.json").read_bytes()),
+                json.loads((directory / "verification.json").read_bytes()),
+                (directory / "site-data.json").read_bytes())
+
+    def test_manifest_matches_exact_catalog_and_verification_bytes(self):
+        result = self.build_at(NOW + timedelta(seconds=1))
+        manifest, status, raw = self.publication()
         data = json.loads(raw)
-        manifest = json.loads((output / 'data/publication.json').read_bytes())
-        self.assertEqual(manifest, {
-            'schema_version': 1,
-            'version': commit + ':' + data['generated_at'],
-            'generated_at': data['generated_at'],
-            'commit': commit,
-            'snapshot': {'path': 'data/site-data.json', 'bytes': len(raw),
-                         'sha256': hashlib.sha256(raw).hexdigest()},
-        })
-        self.assertEqual(data['publication']['version'], manifest['version'])
-        self.assertEqual(data['publication']['commit'], manifest['commit'])
-        self.assertEqual(result['generated_at'], manifest['generated_at'])
-        self.assertIn('data-release="' + commit + '"',
-                      (output / 'index.html').read_text(encoding='utf-8'))
-        self.assertLess((output / 'data/publication.json').stat().st_size, 1024)
-        snapshots = []
-        for path in output.rglob('*.json'):
-            document = json.loads(path.read_bytes())
-            if isinstance(document, dict) and document.get('mode') == 'published_snapshot':
-                snapshots.append(path.relative_to(output).as_posix())
-        self.assertEqual(snapshots, ['data/site-data.json'])
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["snapshot"]["sha256"], hashlib.sha256(raw).hexdigest())
+        self.assertEqual(manifest["snapshot"]["bytes"], len(raw))
+        self.assertEqual(manifest["snapshot"]["semantic_sha256"], digest(semantic_projection(data)))
+        self.assertEqual(data["publication"]["version"], manifest["snapshot"]["version"])
+        status_raw = (self.root / "_site/data/verification.json").read_bytes()
+        self.assertEqual(manifest["status"]["sha256"], hashlib.sha256(status_raw).hexdigest())
+        self.assertEqual(manifest["status"]["bytes"], len(status_raw))
+        self.assertEqual(status["snapshot_sha256"], manifest["snapshot"]["sha256"])
+        self.assertEqual(status["version"], manifest["version"])
+        self.assertEqual(result["generated_at"], manifest["generated_at"])
+        self.assertEqual(data["catalog"]["items"][0]["reference_offer_id"], "a")
+        self.assertLess(result["manifest_bytes"], 1500)
+        self.assertNotIn("publication_cache", " ".join(str(p) for p in (self.root / "_site").rglob("*")))
 
-    def test_rebuilding_same_commit_changes_version_and_replaces_snapshot(self) -> None:
-        start = datetime(2026, 10, 14, 12, 0, tzinfo=timezone.utc)
-        commit = 'b' * 40
-        with patch.dict(os.environ, {'GITHUB_SHA': commit}), patch('app.pages.datetime') as clock:
-            clock.now.side_effect = [start, start + timedelta(microseconds=1)]
-            build_public_site(self.root, make_fx())
-            first = json.loads((self.root / '_site/data/publication.json').read_bytes())
-            build_public_site(self.root, make_fx())
-            second = json.loads((self.root / '_site/data/publication.json').read_bytes())
-        self.assertEqual(first['commit'], second['commit'])
-        self.assertNotEqual(first['version'], second['version'])
-        self.assertNotEqual(first['snapshot']['sha256'], second['snapshot']['sha256'])
-        self.assertEqual(first['snapshot']['path'], second['snapshot']['path'])
-        self.assertEqual(sorted(p.name for p in (self.root / '_site/data').iterdir()),
-                         ['publication.json', 'site-data.json'])
-        raw = (self.root / '_site/data/site-data.json').read_bytes()
-        self.assertEqual(hashlib.sha256(raw).hexdigest(), second['snapshot']['sha256'])
-        self.assertEqual(json.loads(raw)['publication']['version'], second['version'])
+    def test_same_successful_observation_reuses_exact_catalog_bytes(self):
+        self.build_at(NOW + timedelta(seconds=1))
+        first, old_status, old_bytes = self.publication()
+        verified = NOW + timedelta(minutes=15)
+        fresh = make_offer(fetched_at=verified)
+        OfferRepository(self.root / "data").save("a", [fresh], verified, [])
+        result = self.build_at(verified + timedelta(seconds=1), make_fx(fetched_at=verified))
+        latest, status, raw = self.publication()
+        self.assertFalse(result["catalog_changed"])
+        self.assertEqual(raw, old_bytes)
+        self.assertEqual(first["snapshot"], latest["snapshot"])
+        self.assertNotEqual(first["version"], latest["version"])
+        self.assertNotEqual(first["status"]["sha256"], latest["status"]["sha256"])
+        self.assertEqual(status["offers"]["a"]["fetched_at"], fresh.model_dump(mode="json")["fetched_at"])
+        self.assertEqual(status["fx"]["fetched_at"], make_fx(fetched_at=verified).model_dump(mode="json")["fetched_at"])
+        self.assertEqual(status["offers"]["a"]["content_sha256"], old_status["offers"]["a"]["content_sha256"])
 
-    def test_local_manifest_uses_local_version_without_inventing_commit(self) -> None:
+    def test_rebuild_without_source_verification_does_not_freshen_stock(self):
+        self.build_at(NOW + timedelta(seconds=1))
+        _, old_status, old_bytes = self.publication()
+        result = self.build_at(NOW + timedelta(minutes=15))
+        _, status, raw = self.publication()
+        self.assertFalse(result["catalog_changed"])
+        self.assertEqual(raw, old_bytes)
+        self.assertEqual(status["offers"], old_status["offers"])
+        self.assertEqual(status["fx"], old_status["fx"])
+        self.assertEqual(status["collection_status"], old_status["collection_status"])
+
+    def test_observed_stock_expiry_failure_and_recovery_replace_catalog(self):
+        self.build_at(NOW + timedelta(seconds=1))
+        first, status, _ = self.publication()
+        expired = self.build_at(NOW + timedelta(hours=1, seconds=1))
+        second, expired_status, raw = self.publication()
+        self.assertTrue(expired["catalog_changed"])
+        self.assertNotEqual(first["snapshot"]["sha256"], second["snapshot"]["sha256"])
+        self.assertEqual(status["offers"], expired_status["offers"])
+        self.assertEqual(json.loads(raw)["catalog"]["items"][0]["available_sizes"], [])
+        failed_at = NOW + timedelta(hours=1, minutes=1)
+        repo = OfferRepository(self.root / "data")
+        repo.save("a", [], failed_at, [{"url": make_offer().url, "error": "HTTP 429"}])
+        self.assertTrue(self.build_at(failed_at + timedelta(seconds=1))["catalog_changed"])
+        _, failed_status, _ = self.publication()
+        self.assertEqual(failed_status["offers"]["a"]["fetched_at"], status["offers"]["a"]["fetched_at"])
+        self.assertEqual(failed_status["offers"]["a"]["collection_state"], "retained")
+        recovered_at = failed_at + timedelta(minutes=15)
+        repo.save("a", [make_offer(fetched_at=recovered_at)], recovered_at, [])
+        self.assertTrue(self.build_at(recovered_at + timedelta(seconds=1))["catalog_changed"])
+        _, recovered_status, raw = self.publication()
+        self.assertEqual(recovered_status["offers"]["a"]["collection_state"], "current")
+        self.assertEqual(json.loads(raw)["catalog"]["items"][0]["available_sizes"], ["M"])
+
+    def test_partial_success_never_renews_other_offer_or_unknown_stock(self):
+        repo = OfferRepository(self.root / "data")
+        second = make_offer("b", source_code="a", url="https://example.org/b", stock="unknown")
+        repo.save("a", [make_offer(), second], NOW, [])
+        self.build_at(NOW + timedelta(seconds=1))
+        _, old_status, _ = self.publication()
+        verified = NOW + timedelta(minutes=15)
+        repo.save("a", [make_offer(fetched_at=verified)], verified,
+                  [{"url": second.url, "error": "HTTP 429"}])
+        self.assertTrue(self.build_at(verified + timedelta(seconds=1))["catalog_changed"])
+        _, status, raw = self.publication()
+        self.assertEqual(status["offers"]["b"]["fetched_at"], old_status["offers"]["b"]["fetched_at"])
+        self.assertEqual(status["offers"]["b"]["collection_state"], "retained")
+        self.assertNotEqual(status["offers"]["a"]["fetched_at"], old_status["offers"]["a"]["fetched_at"])
+        from app.publication import offers_by_id
+        self.assertEqual(offers_by_id(json.loads(raw))["b"]["stock"], "unknown")
+
+    def test_price_stock_size_cost_and_evidence_are_semantic_changes(self):
+        self.build_at(NOW + timedelta(seconds=1))
+        _, _, raw = self.publication()
+        original = json.loads(raw)
+        variants = next(iter(original["details"].values()))["variants"]
+        variant_id = next(iter(variants))
+        baseline = digest(semantic_projection(original))
+        import copy
+        mutations = [
+            lambda q: q["offer"]["price"].update(amount="101"),
+            lambda q: q["offer"].update(stock="out_of_stock"),
+            lambda q: q["offer"]["identity"].update(size="L"),
+            lambda q: q["offer"]["shipping"].update(amount="11"),
+            lambda q: q["offer"]["shipping_to_china"].update(checked_at=(NOW + timedelta(minutes=1)).isoformat()),
+            lambda q: q.update(eligible=False, reasons=["费用待确认"]),
+        ]
+        for mutate in mutations:
+            changed = copy.deepcopy(original)
+            quote = next(iter(changed["details"].values()))["variants"][variant_id]["offers"][0]
+            mutate(quote)
+            self.assertNotEqual(digest(semantic_projection(changed)), baseline)
+        for fields in [{"stale": True}, {"rate_date": (NOW + timedelta(days=1)).date().isoformat()},
+                       {"rates": {"USD": "8", "CNY": "1"}}]:
+            changed = copy.deepcopy(original)
+            changed["catalog"]["fx"].update(fields)
+            self.assertNotEqual(digest(semantic_projection(changed)), baseline)
+
+    def test_only_product_observation_day_and_recency_order_are_ignored(self):
+        self.build_at(NOW + timedelta(seconds=1))
+        _, _, raw = self.publication()
+        data = json.loads(raw)
+        import copy
+        second_card = copy.deepcopy(data["catalog"]["items"][0])
+        second_card["product_id"] = "second-product"
+        data["catalog"]["items"].append(second_card)
+        before = digest(semantic_projection(data))
+        data["catalog"]["items"].reverse()
+        for family in data["details"].values():
+            for detail in family["variants"].values():
+                for quote in detail["offers"]:
+                    product = next(c for c in quote["landed_cost"]["components"] if c["key"] == "product")
+                    product["evidence"][0]["checked_on"] = "2099-01-01"
+        self.assertEqual(before, digest(semantic_projection(data)))
+        quote = next(iter(next(iter(data["details"].values()))["variants"].values()))["offers"][0]
+        quote["landed_cost"]["evidence"][0]["checked_on"] = "2099-01-01"
+        self.assertNotEqual(before, digest(semantic_projection(data)))
+
+    def test_changed_code_commit_and_corrupt_cache_force_safe_rebuild(self):
+        self.build_at(NOW + timedelta(seconds=1))
+        self.assertTrue(self.build_at(NOW + timedelta(seconds=2), commit="b" * 40)["catalog_changed"])
+        (self.root / "data/publication_cache/site-data.json").write_text("{corrupt")
+        self.assertTrue(self.build_at(NOW + timedelta(seconds=3), commit="b" * 40)["catalog_changed"])
+        manifest, _, raw = self.publication()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), manifest["snapshot"]["sha256"])
+
+    def test_valid_json_poisoned_cache_observations_are_rebuilt(self):
+        import copy
+        self.build_at(NOW + timedelta(seconds=1))
+        cache = self.root / "data/publication_cache/site-data.json"
+        baseline = json.loads(cache.read_bytes())
+        for kind in ("generated_at", "offer_time", "card_time", "fx_time", "price_evidence_day"):
+            poisoned = copy.deepcopy(baseline)
+            quote = next(iter(next(iter(poisoned["details"].values()))["variants"].values()))["offers"][0]
+            if kind == "generated_at":
+                poisoned["generated_at"] = "2099-01-01T00:00:00+00:00"
+            elif kind == "offer_time":
+                quote["offer"]["fetched_at"] = "2099-01-01T00:00:00Z"
+            elif kind == "card_time":
+                poisoned["catalog"]["items"][0]["fetched_at"] = "not-a-date"
+            elif kind == "fx_time":
+                poisoned["catalog"]["fx"]["fetched_at"] = "2026-10-14"
+            else:
+                product = next(c for c in quote["landed_cost"]["components"] if c["key"] == "product")
+                product["evidence"][0]["checked_on"] = "2099-01-01"
+            atomic_json(cache, poisoned)
+            with self.subTest(kind=kind):
+                self.assertTrue(self.build_at(NOW + timedelta(seconds=2))["catalog_changed"])
+                _, _, raw = self.publication()
+                self.assertNotIn(b"2099-01-01", raw)
+
+    def test_local_manifest_does_not_invent_a_commit(self):
         with patch.dict(os.environ, {}, clear=True):
             build_public_site(self.root, make_fx())
-        manifest = json.loads((self.root / '_site/data/publication.json').read_bytes())
-        self.assertIsNone(manifest['commit'])
-        self.assertEqual(manifest['version'], 'local:' + manifest['generated_at'])
+        manifest, _, _ = self.publication()
+        self.assertIsNone(manifest["commit"])
+        self.assertEqual(manifest["version"], "local:" + manifest["generated_at"])
+        self.assertTrue(manifest["snapshot"]["version"].startswith("local:catalog:"))
 
 
 if __name__ == '__main__':

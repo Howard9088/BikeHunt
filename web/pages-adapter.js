@@ -4,6 +4,10 @@ const publicRoot=new URL('../',document.currentScript.src);
 const pageRelease=document.currentScript.dataset?.release||'unversioned';
 const publicFetch=window.fetch.bind(window);
 let publicDataPromise=null,publicLastData=null,publicLastManifest=null;
+// The verified catalog base never receives local expiry mutations or status overlays.
+let publicLastBase=null,publicLastStatus=null,publicPendingSafetyChange=false;
+// Keep high-water marks even if an identity disappears and later reappears.
+const publicObservationTimes=new Map(),publicFxTimes=new Map();
 function mapPublicAssets(value){if(Array.isArray(value))return value.map(mapPublicAssets);if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,mapPublicAssets(v)]));if(typeof value==='string'&&value.startsWith('/web/'))return new URL(value.slice(1),publicRoot).pathname;return value}
 function isoDay(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value))return null;const parsed=Date.parse(value);return Number.isFinite(parsed)&&new Date(parsed).toISOString().slice(0,10)===value?parsed/86400000:null}
 const STOCK_MAX_AGE_MS=3600000,QUOTE_MAX_AGE_MS=86400000;
@@ -29,36 +33,176 @@ function refreshPublicInventory(data){
   for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);const allOffers=Object.values(family.variants).flatMap(d=>d.offers);card.stock_state=Object.values(familyAvailability[card.product_id]).some(Boolean)?'in_stock':allOffers.length&&allOffers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status=card.stock_state==='unknown'&&allOffers.some(q=>q.offer.stock==='in_stock'&&!stockFresh(q.offer,now))?'库存核实已过期':'渠道待核实';}if(card.reference_stock==='in_stock'&&(!stockFresh(card,now)||card.reference_collection_state==='retained'))card.reference_stock='unknown';}
 }
 function publishedUrl(path,version){const url=new URL(path,publicRoot);url.searchParams.set('release',pageRelease);url.searchParams.set('v',String(Date.now()));if(version)url.searchParams.set('version',version);return url}
+function isRecord(value){return !!value&&typeof value==='object'&&!Array.isArray(value)}
+function validDigest(value){return typeof value==='string'&&/^[a-f0-9]{64}$/.test(value)}
+function validDescriptor(value,path){return isRecord(value)&&value.path===path&&Number.isSafeInteger(value.bytes)&&value.bytes>0&&validDigest(value.sha256)}
+function validTimestamp(value){return Number.isFinite(verifiedAge(value,0))}
+function clonePublished(value){return JSON.parse(JSON.stringify(value))}
+function publicFxSnapshots(data){return [data.catalog.fx,data.updates.fx,...Object.values(data.details).flatMap(f=>Object.values(f.variants).map(d=>d.fx))]}
 function validPublication(manifest){
   const age=verifiedAge(manifest?.generated_at,Date.now());
-  if(!manifest||manifest.schema_version!==1||typeof manifest.version!=='string'||!manifest.version||
+  if(!manifest||![1,2].includes(manifest.schema_version)||typeof manifest.version!=='string'||!manifest.version||
     !Number.isFinite(age)||age< -300000||
     !(manifest.commit===null||typeof manifest.commit==='string')||
-    manifest.snapshot?.path!=='data/site-data.json'||!Number.isSafeInteger(manifest.snapshot.bytes)||manifest.snapshot.bytes<=0||
-    !/^[a-f0-9]{64}$/.test(manifest.snapshot.sha256||''))throw new Error('发布清单无效；等待重新发布');
+    !validDescriptor(manifest.snapshot,'data/site-data.json'))throw new Error('发布清单无效；等待重新发布');
+  if(manifest.schema_version===2){
+    const snapshot=manifest.snapshot;
+    if(manifest.version!==(manifest.commit||'local')+':'+manifest.generated_at||
+      !validDescriptor(manifest.status,'data/verification.json')||
+      !validTimestamp(snapshot.generated_at)||Date.parse(snapshot.generated_at)>Date.parse(manifest.generated_at)||
+      snapshot.commit!==manifest.commit||!validDigest(snapshot.semantic_sha256)||
+      snapshot.version!==(snapshot.commit||'local')+':catalog:'+snapshot.semantic_sha256)
+      throw new Error('发布清单无效；等待重新发布');
+  }
   return manifest;
 }
-function samePublication(a,b){return a.version===b.version&&a.generated_at===b.generated_at&&a.commit===b.commit&&a.snapshot.sha256===b.snapshot.sha256&&a.snapshot.bytes===b.snapshot.bytes}
+function sameSnapshot(a,b){return a.path===b.path&&a.sha256===b.sha256&&a.bytes===b.bytes&&a.version===b.version&&a.generated_at===b.generated_at&&a.commit===b.commit&&a.semantic_sha256===b.semantic_sha256}
+function samePublication(a,b){return a.schema_version===b.schema_version&&a.version===b.version&&a.generated_at===b.generated_at&&a.commit===b.commit&&sameSnapshot(a.snapshot,b.snapshot)&&(a.schema_version===1||a.status.path===b.status.path&&a.status.sha256===b.status.sha256&&a.status.bytes===b.status.bytes)}
 function publicationMismatch(message){const error=new Error(message);error.publicationMismatch=true;return error}
 async function readPublication(){
   const response=await publicFetch(publishedUrl('data/publication.json'),{cache:'no-store'});
   if(!response.ok)throw new Error('最新发布清单暂时无法读取');
   return validPublication(await response.json());
 }
-async function readPublishedSnapshot(manifest){
-  const snapshot=await publicFetch(publishedUrl(manifest.snapshot.path,manifest.version),{cache:'no-store'});
-  if(!snapshot.ok)throw new Error('已发布商品数据暂时无法读取');
-  const bytes=await snapshot.arrayBuffer();
+async function readPublishedFile(descriptor,version,label){
+  const response=await publicFetch(publishedUrl(descriptor.path,version),{cache:'no-store'});
+  if(!response.ok)throw new Error(label+'暂时无法读取');
+  const bytes=await response.arrayBuffer();
   const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
-  if(bytes.byteLength!==manifest.snapshot.bytes||digest!==manifest.snapshot.sha256)
+  if(bytes.byteLength!==descriptor.bytes||digest!==descriptor.sha256)
     throw publicationMismatch('发布文件正在同步或校验失败；等待一致的快照');
-  const payload=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
-  if(payload.generated_at!==manifest.generated_at||payload.publication?.version!==manifest.version||payload.publication?.commit!==manifest.commit)
+  return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+}
+function publishedOfferIndex(data){
+  const offers=new Map();
+  for(const family of Object.values(data.details))for(const detail of Object.values(family.variants))for(const quote of detail.offers){
+    const offer=quote.offer,id=offer.offer_id;
+    if(typeof id!=='string'||!id||offers.has(id)&&JSON.stringify(offers.get(id))!==JSON.stringify(offer))
+      throw publicationMismatch('商品身份重复或无效；保留上次核实的数据');
+    offers.set(id,offer);
+  }
+  return offers;
+}
+function validateCatalogIdentities(data){
+  const offers=publishedOfferIndex(data),identities=data.verification_identities;
+  if(!isRecord(identities)||Object.keys(identities).length!==offers.size||
+    [...offers].some(([id,offer])=>!validDigest(identities[id])||!['current','retained'].includes(offer.collection_state)||
+      offer.fetched_at!==null&&(!validTimestamp(offer.fetched_at)||Date.parse(offer.fetched_at)>Date.parse(data.generated_at))))
+    throw publicationMismatch('商品核实身份缺失或不一致；保留上次核实的数据');
+  for(const card of data.catalog.items){
+    const family=data.details[card.product_id];
+    if(!family||typeof card.reference_offer_id!=='string'||
+      !Object.values(family.variants).some(detail=>detail.offers.some(q=>q.offer.offer_id===card.reference_offer_id)))
+      throw publicationMismatch('商品参考报价身份缺失；保留上次核实的数据');
+  }
+  return offers;
+}
+async function readPublishedSnapshot(manifest){
+  const payload=await readPublishedFile(manifest.snapshot,manifest.snapshot.version||manifest.version,'已发布商品数据');
+  const identity=manifest.schema_version===2?manifest.snapshot:manifest;
+  if(payload.generated_at!==identity.generated_at||payload.publication?.version!==identity.version||payload.publication?.commit!==identity.commit)
     throw publicationMismatch('发布清单与商品版本不一致；等待一致的快照');
-  const data=mapPublicAssets(payload);
+  if(manifest.schema_version===2)validateCatalogIdentities(payload);
+  return mapPublicAssets(payload);
+}
+function checkedObservation(value,baseline,generatedAt,previous){
+  if(value!==null&&(!validTimestamp(value)||Date.parse(value)>Date.parse(generatedAt)))return false;
+  // Null is an explicit absence of verification, never permission to erase a
+  // previously verified observation or to renew it from the publication clock.
+  for(const earlier of [baseline,previous])if(earlier!==undefined&&earlier!==null&&
+    (!validTimestamp(earlier)||value===null||Date.parse(value)<Date.parse(earlier)))return false;
+  return true;
+}
+function sameObservation(a,b){return a===b||a!==null&&b!==null&&validTimestamp(a)&&validTimestamp(b)&&Date.parse(a)===Date.parse(b)}
+function sourceFailureAffects(status,offer){
+  return status&&(status.status==='failed'||status.errors?.some(error=>typeof error.url==='string'&&error.url.split('?')[0]===offer.url?.split('?')[0]));
+}
+function validatePublishedStatus(manifest,base,status){
+  const reject=()=>{throw publicationMismatch('核实状态与商品快照不一致；保留上次核实的数据')};
+  if(!isRecord(status)||status.schema_version!==1||status.version!==manifest.version||
+    status.generated_at!==manifest.generated_at||status.commit!==manifest.commit||status.snapshot_sha256!==manifest.snapshot.sha256||
+    !isRecord(status.offers)||!isRecord(status.fx)||!isRecord(status.collection_status))reject();
+  const offers=validateCatalogIdentities(base),identities=base.verification_identities;
+  if(Object.keys(status.offers).length!==offers.size||Object.keys(status.offers).some(id=>!offers.has(id)))reject();
+  for(const [source,row] of Object.entries(status.collection_status)){
+    if(!isRecord(row)||(row.source_code!==undefined&&row.source_code!==source)||
+      row.attempted_at!==undefined&&(!validTimestamp(row.attempted_at)||Date.parse(row.attempted_at)>Date.parse(status.generated_at))||
+      row.errors!==undefined&&!Array.isArray(row.errors))reject();
+  }
+  for(const [id,offer] of offers){
+    const observation=status.offers[id],previous=publicObservationTimes.get(id)?.get(identities[id]);
+    if(!isRecord(observation)||observation.content_sha256!==identities[id]||observation.collection_state!==offer.collection_state||
+      !checkedObservation(observation.fetched_at,offer.fetched_at,status.generated_at,previous)||
+      offer.collection_state==='retained'&&!sameObservation(observation.fetched_at,offer.fetched_at))reject();
+    const source=status.collection_status[offer.source_code];
+    if(sourceFailureAffects(source,offer)){
+      if(!validTimestamp(source.attempted_at))reject();
+      // A failed source/page attempt is not evidence of a fresh observation.
+      // If it follows the offer, the catalog must already say retained.
+      if(Date.parse(source.attempted_at)>Date.parse(observation.fetched_at||'1970-01-01')&&offer.collection_state!=='retained')reject();
+      if(Date.parse(source.attempted_at)>Date.parse(offer.fetched_at||'1970-01-01')&&!sameObservation(observation.fetched_at,offer.fetched_at))reject();
+    }
+  }
+  const fx=base.catalog.fx,previousFx=publicFxTimes.get(base.catalog.fx.snapshot_id);
+  if(typeof fx.snapshot_id!=='string'||!fx.snapshot_id||fx.fetched_at!==null&&(!validTimestamp(fx.fetched_at)||Date.parse(fx.fetched_at)>Date.parse(base.generated_at))||
+    status.fx.snapshot_id!==fx.snapshot_id||typeof status.fx.stale!=='boolean'||status.fx.stale!==fx.stale||
+    !checkedObservation(status.fx.fetched_at,fx.fetched_at,status.generated_at,previousFx)||
+    publicFxSnapshots(base).some(item=>item.snapshot_id===fx.snapshot_id&&(item.stale!==fx.stale||!sameObservation(item.fetched_at,fx.fetched_at))))reject();
+  return status;
+}
+function applyPublishedStatus(base,status){
+  const data=clonePublished(base);
+  for(const family of Object.values(data.details))for(const detail of Object.values(family.variants))for(const quote of detail.offers){
+    const observation=status.offers[quote.offer.offer_id];
+    quote.offer.fetched_at=observation.fetched_at;
+    quote.offer.verification_identity=observation.content_sha256;
+    for(const component of quote.landed_cost?.components||[])if(component.key==='product')
+      for(const evidence of component.evidence||[])evidence.checked_on=observation.fetched_at?.slice(0,10)||null;
+  }
+  for(const card of data.catalog.items){card.fetched_at=status.offers[card.reference_offer_id].fetched_at;card.reference_verification_identity=status.offers[card.reference_offer_id].content_sha256;}
+  for(const fx of publicFxSnapshots(data))if(fx.snapshot_id===status.fx.snapshot_id)fx.fetched_at=status.fx.fetched_at;
+  data.collection_status=clonePublished(status.collection_status);
+  return data;
+}
+function notifyVerificationMetadata(previous,data,status){
+  if(!previous||!status)return;
+  refreshPublicInventory(previous);
+  if(publishedFreshness(previous)!==publishedFreshness(data)){publicPendingSafetyChange=true;return;}
+  if(publishedContentVersion(previous)!==publishedContentVersion(data))return;
+  const oldOffers=publishedOfferIndex(previous),observations={};let changed=false;
+  for(const family of Object.values(data.details))for(const detail of Object.values(family.variants))for(const quote of detail.offers){
+    const id=quote.offer.offer_id,observation=status.offers[id];
+    if(oldOffers.get(id)?.fetched_at!==observation.fetched_at)changed=true;
+    observations[id]={...observation,stock:quote.offer.stock,eligible:quote.eligible,reasons:[...quote.reasons]};
+  }
+  if(previous.catalog.fx.fetched_at!==status.fx.fetched_at)changed=true;
+  if(changed)window.dispatchEvent(new CustomEvent('bikehunt-verification',{detail:{offers:observations,fx:{...status.fx}}}));
+}
+async function readPublishedPair(manifest){
+  let base;
+  if(publicLastManifest?.schema_version===2&&manifest.schema_version===2&&manifest.snapshot.sha256===publicLastManifest.snapshot.sha256){
+    if(!sameSnapshot(manifest.snapshot,publicLastManifest.snapshot))throw publicationMismatch('商品快照标识与校验信息不一致；保留上次核实的数据');
+    base=publicLastBase;
+  }else base=await readPublishedSnapshot(manifest);
+  const status=manifest.schema_version===2?validatePublishedStatus(manifest,base,await readPublishedFile(manifest.status,manifest.version,'最新核实状态')):null;
+  const data=status?applyPublishedStatus(base,status):clonePublished(base);
   refreshPublicInventory(data);
-  // Commit only a complete, verified snapshot. A failed refresh cannot discard it.
-  publicLastData=data;publicLastManifest=manifest;
+  // Commit the complete pair atomically. Neither races nor partial downloads can
+  // replace the pristine base, accepted observations, or last safe live data.
+  const previous=publicLastData;
+  publicLastBase=base;publicLastStatus=status;publicLastData=data;publicLastManifest=manifest;
+  if(status){
+    for(const [id,observation] of Object.entries(status.offers)){
+      if(!publicObservationTimes.has(id))publicObservationTimes.set(id,new Map());
+      publicObservationTimes.get(id).set(observation.content_sha256,observation.fetched_at);
+    }
+    publicFxTimes.set(status.fx.snapshot_id,status.fx.fetched_at);
+  }
+  notifyVerificationMetadata(previous,data,status);
+  // A proof may arrive just after the old clock expired, between timer ticks.
+  // Preserve that safety transition even if renewed data matches the last UI
+  // fingerprint; stale copied selections must take normal invalidation.
+  if(publicPendingSafetyChange)notifyPublished(data);
   return data;
 }
 async function checkPublished(){
@@ -70,17 +214,23 @@ async function checkPublished(){
       return publicLastData;
     }
     // Never roll back after a successful load, including a delayed CDN response.
-    if(Date.parse(manifest.generated_at)<=Date.parse(publicLastManifest.generated_at))
+    if(Date.parse(manifest.generated_at)<=Date.parse(publicLastManifest.generated_at)||manifest.schema_version<publicLastManifest.schema_version)
       throw new Error('发布清单早于已加载版本；保留上次核实的数据');
   }
-  try{return await readPublishedSnapshot(manifest)}catch(error){
+  try{return await readPublishedPair(manifest)}catch(error){
     if(publicLastData||!error.publicationMismatch)throw error;
     // One bounded startup recovery for a manifest that changed during delivery.
-    // Do not repeatedly download the same large alias while a CDN is catching up.
     const latest=await readPublication();
     if(latest.version===manifest.version||Date.parse(latest.generated_at)<=Date.parse(manifest.generated_at))throw error;
-    return readPublishedSnapshot(latest);
+    return readPublishedPair(latest);
   }
+}
+function showPublishedMetadata(data){
+  window.BIKEHUNT_PUBLICATION={...data.publication,generated_at:data.generated_at};
+  window.BIKEHUNT_VERIFICATION={version:publicLastManifest.version,generated_at:publicLastManifest.generated_at,commit:publicLastManifest.commit};
+  for(const key of ['run_id','trigger'])if(publicLastStatus?.[key]!==undefined)window.BIKEHUNT_VERIFICATION[key]=publicLastStatus[key];
+  const marker=document.getElementById?.('publicationInfo');
+  if(marker){marker.textContent='数据 '+(data.publication?.commit?.slice(0,7)||'本地');marker.title='发布快照 '+data.generated_at+' · 状态发布 '+publicLastManifest.generated_at+' · '+(data.publication?.commit||'');}
 }
 async function loadPublished(force=false){
   // One in-flight check for initial, timer, focus and manual callers; cached API
@@ -89,10 +239,7 @@ async function loadPublished(force=false){
     if(!publicDataPromise)publicDataPromise=checkPublished().finally(()=>{publicDataPromise=null});
     await publicDataPromise;
   }
-  const data=publicLastData;refreshPublicInventory(data);
-  window.BIKEHUNT_PUBLICATION={...data.publication,generated_at:data.generated_at};
-  const marker=document.getElementById?.('publicationInfo');
-  if(marker){marker.textContent='数据 '+(data.publication?.commit?.slice(0,7)||'本地');marker.title='发布快照 '+data.generated_at+' · '+(data.publication?.commit||'');}
+  const data=publicLastData;refreshPublicInventory(data);showPublishedMetadata(data);
   return data;
 }
 function assessPublishedFit(data,id,profile){
@@ -120,21 +267,22 @@ window.fetch=async(input,init={})=>{
     else if(path.startsWith('/api/catalog/')){const family=data.details[decodeURIComponent(path.split('/').at(-1))];if(!family)throw new Error('商品不存在');const variant=url.searchParams.get('variant_id')||family.default;result=family.variants[variant];if(!result)throw new Error('规格不存在');}
     else if(path==='/api/directories')result=data.directories;
     else if(path.startsWith('/api/rules/'))result=data.rules[decodeURIComponent(path.split('/').at(-1))]||{source_code:path.split('/').at(-1),version:0,documents:[]};
-    else if(path==='/api/updates'){const category=url.searchParams.get('category')||'all',after=Number(url.searchParams.get('after')||0);result={...data.updates,items:data.updates.items.filter(row=>row.id>after&&(category==='all'||row.category===category)).slice(0,30)}}
+    else if(path==='/api/updates'){const category=url.searchParams.get('category')||'all',after=Number(url.searchParams.get('after')||0);result={...data.updates,items:data.updates.items.filter(row=>row.id>after&&(category==='all'||row.category===category)).slice(0,100)}}
     else if(path.startsWith('/api/fit/'))result=assessPublishedFit(data,decodeURIComponent(path.split('/').at(-1)),JSON.parse(init.body||'{}'));
     else if(path==='/api/community')result=data.community;
     else if(path==='/api/notifications/preferences')result={configured:false,bound:false,enabled:false,categories:['all'],provider:'WxPusher',wechat_channel_required:true,public_site:true};
-    else if(path==='/api/refresh/prices'){const fresh=await loadPublished(true);result={state:'success',kind:'prices',mode:'published_snapshot',finished_at:fresh.generated_at};}
-    else if(path==='/api/refresh/status')result={state:'success',mode:'published_snapshot',finished_at:(await loadPublished()).generated_at};
+    else if(path==='/api/refresh/prices'){const fresh=await loadPublished(true);result={state:'success',kind:'prices',mode:'published_snapshot',finished_at:publicLastManifest.generated_at,catalog_generated_at:fresh.generated_at};}
+    else if(path==='/api/refresh/status')result={state:'success',mode:'published_snapshot',finished_at:publicLastManifest.generated_at};
     else if(path==='/api/fx')result=data.catalog.fx;
     else return new Response(JSON.stringify({detail:'这项服务正在接入后台'}),{status:503,headers:{'Content-Type':'application/json'}});
     return new Response(JSON.stringify(result),{headers:{'Content-Type':'application/json'}});
   }catch(error){return new Response(JSON.stringify({detail:error.message}),{status:503,headers:{'Content-Type':'application/json'}})}
 };
-function publishedFreshness(data){return JSON.stringify([data.catalog.fx.stale,data.updates.fx.stale,data.catalog.items.map(p=>[p.stock_state,p.available_sizes,p.recommended_total_cny]),Object.values(data.details).map(f=>Object.values(f.variants).map(d=>[d.fx.stale,d.recommended_offer_id,d.variants.map(v=>v.in_stock),d.colors.map(c=>c.in_stock),d.offers.map(q=>[q.eligible,q.reasons,q.offer.stock,q.offer.collection_state,q.offer.price,q.offer.fetched_at])]))])}
-let publishedCursor=0,publicationDate='',freshnessState='';
-loadPublished().then(data=>{publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);publicationDate=data.generated_at;freshnessState=publishedFreshness(data)}).catch(()=>{});
-function notifyPublished(data){refreshPublicInventory(data);const nextFreshness=publishedFreshness(data),freshnessChanged=nextFreshness!==freshnessState;const events=data.updates.items.filter(row=>row.id>publishedCursor);publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);if(data.generated_at===publicationDate&&!freshnessChanged&&!events.length)return;publicationDate=data.generated_at;freshnessState=nextFreshness;window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events,freshnessChanged}}));}
+function publishedFreshness(data){return JSON.stringify([data.catalog.fx.stale,data.updates.fx.stale,data.catalog.items.map(p=>[p.stock_state,p.available_sizes,p.recommended_total_cny]),Object.values(data.details).map(f=>Object.values(f.variants).map(d=>[d.fx.stale,d.recommended_offer_id,d.variants.map(v=>v.in_stock),d.colors.map(c=>c.in_stock),d.offers.map(q=>[q.eligible,q.reasons,q.offer.stock,q.offer.collection_state,q.offer.price])]))])}
+function publishedContentVersion(data){return data.verification_identities?data.publication.version.slice(-64):data.publication.version}
+let publishedCursor=0,publicationVersion='',freshnessState='';
+loadPublished().then(data=>{publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);publicationVersion=publishedContentVersion(data);freshnessState=publishedFreshness(data)}).catch(()=>{});
+function notifyPublished(data){refreshPublicInventory(data);const nextFreshness=publishedFreshness(data),freshnessChanged=nextFreshness!==freshnessState||publicPendingSafetyChange;const events=data.updates.items.filter(row=>row.id>publishedCursor);publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);if(publishedContentVersion(data)===publicationVersion&&!freshnessChanged&&!events.length)return;publicationVersion=publishedContentVersion(data);freshnessState=nextFreshness;publicPendingSafetyChange=false;window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events,freshnessChanged}}));}
 async function pollPublished(){
   // Expiry is clock-driven, even if this network check hangs or fails offline.
   if(publicLastData)notifyPublished(publicLastData);

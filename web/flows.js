@@ -1,11 +1,17 @@
 'use strict';
-let directoryData={brands:[],teams:[]},categories=[],bindingTimer=0,guideContext=null,guideStep=0;
+let directoryData={brands:[],teams:[]},categories=[],bindingTimer=0,guideContext=null,guideStep=0,messagesOpen=false;
+const messageEvents=new Map();
+const MESSAGE_READ_KEY='bikehuntMessagesReadCursor';
+let messageReadCursor=0;
+const messageSeenIds=new Set();
+try{const saved=JSON.parse(localStorage.getItem(MESSAGE_READ_KEY)||'null');if(Number.isSafeInteger(saved)&&saved>=0)messageReadCursor=saved;else if(saved&&Array.isArray(saved.seen))for(const id of saved.seen)if(Number.isSafeInteger(id)&&id>0)messageSeenIds.add(id)}catch{}
 const directoryPage=document.getElementById('directoryPage');
 function directoryLogo(item){return item.logo_images?.length?'<span class="team-logo '+(item.logo_theme==='dark'?'team-logo-monochrome':item.logo_theme==='outline'?'team-logo-outline':'')+'">'+item.logo_images.filter(url=>url.startsWith('/web/assets/')||(window.BIKEHUNT_PAGES&&url.startsWith('/')&&url.includes('/web/assets/')&&!url.includes('..'))).slice(0,1).map(url=>'<img src="'+e(url)+'" alt="'+e(item.name)+' 标志" decoding="async">').join('')+'</span>':'<span class="directory-mark">'+e(item.name.split(' ')[0])+'</span>'}
-function openPanel(title,content){++detailSequence;clearTimeout(bindingTimer);if(!sheet.classList.contains('open'))lastFocus=document.activeElement;gallery.inert=true;directoryPage.inert=true;sheet.inert=false;document.getElementById('sheetName').textContent=title;document.getElementById('sheetBrand').textContent='BikeHunt 中文海淘助手';document.getElementById('sheetImg').src='';document.getElementById('sheetImg').style.display='none';document.getElementById('sheetBody').innerHTML=content;document.getElementById('sheetBody').scrollTop=0;document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus()}
+function openPanel(title,content,preserveGuide=false){if(!preserveGuide)guideContext=null;messagesOpen=false;++detailSequence;clearTimeout(bindingTimer);if(!sheet.classList.contains('open'))lastFocus=document.activeElement;gallery.inert=true;directoryPage.inert=true;sheet.inert=false;document.getElementById('sheetName').textContent=title;document.getElementById('sheetBrand').textContent='BikeHunt 中文海淘助手';document.getElementById('sheetImg').src='';document.getElementById('sheetImg').style.display='none';document.getElementById('sheetBody').innerHTML=content;document.getElementById('sheetBody').scrollTop=0;document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus()}
 async function postJson(url,data={}){const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw new Error(body.detail||'请求失败');return body}
 function navigate(tab){activeTab=tab;document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryNav').hidden=tab!=='products';document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}}
-function chooseCategory(code){activeCategory=code;activeSource=null;document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===code)));document.getElementById('browseLabel').textContent='精选好价';navigate('products')}
+function chooseCategory(code){activeCategory=code;document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===code)));updateBrowseLabel();navigate('products')}
+function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);document.getElementById('browseLabel').textContent=activeSource?(entry?.name_zh||entry?.name||activeSource):'精选好价'}
 function renderDirectory(section){
   const entries=directoryData[section]||[];document.getElementById('browseLabel').textContent=section==='brands'?'品牌官网':'世巡车队';document.getElementById('count').textContent=entries.length+' 个入口';
   const ranking=section==='teams'?directoryData.team_ranking:null;
@@ -22,7 +28,7 @@ async function openSource(code){
 }
 async function startGuide(detail,offerId){
   const quote=detail.offers.find(x=>x.offer.offer_id===offerId);if(!quote||!offerAvailable(quote))return;
-  guideContext={detail,quote,book:null};openPanel('中文海淘指引','<p class="loading">读取中文配送与支付规则…</p>');const sequence=detailSequence;
+  guideContext={detail,quote,book:null};openPanel('中文海淘指引','<p class="loading">读取中文配送与支付规则…</p>',true);const sequence=detailSequence;
   try{const book=await getJson('/api/rules/'+encodeURIComponent(quote.offer.source_code));if(sequence!==detailSequence)return;if(!offerAvailable(quote)){showInventoryInvalidated(quote);return}guideContext={detail,quote,book};guideStep=0;renderGuide()}catch(error){if(sequence!==detailSequence)return;guideContext=null;document.getElementById('sheetBody').innerHTML='<p>'+e(error.message)+'</p>'}
 }
 const GUIDE_ICONS=[
@@ -37,16 +43,72 @@ function renderGuide(){
   const {detail,quote,book}=guideContext,o=quote.offer;const changed=book.documents.some(d=>d.state==='changed');
   const titles=['核对选中的现货规格','确认发货地和中国配送','核对人民币商品价与费用','按中文提示到原站购买'];
   let content='';
-  if(guideStep===0)content='<img class="guide-product" src="'+e(safeUrl(detail.image))+'" alt="'+e(detail.name_zh||detail.name)+'"><p>商品：<strong>'+e(detail.name_zh||detail.name)+'</strong></p><div class="selected-spec"><span>尺码 <strong>'+e(detail.identity.size||'尚待核实')+'</strong></span><span>颜色 <strong>'+e(detail.identity.color||'当前商品图配色')+'</strong></span><span class="tag '+(offerAvailable(quote)?'ok':'wait')+'">'+e(inventoryLabel(o))+'</span></div>'+(o.purchase_requirements?.length?'<p class="offer-note">'+o.purchase_requirements.map(e).join(' · ')+'</p>':'')+'<p>库存核对 '+e(timeText(o.fetched_at))+'，核实结果最多保留一小时。下单前在原站再次核对尺码、颜色和男女款。</p><div class="term-box"><b>Size</b> 尺码　<b>Color</b> 颜色　<b>Quantity</b> 数量</div>';
+  if(guideStep===0)content='<img class="guide-product" src="'+e(safeUrl(detail.image))+'" alt="'+e(detail.name_zh||detail.name)+'"><p>商品：<strong>'+e(detail.name_zh||detail.name)+'</strong></p><div class="selected-spec"><span>尺码 <strong>'+e(detail.identity.size||'尚待核实')+'</strong></span><span>颜色 <strong>'+e(detail.identity.color||'当前商品图配色')+'</strong></span><span class="tag '+(offerAvailable(quote)?'ok':'wait')+'">'+e(inventoryLabel(o))+'</span></div>'+(o.purchase_requirements?.length?'<p class="offer-note">'+o.purchase_requirements.map(e).join(' · ')+'</p>':'')+'<p>库存核对 <span id="guideObservation">'+e(timeText(o.fetched_at))+'</span>，核实结果最多保留一小时。下单前在原站再次核对尺码、颜色和男女款。</p><div class="term-box"><b>Size</b> 尺码　<b>Color</b> 颜色　<b>Quantity</b> 数量</div>';
   if(guideStep===1)content='<div class="logistics-map"><span>发货地<br><b>'+e(o.dispatch_origin||'官方仓库尚待核实')+'</b></span><i>→</i><span>目的地<br><b>中国大陆</b></span></div><p class="guide-conclusion">'+(o.shipping_to_china.status==='no'?'这个渠道不直邮中国大陆，请返回选择其他渠道。':o.shipping_to_china.status==='yes'&&!changed?'官方规则已确认中国配送目的地。':'中国目的地尚需核实，请在原站确认中国地址可配送。')+'</p><p>'+e(o.sales_region||o.source_name)+'的标价不等于该地区的仓库发货。</p>'+ruleMarkup({...book,documents:book.documents.filter(d=>d.key==='shipping')})+'<div class="term-box"><b>Ship to / Country</b> 配送国家，选择 <b>China</b>（中国）。</div>';
   if(guideStep===2)content='<dl class="costs"><div><dt>选中规格的商品价</dt><dd>'+e(cny(quote.product_cny))+'</dd></div><div><dt>寄中国运费</dt><dd>'+e(quote.shipping_cny==null?'待确认':cny(quote.shipping_cny))+'</dd></div><div><dt>税费</dt><dd>'+e(quote.tax_cny==null?'待确认':cny(quote.tax_cny))+'</dd></div><div><dt>预计总成本</dt><dd>'+e(quote.total_cny==null?'费用尚未齐全':cny(quote.total_cny))+'</dd></div></dl><p>原币商品价 '+e(money(o.price.amount,o.price.currency))+'，尺码 '+e(detail.identity.size)+'。未知运费、税费不按零元处理，银行手续费以发卡行为准。</p><div class="term-box"><b>Shipping</b> 运费　<b>Tax / Duties</b> 税费　<b>Total</b> 合计</div>';
   if(guideStep===3)content='<p>中国发行、支持境外付款的对应卡种可按商家条件使用，包括招商银行等银行的 Visa、Mastercard 信用卡。</p><p>该渠道公布的卡种：<strong>'+e(o.accepted_card_networks?.join(' / ')||'尚待取得完整规则')+'</strong>。确认境外支付权限、额度和银行安全验证。</p>'+ruleMarkup({...book,documents:book.documents.filter(d=>d.key==='payment')})+'<div class="checkout-path"><span>选择 '+e(detail.identity.size)+' / '+e(detail.identity.color||'当前配色')+'</span><i>↓</i><span>配送国家选中国，填写真实地址</span><i>↓</i><span>核对运费税费，再完成付款</span></div><div class="term-box"><b>Add to cart</b> 加入购物车<br><b>Checkout</b> 结账<br><b>First / Last name</b> 名 / 姓<br><b>Postal code</b> 邮政编码<br><b>Billing address</b> 账单地址<br><b>Place order</b> 提交订单</div><a class="compare-button" data-purchase-link target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(o.url))+'">去该商品原页面购买 ↗</a><p class="service-note">实际付款以银行授权为准。扣款结果不明确时先核对账单与订单确认。交易、配送和售后由原网站完成。</p>';
-  openPanel('中文购买指引',guideMap()+'<div class="guide-progress">第 '+(guideStep+1)+' 步 / 4 · '+e(o.source_name)+'</div><h2 class="guide-title">'+titles[guideStep]+'</h2><div class="guide-content">'+content+'</div><div class="guide-actions"><button id="guideBack">'+(guideStep?'上一步':'返回比价')+'</button>'+(guideStep<3?'<button id="guideNext" '+(guideStep===1&&o.shipping_to_china.status==='no'?'disabled':'')+'>下一步 →</button>':'')+'</div>');
+  openPanel('中文购买指引',guideMap()+'<div class="guide-progress">第 '+(guideStep+1)+' 步 / 4 · '+e(o.source_name)+'</div><h2 class="guide-title">'+titles[guideStep]+'</h2><div class="guide-content">'+content+'</div><div class="guide-actions"><button id="guideBack">'+(guideStep?'上一步':'返回比价')+'</button>'+(guideStep<3?'<button id="guideNext" '+(guideStep===1&&o.shipping_to_china.status==='no'?'disabled':'')+'>下一步 →</button>':'')+'</div>',true);
   document.getElementById('guideBack').onclick=()=>{if(guideStep){guideStep--;renderGuide()}else{guideContext=null;loadDetail(detail.product_id,detail.variant_id)}};
   const next=document.getElementById('guideNext');if(next)next.onclick=()=>{guideStep++;renderGuide()};
 }
+function updateGuideVerificationMetadata(verification){
+  // Never recreate a dismissed guide or revive a quote whose local safety
+  // state already expired. Content/safety changes still use the normal event.
+  if(!guideContext||!offerAvailable(guideContext.quote)||!updateVerifiedOfferMetadata(guideContext.quote,verification?.offers))return;
+  updateVerifiedDetailMetadata(guideContext.detail,verification);
+  const label=document.getElementById('guideObservation');
+  if(label)label.textContent=timeText(guideContext.quote.offer.fetched_at);
+}
+if(window.BIKEHUNT_PAGES)window.addEventListener('bikehunt-verification',event=>updateGuideVerificationMetadata(event.detail));
 function browseSettings(){openPanel('浏览设置','<p>默认一次滑动看一件商品。平铺便于同时扫看多件商品。</p><div class="settings-choices"><button data-choice="feed">上下滑动 · 一屏一件</button><button data-choice="grid">平铺图库 · 同时看多件</button></div><p class="service-note">浏览方式会保存在这台设备上。</p>');document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{setView(b.dataset.choice);closeSheet()})}
-async function showMessages(){openPanel('最新价格消息','<p class="loading">正在读取价格更新…</p>');const data=await getJson('/api/updates?category='+activeCategory);document.getElementById('messageBadge').hidden=true;document.getElementById('sheetBody').innerHTML=data.items.length?data.items.map(event=>{const rate=data.fx.rates[event.currency];const converted=rate?Number(event.new_price)*Number(rate):null;return '<div class="message-card"><div class="brand">'+e(event.source_name)+' · '+e(timeText(event.observed_at))+'</div><h4>'+e(event.name_zh)+'</h4><p>'+(event.kind==='price_changed'?'价格更新：':event.kind==='inventory_changed'?'库存更新：':'新发现报价：')+e(event.old_price&&event.kind==='price_changed'?money(event.old_price,event.currency)+' → ':'')+e(money(event.new_price,event.currency))+' · '+e(converted==null?'人民币待换算':cny(converted))+'</p>'+(event.stock==='out_of_stock'?'<span class="tag no">所示报价已售罄</span>':'')+'</div>'}).join(''):'<div class="summary-box"><h4>暂时没有新的价格变动</h4><p>同价重复采集不会制造降价提醒。新报价或价格变化会出现在这里。</p></div>'}
+function eventProduct(event){const p=event.product;return p&&p.offer_id===event.offer_id&&p.url===event.url?p:null}
+function messageGroupKey(event){
+  const p=eventProduct(event);if(!p||!p.model)return 'event:'+event.id;
+  const url=merchantUrl(event.url);if(!url)return 'event:'+event.id;
+  const productUrl=new URL(url);
+  // Only proven catalog families may fold the Shopify size selector. Keep all other URL fields.
+  if(p.product_id&&productUrl.pathname.includes('/products/'))productUrl.searchParams.delete('variant');
+  return JSON.stringify([event.source_code,p.product_id||null,productUrl.href,p.brand,p.model,p.color||null,p.image||null,event.currency,event.old_price,event.new_price,event.kind,event.stock,event.observed_at]);
+}
+function groupMessages(events){
+  const grouped=new Map();for(const event of events){const key=messageGroupKey(event);if(!grouped.has(key))grouped.set(key,{...event,members:[]});grouped.get(key).members.push(event)}return [...grouped.values()];
+}
+function updateMessageBadge(){
+  const count=groupMessages([...messageEvents.values()].filter(row=>Number(row.id)>messageReadCursor&&!messageSeenIds.has(row.id))).length,badge=document.getElementById('messageBadge');
+  badge.hidden=!count;badge.textContent=count>99?'99+':String(count);badge.setAttribute('aria-label',count+' 条未读价格消息');
+}
+function rememberMessageEvents(data){
+  for(const event of data.items||[])if(Number.isSafeInteger(event.id)&&event.id>0)messageEvents.set(event.id,event);
+  if(messageEvents.size>500)for(const id of [...messageEvents.keys()].sort((a,b)=>a-b).slice(0,messageEvents.size-500))messageEvents.delete(id);
+  updateMessageBadge();
+}
+function markMessagesRead(events){
+  for(const event of events)if(Number.isSafeInteger(event.id)&&event.id>0)messageSeenIds.add(event.id);
+  const seen=[...messageSeenIds].sort((a,b)=>b-a).slice(0,1000);messageSeenIds.clear();seen.forEach(id=>messageSeenIds.add(id));
+  try{localStorage.setItem(MESSAGE_READ_KEY,JSON.stringify({seen}))}catch{}updateMessageBadge();
+}
+function messageQuote(event){
+  const p=eventProduct(event),stock=event.stock==='out_of_stock'||p?.current_stock==='out_of_stock'?'out_of_stock':'unknown';
+  return {reference_product_id:p?.product_id,reference_variant_id:p?.variant_id,offer:{offer_id:event.offer_id,url:event.url,stock,source_name:event.source_name}};
+}
+function messageCardMarkup(event,fx){
+  const p=eventProduct(event),rate=fx?.rates?.[event.currency],converted=rate?Number(event.new_price)*Number(rate):null;
+  const image=p&&safeUrl(p.image),quote=messageQuote(event),canVisit=referenceAvailable(quote);
+  const photo=image?'<img class="message-image" loading="lazy" src="'+e(image)+'" alt="'+e([p.name,p.model,p.color].filter(Boolean).join(' · '))+'"><span class="message-no-image" hidden>暂无该商品图片</span>':'<span class="message-no-image">暂无该商品图片</span>';
+  const thumb=canVisit?referenceLinkMarkup(quote,photo,'message-thumbnail'):'<div class="message-thumbnail">'+photo+'</div>';
+  const members=event.members||[event],sizes=[...new Set(members.map(row=>eventProduct(row)?.size).filter(Boolean))];
+  const variantLinks=members.length>1?'<div class="message-variants">'+members.map(row=>{const label=e(eventProduct(row)?.size||'规格待核实');return referenceAvailable(messageQuote(row))?referenceLinkMarkup(messageQuote(row),label,'message-variant'):'<span>'+label+'</span>'}).join('')+'</div>':'';
+  return '<article class="message-card"><div class="message-layout">'+thumb+'<div class="message-copy"><div class="brand">'+e(event.source_name)+' · '+e(timeText(event.observed_at))+'</div><h4>'+e(event.name_zh)+'</h4><p class="message-spec">型号：'+e(p?.model||'待核实')+'<br>颜色：'+e(p?.color||'未标注，请核对商品图片')+'<br>尺码：'+e(sizes.length?sizes.join(' / '):'未记录')+'</p><p>'+(event.kind==='price_changed'?'价格更新：':event.kind==='inventory_changed'?'库存更新：':'新发现报价：')+e(event.old_price!=null&&event.kind==='price_changed'?money(event.old_price,event.currency)+' → ':'')+e(money(event.new_price,event.currency))+' · '+e(converted==null?'人民币待换算':cny(converted))+'</p>'+(canVisit?referenceLinkMarkup(quote,'去官网查看 ↗','message-product-link'):quote.offer.stock==='out_of_stock'?'<span class="tag no">所示报价已售罄，无购买链接</span>':'<span class="tag wait">商品链接待核实</span>')+variantLinks+'<p class="message-stock-note">'+(quote.offer.stock==='out_of_stock'?'该规格已售罄。':'历史变动记录；库存、尺码和当前价格以官网为准。')+'</p></div></div></article>';
+}
+async function refreshMessageState(){const data=await getJson('/api/updates');rememberMessageEvents(data);return data}
+async function showMessages(){
+  openPanel('最新价格消息','<p class="loading">正在读取价格更新…</p>');messagesOpen=true;const sequence=detailSequence;
+  const data=await refreshMessageState();if(sequence!==detailSequence||!messagesOpen||!sheet.classList.contains('open'))return;
+  const rows=[...messageEvents.values()].sort((a,b)=>b.id-a.id);
+  document.getElementById('sheetBody').innerHTML=rows.length?groupMessages(rows).map(event=>messageCardMarkup(event,data.fx)).join(''):'<div class="summary-box"><h4>暂时没有新的价格变动</h4><p>同价重复采集不会制造降价提醒。新报价或价格变化会出现在这里。</p></div>';
+  document.getElementById('sheetBody').querySelectorAll('.message-image').forEach(img=>img.onerror=()=>{img.hidden=true;img.nextElementSibling.hidden=false});
+  markMessagesRead(rows);
+}
 async function showWechat(){
   if(window.BIKEHUNT_PAGES){openPanel('微信价格提醒','<div class="summary-box"><h4>个人微信价格提醒尚未开通</h4><p>服务正在准备。开通后可扫码绑定，接收你关注类型的好价。当前可使用网站消息查看最新价格与库存变化。</p></div>');return}
   clearTimeout(bindingTimer);openPanel('微信价格提醒','<p class="loading">正在读取提醒设置…</p>');
@@ -61,8 +123,9 @@ async function bootFlows(){
   const data=await getJson('/api/catalog');categories=data.categories||[];
   document.getElementById('categoryNav').innerHTML=categories.map(c=>'<button data-category="'+c.code+'" aria-pressed="'+(c.code==='all')+'">'+e(c.name)+'</button>').join('');document.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>chooseCategory(b.dataset.category));
   directoryData=await getJson('/api/directories');
+  refreshMessageState().catch(()=>{});
     if(activeTab!=='products')renderDirectory(activeTab);
-  const onPrices=(events,freshnessChanged=false)=>{if(guideContext){guideContext=null;closeSheet();}if(events.some(x=>activeCategory==='all'||x.category===activeCategory)){document.getElementById('messageBadge').hidden=false;document.getElementById('updateToast').hidden=false;setTimeout(()=>document.getElementById('updateToast').hidden=true,5000)}refreshCatalogSilently();if(currentProduct&&document.getElementById('variant')&&(freshnessChanged||events.some(x=>currentProduct.offers.some(q=>q.offer.offer_id===x.offer_id)))){loadDetail(currentProduct.product_id,document.getElementById('variant').value||null)}};
+  const onPrices=(events,freshnessChanged=false)=>{const wasMessages=messagesOpen;invalidateReferenceLinks(events);refreshReferenceLinks().catch(()=>{});if(guideContext){guideContext=null;closeSheet();}if(events.some(x=>activeCategory==='all'||x.category===activeCategory)){document.getElementById('updateToast').hidden=false;setTimeout(()=>document.getElementById('updateToast').hidden=true,5000)}if(wasMessages)showMessages().catch(panelError);else refreshMessageState().catch(()=>{});refreshCatalogSilently();if(currentProduct&&document.getElementById('variant')&&(freshnessChanged||events.some(x=>currentProduct.offers.some(q=>q.offer.offer_id===x.offer_id)))){loadDetail(currentProduct.product_id,document.getElementById('variant').value||null)}};
   if(window.BIKEHUNT_PAGES){window.addEventListener('bikehunt-published',event=>onPrices(event.detail.events,event.detail.freshnessChanged));return}
   const eventSource=new EventSource('/api/updates/stream');eventSource.addEventListener('prices',event=>onPrices(JSON.parse(event.data)));window.addEventListener('pagehide',()=>{eventSource.close();clearTimeout(bindingTimer)},{once:true});
 }
@@ -85,18 +148,51 @@ startFlows();
 
 const PURCHASE_DISCLAIMER="本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。";
 document.getElementById('purchaseDisclaimerInfo').onclick=()=>window.alert(PURCHASE_DISCLAIMER);
-function guardPurchaseExit(event){const link=event.target.closest?.('a[data-purchase-link]');if(!link||(event.type==='auxclick'&&event.button!==1))return;if(!guideContext||!offerAvailable(guideContext.quote)){event.preventDefault();if(guideContext)showInventoryInvalidated(guideContext.quote);return}if(!window.confirm(PURCHASE_DISCLAIMER+'\n\n确定：继续前往商家；取消：留在本站。')){event.preventDefault();return}if(!guideContext||!offerAvailable(guideContext.quote)){event.preventDefault();if(guideContext)showInventoryInvalidated(guideContext.quote);}}
+function invalidateReferenceLinks(events=[]){
+  for(const quote of referenceOffers.values()){
+    const event=events.find(row=>row.offer_id===quote.offer.offer_id);
+    if(event?.stock==='out_of_stock')quote.offer.stock='out_of_stock';
+  }
+  for(const link of document.querySelectorAll('a[data-reference-link]')){
+    const quote=referenceOffers.get(link.dataset.referenceLink);
+    if(!referenceAvailable(quote)){link.removeAttribute('href');link.setAttribute('aria-disabled','true');}
+  }
+}
+async function refreshReferenceLinks(){
+  const entries=[...referenceOffers.entries()],requests=new Map();
+  for(const [key,quote] of entries){
+    if(!quote.reference_product_id||!quote.reference_variant_id)continue;
+    const route='/api/catalog/'+encodeURIComponent(quote.reference_product_id)+'?variant_id='+encodeURIComponent(quote.reference_variant_id);
+    quote.reference_verifying=true;
+    if(!requests.has(route))requests.set(route,getJson(route));
+    try{const detail=await requests.get(route);if(referenceOffers.get(key)!==quote)continue;
+      const exact=detail.offers.find(q=>q.offer.offer_id===quote.offer.offer_id&&q.offer.url===quote.offer.url);
+      // Never clear an observed sold-out state from a historical event.
+      if(exact&&exact.offer.stock==='out_of_stock')quote.offer.stock='out_of_stock';
+    }catch{/* A failed read makes no fresh-stock assertion. The saved page is reference-only. */}
+    finally{quote.reference_verifying=false;}
+  }
+  invalidateReferenceLinks();
+}
+function guardPurchaseExit(event){
+  const link=event.target.closest?.('a[data-purchase-link],a[data-reference-link]');if(!link||(event.type==='auxclick'&&event.button!==1))return;
+  const referenceKey=link.dataset?.referenceLink;
+  const valid=()=>referenceKey?referenceAvailable(referenceOffers.get(referenceKey))&&merchantUrl(link.getAttribute('href'))===merchantUrl(referenceOffers.get(referenceKey).offer.url):!!guideContext&&offerAvailable(guideContext.quote)&&!!merchantUrl(guideContext.quote.offer.url);
+  if(!valid()){event.preventDefault();if(!referenceKey&&guideContext)showInventoryInvalidated(guideContext.quote);return}
+  if(!window.confirm(PURCHASE_DISCLAIMER+'\n\n确定：继续前往商家；取消：留在本站。')){event.preventDefault();return}
+  if(!valid()){event.preventDefault();if(!referenceKey&&guideContext)showInventoryInvalidated(guideContext.quote);}
+}
 document.addEventListener('click',guardPurchaseExit);
 document.addEventListener('auxclick',guardPurchaseExit);
 
 function showInventoryInvalidated(quote){
-  const reason=quote?inventoryLabel(quote.offer):'库存核实已过期；等待重新核实';
+  const reason=quote?inventoryLabel(quote.offer):'库存待核实';
   guideContext=null;closeSheet();
-  openPanel('库存需要重新核实','<div class="summary-box"><h4>'+e(reason)+'</h4><p>原来的规格选择与购买链接已停用。历史价格仍可参考，请等库存重新核实后再选择。</p></div>');
+  openPanel('库存待核实','<div class="summary-box"><h4>'+e(reason)+'</h4><p>'+(quote?.offer.stock==='out_of_stock'?'该规格已确认售罄，购买链接已停用。':'现货规格选择已停用；历史价格仍可参考。可去官网查看当前库存，重新核对尺码、颜色和价格。')+'</p>'+referenceLinkMarkup(quote)+'</div>');
 }
 function expireLocalInventory(now=Date.now()){
   let changed=false;
-  for(const card of items){if(card.stock_state==='in_stock'&&!inventoryVerified(card,now)){card.stock_state='unknown';card.reference_stock='unknown';card.available_sizes=[];card.recommended_total_cny=null;card.status='库存核实已过期';changed=true}}
+  for(const card of items){if(card.stock_state==='in_stock'&&!inventoryVerified(card,now)){card.stock_state='unknown';card.reference_stock='unknown';card.available_sizes=[];card.recommended_total_cny=null;card.status='库存待核实';changed=true}}
   if(guideContext&&!offerAvailable(guideContext.quote,now))showInventoryInvalidated(guideContext.quote);
   else if(currentProduct&&document.getElementById('variant')&&currentProduct.variants.some(v=>v.variant_id===currentProduct.variant_id&&v.in_stock)&&!currentProduct.offers.some(q=>offerAvailable(q,now)))showInventoryInvalidated(currentProduct.offers.find(q=>q.offer.stock==='in_stock')||currentProduct.offers[0]);
   if(changed&&activeTab==='products'){const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;render(active)}

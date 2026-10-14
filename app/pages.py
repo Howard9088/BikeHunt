@@ -1,9 +1,9 @@
 """只导出公开商品、规则和事件；GitHub Pages 不包含私有配置与订阅数据库。"""
 from __future__ import annotations
 
-import hashlib
 import json
 import os
+import re
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -16,7 +16,9 @@ from app.discovery import directories
 from app.fx import FxProvider
 from app.localization import CATEGORIES
 from app.policies import PolicyRepository
+from app.publication import build_publication
 from app.updates import UpdateStore
+from app.update_views import enrich_events
 
 
 def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
@@ -35,7 +37,11 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     index = (web/"index.html").read_text(encoding="utf-8")
     index = index.replace('href="/web/"', 'href="./"').replace('="/web/', '="./web/')
     index = index.replace('<script src="./web/profile.js',
-                          '<script src="./web/pages-adapter.js?v=manifest14" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
+                          '<script src="./web/pages-adapter.js?v=BIKEHUNT_RELEASE_COMMIT" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
+    # Tie every copied interactive asset to this exact deployed release.
+    # Keep source HTML and pending icon work untouched.
+    index = re.sub(r'(\./web/(?:gallery|flows)\.css|\./web/(?:profile|gallery|flows|pages-adapter)\.js)(?:\?[^" ]*)?',
+                   r'\1?v=BIKEHUNT_RELEASE_COMMIT', index)
     index = index.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
     (output/"index.html").write_text(index, encoding="utf-8")
@@ -66,6 +72,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
             events = json.loads((root/"data/public_updates.json").read_text(encoding="utf-8"))
         except (OSError, ValueError):
             events = []
+    events = enrich_events(events, store)
     atomic_json(root/"data/public_updates.json", events)
     try:
         charts = json.loads((root/"data/fit_guides.json").read_text(encoding="utf-8"))
@@ -89,20 +96,6 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
                "updates":{"items":events, "cursor":max((row["id"] for row in events), default=0),
                           "fx":snapshot.model_dump(mode="json")}, "fit_charts":charts,
                "community":community}
-    # A build, including a scheduled rebuild of the same commit, has its own identity.
-    payload["publication"]["version"] = (payload["publication"]["commit"] or "local") + ":" + payload["generated_at"]
-    snapshot_path = output/"data/site-data.json"
-    atomic_json(snapshot_path, payload)
-    snapshot_bytes = snapshot_path.read_bytes()
-    # Write the tiny pointer last. CDN propagation can still be out of order, so the
-    # browser verifies the exact snapshot bytes AND the publication metadata.
-    atomic_json(output/"data/publication.json", {
-        "schema_version": 1,
-        "version": payload["publication"]["version"],
-        "generated_at": payload["generated_at"],
-        "commit": payload["publication"]["commit"],
-        "snapshot": {"path": "data/site-data.json", "bytes": len(snapshot_bytes),
-                     "sha256": hashlib.sha256(snapshot_bytes).hexdigest()},
-    })
+    publication = build_publication(payload, output, root/"data/publication_cache")
     return {"output":str(output), "generated_at":payload["generated_at"],
-            "products":len(catalog["items"]), "offers":len(offers)}
+            "products":len(catalog["items"]), "offers":len(offers), **publication}

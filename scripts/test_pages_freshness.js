@@ -62,18 +62,72 @@ function publication(payload) {
   return {body, manifest};
 }
 
+function digestBytes(body) { return createHash('sha256').update(body).digest('hex'); }
+function v2Publication(payload = snapshot()) {
+  const data = structuredClone(payload);
+  data.publication = {commit: 'commit-test'};
+  data.collection_status ||= {};
+  data.verification_identities = {};
+  const offers = {};
+  for (const family of Object.values(data.details)) for (const detail of Object.values(family.variants)) for (const quote of detail.offers) {
+    const offer = quote.offer;
+    offer.source_code ||= 'merchant';
+    offer.collection_state ||= 'current';
+    const identity = structuredClone(offer); delete identity.fetched_at;
+    data.verification_identities[offer.offer_id] = digestBytes(JSON.stringify(identity));
+    offers[offer.offer_id] = {content_sha256: data.verification_identities[offer.offer_id],
+      fetched_at: offer.fetched_at, collection_state: offer.collection_state};
+  }
+  for (const card of data.catalog.items) {
+    card.reference_offer_id ||= data.details[card.product_id].variants[data.details[card.product_id].default].offers[0].offer.offer_id;
+    card.fetched_at = offers[card.reference_offer_id].fetched_at;
+    card.reference_collection_state = offers[card.reference_offer_id].collection_state;
+    card.reference_stock ||= 'in_stock';
+  }
+  const semantic = digestBytes(JSON.stringify(data));
+  data.publication.version = 'commit-test:catalog:' + semantic;
+  const body = JSON.stringify(data);
+  const manifest = {schema_version: 2, version: 'commit-test:' + data.generated_at,
+    generated_at: data.generated_at, commit: 'commit-test',
+    snapshot: {path: 'data/site-data.json', bytes: Buffer.byteLength(body), sha256: digestBytes(body),
+      version: data.publication.version, generated_at: data.generated_at, commit: 'commit-test', semantic_sha256: semantic}};
+  const status = {schema_version: 1, version: manifest.version, generated_at: manifest.generated_at,
+    commit: manifest.commit, snapshot_sha256: manifest.snapshot.sha256, offers,
+    fx: {snapshot_id: data.catalog.fx.snapshot_id, fetched_at: data.catalog.fx.fetched_at, stale: data.catalog.fx.stale},
+    collection_status: structuredClone(data.collection_status)};
+  return bindStatus({body, manifest}, status);
+}
+function bindStatus(release, status) {
+  release = structuredClone(release);
+  release.statusBody = JSON.stringify(status);
+  release.manifest.status = {path: 'data/verification.json', bytes: Buffer.byteLength(release.statusBody), sha256: digestBytes(release.statusBody)};
+  return release;
+}
+function heartbeat(release, timestamp, mutate = () => {}) {
+  const next = structuredClone(release), status = JSON.parse(release.statusBody);
+  next.manifest.generated_at = new Date(timestamp).toISOString();
+  next.manifest.version = next.manifest.commit + ':' + next.manifest.generated_at;
+  status.generated_at = next.manifest.generated_at; status.version = next.manifest.version;
+  for (const observation of Object.values(status.offers)) if (observation.collection_state === 'current') observation.fetched_at = status.generated_at;
+  status.fx.fetched_at = status.generated_at;
+  mutate(status, next);
+  return bindStatus(next, status);
+}
+
 async function harness(payload = snapshot(), options = {}) {
-  let now = START;
-  let published = publication(payload);
+  let now = options.now ?? START;
+  let published = options.release ?? publication(payload);
   let manifest = options.manifest ?? published.manifest;
   let body = options.body ?? published.body;
+  let statusBody = options.statusBody ?? published.statusBody;
   let poll;
   let offline = options.offline ?? false;
-  let manifestGate = null, snapshotGate = null;
-  let manifestStatus = 200, snapshotStatus = 200;
+  let manifestGate = null, snapshotGate = null, statusGate = null;
+  let manifestStatus = 200, snapshotStatus = 200, verificationStatus = 200;
   const marker = {};
   const calls = [];
   const events = [];
+  const verificationEvents = [];
   class MockDate extends Date {
     constructor(...args) { super(...(args.length ? args : [now])); }
     static now() { return now; }
@@ -95,6 +149,12 @@ async function harness(payload = snapshot(), options = {}) {
           if (options.onManifestRead) options.onManifestRead(calls.filter(c => c.url.includes('/data/publication.json')).length, value => { published = publication(value); manifest = published.manifest; body = published.body; });
           return new Response(captured, {status: manifestStatus, headers: {'Content-Type': 'application/json'}});
         }
+        if (url.includes('/data/verification.json')) {
+          if (offline) throw new Error('offline');
+          const captured = statusBody;
+          if (statusGate) await statusGate;
+          return new Response(captured, {status: verificationStatus, headers: {'Content-Type': 'application/json'}});
+        }
         if (url.includes('/data/site-data.json')) {
           if (offline) throw new Error('offline');
           // Model an old browser-cached stable alias. Only the cache-busted,
@@ -106,7 +166,7 @@ async function harness(payload = snapshot(), options = {}) {
         return new Response('external request');
       },
       addEventListener() {},
-      dispatchEvent(event) { events.push(event); },
+      dispatchEvent(event) { (event.type === 'bikehunt-verification' ? verificationEvents : events).push(event); },
     },
     setInterval(callback) { poll = callback; return 1; },
     clearInterval() {},
@@ -119,10 +179,14 @@ async function harness(payload = snapshot(), options = {}) {
   }
   await Promise.resolve();
   return {
-    context, calls, events, marker, initialError,
+    context, calls, events, verificationEvents, marker, initialError,
     setNow(value) { now = value; },
     publish(value) { published = publication(value); manifest = published.manifest; body = published.body; },
+    setRelease(value) { published = structuredClone(value); manifest = published.manifest; body = published.body; statusBody = published.statusBody; },
     setManifest(value) { manifest = structuredClone(value); },
+    setStatusBody(value) { statusBody = value; },
+    setStatusGate(value) { statusGate = value; },
+    setVerificationStatus(value) { verificationStatus = value; },
     setBody(value) { body = value; },
     setOffline(value) { offline = value; },
     setManifestGate(value) { manifestGate = value; },
@@ -131,6 +195,7 @@ async function harness(payload = snapshot(), options = {}) {
     setSnapshotStatus(value) { snapshotStatus = value; },
     manifestReads() { return calls.filter(c => c.url.includes('/data/publication.json')); },
     snapshotReads() { return calls.filter(c => c.url.includes('/data/site-data.json')); },
+    statusReads() { return calls.filter(c => c.url.includes('/data/verification.json')); },
     async request(url) {
       const response = await context.window.fetch(url);
       assert.equal(response.status, 200);
@@ -549,6 +614,342 @@ async function testFailedUiBootResubscribesOnVerifiedPublication() {
   assert.equal(galleryInitializations, 1, 'Catalog and flow initialization both resume without a page reload');
 }
 
+async function testSchema2HeartbeatUsesOnlyStatusAndStaysQuiet() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  assert.equal(h.snapshotReads().length, 1); assert.equal(h.statusReads().length, 1);
+  assert.equal(h.calls[0].url, h.manifestReads()[0].url);
+  await h.poll();
+  assert.equal(h.statusReads().length, 1, 'An unchanged proof needs only the manifest check');
+  const next = heartbeat(initial, START + 60000);
+  h.setNow(START + 60000); h.setRelease(next); await h.poll();
+  assert.equal(h.snapshotReads().length, 1, 'A verified heartbeat reuses the original full catalog');
+  assert.equal(h.statusReads().length, 2);
+  assert.equal(h.events.length, 0, 'Metadata-only proof must not rerender catalog or open purchase dialogs');
+  assert.equal(h.verificationEvents.length, 1, 'Accepted source observations update existing UI copies through a separate metadata signal');
+  assert.equal(h.verificationEvents[0].detail.offers['red-offer'].content_sha256, JSON.parse(initial.statusBody).offers['red-offer'].content_sha256);
+  assert.equal((await h.request('/api/catalog/red')).offers[0].offer.fetched_at, next.manifest.generated_at);
+  assert.equal((await h.request('/api/catalog')).items[0].fetched_at, next.manifest.generated_at);
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, initial.manifest.snapshot.generated_at);
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.version, initial.manifest.snapshot.version);
+  assert.equal(h.context.window.BIKEHUNT_VERIFICATION.generated_at, next.manifest.generated_at);
+  assert.ok(h.marker.title.includes('状态发布 ' + next.manifest.generated_at));
+  const manual = await h.request('/api/refresh/prices');
+  assert.equal(manual.finished_at, next.manifest.generated_at);
+  assert.equal(manual.catalog_generated_at, initial.manifest.snapshot.generated_at);
+  assert.equal(h.statusReads().length, 2);
+  assert.ok(h.statusReads().every(call => call.init.cache === 'no-store'));
+  assert.equal(new URL(h.statusReads()[1].url).searchParams.get('version'), next.manifest.version);
+}
+
+async function testSchema2HeartbeatRestoresOnlyLocallyExpiredSafety() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  h.setNow(START + 86400001); h.setOffline(true); await h.poll();
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, false);
+  assert.equal((await h.request('/api/fx')).stale, true);
+  assert.equal(h.events.length, 1);
+  const next = heartbeat(initial, START + 86400001);
+  h.setRelease(next); h.setOffline(false); await h.poll();
+  const red = await h.request('/api/catalog/red'), blue = await h.request('/api/catalog/blue');
+  assert.equal(red.offers[0].eligible, true, 'A genuine newer verification restores the pristine eligible quote');
+  assert.equal(red.recommended_offer_id, 'red-offer');
+  assert.deepEqual(red.offers[0].reasons, []);
+  assert.equal(red.variants[0].in_stock, true);
+  assert.equal((await h.request('/api/catalog')).items[0].recommended_total_cny, '120.00');
+  assert.equal(blue.offers[0].eligible, false, 'An unrelated shipping restriction must never be cleared');
+  assert.deepEqual(blue.offers[0].reasons, ['中国运费待确认']);
+  assert.equal((await h.request('/api/fx')).stale, false);
+  assert.equal(h.events.length, 2); assert.equal(h.events[1].detail.freshnessChanged, true);
+  assert.equal(h.verificationEvents.length, 0, 'Restored safety must use the normal invalidation path, never in-place revival');
+  assert.equal(h.snapshotReads().length, 1);
+  const base = vm.runInContext('publicLastBase', h.context);
+  assert.equal(base.details.red.variants['red-M'].offers[0].offer.fetched_at, new Date(START).toISOString());
+  assert.equal(base.details.red.variants['red-M'].offers[0].eligible, true);
+  await h.poll(); assert.equal(h.events.length, 2, 'Successful same-proof polls cannot repeatedly restore or notify');
+  h.setNow(START + 86400001 + 3600001); await h.poll();
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false);
+  assert.equal(h.events.length, 3, 'The renewed observation still expires normally');
+}
+
+async function testSchema2ExactReferenceAndEvidenceOverlay() {
+  const payload = snapshot(), detail = payload.details.red.variants['red-M'];
+  const extra = structuredClone(detail.offers[0]); extra.offer.offer_id = 'red-reference';
+  extra.offer.url += '?variant=reference'; detail.offers.push(extra);
+  payload.catalog.items[0].reference_offer_id = 'red-reference';
+  for (const quote of detail.offers) {
+    quote.offer.shipping_to_china = {checked_at: '2026-10-01T08:00:00Z'};
+    quote.landed_cost = {components: [
+      {key: 'product', evidence: [{checked_on: '2026-10-14', url: quote.offer.url}]},
+      {key: 'shipping', evidence: [{checked_on: '2026-10-02'}]},
+      {key: 'tax', evidence: [{checked_on: '2026-10-03'}]},
+    ], evidence: [{checked_on: '2026-10-04'}]};
+  }
+  payload.fit_charts = [{checked_at: '2026-10-05T08:00:00Z'}];
+  const initial = v2Publication(payload), h = await harness(payload, {release: initial});
+  const latest = START + 86400000;
+  const next = heartbeat(initial, latest, status => {
+    status.offers['red-reference'].fetched_at = new Date(START + 60000).toISOString();
+    status.offers['blue-offer'].fetched_at = new Date(START + 120000).toISOString();
+  });
+  h.setNow(latest); h.setRelease(next); await h.poll();
+  const data = vm.runInContext('publicLastData', h.context), red = await h.request('/api/catalog/red');
+  assert.equal(data.catalog.items[0].fetched_at, new Date(START + 60000).toISOString(), 'Reference card must use its exact offer, not freshest family offer');
+  assert.equal(data.catalog.items[1].fetched_at, new Date(START + 120000).toISOString());
+  assert.equal(red.offers[0].landed_cost.components[0].evidence[0].checked_on, '2026-10-15');
+  assert.equal(red.offers[1].landed_cost.components[0].evidence[0].checked_on, '2026-10-14');
+  assert.equal(red.offers[0].landed_cost.components[1].evidence[0].checked_on, '2026-10-02');
+  assert.equal(red.offers[0].landed_cost.components[2].evidence[0].checked_on, '2026-10-03');
+  assert.equal(red.offers[0].landed_cost.evidence[0].checked_on, '2026-10-04');
+  assert.equal(red.offers[0].offer.shipping_to_china.checked_at, '2026-10-01T08:00:00Z');
+  assert.equal(data.fit_charts[0].checked_at, '2026-10-05T08:00:00Z');
+  for (const fx of [data.catalog.fx, data.updates.fx, ...Object.values(data.details).flatMap(f => Object.values(f.variants).map(d => d.fx))])
+    assert.equal(fx.fetched_at, next.manifest.generated_at, 'Every repeated bound FX snapshot receives its genuine recheck time');
+}
+
+async function testSchema2NewContentAndEventsNotifyOnce() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  const payload = snapshot(); payload.generated_at = new Date(START + 60000).toISOString();
+  payload.catalog.items[0].name = 'New product name';
+  payload.updates.cursor = 11; payload.updates.items.push({id: 11});
+  const next = v2Publication(payload); h.setRelease(next); h.setNow(START + 60000); await h.poll();
+  assert.equal(h.snapshotReads().length, 2); assert.equal(h.statusReads().length, 2);
+  assert.equal((await h.request('/api/catalog')).items[0].name, 'New product name');
+  assert.equal(h.events.length, 1); assert.equal(h.events[0].detail.freshnessChanged, false);
+  assert.equal(h.verificationEvents.length, 0, 'Catalog content changes cannot take the in-place heartbeat path');
+  assert.deepEqual(Array.from(h.events[0].detail.events, event => event.id), [11]);
+  await h.poll(); assert.equal(h.events.length, 1);
+  h.setRelease(heartbeat(next, START + 120000)); h.setNow(START + 120000); await h.poll();
+  assert.equal(h.events.length, 1, 'Heartbeat must not replay existing update events');
+  assert.equal(h.snapshotReads().length, 2);
+}
+
+async function testSchema2InvalidStatusCannotCommit() {
+  const mutations = [
+    ['schema', s => { s.schema_version = 2; }],
+    ['version', s => { s.version = 'foreign-release'; }],
+    ['generated_at', s => { s.generated_at = new Date(START).toISOString(); }],
+    ['commit', s => { s.commit = 'foreign-commit'; }],
+    ['snapshot binding', s => { s.snapshot_sha256 = '0'.repeat(64); }],
+    ['missing identity', s => { delete s.offers['blue-offer']; }],
+    ['extra identity', s => { s.offers.extra = structuredClone(s.offers['red-offer']); }],
+    ['wrong identity', s => { s.offers['red-offer'].content_sha256 = '0'.repeat(64); }],
+    ['changed state', s => { s.offers['red-offer'].collection_state = 'retained'; }],
+    ['future observation', s => { s.offers['red-offer'].fetched_at = new Date(START + 60001).toISOString(); }],
+    ['observation predates baseline', s => { s.offers['red-offer'].fetched_at = new Date(START - 1).toISOString(); }],
+    ['missing observation', s => { delete s.offers['red-offer'].fetched_at; }],
+    ['invalid observation date', s => { s.offers['red-offer'].fetched_at = '2026-02-30T12:00:00Z'; }],
+    ['unbound timezone', s => { s.offers['red-offer'].fetched_at = '2026-10-14T12:00:00'; }],
+    ['erase known observation', s => { s.offers['red-offer'].fetched_at = null; }],
+    ['wrong FX identity', s => { s.fx.snapshot_id = 'foreign-fx'; }],
+    ['changed FX safety', s => { s.fx.stale = true; }],
+    ['future FX observation', s => { s.fx.fetched_at = new Date(START + 60001).toISOString(); }],
+    ['future source attempt', s => { s.collection_status.merchant = {attempted_at: new Date(START + 60001).toISOString(), status: 'success'}; }],
+    ['failed source renewal', s => { s.collection_status.merchant = {attempted_at: s.generated_at, status: 'failed', errors: []}; }],
+    ['failed page renewal', s => { s.collection_status.merchant = {attempted_at: s.generated_at, status: 'partial', errors: [{url: 'https://merchant.example/red?variant=unavailable'}]}; }],
+  ];
+  for (const [label, mutate] of mutations) {
+    const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+    const last = vm.runInContext('publicLastData', h.context), base = vm.runInContext('publicLastBase', h.context);
+    const invalid = heartbeat(initial, START + 60000, mutate); h.setRelease(invalid); h.setNow(START + 60000);
+    await assert.rejects(h.context.loadPublished(true), /核实状态.*不一致/, label);
+    assert.equal(vm.runInContext('publicLastData', h.context), last, label + ' must preserve live data');
+    assert.equal(vm.runInContext('publicLastBase', h.context), base, label + ' must preserve pristine catalog');
+    assert.equal(h.context.window.BIKEHUNT_VERIFICATION.generated_at, initial.manifest.generated_at);
+    assert.equal(h.snapshotReads().length, 1);
+    assert.equal((await h.request('/api/catalog/red')).offers[0].offer.fetched_at, initial.manifest.generated_at);
+  }
+}
+
+async function testSchema2ManifestAndCatalogIdentityValidation() {
+  const mutations = [
+    m => { m.status.path = 'https://untrusted.example/status.json'; },
+    m => { m.status.path = 'data/../verification.json'; },
+    m => { m.status.sha256 = 'bad'; }, m => { m.status.bytes = 0; },
+    m => { m.snapshot.semantic_sha256 = 'bad'; }, m => { m.snapshot.version = 'unbound-catalog'; },
+    m => { m.snapshot.commit = 'another-commit'; },
+    m => { m.snapshot.generated_at = new Date(START + 1).toISOString(); },
+    m => { m.version = 'unbound-status'; },
+  ];
+  for (const mutate of mutations) {
+    const release = v2Publication(); mutate(release.manifest);
+    const h = await harness(snapshot(), {release, expectInitialFailure: true});
+    assert.match(h.initialError.message, /发布清单无效/);
+    assert.equal(h.snapshotReads().length, 0); assert.equal(h.statusReads().length, 0);
+  }
+  const invalidCatalogs = [
+    data => { delete data.verification_identities; },
+    data => { delete data.verification_identities['red-offer']; },
+    data => { data.verification_identities['red-offer'] = 'invalid'; },
+    data => { data.verification_identities.extra = '0'.repeat(64); },
+    data => { delete data.catalog.items[0].reference_offer_id; },
+    data => { data.catalog.items[0].reference_offer_id = 'blue-offer'; },
+    data => { const quote = structuredClone(data.details.red.variants['red-M'].offers[0]); quote.offer.stock = 'unknown'; data.details.red.variants['red-M'].offers.push(quote); },
+  ];
+  for (const mutate of invalidCatalogs) {
+    const release = v2Publication(), data = JSON.parse(release.body); mutate(data);
+    release.body = JSON.stringify(data); release.manifest.snapshot.bytes = Buffer.byteLength(release.body); release.manifest.snapshot.sha256 = digestBytes(release.body);
+    const status = JSON.parse(release.statusBody); status.snapshot_sha256 = release.manifest.snapshot.sha256;
+    const h = await harness(snapshot(), {release: bindStatus(release, status), expectInitialFailure: true});
+    assert.match(h.initialError.message, /身份/); assert.equal(vm.runInContext('publicLastData', h.context), null);
+  }
+}
+
+async function testSchema2RetainedFailureAndRecovery() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  const failed = snapshot(); failed.generated_at = new Date(START + 60000).toISOString();
+  failed.details.red.variants['red-M'].offers[0].offer.collection_state = 'retained';
+  failed.details.blue.variants['blue-M'].offers[0].offer.fetched_at = failed.generated_at;
+  failed.collection_status = {merchant: {source_code: 'merchant', attempted_at: failed.generated_at, status: 'partial', errors: [{url: 'https://merchant.example/red?variant=failed'}]}};
+  const failure = v2Publication(failed); h.setRelease(failure); h.setNow(START + 60000); await h.poll();
+  let red = await h.request('/api/catalog/red');
+  assert.equal(red.offers[0].offer.collection_state, 'retained'); assert.equal(red.offers[0].eligible, false);
+  assert.equal(red.offers[0].offer.fetched_at, initial.manifest.generated_at, 'A failed source keeps its genuine previous observation');
+  assert.equal((await h.request('/api/catalog/blue')).variants[0].in_stock, true, 'Partial failures only invalidate the affected product URL');
+  assert.equal(h.snapshotReads().length, 2);
+  assert.equal(h.verificationEvents.length, 0, 'A retained failure must take ordinary safety invalidation');
+  const failedAgain = heartbeat(failure, START + 120000, s => { s.collection_status.merchant.attempted_at = s.generated_at; });
+  h.setNow(START + 120000); h.setRelease(failedAgain); await h.poll();
+  assert.equal(h.snapshotReads().length, 2); assert.equal(h.events.length, 1, 'Repeating the same retained failure is metadata-only');
+  const badRenewal = heartbeat(failure, START + 180000, s => { s.offers['red-offer'].fetched_at = s.generated_at; });
+  h.setNow(START + 180000); h.setRelease(badRenewal); await assert.rejects(h.context.loadPublished(true), /核实状态/);
+  const recovered = snapshot(); recovered.generated_at = new Date(START + 240000).toISOString();
+  for (const family of Object.values(recovered.details)) for (const d of Object.values(family.variants)) for (const quote of d.offers) quote.offer.fetched_at = recovered.generated_at;
+  for (const fx of [recovered.catalog.fx, recovered.updates.fx, ...Object.values(recovered.details).flatMap(f => Object.values(f.variants).map(d => d.fx))]) fx.fetched_at = recovered.generated_at;
+  recovered.collection_status = {merchant: {source_code: 'merchant', attempted_at: recovered.generated_at, status: 'success', errors: []}};
+  h.setNow(START + 240000); h.setRelease(v2Publication(recovered)); await h.poll();
+  red = await h.request('/api/catalog/red');
+  assert.equal(red.offers[0].offer.collection_state, 'current'); assert.equal(red.offers[0].eligible, true);
+  assert.equal(red.offers[0].offer.fetched_at, recovered.generated_at);
+  assert.equal(h.snapshotReads().length, 3); assert.equal(h.events.length, 2);
+}
+
+async function testSchema2StatusRollbackAndCatalogRollbackProtection() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  const accepted = heartbeat(initial, START + 60000); h.setNow(START + 60000); h.setRelease(accepted); await h.poll();
+  const previousReads = h.statusReads().length;
+  h.setRelease(initial); await assert.rejects(h.context.loadPublished(true), /早于已加载版本/);
+  assert.equal(h.statusReads().length, previousReads);
+  const reused = structuredClone(accepted); reused.manifest.status.sha256 = '0'.repeat(64); h.setRelease(reused);
+  await assert.rejects(h.context.loadPublished(true), /校验信息不一致/); assert.equal(h.statusReads().length, previousReads);
+  for (const field of ['offer', 'fx', 'null']) {
+    const regressed = heartbeat(initial, START + 120000, status => {
+      if (field === 'fx') status.fx.fetched_at = new Date(START + 30000).toISOString();
+      else status.offers['red-offer'].fetched_at = field === 'null' ? null : new Date(START + 30000).toISOString();
+    });
+    h.setNow(START + 120000); h.setRelease(regressed);
+    await assert.rejects(h.context.loadPublished(true), /核实状态/);
+    assert.equal(h.context.window.BIKEHUNT_VERIFICATION.generated_at, accepted.manifest.generated_at);
+  }
+  const changed = snapshot(); changed.generated_at = new Date(START + 120000).toISOString(); changed.catalog.items[0].name = 'Unrelated catalog edit';
+  const oldObservationInNewCatalog = v2Publication(changed); h.setRelease(oldObservationInNewCatalog);
+  await assert.rejects(h.context.loadPublished(true), /核实状态/, 'A new catalog cannot roll back observations for unchanged content identities');
+  const legacy = snapshot(); legacy.generated_at = new Date(START + 180000).toISOString(); h.publish(legacy);
+  await assert.rejects(h.context.loadPublished(true), /早于已加载版本/, 'A newer manifest cannot downgrade away the verification contract');
+  const metadataRewrite = heartbeat(accepted, START + 180000); metadataRewrite.manifest.snapshot.bytes++;
+  h.setRelease(metadataRewrite); await assert.rejects(h.context.loadPublished(true), /快照标识/);
+  assert.equal(h.snapshotReads().length, 2, 'Reused catalog hashes with conflicting metadata never download');
+}
+
+async function testSchema2ByteRacesAndUnavailableProofFailClosed() {
+  const initial = v2Publication(), next = heartbeat(initial, START + 60000);
+  for (const statusBody of [initial.statusBody, next.statusBody + ' ']) {
+    const h = await harness(snapshot(), {release: next, statusBody, expectInitialFailure: true});
+    assert.match(h.initialError.message, /校验失败/); assert.equal(vm.runInContext('publicLastData', h.context), null);
+    assert.equal(h.statusReads().length, 1, 'A stable inconsistent manifest does not loop on the status alias');
+    assert.equal(h.manifestReads().length, 2);
+  }
+  const h = await harness(snapshot(), {release: initial}); h.setNow(START + 60000);
+  h.setRelease(next); h.setStatusBody(initial.statusBody);
+  await assert.rejects(h.context.loadPublished(true), /校验失败/);
+  assert.equal((await h.request('/api/catalog/red')).offers[0].offer.fetched_at, initial.manifest.generated_at);
+  h.setStatusBody(next.statusBody); h.setVerificationStatus(503);
+  await assert.rejects(h.context.loadPublished(true), /核实状态暂时无法读取/);
+  h.setVerificationStatus(200); await h.poll();
+  assert.equal(h.context.window.BIKEHUNT_VERIFICATION.generated_at, next.manifest.generated_at);
+  assert.equal(h.snapshotReads().length, 1); assert.equal(h.events.length, 0);
+  // A valid new catalog must not leak into the UI until its proof is valid too.
+  const payload = snapshot(); payload.generated_at = new Date(START + 120000).toISOString(); payload.catalog.items[0].name = 'Pending new catalog';
+  const changed = v2Publication(payload); h.setNow(START + 120000); h.setRelease(changed); h.setStatusBody(next.statusBody);
+  await assert.rejects(h.context.loadPublished(true), /校验失败/);
+  assert.equal((await h.request('/api/catalog')).items[0].name, 'red');
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.version, initial.manifest.snapshot.version);
+}
+
+async function testSchema2RemovedIdentityCannotReappearWithOlderObservation() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  const first = heartbeat(initial, START + 60000); h.setNow(START + 60000); h.setRelease(first); await h.poll();
+  const withoutRed = snapshot(); withoutRed.generated_at = new Date(START + 120000).toISOString();
+  delete withoutRed.details.red; withoutRed.catalog.items.shift();
+  const removal = heartbeat(v2Publication(withoutRed), START + 120000); h.setNow(START + 120000); h.setRelease(removal); await h.poll();
+  assert.equal((await h.request('/api/catalog')).items.length, 1);
+  const restore = snapshot(); restore.generated_at = new Date(START + 180000).toISOString();
+  const staleReturn = heartbeat(v2Publication(restore), START + 180000, s => { s.offers['red-offer'].fetched_at = new Date(START + 30000).toISOString(); });
+  h.setNow(START + 180000); h.setRelease(staleReturn);
+  await assert.rejects(h.context.loadPublished(true), /核实状态/, 'Temporarily removing an offer cannot clear its accepted observation high-water mark');
+  assert.equal((await h.request('/api/catalog')).items.length, 1);
+}
+
+async function testSchema2ProcessOnlyProofDoesNotRenewObservations() {
+  const initial = v2Publication();
+  const catalog = JSON.parse(initial.body); catalog.publication.run_id = 'catalog-run'; catalog.publication.trigger = 'initial';
+  initial.body = JSON.stringify(catalog); initial.manifest.snapshot.bytes = Buffer.byteLength(initial.body); initial.manifest.snapshot.sha256 = digestBytes(initial.body);
+  const firstStatus = JSON.parse(initial.statusBody); firstStatus.snapshot_sha256 = initial.manifest.snapshot.sha256;
+  const release = bindStatus(initial, firstStatus), h = await harness(snapshot(), {release});
+  const next = heartbeat(release, START + 60000, s => {
+    for (const o of Object.values(s.offers)) o.fetched_at = release.manifest.generated_at;
+    s.fx.fetched_at = release.manifest.generated_at; s.run_id = 'latest-run'; s.trigger = 'manual';
+  });
+  h.setNow(START + 60000); h.setRelease(next); await h.poll();
+  assert.equal(h.events.length, 0);
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.run_id, 'catalog-run');
+  assert.equal(h.context.window.BIKEHUNT_VERIFICATION.run_id, 'latest-run');
+  assert.equal(h.context.window.BIKEHUNT_VERIFICATION.trigger, 'manual');
+  assert.equal((await h.request('/api/catalog/red')).offers[0].offer.fetched_at, release.manifest.generated_at);
+  h.setNow(START + 3600001); await h.poll();
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false, 'A rebuild timestamp cannot extend the true source verification window');
+  assert.equal(h.events.length, 1); assert.equal(h.snapshotReads().length, 1);
+  assert.ok(!h.marker.title.includes('最近核实'), 'Status publication must not be described as a source recheck');
+}
+
+async function testSchema2ProofCrossingOldExpiryStillInvalidatesCopiedControls() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  const next = heartbeat(initial, START + 3599999, status => {
+    for (const observation of Object.values(status.offers)) observation.fetched_at = new Date(START + 3599000).toISOString();
+  });
+  h.setRelease(next); h.setNow(START + 3599999);
+  let release; h.setStatusGate(new Promise(resolve => { release = resolve; }));
+  const pending = h.poll();
+  for (let i = 0; i < 20 && h.statusReads().length < 2; i++) await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.events.length, 0, 'The pre-request inventory check is still fresh');
+  h.setNow(START + 3600001); release(); await pending;
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, true);
+  assert.equal(h.events.length, 1, 'Crossing expiry during the proof request must not disappear between matching fresh fingerprints');
+  assert.equal(h.events[0].detail.freshnessChanged, true);
+  assert.equal(h.verificationEvents.length, 0, 'Expired copied controls take normal invalidation, never a metadata-only revival');
+  assert.equal(h.snapshotReads().length, 1);
+  await h.poll(); assert.equal(h.events.length, 1, 'The transition signal is consumed exactly once');
+}
+
+async function testSchema2HungStatusSharesInflightAndStillExpires() {
+  const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
+  const next = heartbeat(initial, START + 60000); h.setNow(START + 60000); h.setRelease(next);
+  let release; h.setStatusGate(new Promise(resolve => { release = resolve; }));
+  const first = h.poll();
+  for (let i = 0; i < 20 && h.statusReads().length < 2; i++) await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.statusReads().length, 2);
+  const manual = h.context.window.fetch('/api/refresh/prices');
+  h.setNow(START + 3600001); const second = h.poll();
+  assert.equal(h.events.length, 1, 'Expiry runs while the status network is hung');
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, false);
+  assert.equal(h.manifestReads().length, 2); assert.equal(h.snapshotReads().length, 1);
+  release(); await Promise.all([first, manual, second]);
+  assert.equal(h.statusReads().length, 2);
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, true, 'The accepted actual observation is still within its own hour');
+  assert.equal(h.events.length, 2, 'Concurrent waiters dispatch one safety restoration event');
+  h.setNow(START + 60000 + 3600001); h.setOffline(true); await h.poll();
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, false);
+  assert.equal(h.events.length, 3);
+}
+
 async function main() {
   const tests = [testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
     testInventoryAndColorsExpireTogether, testSamePublicationNotifiesOnFreshnessChanges,
@@ -558,7 +959,14 @@ async function main() {
     testCdnRacesNeverCommitMismatchedSnapshots, testDigestAndPublicationMetadataAreBothRequired,
     testRollbackAndReusedVersionAreRejected, testManifestFailuresFailClosedAndRetry,
     testHungNetworkDoesNotDelayClockExpiry, testInitialCdnRaceRecoversWithBoundedRetry,
-    testFailedUiBootResubscribesOnVerifiedPublication];
+    testFailedUiBootResubscribesOnVerifiedPublication,
+    testSchema2HeartbeatUsesOnlyStatusAndStaysQuiet, testSchema2HeartbeatRestoresOnlyLocallyExpiredSafety,
+    testSchema2ExactReferenceAndEvidenceOverlay, testSchema2NewContentAndEventsNotifyOnce,
+    testSchema2InvalidStatusCannotCommit, testSchema2ManifestAndCatalogIdentityValidation,
+    testSchema2RetainedFailureAndRecovery, testSchema2StatusRollbackAndCatalogRollbackProtection,
+    testSchema2ByteRacesAndUnavailableProofFailClosed, testSchema2RemovedIdentityCannotReappearWithOlderObservation,
+    testSchema2ProcessOnlyProofDoesNotRenewObservations, testSchema2ProofCrossingOldExpiryStillInvalidatesCopiedControls,
+    testSchema2HungStatusSharesInflightAndStillExpires];
   for (const test of tests) {
     await test();
     console.log('PASS ' + test.name);

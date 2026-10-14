@@ -205,6 +205,7 @@ class ProductCard(Record):
     reference_price: Money
     reference_cny: Decimal | None
     reference_source: str
+    reference_offer_id: str | None = None
     reference_collection_state: Literal["current", "retained"] = "current"
     reference_stock: Literal["in_stock", "out_of_stock", "unknown"]
     fetched_at: datetime | None

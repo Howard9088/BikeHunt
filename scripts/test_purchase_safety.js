@@ -3,8 +3,8 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8'),index=fs.readFileSync('web/index.html','utf8');
 new vm.Script(gallery);new vm.Script(flows);
 const helper=gallery.slice(gallery.indexOf('function inventoryVerified('),gallery.indexOf('function offerMarkup('));
-const context={Date,Number};vm.createContext(context);vm.runInContext(helper,context);
-const fresh={offer:{stock:'in_stock',fetched_at:new Date().toISOString()}};
+const context={Date,Number,URL,safeUrl:value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:''}catch{return ''}}};vm.createContext(context);vm.runInContext(helper,context);
+const fresh={offer:{url:'https://shop.example/products/jersey',stock:'in_stock',fetched_at:new Date().toISOString()}};
 assert.equal(context.offerAvailable(fresh),true);
 assert.equal(context.offerAvailable({offer:{...fresh.offer,stock:'out_of_stock'}}),false);
 assert.equal(context.offerAvailable({offer:{...fresh.offer,stock:'unknown'}}),false);
@@ -17,7 +17,7 @@ assert.ok(index.includes('世巡车队')&&!index.includes('骑行车队')&&!flow
 assert.ok(index.includes('class="bikehunt-mark"'));
 assert.ok(flows.includes("本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。"));
 const guard=flows.slice(flows.indexOf('function guardPurchaseExit('),flows.indexOf("document.addEventListener('click',guardPurchaseExit)"));
-let confirmed=0,prevented=0;const ctx={guideContext:{quote:fresh},offerAvailable:context.offerAvailable,PURCHASE_DISCLAIMER:'test',window:{confirm:()=>{confirmed++;return false;}}};vm.createContext(ctx);vm.runInContext(guard,ctx);
+let confirmed=0,prevented=0;const ctx={guideContext:{quote:fresh},offerAvailable:context.offerAvailable,merchantUrl:context.merchantUrl,PURCHASE_DISCLAIMER:'test',window:{confirm:()=>{confirmed++;return false;}}};vm.createContext(ctx);vm.runInContext(guard,ctx);
 const event={target:{closest:()=>({})},type:'click',preventDefault:()=>prevented++};
 ctx.guardPurchaseExit(event);assert.equal(confirmed,1);assert.equal(prevented,1);
 ctx.window.confirm=()=>true;ctx.guardPurchaseExit(event);assert.equal(prevented,1);

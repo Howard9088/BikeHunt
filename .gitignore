@@ -17,3 +17,5 @@ _site/
 *.sqlite3
 *.sqlite3-*
 .pytest_cache/
+
+data/publication_cache/

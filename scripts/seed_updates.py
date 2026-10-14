@@ -31,6 +31,21 @@ EVENT_FIELDS = (
 )
 
 
+class PublicEventProduct(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    offer_id: str = Field(min_length=1, max_length=200)
+    url: str = Field(max_length=5000)
+    name: str = Field(max_length=2000)
+    brand: str = Field(max_length=500)
+    model: str = Field(max_length=2000)
+    color: str | None = Field(default=None, max_length=500)
+    size: str | None = Field(default=None, max_length=500)
+    image: str | None = Field(default=None, max_length=5000)
+    product_id: str | None = Field(default=None, max_length=200)
+    variant_id: str | None = Field(default=None, max_length=200)
+    current_stock: Literal["in_stock", "out_of_stock", "unknown"] | None = None
+
+
 class PublicEvent(BaseModel):
     """公开事件 Schema；金额是 currency 对应的货币元字符串。"""
 
@@ -52,6 +67,7 @@ class PublicEvent(BaseModel):
     stock: Literal["in_stock", "out_of_stock", "unknown"]
     observed_at: str
     url: str = Field(max_length=5000)
+    product: PublicEventProduct | None = None
 
     @field_validator("source_name", "offer_id", "name_zh")
     @classmethod
@@ -96,6 +112,8 @@ def validate_events(items: object, cursor: object) -> tuple[list[dict], int]:
     if not isinstance(items, list) or len(items) > 100:
         raise ValueError("Public events require an array of at most 100 rows")
     events = [PublicEvent.model_validate(item).model_dump() for item in items]
+    if any(event.get("product") and (event["product"]["offer_id"] != event["offer_id"] or event["product"]["url"] != event["url"]) for event in events):
+        raise ValueError("Product metadata must bind to the exact event offer and URL")
     if len({event["id"] for event in events}) != len(events):
         raise ValueError("Public event IDs must be unique")
     if len({event["event_key"] for event in events}) != len(events):
@@ -185,6 +203,8 @@ def restore_public_cursor(root: Path, public_url: str = "") -> dict:
                 + ",".join("?" for _ in EVENT_FIELDS) + ")",
                 [tuple(row[field] for field in EVENT_FIELDS) for row in rows],
             )
+            db.executemany("UPDATE events SET product_json=? WHERE id=?",
+                [(json.dumps(row["product"],ensure_ascii=False),row["id"]) for row in rows if row.get("product")])
             sequence = db.execute(
                 "SELECT seq FROM sqlite_sequence WHERE name='events'",
             ).fetchone()
@@ -214,3 +234,4 @@ if __name__ == "__main__":
     print(json.dumps(restore_public_cursor(
         ROOT, os.environ.get("BIKEHUNT_PUBLIC_URL", ""),
     )))
+
