@@ -63,6 +63,14 @@ def fetcher_for(p=None, product_status=200, robots=b"User-agent: *\nAllow: /", h
 
 
 class ShopifyTests(unittest.TestCase):
+    def test_paused_product_url_is_never_requested(self):
+        fetcher,calls=fetcher_for()
+        result=collect_shopify_catalog(fetcher,{**SETTINGS,"excluded_urls":[URL]},SOURCE,NOW)
+        self.assertEqual(result.offers,[])
+        self.assertNotIn(URL,calls)
+        self.assertIn("paused",result.errors[0]["error"])
+
+
     def test_market_label_uses_observed_country_and_currency(self):
         html = page(currency="USD") + '<script>Shopify.country = "US";</script>'
         rows = parse_shopify_product(product(), html, {**SOURCE, "sales_region":"欧洲站 EUR 报价"}, URL, NOW)

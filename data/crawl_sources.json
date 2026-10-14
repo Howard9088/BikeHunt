@@ -105,7 +105,10 @@
       "https://www.santinicycling.com/"
     ],
     "max_products": 25,
-    "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。"
+    "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。",
+    "excluded_urls": [
+      "https://www.santinicycling.com/products/lidl-trek-women-s-short-sleeve-jersey-print-re941l75c25lt"
+    ]
   },
   {
     "code": "soudal",
@@ -294,5 +297,27 @@
     "max_products": 1,
     "coverage_complete": false,
     "product_level_only": true
+  },
+  {
+    "code": "lotto",
+    "parser": "lotto",
+    "domains": [
+      "www.lotto-intermarche.be"
+    ],
+    "urls": [
+      "https://www.lotto-intermarche.be/nl/shop/product/250/beanie"
+    ],
+    "scope_note": "单一已核实默认规格的 Beanie 商品页；未覆盖队服或完整目录"
+  },
+  {
+    "code": "redbull",
+    "parser": "redbull_catalog",
+    "domains": [
+      "www.redbullshop.com"
+    ],
+    "urls": [
+      "https://www.redbullshop.com/en-jp/c/redbullborahansgrohe/"
+    ],
+    "scope_note": "日本站目录首页的商品参考报价；无逐尺码库存，未覆盖后续页"
   }
 ]

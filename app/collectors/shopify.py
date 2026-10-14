@@ -271,6 +271,9 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
         result.errors.append(_error(catalog_url, exc))
         return result
     for index, (product, url) in enumerate(zip(products, urls)):
+        if url in settings.get("excluded_urls", []):
+            result.errors.append(_error(url, CollectionError("Collection paused for this URL after an unresolved access failure")))
+            continue
         try:
             html = fetch_text(url, ".html")
             product_country = shopify_market_country(html)

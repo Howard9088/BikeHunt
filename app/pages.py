@@ -1,6 +1,7 @@
 """只导出公开商品、规则和事件；GitHub Pages 不包含私有配置与订阅数据库。"""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -34,7 +35,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     index = (web/"index.html").read_text(encoding="utf-8")
     index = index.replace('href="/web/"', 'href="./"').replace('="/web/', '="./web/')
     index = index.replace('<script src="./web/profile.js',
-                          '<script src="./web/pages-adapter.js?v=cache13" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
+                          '<script src="./web/pages-adapter.js?v=manifest14" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
     index = index.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
     (output/"index.html").write_text(index, encoding="utf-8")
@@ -88,6 +89,20 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
                "updates":{"items":events, "cursor":max((row["id"] for row in events), default=0),
                           "fx":snapshot.model_dump(mode="json")}, "fit_charts":charts,
                "community":community}
-    atomic_json(output/"data/site-data.json", payload)
+    # A build, including a scheduled rebuild of the same commit, has its own identity.
+    payload["publication"]["version"] = (payload["publication"]["commit"] or "local") + ":" + payload["generated_at"]
+    snapshot_path = output/"data/site-data.json"
+    atomic_json(snapshot_path, payload)
+    snapshot_bytes = snapshot_path.read_bytes()
+    # Write the tiny pointer last. CDN propagation can still be out of order, so the
+    # browser verifies the exact snapshot bytes AND the publication metadata.
+    atomic_json(output/"data/publication.json", {
+        "schema_version": 1,
+        "version": payload["publication"]["version"],
+        "generated_at": payload["generated_at"],
+        "commit": payload["publication"]["commit"],
+        "snapshot": {"path": "data/site-data.json", "bytes": len(snapshot_bytes),
+                     "sha256": hashlib.sha256(snapshot_bytes).hexdigest()},
+    })
     return {"output":str(output), "generated_at":payload["generated_at"],
             "products":len(catalog["items"]), "offers":len(offers)}

@@ -568,5 +568,43 @@
       "status": "unknown",
       "note": "中国发行银行卡可用性尚未核实。"
     }
+  },
+  {
+    "code": "lotto",
+    "name": "Lotto-Intermarché 官方商城",
+    "brand": "Lotto-Intermarché",
+    "type": "team_official",
+    "base_url": "https://www.lotto-intermarche.be",
+    "currency": "EUR",
+    "sales_region": "比利时站 EUR 报价",
+    "enabled": true,
+    "collection_strategy": "public_single_default_variant_html",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送与运费尚未核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    }
+  },
+  {
+    "code": "redbull",
+    "name": "Red Bull – BORA – hansgrohe 官方商城",
+    "brand": "Red Bull",
+    "type": "team_official",
+    "base_url": "https://www.redbullshop.com",
+    "currency": "JPY",
+    "sales_region": "日本市场 JPY 报价",
+    "enabled": true,
+    "collection_strategy": "public_catalog_reference_quotes",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送与运费尚未核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国大陆发行信用卡可用性尚未核实。"
+    }
   }
 ]

@@ -256,7 +256,7 @@
       "name": "Lotto Intermarché",
       "name_zh": "乐透–Intermarché 车队",
       "official_url": "https://www.lotto-intermarche.be/nl/shop",
-      "shop_url": "https://www.lotto-intermarche.be/nl/shop",
+      "shop_url": "https://www.lotto-intermarche.be/nl/shop/product/250/beanie",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -268,7 +268,10 @@
         "https://www.lotto-intermarche.be/front/images/2026/lotto-intermarche-cycling-team-logo.svg"
       ],
       "logo_checked_at": "2026-10-14T09:52:39.580635+00:00",
-      "shop_evidence_url": "https://www.lotto-intermarche.be/nl/shop"
+      "shop_evidence_url": "https://www.lotto-intermarche.be/nl/shop",
+      "source_codes": [
+        "lotto"
+      ]
     },
     {
       "code": "movistar",
@@ -317,7 +320,7 @@
       "name": "Red Bull – BORA – hansgrohe",
       "name_zh": "红牛–博拉–汉斯格雅车队",
       "official_url": "https://www.redbullborahansgrohe.com/en/",
-      "shop_url": "https://www.redbullshop.com/c/redbullborahansgrohe/",
+      "shop_url": "https://www.redbullshop.com/en-jp/c/redbullborahansgrohe/",
       "status": "official_link_found",
       "membership_evidence_url": "https://www.uci.org/pressrelease/allocation-of-the-14-uci-womens-worldtour-licences-and-18-uci-worldtour/6QRootu0WfaZVcXXJVQerE",
       "season": 2026,
@@ -329,7 +332,10 @@
         "https://img.redbull.com/images/c_limit,w_4000/e_trim:1:transparent/w_450/bo_5px_solid_rgb:00000000/q_auto:best,f_auto/redbullcom/2025/3/14/suqweinuzdevvqavuqrg/red-bull-bora-hansgrohe-logo-dark"
       ],
       "logo_checked_at": "2026-10-14T09:52:39.909199+00:00",
-      "shop_evidence_url": "https://www.redbullborahansgrohe.com/en/"
+      "shop_evidence_url": "https://www.redbullborahansgrohe.com/en/",
+      "source_codes": [
+        "redbull"
+      ]
     },
     {
       "code": "soudal",

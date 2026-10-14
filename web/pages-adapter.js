@@ -3,7 +3,7 @@ window.BIKEHUNT_PAGES=true;
 const publicRoot=new URL('../',document.currentScript.src);
 const pageRelease=document.currentScript.dataset?.release||'unversioned';
 const publicFetch=window.fetch.bind(window);
-let publicDataPromise=null,publicLastData=null;
+let publicDataPromise=null,publicLastData=null,publicLastManifest=null;
 function mapPublicAssets(value){if(Array.isArray(value))return value.map(mapPublicAssets);if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,mapPublicAssets(v)]));if(typeof value==='string'&&value.startsWith('/web/'))return new URL(value.slice(1),publicRoot).pathname;return value}
 function isoDay(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value))return null;const parsed=Date.parse(value);return Number.isFinite(parsed)&&new Date(parsed).toISOString().slice(0,10)===value?parsed/86400000:null}
 const STOCK_MAX_AGE_MS=3600000,QUOTE_MAX_AGE_MS=86400000;
@@ -28,7 +28,73 @@ function refreshPublicInventory(data){
   }
   for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);const allOffers=Object.values(family.variants).flatMap(d=>d.offers);card.stock_state=Object.values(familyAvailability[card.product_id]).some(Boolean)?'in_stock':allOffers.length&&allOffers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status=card.stock_state==='unknown'&&allOffers.some(q=>q.offer.stock==='in_stock'&&!stockFresh(q.offer,now))?'库存核实已过期':'渠道待核实';}if(card.reference_stock==='in_stock'&&(!stockFresh(card,now)||card.reference_collection_state==='retained'))card.reference_stock='unknown';}
 }
-async function loadPublished(force=false){if(!publicDataPromise||force)publicDataPromise=publicFetch(new URL('data/site-data.json?release='+encodeURIComponent(pageRelease)+'&v='+Date.now(),publicRoot),{cache:'no-store'}).then(async response=>{if(!response.ok)throw new Error('已发布商品数据暂时无法读取');return mapPublicAssets(await response.json())}).catch(error=>{publicDataPromise=null;throw error});const data=await publicDataPromise;refreshPublicInventory(data);publicLastData=data;window.BIKEHUNT_PUBLICATION={...data.publication,generated_at:data.generated_at};const marker=document.getElementById?.('publicationInfo');if(marker){marker.textContent='数据 '+(data.publication?.commit?.slice(0,7)||'本地');marker.title='发布快照 '+data.generated_at+' · '+(data.publication?.commit||'');}return data}
+function publishedUrl(path,version){const url=new URL(path,publicRoot);url.searchParams.set('release',pageRelease);url.searchParams.set('v',String(Date.now()));if(version)url.searchParams.set('version',version);return url}
+function validPublication(manifest){
+  const age=verifiedAge(manifest?.generated_at,Date.now());
+  if(!manifest||manifest.schema_version!==1||typeof manifest.version!=='string'||!manifest.version||
+    !Number.isFinite(age)||age< -300000||
+    !(manifest.commit===null||typeof manifest.commit==='string')||
+    manifest.snapshot?.path!=='data/site-data.json'||!Number.isSafeInteger(manifest.snapshot.bytes)||manifest.snapshot.bytes<=0||
+    !/^[a-f0-9]{64}$/.test(manifest.snapshot.sha256||''))throw new Error('发布清单无效；等待重新发布');
+  return manifest;
+}
+function samePublication(a,b){return a.version===b.version&&a.generated_at===b.generated_at&&a.commit===b.commit&&a.snapshot.sha256===b.snapshot.sha256&&a.snapshot.bytes===b.snapshot.bytes}
+function publicationMismatch(message){const error=new Error(message);error.publicationMismatch=true;return error}
+async function readPublication(){
+  const response=await publicFetch(publishedUrl('data/publication.json'),{cache:'no-store'});
+  if(!response.ok)throw new Error('最新发布清单暂时无法读取');
+  return validPublication(await response.json());
+}
+async function readPublishedSnapshot(manifest){
+  const snapshot=await publicFetch(publishedUrl(manifest.snapshot.path,manifest.version),{cache:'no-store'});
+  if(!snapshot.ok)throw new Error('已发布商品数据暂时无法读取');
+  const bytes=await snapshot.arrayBuffer();
+  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+  if(bytes.byteLength!==manifest.snapshot.bytes||digest!==manifest.snapshot.sha256)
+    throw publicationMismatch('发布文件正在同步或校验失败；等待一致的快照');
+  const payload=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+  if(payload.generated_at!==manifest.generated_at||payload.publication?.version!==manifest.version||payload.publication?.commit!==manifest.commit)
+    throw publicationMismatch('发布清单与商品版本不一致；等待一致的快照');
+  const data=mapPublicAssets(payload);
+  refreshPublicInventory(data);
+  // Commit only a complete, verified snapshot. A failed refresh cannot discard it.
+  publicLastData=data;publicLastManifest=manifest;
+  return data;
+}
+async function checkPublished(){
+  const manifest=await readPublication();
+  if(publicLastManifest){
+    if(manifest.version===publicLastManifest.version){
+      if(!samePublication(manifest,publicLastManifest))
+        throw new Error('发布版本与校验信息不一致；保留上次核实的数据');
+      return publicLastData;
+    }
+    // Never roll back after a successful load, including a delayed CDN response.
+    if(Date.parse(manifest.generated_at)<=Date.parse(publicLastManifest.generated_at))
+      throw new Error('发布清单早于已加载版本；保留上次核实的数据');
+  }
+  try{return await readPublishedSnapshot(manifest)}catch(error){
+    if(publicLastData||!error.publicationMismatch)throw error;
+    // One bounded startup recovery for a manifest that changed during delivery.
+    // Do not repeatedly download the same large alias while a CDN is catching up.
+    const latest=await readPublication();
+    if(latest.version===manifest.version||Date.parse(latest.generated_at)<=Date.parse(manifest.generated_at))throw error;
+    return readPublishedSnapshot(latest);
+  }
+}
+async function loadPublished(force=false){
+  // One in-flight check for initial, timer, focus and manual callers; cached API
+  // reads keep using the last verified data while a newer publication is loading.
+  if(!publicLastData||force){
+    if(!publicDataPromise)publicDataPromise=checkPublished().finally(()=>{publicDataPromise=null});
+    await publicDataPromise;
+  }
+  const data=publicLastData;refreshPublicInventory(data);
+  window.BIKEHUNT_PUBLICATION={...data.publication,generated_at:data.generated_at};
+  const marker=document.getElementById?.('publicationInfo');
+  if(marker){marker.textContent='数据 '+(data.publication?.commit?.slice(0,7)||'本地');marker.title='发布快照 '+data.generated_at+' · '+(data.publication?.commit||'');}
+  return data;
+}
 function assessPublishedFit(data,id,profile){
   const family=data.details[id];if(!family)throw new Error('商品不存在');const detail=family.variants[family.default];
   if(!['jerseys','bibs','jackets','suits'].includes(detail.category))return {state:'not_applicable',note_zh:'这类装备按自身规格选择。',candidate_sizes:[],required_measurements:[],chart_rows:[]};
@@ -68,7 +134,12 @@ window.fetch=async(input,init={})=>{
 function publishedFreshness(data){return JSON.stringify([data.catalog.fx.stale,data.updates.fx.stale,data.catalog.items.map(p=>[p.stock_state,p.available_sizes,p.recommended_total_cny]),Object.values(data.details).map(f=>Object.values(f.variants).map(d=>[d.fx.stale,d.recommended_offer_id,d.variants.map(v=>v.in_stock),d.colors.map(c=>c.in_stock),d.offers.map(q=>[q.eligible,q.reasons,q.offer.stock,q.offer.collection_state,q.offer.price,q.offer.fetched_at])]))])}
 let publishedCursor=0,publicationDate='',freshnessState='';
 loadPublished().then(data=>{publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);publicationDate=data.generated_at;freshnessState=publishedFreshness(data)}).catch(()=>{});
-async function pollPublished(){let data;try{data=await loadPublished(true)}catch{data=publicLastData;if(!data)return;refreshPublicInventory(data)}const nextFreshness=publishedFreshness(data),freshnessChanged=nextFreshness!==freshnessState;const events=data.updates.items.filter(row=>row.id>publishedCursor);publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);if(data.generated_at===publicationDate&&!freshnessChanged&&!events.length)return;publicationDate=data.generated_at;freshnessState=nextFreshness;window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events,freshnessChanged}}));}
+function notifyPublished(data){refreshPublicInventory(data);const nextFreshness=publishedFreshness(data),freshnessChanged=nextFreshness!==freshnessState;const events=data.updates.items.filter(row=>row.id>publishedCursor);publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);if(data.generated_at===publicationDate&&!freshnessChanged&&!events.length)return;publicationDate=data.generated_at;freshnessState=nextFreshness;window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events,freshnessChanged}}));}
+async function pollPublished(){
+  // Expiry is clock-driven, even if this network check hangs or fails offline.
+  if(publicLastData)notifyPublished(publicLastData);
+  try{notifyPublished(await loadPublished(true))}catch{/* Keep last verified data; never reset its source timestamps. */}
+}
 const publishedTimer=setInterval(()=>pollPublished().catch(()=>{}),60000);
 window.addEventListener('focus',()=>pollPublished().catch(()=>{}));
 window.addEventListener('pagehide',()=>clearInterval(publishedTimer),{once:true});

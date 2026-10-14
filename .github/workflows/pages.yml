@@ -72,6 +72,8 @@ jobs:
           PY
       - name: Build public interactive website
         run: python scripts/build_pages.py
+      - name: Validate built manifest and market labels before deployment
+        run: python scripts/verify_public_release.py --local-dir _site
       - uses: actions/cache/save@v6
         if: always()
         with:

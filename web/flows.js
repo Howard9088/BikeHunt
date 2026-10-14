@@ -74,7 +74,14 @@ document.getElementById('browseSettings').onclick=browseSettings;document.getEle
 document.getElementById('refreshPrices').onclick=async()=>{const button=document.getElementById('refreshPrices');button.disabled=true;button.textContent='核对中…';const finish=()=>{button.disabled=false;button.textContent=window.BIKEHUNT_PAGES?'检查最新发布':'核对最新价格'};try{await postJson('/api/refresh/prices');const poll=async()=>{try{const state=await getJson('/api/refresh/status');if(state.state==='running'){setTimeout(poll,3000);return}finish();await refreshCatalogSilently();if(state.state==='failed'||state.state==='partial'){openPanel('价格核对结果','<p>部分渠道未能取得新报价，已保留上一份有效数据。请查看各商品的采集时间。</p>')}}catch(error){finish();openPanel('价格核对失败','<p>'+e(error.message)+'</p>')}};setTimeout(poll,3000)}catch(error){finish();openPanel('价格核对失败','<p>'+e(error.message)+'</p>')}};
 document.getElementById('close').addEventListener('click',()=>{clearTimeout(bindingTimer);document.getElementById('sheetImg').style.display=''});
 document.body.addEventListener('touchend',event=>{if(event.touches.length>0)return;const touch=event.changedTouches[0];if(!touch)return;const now=performance.now();const previous=document.body._lastTap;if(previous&&now-previous.time<330&&Math.abs(touch.clientX-previous.x)<25&&Math.abs(touch.clientY-previous.y)<25){if(event.cancelable)event.preventDefault()}document.body._lastTap={time:now,x:touch.clientX,y:touch.clientY}},{passive:false});
-bootFlows().catch(()=>{});
+function startFlows(){
+  return bootFlows().catch(()=>{
+    // A failed initial publication must not permanently prevent UI subscriptions.
+    // Wait for a verified publication; recovery does not start extra downloads.
+    if(window.BIKEHUNT_PAGES)window.addEventListener('bikehunt-published',()=>{init();startFlows();},{once:true});
+  });
+}
+startFlows();
 
 const PURCHASE_DISCLAIMER="本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。";
 document.getElementById('purchaseDisclaimerInfo').onclick=()=>window.alert(PURCHASE_DISCLAIMER);

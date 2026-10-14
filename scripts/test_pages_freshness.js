@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const {createHash, webcrypto} = require('node:crypto');
 
 const source = fs.readFileSync(path.join(__dirname, '../web/pages-adapter.js'), 'utf8');
 const START = Date.parse('2026-10-14T12:00:00Z');
@@ -49,11 +50,28 @@ function snapshot() {
   };
 }
 
-async function harness(payload = snapshot()) {
+function publication(payload) {
+  const data = structuredClone(payload);
+  data.publication = {...data.publication, commit: data.publication?.commit ?? 'commit-test',
+    version: (data.publication?.commit ?? 'commit-test') + ':' + data.generated_at};
+  const body = JSON.stringify(data);
+  const manifest = {schema_version: 1, version: data.publication.version,
+    generated_at: data.generated_at, commit: data.publication.commit,
+    snapshot: {path: 'data/site-data.json', bytes: Buffer.byteLength(body),
+      sha256: createHash('sha256').update(body).digest('hex')}};
+  return {body, manifest};
+}
+
+async function harness(payload = snapshot(), options = {}) {
   let now = START;
-  let publication = structuredClone(payload);
+  let published = publication(payload);
+  let manifest = options.manifest ?? published.manifest;
+  let body = options.body ?? published.body;
   let poll;
-  let offline = false;
+  let offline = options.offline ?? false;
+  let manifestGate = null, snapshotGate = null;
+  let manifestStatus = 200, snapshotStatus = 200;
+  const marker = {};
   const calls = [];
   const events = [];
   class MockDate extends Date {
@@ -61,17 +79,29 @@ async function harness(payload = snapshot()) {
     static now() { return now; }
   }
   const context = vm.createContext({
-    URL, Response, Date: MockDate,
+    URL, Response, Date: MockDate, crypto: webcrypto, TextDecoder,
     location: {href: 'https://owner.github.io/BikeHunt/'},
-    document: {currentScript: {src: 'https://owner.github.io/BikeHunt/web/pages-adapter.js',dataset:{release:'commit-test'}}},
+    document: {currentScript: {src: 'https://owner.github.io/BikeHunt/web/pages-adapter.js',dataset:{release:'commit-test'}},
+      getElementById(id) { return id === 'publicationInfo' ? marker : null; }},
     CustomEvent: class { constructor(type, options) { this.type = type; this.detail = options.detail; } },
     window: {
       fetch: async (input, init) => {
         const url = String(input);
         calls.push({url, init});
+        if (url.includes('/data/publication.json')) {
+          if (offline) throw new Error('offline');
+          const captured = JSON.stringify(manifest);
+          if (manifestGate) await manifestGate;
+          if (options.onManifestRead) options.onManifestRead(calls.filter(c => c.url.includes('/data/publication.json')).length, value => { published = publication(value); manifest = published.manifest; body = published.body; });
+          return new Response(captured, {status: manifestStatus, headers: {'Content-Type': 'application/json'}});
+        }
         if (url.includes('/data/site-data.json')) {
           if (offline) throw new Error('offline');
-          return new Response(JSON.stringify(publication), {headers: {'Content-Type': 'application/json'}});
+          // Model an old browser-cached stable alias. Only the cache-busted,
+          // no-store request may see the currently published response.
+          const captured = options.cachedBody && (!new URL(url).searchParams.has('v') || init?.cache !== 'no-store') ? options.cachedBody : body;
+          if (snapshotGate) await snapshotGate;
+          return new Response(captured, {status: snapshotStatus, headers: {'Content-Type': 'application/json'}});
         }
         return new Response('external request');
       },
@@ -82,13 +112,25 @@ async function harness(payload = snapshot()) {
     clearInterval() {},
   });
   vm.runInContext(source, context, {filename: 'pages-adapter.js'});
-  await context.loadPublished();
+  let initialError;
+  try { await context.loadPublished(); } catch (error) {
+    initialError = error;
+    if (!options.expectInitialFailure) throw error;
+  }
   await Promise.resolve();
   return {
-    context, calls, events,
+    context, calls, events, marker, initialError,
     setNow(value) { now = value; },
-    publish(value) { publication = structuredClone(value); },
+    publish(value) { published = publication(value); manifest = published.manifest; body = published.body; },
+    setManifest(value) { manifest = structuredClone(value); },
+    setBody(value) { body = value; },
     setOffline(value) { offline = value; },
+    setManifestGate(value) { manifestGate = value; },
+    setSnapshotGate(value) { snapshotGate = value; },
+    setManifestStatus(value) { manifestStatus = value; },
+    setSnapshotStatus(value) { snapshotStatus = value; },
+    manifestReads() { return calls.filter(c => c.url.includes('/data/publication.json')); },
+    snapshotReads() { return calls.filter(c => c.url.includes('/data/site-data.json')); },
     async request(url) {
       const response = await context.window.fetch(url);
       assert.equal(response.status, 200);
@@ -99,12 +141,20 @@ async function harness(payload = snapshot()) {
 }
 
 async function testInitialSnapshotBypassesBrowserCache() {
-  const h=await harness();
+  const stale=snapshot();stale.generated_at=new Date(START-60000).toISOString();
+  const h=await harness(snapshot(),{cachedBody:publication(stale).body});
+  assert.equal(h.manifestReads().length,1);
+  assert.equal(h.calls[0].url,h.manifestReads()[0].url,'Initial load checks manifest before any full snapshot');
+  assert.equal(h.manifestReads()[0].init.cache,'no-store');
   const first=h.calls.find(c=>c.url.includes('/data/site-data.json'));
   assert.equal(first.init.cache,'no-store');
   assert.equal(new URL(first.url).searchParams.get('release'),'commit-test');
   assert.equal(new URL(first.url).searchParams.get('v'),String(START));
+  assert.equal(new URL(first.url).searchParams.get('version'),publication(snapshot()).manifest.version);
   assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at,new Date(START).toISOString());
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.commit,'commit-test');
+  assert.equal(h.marker.textContent,'数据 commit-');
+  assert.ok(h.marker.title.includes(new Date(START).toISOString()));
 }
 
 async function testCachedApiRechecksFxAndEligibility() {
@@ -215,12 +265,13 @@ async function testPublicationCursorNeverMovesBackwards() {
   h.publish(newer);
   await h.poll();
   assert.equal(vm.runInContext('publishedCursor', h.context), 11);
-  assert.deepEqual(h.events[1].detail.events.map(event => event.id), [11]);
+  assert.deepEqual(Array.from(h.events[1].detail.events,event => event.id), [11]);
 }
 
 async function testSoldOutAndFailedRefreshInvalidateActions() {
   const h = await harness();
   const changed = snapshot();
+  changed.generated_at = new Date(START + 1000).toISOString();
   changed.details.red.variants['red-M'].offers[0].offer.stock = 'out_of_stock';
   changed.details.blue.variants['blue-M'].offers[0].offer.collection_state = 'retained';
   h.publish(changed);
@@ -278,16 +329,238 @@ async function testOfflinePollStillExpiresStock() {
   assert.equal(h.events.length, 1, 'Repeated offline polls remain quiet');
 }
 
+async function testUnchangedManifestAvoidsFullSnapshotTransfers() {
+  const h = await harness();
+  for (let i = 1; i <= 3; i++) {
+    h.setNow(START + i * 60000);
+    await h.poll();
+  }
+  const manual = await h.request('/api/refresh/prices');
+  assert.equal(manual.finished_at, new Date(START).toISOString());
+  assert.equal(h.manifestReads().length, 5, 'Initial, timer and manual checks use the tiny manifest');
+  assert.equal(h.snapshotReads().length, 1, 'An unchanged publication never transfers the full snapshot again');
+  assert.ok(h.manifestReads().every(c => c.init.cache === 'no-store'));
+  const detail = await h.request('/api/catalog/red');
+  assert.equal(detail.offers[0].offer.fetched_at, new Date(START).toISOString(), 'Polling must not reset source freshness');
+  h.setNow(START + 3600001);
+  await h.poll();
+  assert.equal(h.snapshotReads().length, 1, 'Clock expiry still needs no new snapshot');
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false);
+  assert.equal(h.events.length, 1);
+}
+
+async function testNewVersionSharesOneInflightSnapshot() {
+  const h = await harness();
+  const changed = snapshot();
+  changed.generated_at = new Date(START + 60000).toISOString();
+  changed.details.red.variants['red-M'].offers[0].offer.stock = 'out_of_stock';
+  h.publish(changed);
+  let releaseManifest, releaseSnapshot;
+  h.setManifestGate(new Promise(resolve => { releaseManifest = resolve; }));
+  h.setSnapshotGate(new Promise(resolve => { releaseSnapshot = resolve; }));
+  const first = h.context.loadPublished(true);
+  const timer = h.poll();
+  const manual = h.context.window.fetch('/api/refresh/prices');
+  await Promise.resolve();
+  assert.equal(h.manifestReads().length, 2, 'Timer and manual callers join the pending manifest check');
+  assert.equal(h.snapshotReads().length, 1);
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, true, 'Cached APIs remain usable during a refresh');
+  releaseManifest();
+  // Let Response.json() and the manifest validation reach the snapshot request.
+  for (let i = 0; i < 20 && h.snapshotReads().length < 2; i++) await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.snapshotReads().length, 2);
+  const concurrent = h.context.loadPublished(true);
+  assert.equal(h.manifestReads().length, 2, 'A caller during download shares the same in-flight check');
+  releaseSnapshot();
+  const [data, , response, shared] = await Promise.all([first, timer, manual, concurrent]);
+  assert.equal(response.status, 200);
+  assert.equal(data, shared);
+  assert.equal(data.generated_at, changed.generated_at);
+  assert.equal(h.snapshotReads().length, 2, 'Exactly one new full snapshot for a changed version');
+  assert.equal((await h.request('/api/catalog/red')).variants[0].stock_state, 'out_of_stock');
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, changed.generated_at);
+  assert.ok(h.marker.title.includes(changed.generated_at));
+  h.setManifestGate(null); h.setSnapshotGate(null);
+  await h.poll();
+  assert.equal(h.snapshotReads().length, 2);
+}
+
+async function testCdnRacesNeverCommitMismatchedSnapshots() {
+  const old = snapshot(), newer = snapshot();
+  newer.generated_at = new Date(START + 60000).toISOString();
+  newer.details.red.variants['red-M'].offers[0].offer.stock = 'out_of_stock';
+  // Both propagation directions must fail on initial load.
+  for (const [manifest, body] of [
+    [publication(old).manifest, publication(newer).body],
+    [publication(newer).manifest, publication(old).body],
+  ]) {
+    const h = await harness(old, {manifest, body, expectInitialFailure: true});
+    assert.match(h.initialError.message, /校验失败/);
+    assert.equal(vm.runInContext('publicLastData', h.context), null);
+    assert.equal(h.context.window.BIKEHUNT_PUBLICATION, undefined);
+  }
+  const h = await harness(old);
+  h.setManifest(publication(newer).manifest); // New manifest, old CDN alias.
+  await assert.rejects(h.context.loadPublished(true), /校验失败/);
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, old.generated_at);
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, true);
+  h.setBody(publication(newer).body);
+  await h.poll(); // A failed promise must be cleared so the coherent publication can retry.
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, newer.generated_at);
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false);
+}
+
+async function testDigestAndPublicationMetadataAreBothRequired() {
+  for (const field of ['generated_at', 'version', 'commit']) {
+    const good = publication(snapshot());
+    const data = JSON.parse(good.body);
+    if (field === 'generated_at') data.generated_at = new Date(START - 1000).toISOString();
+    else data.publication[field] = 'different-' + field;
+    const body = JSON.stringify(data);
+    const manifest = structuredClone(good.manifest);
+    manifest.snapshot.bytes = Buffer.byteLength(body);
+    manifest.snapshot.sha256 = createHash('sha256').update(body).digest('hex');
+    const h = await harness(snapshot(), {manifest, body, expectInitialFailure: true});
+    assert.match(h.initialError.message, /商品版本不一致/, field);
+    assert.equal(vm.runInContext('publicLastData', h.context), null);
+  }
+  const good = publication(snapshot());
+  // Whitespace has identical parsed JSON but different bytes; it is not the signed snapshot.
+  const changedBytes = await harness(snapshot(), {body: good.body + ' ', expectInitialFailure: true});
+  assert.match(changedBytes.initialError.message, /校验失败/);
+  const wrongLength = structuredClone(good.manifest);
+  wrongLength.snapshot.bytes++;
+  const h = await harness(snapshot(), {manifest: wrongLength, expectInitialFailure: true});
+  assert.match(h.initialError.message, /校验失败/);
+}
+
+async function testRollbackAndReusedVersionAreRejected() {
+  const h = await harness();
+  const newer = snapshot();
+  newer.generated_at = new Date(START + 60000).toISOString();
+  h.publish(newer);
+  await h.poll();
+  const before = h.snapshotReads().length;
+  h.publish(snapshot());
+  await assert.rejects(h.context.loadPublished(true), /早于已加载版本/);
+  assert.equal(h.snapshotReads().length, before, 'Rollback is rejected before downloading another snapshot');
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, newer.generated_at);
+  const reused = publication(newer).manifest;
+  reused.snapshot.sha256 = '0'.repeat(64);
+  h.setManifest(reused);
+  await assert.rejects(h.context.loadPublished(true), /校验信息不一致/);
+  assert.equal(h.snapshotReads().length, before);
+  const equalTimestamp = structuredClone(publication(newer).manifest);
+  equalTimestamp.version = 'another-release';
+  h.setManifest(equalTimestamp);
+  await assert.rejects(h.context.loadPublished(true), /早于已加载版本/);
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, newer.generated_at);
+}
+
+async function testManifestFailuresFailClosedAndRetry() {
+  const mutations = [
+    m => { m.schema_version = 2; }, m => { m.version = ''; },
+    m => { m.generated_at = '2026-10-14'; },
+    m => { m.generated_at = new Date(START + 300001).toISOString(); }, m => { m.commit = 123; },
+    m => { m.snapshot.path = 'https://untrusted.example/data.json'; },
+    m => { m.snapshot.sha256 = 'bad-digest'; }, m => { m.snapshot.bytes = -1; },
+  ];
+  for (const mutate of mutations) {
+    const manifest = publication(snapshot()).manifest;
+    mutate(manifest);
+    const h = await harness(snapshot(), {manifest, expectInitialFailure: true});
+    assert.match(h.initialError.message, /发布清单无效/);
+    assert.equal(h.snapshotReads().length, 0);
+  }
+  const h = await harness(snapshot(), {offline: true, expectInitialFailure: true});
+  assert.equal(h.snapshotReads().length, 0);
+  assert.equal((await h.context.window.fetch('/api/catalog')).status, 503);
+  h.setOffline(false);
+  assert.equal((await h.request('/api/catalog')).items.length, 2);
+  const newer = snapshot(); newer.generated_at = new Date(START + 60000).toISOString();
+  h.publish(newer); h.setSnapshotStatus(503);
+  await assert.rejects(h.context.loadPublished(true), /商品数据暂时无法读取/);
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, snapshot().generated_at);
+  h.setSnapshotStatus(200); h.setManifestStatus(503);
+  await assert.rejects(h.context.loadPublished(true), /发布清单暂时无法读取/);
+  h.setManifestStatus(200);
+  await h.context.loadPublished(true);
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, newer.generated_at);
+}
+
+async function testHungNetworkDoesNotDelayClockExpiry() {
+  const h = await harness();
+  let release;
+  h.setManifestGate(new Promise(resolve => { release = resolve; }));
+  const pending = h.poll();
+  h.setNow(START + 3600001);
+  const concurrent = h.poll();
+  assert.equal(h.events.length, 1, 'Clock-driven expiry dispatches before the hanging network check settles');
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false);
+  assert.equal(h.snapshotReads().length, 1);
+  release();
+  await Promise.all([pending, concurrent]);
+  assert.equal(h.events.length, 1);
+  assert.equal(h.manifestReads().length, 2);
+}
+
+async function testInitialCdnRaceRecoversWithBoundedRetry() {
+  const old = snapshot(), newer = snapshot();
+  newer.generated_at = new Date(START + 60000).toISOString();
+  const h = await harness(old, {
+    onManifestRead(reads, publish) { if (reads === 1) publish(newer); },
+  });
+  assert.equal(h.manifestReads().length, 2, 'Only one extra startup manifest check');
+  assert.equal(h.snapshotReads().length, 2, 'New full transfer is warranted by a newer manifest');
+  assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, newer.generated_at);
+  const inconsistent = await harness(old, {body: publication(newer).body, expectInitialFailure: true});
+  assert.match(inconsistent.initialError.message, /校验失败/);
+  assert.equal(inconsistent.manifestReads().length, 2);
+  assert.equal(inconsistent.snapshotReads().length, 1, 'Same manifest does not trigger an unbounded alias download loop');
+  inconsistent.publish(newer);
+  await inconsistent.poll();
+  assert.equal(inconsistent.context.window.BIKEHUNT_PUBLICATION.generated_at, newer.generated_at);
+  assert.equal(inconsistent.events.length, 1, 'Later coherent publication notifies the waiting UI');
+  const future = snapshot(); future.generated_at = new Date(START + 300000).toISOString();
+  assert.equal((await harness(future)).context.window.BIKEHUNT_PUBLICATION.generated_at, future.generated_at, 'Five minutes of clock skew is allowed');
+}
+
+async function testFailedUiBootResubscribesOnVerifiedPublication() {
+  const flows = fs.readFileSync(path.join(__dirname, '../web/flows.js'), 'utf8');
+  const fragment = flows.slice(flows.indexOf('function startFlows('), flows.indexOf('const PURCHASE_DISCLAIMER='));
+  let listener, boots = 0, galleryInitializations = 0;
+  const context = vm.createContext({
+    window: {BIKEHUNT_PAGES: true, addEventListener(type, callback, options) {
+      assert.equal(type, 'bikehunt-published'); assert.equal(options.once, true); listener = callback;
+    }},
+    async bootFlows() { if (++boots === 1) throw new Error('Initial publication still propagating'); },
+    init() { galleryInitializations++; },
+  });
+  vm.runInContext(fragment, context);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(boots, 1);
+  assert.ok(listener, 'Recovery listener must exist even though normal flow initialization failed');
+  listener();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(boots, 2);
+  assert.equal(galleryInitializations, 1, 'Catalog and flow initialization both resume without a page reload');
+}
+
 async function main() {
-  for (const test of [testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
+  const tests = [testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
     testInventoryAndColorsExpireTogether, testSamePublicationNotifiesOnFreshnessChanges,
     testPublicationCursorNeverMovesBackwards, testSoldOutAndFailedRefreshInvalidateActions,
-    testStockTimestampBoundariesFailClosed, testOfflinePollStillExpiresStock]) {
+    testStockTimestampBoundariesFailClosed, testOfflinePollStillExpiresStock,
+    testUnchangedManifestAvoidsFullSnapshotTransfers, testNewVersionSharesOneInflightSnapshot,
+    testCdnRacesNeverCommitMismatchedSnapshots, testDigestAndPublicationMetadataAreBothRequired,
+    testRollbackAndReusedVersionAreRejected, testManifestFailuresFailClosedAndRetry,
+    testHungNetworkDoesNotDelayClockExpiry, testInitialCdnRaceRecoversWithBoundedRetry,
+    testFailedUiBootResubscribesOnVerifiedPublication];
+  for (const test of tests) {
     await test();
     console.log('PASS ' + test.name);
   }
-  console.log('Pages freshness: 9 regression groups passed.');
+  console.log('Pages freshness: ' + tests.length + ' regression groups passed.');
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });
-
