@@ -69,6 +69,8 @@ def apply_source_rules(offer: Offer, source: dict, data: Path) -> Offer:
         else:
             update["dispatch_origin"] = None
             update["dispatch_origin_evidence"] = Evidence(note="发货规则已变化，仓库信息正在复核",scope="site")
-    if source.get("sales_region"):
+    if not offer.sales_region and source.get("sales_region"):
+        # A source description must not overwrite the market observed on this quote.
         update["sales_region"] = source["sales_region"]
     return offer.model_copy(update=update)
+

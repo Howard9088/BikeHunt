@@ -13,6 +13,7 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.collectors.shopify import collect_shopify_catalog, parse_shopify_product, shopify_market_currency, shopify_market_country
 from app.collectors.transport import CollectionError, PublicPageFetcher
+from app.source_rules import apply_source_rules
 
 NOW = datetime(2026, 10, 14, 16, 0, tzinfo=timezone.utc)
 SOURCE = {"code": "team", "name": "Official team store", "type": "team_official"}
@@ -68,6 +69,9 @@ class ShopifyTests(unittest.TestCase):
         self.assertEqual(rows[0].price.currency, "USD")
         self.assertIn("US 市场 · USD", rows[0].sales_region)
         self.assertNotIn("EUR", rows[0].sales_region)
+        effective = apply_source_rules(rows[0], {**SOURCE, "sales_region":"欧洲站 EUR 报价"}, Path("/tmp/unused-market-test"))
+        self.assertEqual(effective.sales_region, rows[0].sales_region)
+        self.assertIn("US 市场 · USD", effective.sales_region)
 
     def test_missing_market_country_is_not_inferred(self):
         rows = parse_shopify_product(product(), page(), {**SOURCE, "sales_region":"欧洲站"}, URL, NOW)
