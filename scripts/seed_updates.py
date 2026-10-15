@@ -33,7 +33,7 @@ MAX_STATUS_BYTES = 8 * 1024 * 1024
 EVENT_FIELDS = (
     "id", "event_key", "kind", "source_code", "source_name", "offer_id",
     "name_zh", "category", "old_price", "new_price", "currency", "stock",
-    "observed_at", "url",
+    "observed_at", "url", "old_stock",
 )
 
 
@@ -71,6 +71,7 @@ class PublicEvent(BaseModel):
     new_price: str
     currency: str = Field(pattern=r"^[A-Z]{3}$")
     stock: Literal["in_stock", "out_of_stock", "unknown"]
+    old_stock: Literal["in_stock", "out_of_stock", "unknown"] | None = None
     observed_at: str
     url: str = Field(max_length=5000)
     product: PublicEventProduct | None = None

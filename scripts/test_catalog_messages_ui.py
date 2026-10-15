@@ -199,6 +199,8 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
 
 def exercise_group_entry(page, context, base, mode, return_label, checks):
     read_state=page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")
+    expect(page.locator('#wechatReminder')).to_have_count(0)
+    expect(page.locator('#wechatCommunity')).to_be_visible()
     expect(page.locator('#wechatCommunity')).to_have_text('加入骑游海淘交流群')
     page.locator('#wechatCommunity').click()
     expect(page).to_have_url(base+'group/')
@@ -277,6 +279,9 @@ def main():
                 context.route('**/*',intercept)
                 page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
                 page.goto(base,wait_until='networkidle')
+                expect(page.locator('#wechatReminder')).to_have_count(0)
+                expect(page.locator('#wechatCommunity')).to_be_visible()
+                expect(page.locator('#wechatCommunity')).to_have_text('加入骑游海淘交流群')
                 expect(page.locator('#messageBadge')).to_have_text('4')
                 page.locator('[data-tab=brands]').click();page.locator('[data-source=maap]').click();page.locator('#sourceProducts').click()
                 page.locator('[data-category=jerseys]').click();expect(page.locator('.card')).to_have_count(1);expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌')

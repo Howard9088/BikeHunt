@@ -28,7 +28,9 @@ class UpdateStore:
                 db.execute("ALTER TABLE events ADD COLUMN product_json TEXT")
             columns = {row[1] for row in db.execute("PRAGMA table_info(events)")}
             for name, definition in (("recovered_history", "INTEGER NOT NULL DEFAULT 0"),
-                                     ("original_id", "INTEGER"), ("recovery_snapshot_sha256", "TEXT")):
+                                     ("original_id", "INTEGER"), ("recovery_snapshot_sha256", "TEXT"),
+                                     ("old_stock", "TEXT"), ("old_context_json", "TEXT"),
+                                     ("current_context_json", "TEXT")):
                 if name not in columns:
                     db.execute("ALTER TABLE events ADD COLUMN " + name + " " + definition)
             db.execute("""CREATE TABLE IF NOT EXISTS suppressed_events (
@@ -65,10 +67,12 @@ class UpdateStore:
                 key = hashlib.sha256(f"{offer.offer_id}|{observed}|{offer.price}|{offer.stock}".encode()).hexdigest()
                 cursor = db.execute("""INSERT OR IGNORE INTO events
                     (event_key,kind,source_code,source_name,offer_id,name_zh,category,old_price,
-                     new_price,currency,stock,observed_at,url,product_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                     new_price,currency,stock,observed_at,url,product_json,old_stock,old_context_json,
+                     current_context_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (key,kind,offer.source_code,offer.source_name,offer.offer_id,title_zh(offer.name),
                      category_of(offer.name),str(old.price.amount) if old and old.price.currency==offer.price.currency else None,
-                     str(offer.price.amount),offer.price.currency,offer.stock,observed,offer.url,json.dumps(event_product(offer),ensure_ascii=False)))
+                     str(offer.price.amount),offer.price.currency,offer.stock,observed,offer.url,json.dumps(event_product(offer),ensure_ascii=False),
+                     old.stock if old else None, self.context_json(old) if old else None, self.context_json(offer)))
                 if cursor.rowcount:
                     emitted.append(self.decode(db.execute("SELECT * FROM events WHERE id=?",(cursor.lastrowid,)).fetchone()))
         return emitted
@@ -85,8 +89,20 @@ class UpdateStore:
             return [self.decode(row) for row in db.execute(query,params).fetchall()]
 
     @staticmethod
+    def context_json(offer: Offer) -> str:
+        """Local transition evidence. Never infer a past market from today's source config."""
+        fields = {"offer_id", "source_code", "url", "identity", "price", "stock",
+                  "sales_region", "family_hint", "fetched_at", "data_kind", "collection_state"}
+        return json.dumps(offer.model_dump(mode="json", include=fields), ensure_ascii=False,
+                          sort_keys=True)
+
+    @staticmethod
     def decode(row) -> dict:
         event = dict(row)
+        # Exact transition contexts are intentionally local-only. A recovered public
+        # row has NULL contexts and cannot become a promotional claim.
+        event.pop("old_context_json", None)
+        event.pop("current_context_json", None)
         if event.get("recovered_history"):
             event["recovered_history"] = True
         else:

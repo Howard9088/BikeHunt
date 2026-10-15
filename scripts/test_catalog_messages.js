@@ -1,6 +1,10 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8');
+const home=fs.readFileSync('web/index.html','utf8');
+assert.ok(!home.includes('wechatReminder'));assert.ok(!flows.includes('showWechat'));
+assert.match(home, /id="wechatCommunity">加入骑游海淘交流群<\/button>/);
+assert.ok(home.includes('id="priceMessages"'));assert.ok(home.includes('id="amazonChannels"'));
 function section(source,start,end){return source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)))}
 function harness(saved=null){
  const storage=new Map(saved?[['bikehuntMessagesReadCursor',saved]]:[]),badge={setAttribute(k,v){this[k]=v}},refs=new Map(),links=[];
@@ -8,7 +12,7 @@ function harness(saved=null){
  vm.runInContext(section(gallery,'const e=value','function money('),c);
  vm.runInContext(section(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(section(flows,'const messageEvents=','const directoryPage='),c);
- vm.runInContext(section(flows,'function eventProduct(','async function showWechat('),c);
+ vm.runInContext(section(flows,'function eventProduct(','async function refreshCatalogSilently('),c);
  vm.runInContext(section(flows,'function invalidateReferenceLinks(',"document.addEventListener('click',guardPurchaseExit)"),c);
  return {c,refs,links,badge,storage};
 }
