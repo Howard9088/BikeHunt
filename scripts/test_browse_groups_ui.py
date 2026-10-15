@@ -311,7 +311,9 @@ def main():
                     page.locator(f'[data-tab={tab}]').click()
                     page.locator(f'[data-source={source}]').click()
                     page.locator('#sourceProducts').click()
-                    inline_cards(page, 0)
+                    # This source may have ordinary accessory products; it must not inherit global references.
+                    expect(page.locator('#grid [data-road-reference-card]')).to_have_count(0)
+                    expect(page.locator('#grid a[data-road-reference]')).to_have_count(0)
                     assert page.evaluate('(source) => activeSource === source', source)
 
                 page.locator('[data-tab=products]').click()
