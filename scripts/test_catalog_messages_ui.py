@@ -71,6 +71,35 @@ def fixture():
             'detail': detail}
 
 
+def detail_for_request(state, product_id, variant_id=''):
+    """Bind mock details to declared cards/events; never return another family.
+
+    Ordinary cards deliberately share the single S offer fixture. Their family
+    IDs and names must still match the requested card, just like the real API.
+    Unsupported IDs/variants fail rather than silently returning the S quote.
+    """
+    matching = next((event for event in state.get('events', [])
+                     if event['product'].get('product_id') == product_id
+                     and event['product'].get('variant_id') == variant_id), None)
+    result = copy.deepcopy(state['detail'])
+    if matching:
+        product = matching['product']
+        result.update(product_id=product_id, variant_id=variant_id,
+                      name=product['name'], name_zh=matching['name_zh'], image=product['image'])
+        result['identity'].update(size=product['size'], color=product['color'], mpn=product['model'])
+        result['variants'] = [{'variant_id': variant_id, 'size': product['size'], 'in_stock': False,
+                               'stock_state': product['current_stock'], 'source_count': 1,
+                               'product_cny_from': None}]
+        result['offers'][0]['offer'].update(offer_id=matching['offer_id'], url=matching['url'],
+                                           stock=product['current_stock'], fetched_at='2000-01-01T00:00:00Z')
+        return result
+    card = next((card for card in state['catalog']['items'] if card['product_id'] == product_id), None)
+    if card is None or variant_id and variant_id != result['variant_id']:
+        raise KeyError((product_id, variant_id))
+    result.update(product_id=card['product_id'], name=card['name'], name_zh=card['name_zh'], image=card['image'])
+    return result
+
+
 class QuietHandler(SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
@@ -353,12 +382,8 @@ def main():
                     elif u.path.startswith('/api/catalog/'):
                         product_id=u.path.rsplit('/',1)[-1];variant_id=parse_qs(u.query).get('variant_id',[''])[0]
                         state['last_detail_request']=(product_id,variant_id)
-                        matching=next((e for e in state['events'] if e['product'].get('product_id')==product_id and e['product'].get('variant_id')==variant_id),None)
-                        if matching:
-                            product=matching['product'];result=copy.deepcopy(state['detail']);result.update(product_id=product_id,variant_id=variant_id,name=product['name'],name_zh=matching['name_zh'],image=product['image'])
-                            result['identity'].update(size=product['size'],color=product['color'],mpn=product['model']);result['variants']=[{'variant_id':variant_id,'size':product['size'],'in_stock':False,'stock_state':product['current_stock'],'source_count':1,'product_cny_from':None}]
-                            result['offers'][0]['offer'].update(offer_id=matching['offer_id'],url=matching['url'],stock=product['current_stock'],fetched_at='2000-01-01T00:00:00Z')
-                        else:result=state['detail']
+                        try:result=detail_for_request(state,product_id,variant_id)
+                        except KeyError:return route.fulfill(status=404,content_type='application/json',body='{}')
                     elif u.path=='/api/community':result={'schema_version':1,'configured':True,'available':True,'title':'骑游海淘交流群','image_url':'/web/assets/community/group-20261015.png','revision':'test','expires_at':(datetime.now(timezone.utc)+timedelta(days=1)).isoformat(),'expiry_label':'微信标注10月22日前有效'}
                     elif u.path=='/api/updates':result={'items':state['events'],'cursor':max(e['id'] for e in state['events']),'fx':state['catalog']['fx']}
                     elif u.path=='/api/directories':result={'brands':[{'code':'maap','name':'MAAP','name_zh':'MAAP 品牌','offer_count':2,'product_count':2,'rule_count':0}], 'teams':[{'code':'other','name':'Other','name_zh':'测试车队','offer_count':1,'product_count':1,'rule_count':0}]}
