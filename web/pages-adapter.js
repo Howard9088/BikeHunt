@@ -30,7 +30,7 @@ function refreshPublicInventory(data){
       if(!detail.offers.some(q=>q.eligible&&q.offer.offer_id===detail.recommended_offer_id))detail.recommended_offer_id=null;
     }
   }
-  for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);const allOffers=Object.values(family.variants).flatMap(d=>d.offers);card.stock_state=Object.values(familyAvailability[card.product_id]).some(Boolean)?'in_stock':allOffers.length&&allOffers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status=card.stock_state==='unknown'&&allOffers.some(q=>q.offer.stock==='in_stock'&&!stockFresh(q.offer,now))?'库存核实已过期':'渠道待核实';}if(card.reference_stock==='in_stock'&&(!stockFresh(card,now)||card.reference_collection_state==='retained'))card.reference_stock='unknown';}
+  for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);const allOffers=Object.values(family.variants).flatMap(d=>d.offers);card.stock_state=Object.values(familyAvailability[card.product_id]).some(Boolean)?'in_stock':allOffers.length&&allOffers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status=card.stock_state==='unknown'&&allOffers.some(q=>q.offer.stock==='in_stock'&&!stockFresh(q.offer,now))?'库存核实已过期':'渠道待核实';}const reference=allOffers.find(q=>q.offer.offer_id===card.reference_offer_id)?.offer;if(reference){card.reference_collection_state=reference.collection_state;card.reference_stock=publishedOfferAvailable(reference,now)?reference.stock:reference.stock==='out_of_stock'?'out_of_stock':'unknown'}else if(card.reference_stock==='in_stock'&&(!stockFresh(card,now)||card.reference_collection_state==='retained'))card.reference_stock='unknown';}
 }
 function publishedUrl(path,version){const url=new URL(path,publicRoot);url.searchParams.set('release',pageRelease);url.searchParams.set('v',String(Date.now()));if(version)url.searchParams.set('version',version);return url}
 function isRecord(value){return !!value&&typeof value==='object'&&!Array.isArray(value)}
@@ -94,6 +94,18 @@ function validateCatalogIdentities(data){
     if(!family||typeof card.reference_offer_id!=='string'||
       !Object.values(family.variants).some(detail=>detail.offers.some(q=>q.offer.offer_id===card.reference_offer_id)))
       throw publicationMismatch('商品参考报价身份缺失；保留上次核实的数据');
+    // New cards must bind all discount facts to the same published quote. Old
+    // cards remain readable but cannot qualify for the verified deals feed.
+    if('reference_original_price' in card||'reference_variant_id' in card){
+      const detail=family.variants[card.reference_variant_id],quote=detail?.offers.find(q=>q.offer.offer_id===card.reference_offer_id),offer=quote?.offer;
+      const sameMoney=(a,b)=>a==null&&b==null||!!a&&!!b&&a.currency===b.currency&&Number.isFinite(Number(a.amount))&&Number.isFinite(Number(b.amount))&&Number(a.amount)===Number(b.amount);
+      if(!offer||!sameMoney(card.reference_price,offer.price)||!sameMoney(card.reference_original_price,offer.original_price)||
+        card.reference_cny!==quote.product_cny||card.reference_source!==offer.source_name||
+        card.reference_size!==(offer.identity?.size??null)||card.reference_color!==(offer.identity?.color??null)||
+        card.reference_price_valid_until!==(offer.price_valid_until??null)||card.reference_data_kind!==(offer.data_kind||'live_snapshot')||
+        card.reference_collection_state!==offer.collection_state||card.fetched_at!==offer.fetched_at)
+        throw publicationMismatch('折扣与参考规格报价不一致；保留上次核实的数据');
+    }
   }
   return offers;
 }
@@ -278,7 +290,7 @@ window.fetch=async(input,init={})=>{
     return new Response(JSON.stringify(result),{headers:{'Content-Type':'application/json'}});
   }catch(error){return new Response(JSON.stringify({detail:error.message}),{status:503,headers:{'Content-Type':'application/json'}})}
 };
-function publishedFreshness(data){return JSON.stringify([data.catalog.fx.stale,data.updates.fx.stale,data.catalog.items.map(p=>[p.stock_state,p.available_sizes,p.recommended_total_cny]),Object.values(data.details).map(f=>Object.values(f.variants).map(d=>[d.fx.stale,d.recommended_offer_id,d.variants.map(v=>v.in_stock),d.colors.map(c=>c.in_stock),d.offers.map(q=>[q.eligible,q.reasons,q.offer.stock,q.offer.collection_state,q.offer.price])]))])}
+function publishedFreshness(data){return JSON.stringify([data.catalog.fx.stale,data.updates.fx.stale,data.catalog.items.map(p=>[p.stock_state,p.reference_stock,p.reference_collection_state,p.available_sizes,p.recommended_total_cny]),Object.values(data.details).map(f=>Object.values(f.variants).map(d=>[d.fx.stale,d.recommended_offer_id,d.variants.map(v=>v.in_stock),d.colors.map(c=>c.in_stock),d.offers.map(q=>[q.eligible,q.reasons,q.offer.stock,q.offer.collection_state,q.offer.price])]))])}
 function publishedContentVersion(data){return data.verification_identities?data.publication.version.slice(-64):data.publication.version}
 let publishedCursor=0,publicationVersion='',freshnessState='';
 loadPublished().then(data=>{publishedCursor=Math.max(publishedCursor,Number(data.updates.cursor)||0);publicationVersion=publishedContentVersion(data);freshnessState=publishedFreshness(data)}).catch(()=>{});

@@ -142,6 +142,38 @@ class PagesTests(unittest.TestCase):
         self.assertEqual(status["fx"]["fetched_at"], make_fx(fetched_at=verified).model_dump(mode="json")["fetched_at"])
         self.assertEqual(status["offers"]["a"]["content_sha256"], old_status["offers"]["a"]["content_sha256"])
 
+    def test_discount_reference_and_heartbeat_keep_exact_variant_and_semantic_facts(self):
+        from app.catalog.models import Money
+        from scripts.verify_public_release import snapshot_offers
+        cheap = make_offer("cheap", "50", source_code="a")
+        sale = make_offer("sale", "90", source_code="a",
+                          identity=cheap.identity.model_copy(update={"size": "L"}),
+                          original_price=Money(amount="120", currency="USD"))
+        repo = OfferRepository(self.root / "data")
+        repo.save("a", [cheap, sale], NOW, [])
+        self.build_at(NOW + timedelta(seconds=1))
+        _, _, old_bytes = self.publication()
+        payload = json.loads(old_bytes)
+        card = payload["catalog"]["items"][0]
+        self.assertEqual(card["reference_offer_id"], "sale")
+        self.assertEqual(card["reference_size"], "L")
+        snapshot_offers(payload)
+        verified = NOW + timedelta(minutes=15)
+        repo.save("a", [offer.model_copy(update={"fetched_at": verified}) for offer in [cheap, sale]], verified, [])
+        result = self.build_at(verified + timedelta(seconds=1), make_fx(fetched_at=verified))
+        _, status, raw = self.publication()
+        self.assertFalse(result["catalog_changed"])
+        self.assertEqual(raw, old_bytes)
+        self.assertEqual(status["offers"]["sale"]["fetched_at"], verified.isoformat().replace("+00:00", "Z"))
+        import copy
+        for key, value in [("reference_original_price", {"amount": "200", "currency": "USD"}),
+                           ("reference_cny", "350.00"), ("reference_size", "M"),
+                           ("reference_price_valid_until", "2099-01-01")]:
+            changed = copy.deepcopy(payload)
+            changed["catalog"]["items"][0][key] = value
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "discount facts differ"):
+                snapshot_offers(changed)
+
     def test_rebuild_without_source_verification_does_not_freshen_stock(self):
         self.build_at(NOW + timedelta(seconds=1))
         _, old_status, old_bytes = self.publication()

@@ -211,6 +211,13 @@ class ProductCard(Record):
     reference_cny: Decimal | None
     reference_source: str
     reference_offer_id: str | None = None
+    # Every displayed discount component belongs to this exact offer/variant.
+    reference_original_price: Money | None = None
+    reference_variant_id: str | None = None
+    reference_size: str | None = None
+    reference_color: str | None = None
+    reference_price_valid_until: str | None = None
+    reference_data_kind: Literal["live_snapshot", "legacy_cache"] = "live_snapshot"
     reference_collection_state: Literal["current", "retained"] = "current"
     reference_stock: Literal["in_stock", "out_of_stock", "unknown"]
     fetched_at: datetime | None

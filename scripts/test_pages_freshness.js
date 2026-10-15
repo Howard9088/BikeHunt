@@ -705,6 +705,19 @@ async function testSchema2ExactReferenceAndEvidenceOverlay() {
     assert.equal(fx.fetched_at, next.manifest.generated_at, 'Every repeated bound FX snapshot receives its genuine recheck time');
 }
 
+async function testSchema2DiscountReferenceMetadata() {
+  const payload=snapshot(),detail=payload.details.red.variants['red-M'],quote=detail.offers[0];
+  Object.assign(quote.offer,{price:{amount:'90',currency:'USD'},original_price:{amount:'120',currency:'USD'},identity:{size:'M',color:'Red'},data_kind:'live_snapshot',source_name:'Sale merchant'});quote.product_cny='630';
+  const cheaper=structuredClone(quote);cheaper.offer.offer_id='red-cheaper';cheaper.offer.price.amount='50';cheaper.offer.original_price=null;cheaper.product_cny='350';detail.offers.push(cheaper);
+  Object.assign(payload.catalog.items[0],{reference_offer_id:'red-offer',reference_variant_id:'red-M',reference_original_price:structuredClone(quote.offer.original_price),reference_price:structuredClone(quote.offer.price),reference_cny:'630',reference_source:'Sale merchant',reference_size:'M',reference_color:'Red',reference_price_valid_until:null,reference_data_kind:'live_snapshot'});
+  const initial=v2Publication(payload),h=await harness(payload,{release:initial});
+  let card=(await h.request('/api/catalog')).items[0];assert.equal(card.reference_stock,'in_stock');
+  const renewed=START+1800000;h.setNow(renewed);h.setRelease(heartbeat(initial,renewed));await h.poll();
+  card=(await h.request('/api/catalog')).items[0];assert.equal(card.fetched_at,new Date(renewed).toISOString());assert.equal(card.reference_original_price.amount,'120');assert.equal(card.reference_price.amount,'90');assert.equal(card.reference_cny,'630');assert.equal(card.reference_variant_id,'red-M');assert.equal(h.snapshotReads().length,1);assert.equal(h.events.length,0);
+  const later=START+5460000;h.setNow(later);h.setRelease(heartbeat(initial,later,status=>{status.offers['red-offer'].fetched_at=new Date(renewed).toISOString()}));await h.poll();
+  card=(await h.request('/api/catalog')).items[0];assert.equal(card.stock_state,'in_stock','A full-price offer remains freshly stocked');assert.equal(card.reference_stock,'unknown','Another fresh full-price quote cannot renew the expired discounted quote');assert.equal(card.fetched_at,new Date(renewed).toISOString());assert.equal(card.reference_original_price.amount,'120');assert.ok(h.events.some(event=>event.detail.freshnessChanged));
+}
+
 async function testSchema2NewContentAndEventsNotifyOnce() {
   const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
   const payload = snapshot(); payload.generated_at = new Date(START + 60000).toISOString();
@@ -961,7 +974,7 @@ async function main() {
     testHungNetworkDoesNotDelayClockExpiry, testInitialCdnRaceRecoversWithBoundedRetry,
     testFailedUiBootResubscribesOnVerifiedPublication,
     testSchema2HeartbeatUsesOnlyStatusAndStaysQuiet, testSchema2HeartbeatRestoresOnlyLocallyExpiredSafety,
-    testSchema2ExactReferenceAndEvidenceOverlay, testSchema2NewContentAndEventsNotifyOnce,
+    testSchema2ExactReferenceAndEvidenceOverlay, testSchema2DiscountReferenceMetadata, testSchema2NewContentAndEventsNotifyOnce,
     testSchema2InvalidStatusCannotCommit, testSchema2ManifestAndCatalogIdentityValidation,
     testSchema2RetainedFailureAndRecovery, testSchema2StatusRollbackAndCatalogRollbackProtection,
     testSchema2ByteRacesAndUnavailableProofFailClosed, testSchema2RemovedIdentityCannotReappearWithOlderObservation,

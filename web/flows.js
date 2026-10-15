@@ -30,7 +30,7 @@ function restoreBrowseState(){
 function browseQuery(value){return typeof value==='string'&&value.length<=200?value:''}
 function navigate(tab){activeTab=tab;saveBrowseState();document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryNav').hidden=tab!=='products';document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}}
 function chooseCategory(code){activeCategory=code;document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===code)));updateBrowseLabel();navigate('products')}
-function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);document.getElementById('browseLabel').textContent=activeSource?(entry?.name_zh||entry?.name||activeSource):'精选好价'}
+function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);document.getElementById('browseLabel').textContent=activeSource?(entry?.name_zh||entry?.name||activeSource):document.getElementById('q').value.trim()?'搜索结果':'精选好价'}
 function renderDirectory(section){
   const entries=directoryData[section]||[];document.getElementById('browseLabel').textContent=section==='brands'?'品牌官网':'世巡车队';document.getElementById('count').textContent=entries.length+' 个入口';
   const ranking=section==='teams'?directoryData.team_ranking:null;
@@ -163,7 +163,7 @@ async function bootFlows(){
   if(window.BIKEHUNT_PAGES){window.addEventListener('bikehunt-published',event=>onPrices(event.detail.events,event.detail.freshnessChanged));return}
   const eventSource=new EventSource('/api/updates/stream');eventSource.addEventListener('prices',event=>onPrices(JSON.parse(event.data)));window.addEventListener('pagehide',()=>{eventSource.close()},{once:true});
 }
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(b.dataset.tab==='products'){activeSource=null;document.getElementById('browseLabel').textContent='精选好价'}navigate(b.dataset.tab)});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(b.dataset.tab==='products'){activeSource=null;document.getElementById('q').value='';updateBrowseLabel()}navigate(b.dataset.tab)});
 const panelError=error=>{document.getElementById('sheetBody').innerHTML='<p class="offer-note">'+e(error.message)+'</p>'};
 async function showCommunity(){saveBrowseState();window.location.assign(new URL(window.BIKEHUNT_PAGES?'./group/':'/web/group/',window.location.href).href)}
 document.getElementById('wechatCommunity').onclick=()=>showCommunity().catch(panelError);
@@ -336,7 +336,7 @@ function showInventoryInvalidated(quote){
 }
 function expireLocalInventory(now=Date.now()){
   let changed=false;
-  for(const card of items){if(card.stock_state==='in_stock'&&!inventoryVerified(card,now)){card.stock_state='unknown';card.reference_stock='unknown';card.available_sizes=[];card.recommended_total_cny=null;card.status='库存待核实';changed=true}}
+  for(const card of items){if(card.stock_state==='in_stock'&&!inventoryVerified(card,now)){card.stock_state='unknown';card.reference_stock='unknown';card.available_sizes=[];card.recommended_total_cny=null;card.status='库存待核实';changed=true}else if(card.reference_stock==='in_stock'&&!offerAvailable({offer:{stock:card.reference_stock,collection_state:card.reference_collection_state,fetched_at:card.fetched_at,price_valid_until:card.reference_price_valid_until}},now)){card.reference_stock='unknown';card.recommended_total_cny=null;changed=true}}
   if(guideContext&&!offerAvailable(guideContext.quote,now))showInventoryInvalidated(guideContext.quote);
   else if(currentProduct&&document.getElementById('variant')&&currentProduct.variants.some(v=>v.variant_id===currentProduct.variant_id&&v.in_stock)&&!currentProduct.offers.some(q=>offerAvailable(q,now)))showInventoryInvalidated(currentProduct.offers.find(q=>q.offer.stock==='in_stock')||currentProduct.offers[0]);
   if(changed&&activeTab==='products'){const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;render(active)}

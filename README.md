@@ -257,3 +257,12 @@ node scripts/test_pages_freshness.js
 - 页面每次打开或恢复前台都使用 `no-store` 和独立查询参数读取当前配置；长时间打开时每分钟复核。配置读取失败、离线、图片加载失败、缺少有效期或到期均不展示旧群码。到期构建也不复制旧群码；稳定入口码继续保留。没有开通 API 提醒。
 - 本地管理员配置页的有效期现为必填。按微信实际日期保守填写，不应留下永久有效的空值。
 - 确定性测试：`python -m unittest discover -s tests -p 'test_*.py'`、`node scripts/test_group.js`。桌面和手机测试：`python scripts/test_group_ui.py`、`python scripts/test_catalog_messages_ui.py`。CI 的代码推送流程会执行这两套浏览器检查。
+
+### 精选好价与普通商品搜索
+
+- 默认「精选好价」仅保留最近一小时内核实有库存的当前实时报价：同一商家、同一规格、同一币种的商家原价必须高于正数现价。保留缓存、未知库存、售罄、过期报价及历史降价事件不会补成折扣。
+- 卡片的商家原价、现价、折扣幅度、人民币商品参考价、尺码与颜色来自同一条报价。即使另一规格有更低的全价，或另一个渠道已售罄的报价有折扣，也不会混用。商品价不包含尚未核实的运费与税费。
+- 尚未取得明确商家促销期限时显示「未取得折扣结束时间」；JSON-LD 的日期型 `price_valid_until` 只用于判断价格是否失效，不被用作限时活动或倒计时证明。
+- 无符合条件的折扣时显示真实空状态。品牌和车队目录保留普通商品与过期参考记录，已确认全部售罄的商品仍不展示。全站输入搜索词后显示「搜索结果」，允许查找普通商品；品牌／车队中的搜索仍限定当前来源。清空全站搜索或点击「精选好价」恢复折扣筛选，后者同时清空搜索词。
+- 折扣引用字段参与发布内容哈希，并校验到同一 `reference_offer_id` 和 `reference_variant_id`；状态心跳仅更新绑定报价的真实采集时间。页面时钟过期、价格有效期结束或采集失败时撤下精选资格。
+- 回归：`node scripts/test_featured_deals.js`、`python -m unittest discover -s tests -p 'test_featured_deals.py'`。代码推送 CI 还运行 `python scripts/test_featured_deals_ui.py`，覆盖桌面、手机、小屏手机，以及普通商品搜索、Back／重载、来源范围和失效空状态。

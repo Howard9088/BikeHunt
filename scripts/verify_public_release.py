@@ -132,6 +132,24 @@ def snapshot_offers(data: dict) -> dict:
                 'Snapshot catalog reference offer ID missing or mismatched')
         require(card.get('reference_collection_state') == offers[reference]['collection_state'],
                 'Snapshot catalog reference offer collection state differs')
+        if 'reference_original_price' in card or 'reference_variant_id' in card:
+            detail = families[card['product_id']]['variants'].get(card.get('reference_variant_id'), {})
+            quote = next((row for row in detail.get('offers', [])
+                          if row['offer']['offer_id'] == reference), None)
+            require(quote is not None, 'Snapshot discount reference variant differs')
+            offer = quote['offer']
+            identity = offer.get('identity') or {}
+            expected = {'reference_price': offer.get('price'),
+                        'reference_original_price': offer.get('original_price'),
+                        'reference_cny': quote.get('product_cny'),
+                        'reference_source': offer.get('source_name'),
+                        'reference_size': identity.get('size'),
+                        'reference_color': identity.get('color'),
+                        'reference_price_valid_until': offer.get('price_valid_until'),
+                        'reference_data_kind': offer.get('data_kind', 'live_snapshot'),
+                        'fetched_at': offer.get('fetched_at')}
+            require(all(key in card and card[key] == value for key, value in expected.items()),
+                    'Snapshot discount facts differ from exact reference offer')
     return offers
 
 

@@ -163,6 +163,13 @@ class ComparisonCatalog:
                 and 0 <= _age(offer.fetched_at, self.now) <= STOCK_MAX_AGE_SECONDS
                 and _price_valid(offer.price_valid_until, self.now))
 
+    def discounted(self, offer: Offer) -> bool:
+        """A merchant's same-variant price pair, never a historical price drop."""
+        return (self.available(offer) and offer.data_kind == "live_snapshot"
+                and offer.original_price is not None
+                and offer.original_price.currency == offer.price.currency
+                and offer.original_price.amount > offer.price.amount > 0)
+
     @staticmethod
     def color_group(offer: Offer) -> str:
         ident = offer.identity
@@ -221,7 +228,10 @@ class ComparisonCatalog:
             all_compared = [compare_offer(x,self.fx,self.now) for v in variants for x in v]
             in_stock = [x for x in all_compared if self.available(x.offer)]
             references = in_stock or all_compared
-            reference = recommended or min(references,key=lambda x: x.product_cny if x.product_cny is not None else Decimal("Infinity"))
+            discounted = [x for x in in_stock if self.discounted(x.offer)]
+            reference = (min(discounted, key=lambda x: (x.product_cny if x.product_cny is not None else Decimal("Infinity"), x.offer.offer_id))
+                         if discounted else recommended or min(references,key=lambda x: x.product_cny if x.product_cny is not None else Decimal("Infinity")))
+            reference_variant = next(v for v in variants if any(x.offer_id == reference.offer.offer_id for x in v))
             sources = {x.source_code for v in variants for x in v}
             cards.append(ProductCard(
                 product_id=product_id, name=detail.name, brand=detail.identity.brand,
@@ -233,6 +243,11 @@ class ComparisonCatalog:
                 source_codes=sorted(sources),
                 reference_price=reference.offer.price, reference_cny=reference.product_cny,
                 reference_source=reference.offer.source_name, reference_offer_id=reference.offer.offer_id,
+                reference_original_price=reference.offer.original_price,
+                reference_variant_id=self._variant_id(reference_variant),
+                reference_size=reference.offer.identity.size, reference_color=reference.offer.identity.color,
+                reference_price_valid_until=reference.offer.price_valid_until,
+                reference_data_kind=reference.offer.data_kind,
                 discount_pct=reference.discount_pct,
                 reference_stock=reference.offer.stock if self.available(reference.offer) or reference.offer.stock != "in_stock" else "unknown", reference_collection_state=reference.offer.collection_state, fetched_at=reference.offer.fetched_at,
                 recommended_total_cny=recommended.total_cny if recommended else None,

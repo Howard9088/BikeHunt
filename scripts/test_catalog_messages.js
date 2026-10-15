@@ -58,10 +58,10 @@ function testCategoryScopeAndExplicitGlobalReset(){
  Object.assign(h.c,{activeSource:'bahrain',activeCategory:'all',directoryData:{brands:[],teams:[{code:'bahrain',name_zh:'巴林车队'}]},navigate:()=>{},profileMatches:()=>true,items:[{source_codes:['bahrain'],category:'jerseys',stock_state:'unknown',brand:'Ale',name:'Jersey'},{source_codes:['other'],category:'jerseys',stock_state:'in_stock',brand:'Other',name:'Jersey'}]});
  h.c.document.querySelectorAll=selector=>selector==='[data-category]'?categoryButtons:[productButton];h.badge.value='';
  vm.runInContext(section(flows,'function chooseCategory(','function renderDirectory('),h.c);
- vm.runInContext(section(gallery,'function visibleItems(','function render('),h.c);
+ vm.runInContext(section(gallery,'function featuredBrowse(','function render('),h.c);
  h.c.chooseCategory('jerseys');assert.equal(h.c.activeSource,'bahrain');assert.equal(h.badge.textContent,'巴林车队');assert.equal(h.c.visibleItems().length,1);
  h.c.chooseCategory('all');assert.equal(h.c.activeSource,'bahrain');
- vm.runInContext(section(flows,"document.querySelectorAll('[data-tab]').forEach(b=>b.onclick",'const panelError='),h.c);productButton.onclick();assert.equal(h.c.activeSource,null);assert.equal(h.badge.textContent,'精选好价');assert.equal(h.c.visibleItems().length,2);
+ vm.runInContext(section(flows,"document.querySelectorAll('[data-tab]').forEach(b=>b.onclick",'const panelError='),h.c);productButton.onclick();assert.equal(h.c.activeSource,null);assert.equal(h.badge.textContent,'精选好价');assert.equal(h.c.visibleItems().length,0,'Default feed excludes ordinary reference cards');
 }
 async function testDismissedMessagesDoNotReopenOrReadUnseenRows(){
  const h=harness();let resolve;Object.assign(h.c,{messagesOpen:false,detailSequence:0,sheet:{classList:{contains:()=>true}},openPanel(){h.c.detailSequence++},getJson:()=>new Promise(done=>{resolve=done})});
@@ -75,7 +75,7 @@ function testHistoryScopeValidationAndBackPollingRestart(){
  h.c.saveBrowseState();assert.equal(h.c.history.state.other,'preserved');assert.equal(h.c.history.state.bikehuntBrowse.source,'bahrain');assert.equal(h.c.history.state.bikehuntBrowse.query,'Stamp Hoodie');
  h.c.activeSource=null;h.c.activeCategory='all';input.value='';h.c.restoreBrowseState();assert.equal(h.c.activeSource,'bahrain');assert.equal(h.c.activeCategory,'jerseys');assert.equal(input.value,'Stamp Hoodie');
  Object.assign(h.c,{profileMatches:()=>true,items:[{brand:'Test',name:'Stamp Hoodie',category:'jerseys',source_codes:['bahrain']},{brand:'Test',name:'Other jersey',category:'jerseys',source_codes:['bahrain']}]});
- vm.runInContext(section(gallery,'function visibleItems(','function render('),h.c);assert.equal(h.c.visibleItems().length,1,'Restoring text restores the actual filter, not only the input appearance');
+ vm.runInContext(section(gallery,'function featuredBrowse(','function render('),h.c);assert.equal(h.c.visibleItems().length,1,'Restoring text restores the actual filter, not only the input appearance');
  for(const query of [undefined,null,42,{},[],['Stamp Hoodie'],'x'.repeat(201)]){
   h.c.history.state.bikehuntBrowse.query=query;input.value='old';h.c.restoreBrowseState();assert.equal(input.value,'','Invalid or oversized history query is discarded');assert.equal(h.c.visibleItems().length,2);
   input.value=query;h.c.saveBrowseState();assert.equal(h.c.history.state.bikehuntBrowse.query,'','Invalid or oversized input is never saved');

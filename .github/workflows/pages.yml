@@ -61,6 +61,8 @@ jobs:
         run: node scripts/test_group.js
       - name: Validate scoped browsing and price messages
         run: node scripts/test_catalog_messages.js
+      - name: Validate verified featured deals and exact discount quotes
+        run: node scripts/test_featured_deals.js
       - name: Install Chromium for changed-code browser regression
         if: github.event_name == 'push'
         timeout-minutes: 5
@@ -77,6 +79,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_group_ui.py
+      - name: Validate featured discounts and ordinary search on desktop and mobile
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_featured_deals_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
       - name: Check policy changes once daily

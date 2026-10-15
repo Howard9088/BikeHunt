@@ -42,6 +42,10 @@ def fixture():
             'source_codes': ['maap'], 'variant_count': 3, 'available_sizes': ['S'],
             'reference_price': {'amount': '225', 'currency': 'AUD'}, 'reference_cny': '1080',
             'reference_source': 'MAAP', 'recommended_total_cny': None, 'discount_pct': 40,
+            'reference_original_price': {'amount': '375', 'currency': 'AUD'},
+            'reference_offer_id': 'offer-s', 'reference_variant_id': 'S', 'reference_size': 'S',
+            'reference_color': '白色', 'reference_stock': 'in_stock', 'reference_collection_state': 'current',
+            'reference_data_kind': 'live_snapshot', 'reference_price_valid_until': None,
             'fetched_at': now, 'stock_state': 'in_stock'}
     sold = {**base, 'product_id': 'sold-out', 'name': 'Team Bib Evo Cargo White Sold Out',
             'name_zh': '白色背带裤 · 全部售罄测试', 'stock_state': 'out_of_stock', 'available_sizes': []}
@@ -54,7 +58,7 @@ def fixture():
     check = {'status': 'unknown', 'note': '测试规则', 'url': 'https://merchant.example/policy'}
     offer = {'offer_id': 'offer-s', 'source_code': 'maap', 'source_name': 'MAAP',
              'url': 'https://merchant.example/bib?variant=S', 'stock': 'in_stock',
-             'collection_state': 'current', 'price': base['reference_price'], 'fetched_at': now,
+             'collection_state': 'current', 'price': base['reference_price'], 'original_price': base['reference_original_price'], 'fetched_at': now,
              'shipping_to_china': check, 'china_issued_card': check, 'accepted_card_networks': ['Visa'],
              'purchase_requirements': [], 'identity_evidence': '回归测试数据'}
     detail = {'product_id': 'partial', 'variant_id': 'S', 'name': base['name'], 'name_zh': base['name_zh'],

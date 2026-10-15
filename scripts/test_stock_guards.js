@@ -169,7 +169,8 @@ function prepareOpenSelection(h, withGuide) {
     offers: [q], fx: {snapshot_id: 'fx', fetched_at: q.offer.fetched_at, stale: false}};
   const card = {product_id: 'p', stock_state: 'in_stock', fetched_at: q.offer.fetched_at,
     reference_offer_id: 'offer', reference_verification_identity: q.offer.verification_identity,
-    reference_stock: 'in_stock', reference_collection_state: 'current', available_sizes: ['M'], recommended_total_cny: '700'};
+    reference_stock: 'in_stock', reference_collection_state: 'current', available_sizes: ['M'], recommended_total_cny: '700',
+    reference_data_kind:'live_snapshot', reference_variant_id:'v', reference_price:{amount:'100',currency:'USD'}, reference_original_price:{amount:'120',currency:'USD'}};
   h.context.items = [card]; h.context.currentProduct = detail; h.context.fx = structuredClone(detail.fx);
   const cardLabel = {}, offerLabel = {}, guideLabel = {};
   h.cardNodes.push({dataset: {id: 'p'}, querySelector: selector => selector === '.data-time' ? cardLabel : null});
@@ -185,6 +186,7 @@ function testVerifiedHeartbeatPreservesOpenSelectionAndGuideWithoutRendering() {
     h.setNow(START + 1800000); h.metadata(verificationFor(ui.q, START + 1800000));
     const renewed = new Date(START + 1800000).toISOString();
     assert.equal(ui.q.offer.fetched_at, renewed); assert.equal(ui.card.fetched_at, renewed);
+    assert.equal(h.context.featuredDeal(ui.card),true);assert.equal(ui.card.reference_original_price.amount,'120');
     assert.equal(ui.detail.fx.fetched_at, renewed); assert.equal(h.context.fx.fetched_at, renewed);
     assert.equal(h.context.currentProduct, ui.detail, 'Metadata update preserves the selected detail object');
     assert.equal(h.context.guideContext, existingGuide, 'Metadata update preserves the active guide and step');
