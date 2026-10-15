@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from html.parser import HTMLParser
 
 from app.road_equipment import read_road_references, BROWSE_CATEGORIES
 from app.catalog.storage import OfferRepository
@@ -75,6 +76,50 @@ class RoadEquipmentTests(unittest.TestCase):
         brands=[b for b in directory['brands'] if b.get('road_reference')]
         self.assertEqual(len(brands),4)
         self.assertTrue(all(not b.get('logo_images') for b in brands))
+
+    def test_references_remain_verbatim_with_fx_conversion_only_in_the_view(self):
+        # Rendering today's item-only CNY must not fabricate a refreshed quote,
+        # offer, shipping/tax amount or availability observation in saved data.
+        saved = json.loads((ROOT/'data/road_equipment_references.json').read_text())
+        self.assertEqual(read_road_references(ROOT), saved)
+        for row in saved['products']:
+            for field in ('offer_id', 'variant_id', 'fetched_at', 'item_cny',
+                          'shipping_cny', 'tax_cny', 'landed_cny'):
+                self.assertNotIn(field, row)
+            self.assertIsNone(row['recommended_total_cny'])
+            self.assertEqual(row['available_sizes'], [])
+
+    def test_gender_controls_start_hidden_and_keep_exact_three_choices(self):
+        class Controls(HTMLParser):
+            def __init__(self):
+                super().__init__(); self.gender_group = None; self.genders = []
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if attrs.get('id') == 'genderFilter':
+                    self.gender_group = attrs
+                if 'data-gender' in attrs:
+                    self.genders.append(attrs['data-gender'])
+        parser = Controls(); parser.feed((ROOT/'web/index.html').read_text())
+        self.assertIn('hidden', parser.gender_group)
+        self.assertEqual(parser.genders, ['all', 'male', 'female'])
+        self.assertNotIn('id="categoryNav"', (ROOT/'web/index.html').read_text())
+
+    def test_reference_detail_uses_existing_help_and_same_tab_gate(self):
+        code = (ROOT/'web/flows.js').read_text()
+        detail = code.split('function roadReferenceDetailMarkup(row){', 1)[1].split(
+            'function allowedRoadDetailButton(', 1)[0]
+        for text in ('roadReferenceOptionsMarkup(row)', 'roadReferencePriceMarkup(row)',
+                     'registrationHelpMarkup(row.source_code,row.market)',
+                     'paymentDirectoryMarkup(source)', 'roadPurchaseSteps',
+                     '运费和税费待核实，不按 0 元处理', '不套用服装税率'):
+            self.assertIn(text, detail)
+        for forbidden in ('data-purchase-link', 'data-route-select', 'startGuide(',
+                          'available_sizes', 'recommended_total_cny'):
+            self.assertNotIn(forbidden, detail)
+        card = code.split('function roadReferenceCard(row){', 1)[1].split(
+            'function roadReferenceDetailMarkup(', 1)[0]
+        self.assertIn('data-road-open=', card)
+        self.assertNotIn('roadReferenceLink(', card)
 
 
 if __name__ == '__main__':unittest.main()

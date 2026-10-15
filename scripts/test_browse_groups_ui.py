@@ -1,4 +1,4 @@
-"""Hermetic inline road-reference UI on desktop and phones; no merchant access."""
+"""Hermetic reference detail/exit and five-group UI; run Chromium only in CI."""
 from __future__ import annotations
 
 import json
@@ -48,8 +48,171 @@ def inline_cards(page, count):
     return inline
 
 
+def product_opener(page, identifier=MIDLOADER, owner='#roadReferenceInline'):
+    return page.locator(f'{owner} button[data-road-open="{identifier}"]')
+
+
 def product_link(page, identifier=MIDLOADER):
-    return page.locator(f'#roadReferenceInline a[data-road-reference="product:{identifier}"]')
+    return page.locator(f'#roadReferenceDetail a[data-road-reference="product:{identifier}"]')
+
+
+def open_reference(page, identifier=MIDLOADER, owner='#roadReferenceInline'):
+    opener = product_opener(page, identifier, owner)
+    expect(opener).to_have_count(1)
+    opener.click()
+    detail = page.locator('#sheetBody #roadReferenceDetail')
+    expect(detail).to_be_visible()
+    expect(page.locator('#externalExitDialog')).not_to_be_visible()
+    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+    return detail
+
+
+def back_to_references(page, identifier=MIDLOADER, owner='#roadReferenceInline', focus=True):
+    page.locator('#roadReferenceBack').click()
+    # Closed sheets are translated offscreen, not display:none.
+    expect(page.locator('#sheet.open #roadReferenceDetail')).to_have_count(0)
+    if owner == '#roadReferenceInline':
+        expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+    else:
+        expect(page.locator(owner)).to_be_visible()
+    if focus:
+        expect(product_opener(page, identifier, owner)).to_be_focused()
+
+
+def assert_reference_detail(page, row, state, owner='#roadReferenceInline'):
+    """All four records share the same honest, read-only in-site workflow."""
+    card = page.locator(f'{owner} [data-road-reference-card="{row["id"]}"]')
+    expect(card.locator('a[data-road-reference^="product:"]')).to_have_count(0)
+    expect(card.locator('[data-road-open]')).to_have_count(1)
+    if row.get('image'):
+        expect(card.locator('img[data-reference-image]')).to_have_attribute('src', row['image'])
+    else:
+        expect(card.locator('img[data-reference-image]')).to_have_count(0)
+        expect(card.locator('.reference-image-fallback')).to_be_visible()
+    detail = open_reference(page, row['id'], owner)
+    for text in [row['name'], '库存待核实', '未取得折扣结束时间']:
+        expect(detail).to_contain_text(text)
+    expect(detail.locator('.road-item-only')).to_contain_text('商品价')
+    expect(detail.locator('.road-item-only')).to_contain_text('不是到手总价')
+    for amount in [row['price'], row['reference_price']]:
+        # Use the actual locale formatter, checking source and CNY amounts separately.
+        for currency, value in [(row['currency'], amount), ('CNY', amount * 7)]:
+            formatted = page.evaluate('({value, currency}) => money(value, currency)',
+                                      {'value': value, 'currency': currency})
+            expect(detail.locator('.road-price')).to_contain_text(formatted)
+    expect(detail.locator('.road-reference-fx')).to_contain_text(state['catalog']['fx']['rate_date'])
+    expect(detail.locator('.road-reference-fx')).to_contain_text('每日参考')
+    options = detail.locator('#roadReferenceOptions')
+    for option in row['listed_options']:
+        expect(options).to_contain_text(option)
+    expect(options.locator('button,input,select,a,[role=radio],[role=option],[role=button]')).to_have_count(0)
+    expect(detail.locator('select,[data-purchase-link],[data-route-select],#variant,#bundleChoices,.costs')).to_have_count(0)
+    assert page.evaluate('currentProduct === null'), 'Reference detail must not manufacture an Offer/product'
+    steps = detail.locator('#roadPurchaseSteps')
+    expect(steps).to_be_visible()
+    assert steps.locator('li').count() >= 4
+    for text in ['市场', '尺码', '运费', '税费', '支付', '账户']:
+        expect(steps).to_contain_text(text)
+    brand = next(b for b in state['catalog']['road_equipment_references']['brands'] if b['code'] == row['source_code'])
+    expect(detail).to_contain_text(brand['note'])
+    expect(detail).to_contain_text(row['notes'])
+    expect(steps).to_contain_text('不套用服装税率')
+    expect(detail.locator('#roadReferenceRegistration')).to_be_visible()
+    expect(detail.locator('#roadReferenceRegistration')).to_contain_text('是否提供待核实')
+    expect(detail.locator('[data-payment-directory]')).to_have_count(1)
+    expect(product_link(page, row['id'])).to_have_attribute('href', row['url'])
+    expect(product_link(page, row['id'])).to_have_attribute('target', '_self')
+    if row.get('image'):
+        image = detail.locator('img[data-reference-image]')
+        expect(image).to_have_attribute('src', row['image'])
+        image.evaluate("img => img.dispatchEvent(new Event('error'))")
+        expect(image).to_be_hidden()
+        expect(detail.locator('.reference-image-fallback')).to_be_visible()
+    else:
+        expect(detail.locator('img[data-reference-image]')).to_have_count(0)
+        expect(detail.locator('.reference-image-fallback')).to_contain_text('图片待核实')
+    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+    back_to_references(page, row['id'], owner)
+
+
+def check_fx_states(page, state):
+    original = page.evaluate('JSON.parse(JSON.stringify(fx))')
+    page.evaluate("fx = {...fx, rate_date: '2000-01-01', stale: true}; render()")
+    expect(page.locator('#roadReferenceInline .road-reference-fx')).to_contain_text('过期缓存')
+    original_opener = product_opener(page).element_handle()
+    detail = open_reference(page)
+    expect(detail.locator('.road-reference-fx')).to_contain_text('2000-01-01')
+    expect(detail.locator('.road-reference-fx')).to_contain_text('过期缓存')
+    expect(detail.locator('.road-price')).to_contain_text(page.evaluate('money(55.95 * 7)'))
+    # Published FX updates refresh an already-open detail without replacing its exit.
+    exit_handle = product_link(page).element_handle()
+    page.evaluate('(original) => { fx = original; refreshRoadReferenceDetail(); }', original)
+    expect(detail.locator('.road-reference-fx')).to_contain_text(original['rate_date'])
+    expect(detail.locator('.road-reference-fx')).to_contain_text('每日参考')
+    for missing in [{}, {'rate_date': state['catalog']['fx']['rate_date'], 'rates': {'CNY': 1}}]:
+        page.evaluate('(missing) => { fx = missing; refreshRoadReferenceDetail(); }', missing)
+        expect(detail.locator('.road-reference-fx')).to_contain_text('汇率待获取')
+        expect(detail.locator('.road-price')).to_contain_text('待换算')
+        expect(detail.locator('.road-price')).not_to_contain_text(page.evaluate('money(55.95 * 7)'))
+        expect(detail.locator('.road-price')).not_to_contain_text('NaN')
+        expect(detail.locator('.road-price')).not_to_contain_text('Infinity')
+    assert page.evaluate('(link) => link.isConnected', exit_handle)
+    # A catalog render replaces the list underneath an open detail. Back still
+    # resolves the current card instead of trying to focus the detached opener.
+    page.evaluate('render(); refreshRoadReferenceDetail()')
+    assert page.evaluate('(opener) => !opener.isConnected', original_opener)
+    expect(detail).to_be_visible()
+    back_to_references(page)
+    page.evaluate('(original) => { fx = original; render(); }', original)
+
+
+def check_language_help(page):
+    detail = open_reference(page)
+    expected_url = product_link(page).get_attribute('href')
+    detail.locator('#roadReferenceLanguage').click()
+    expect(page.locator('#merchantLanguageGuide')).to_be_visible()
+    expect(page.locator('#merchantGuideTitle')).to_be_focused()
+    expect(page.locator('#merchantLanguageGuide')).to_contain_text('未实测注册或结账成功')
+    expect(page.locator('#merchantLanguageGuide input, #merchantLanguageGuide form')).to_have_count(0)
+    page.locator('#merchantGuideBack').click()
+    expect(page.locator('#roadReferenceDetail')).to_be_visible()
+    expect(page.locator('#roadReferenceLanguage')).to_be_focused()
+    expect(product_link(page)).to_have_attribute('href', expected_url)
+    back_to_references(page)
+
+
+def check_gender_scope(page):
+    expect(page.locator('#genderFilter')).to_be_hidden()
+    page.locator('[data-category-group=clothing]').click()
+    expect(page.locator('#genderFilter')).to_be_visible()
+    page.locator('#genderFilter [data-gender=female]').click()
+    assert page.evaluate("shopperProfile.gender === 'female'")
+    # Existing body measurements survive clearing only the out-of-scope gender filter.
+    page.evaluate('shopperProfile.height_cm = 175; shopperProfile.weight_kg = 65; saveProfile()')
+    for group in ['road_equipment', 'cleat_shoes', 'helmets', 'other']:
+        page.locator(f'[data-category-group={group}]').click()
+        expect(page.locator('#genderFilter')).to_be_hidden()
+        assert page.evaluate("shopperProfile.gender === 'all'")
+        assert page.evaluate("JSON.parse(localStorage.getItem(PROFILE_KEY)).gender === 'all'")
+        assert page.evaluate('shopperProfile.height_cm === 175 && shopperProfile.weight_kg === 65')
+        # A stale listener or programmatic hidden click must not revive an invisible filter.
+        page.locator('#genderFilter [data-gender=female]').evaluate('button => button.click()')
+        assert page.evaluate("shopperProfile.gender === 'all'")
+        assert page.evaluate("(group) => profileMatches({category_group: group, gender: 'male'})", group)
+    page.locator('[data-category-group=clothing]').click()
+    expect(page.locator('#genderFilter [data-gender=all]')).to_have_attribute('aria-pressed', 'true')
+    page.locator('#genderFilter [data-gender=female]').click()
+    page.locator('[data-tab=brands]').click()
+    expect(page.locator('#genderFilter')).to_be_hidden()
+    assert page.evaluate("shopperProfile.gender === 'all'")
+    page.locator('[data-tab=products]').click()
+    expect(page.locator('#genderFilter')).to_be_hidden()
+    # Restore an old persisted female preference on a non-clothing reload.
+    page.evaluate("localStorage.setItem(PROFILE_KEY, JSON.stringify({...shopperProfile, gender: 'female'}))")
+    page.reload(wait_until='networkidle')
+    expect(page.locator('#genderFilter')).to_be_hidden()
+    assert page.evaluate("shopperProfile.gender === 'all'")
+    expect(page.locator('#grid .card')).to_have_count(1)
 
 
 def assert_inline_layout(page, viewport):
@@ -104,12 +267,14 @@ def assert_disabled_exit(page, base):
 
 
 def check_exit_mutations(page, base, expected_url):
-    # Stock changes during reading invalidate the originally opened entry.
+    # Stock changes while reading invalidate the exact final gate.
+    open_reference(page)
     product_link(page).click()
     page.evaluate("""(id) => {
         roadReferenceData.products.find(row => row.id === id).stock = 'out_of_stock';
     }""", MIDLOADER)
     assert_disabled_exit(page, base)
+    back_to_references(page, focus=False)
     page.evaluate('render()')
     sold = inline_cards(page, 1).locator(f'[data-road-reference-card="{MIDLOADER}"]')
     expect(sold).to_contain_text('已确认售罄')
@@ -118,16 +283,16 @@ def check_exit_mutations(page, base, expected_url):
         roadReferenceData.products.find(row => row.id === id).stock = 'unknown';
         render();
     }""", MIDLOADER)
-    expect(product_link(page)).to_have_attribute('href', expected_url)
 
-    # Changing only the DOM destination must not reuse the original confirmation.
+    # Changing only the DOM destination cannot reuse the original confirmation.
+    open_reference(page)
     product_link(page).click()
-    product_link(page).evaluate("(link) => link.setAttribute('href', link.href + '?changed=1')")
+    product_link(page).evaluate("link => link.setAttribute('href', link.href + '?changed=1')")
     assert_disabled_exit(page, base)
-    page.evaluate('render()')
-    expect(product_link(page)).to_have_attribute('href', expected_url)
+    back_to_references(page)
 
     # A new same-host record URL is still a different exact destination.
+    open_reference(page)
     product_link(page).click()
     page.evaluate("""(id) => {
         roadReferenceData.products.find(row => row.id === id).url += '?changed=1';
@@ -135,18 +300,37 @@ def check_exit_mutations(page, base, expected_url):
     assert_disabled_exit(page, base)
     page.evaluate("""({id, url}) => {
         roadReferenceData.products.find(row => row.id === id).url = url;
-        render();
     }""", {'id': MIDLOADER, 'url': expected_url})
+    back_to_references(page)
 
-    # Re-rendering an identical card detaches the trigger and requires a fresh visit.
+    # Replacing an identical final anchor detaches its exact trigger.
+    open_reference(page)
     product_link(page).click()
-    page.evaluate('render()')
+    product_link(page).evaluate('link => link.replaceWith(link.cloneNode(true))')
     assert_disabled_exit(page, base)
+    back_to_references(page)
+
+    # Filters changing during the final gate must revalidate current browse scope.
+    for mutate, restore in [
+        ("document.getElementById('q').value = 'different product'", "document.getElementById('q').value = 'Midloader'"),
+        ("activeCategoryGroup = 'road_equipment'", "activeCategoryGroup = 'other'"),
+        ("activeSource = 'specialized'", "activeSource = 'canyon'"),
+        ("activeTab = 'brands'", "activeTab = 'products'"),
+    ]:
+        open_reference(page)
+        product_link(page).click()
+        page.evaluate(mutate)
+        assert_disabled_exit(page, base)
+        page.evaluate(restore)
+        back_to_references(page)
+
+    open_reference(page)
     expect(product_link(page)).to_have_attribute('href', expected_url)
     product_link(page).click()
     expect(page.locator('#externalExitConfirm')).to_be_enabled()
     page.locator('#externalExitCancel').click()
     expect(product_link(page)).to_be_focused()
+    back_to_references(page)
 
 
 def check_browse_state(page):
@@ -165,7 +349,7 @@ def main():
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     base = f'http://127.0.0.1:{server.server_port}/web/'
-    errors, checks, unexpected = [], [], []
+    errors, checks, unexpected, product_api_requests = [], [], [], []
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(executable_path=os.environ.get('CHROME_EXECUTABLE') or shutil.which('chromium'), headless=True)
@@ -195,6 +379,9 @@ def main():
                         return route.abort()
                     if not url.path.startswith('/api/'):
                         return route.continue_()
+                    if url.path.startswith(('/api/catalog/', '/api/fit/')):
+                        product_api_requests.append(route.request.url)
+                        return route.abort()
                     if url.path == '/api/catalog':
                         result = state['catalog']
                     elif url.path == '/api/directories':
@@ -217,6 +404,7 @@ def main():
                 expect(page.locator('[data-category]')).to_have_count(0)
                 expect(page.locator('#grid .card')).to_have_count(1)
                 expect(page.locator('#roadReferenceInline')).to_have_count(0)
+                check_gender_scope(page)
                 page.locator('[data-category-group=road_equipment]').click()
                 inline = inline_cards(page, 3)
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
@@ -225,9 +413,9 @@ def main():
                     record = inline.locator(f'[data-road-reference-card="{row["id"]}"]')
                     expect(record).to_contain_text(row['name'])
                     expect(record).to_contain_text('库存待核实')
-                    link = record.locator(f'a[data-road-reference="product:{row["id"]}"]')
-                    expect(link).to_have_attribute('href', row['url'])
-                    expect(link).to_have_attribute('target', '_self')
+                    expect(record.locator('a[data-road-reference^="product:"]')).to_have_count(0)
+                    expect(product_opener(page, row['id'])).to_have_count(1)
+                    assert_reference_detail(page, row, state)
                 assert_inline_layout(page, viewport)
                 page.screenshot(path=str(OUT / f'references_{mode}.png'))
 
@@ -240,6 +428,15 @@ def main():
                 expect(inline.locator('[data-road-reference-card]')).to_have_count(3)
                 expect(panel).to_contain_text('不接受转运地址')
                 expect(page.locator('#count')).to_have_text('0 件商品')
+                assert_reference_detail(page, references[0], state, '#roadReferencePanel')
+                # Brand entrances remain direct but use the same final exit guard.
+                brand = panel.locator('a[data-road-reference="brand:trek"]')
+                expect(brand).to_have_attribute('href', next(b['url'] for b in state['catalog']['road_equipment_references']['brands'] if b['code'] == 'trek'))
+                brand.click()
+                expect(page.locator('#externalExitDomain')).to_have_text('www.trekbikes.com')
+                expect(page.locator('#roadReferenceDetail')).not_to_be_visible()
+                page.locator('#externalExitCancel').click()
+                expect(brand).to_be_focused()
                 page.locator('#close').click()
 
                 # One visible category row; search and group reset never create a second layer.
@@ -255,6 +452,9 @@ def main():
                 page.locator('[data-category-group=other]').click()
                 expect(inline_cards(page, 1)).to_contain_text('Canyon Midloader')
                 expect(page.locator('[data-category]')).to_have_count(0)
+                assert_reference_detail(page, next(row for row in references if row['id'] == MIDLOADER), state)
+                check_fx_states(page, state)
+                check_language_help(page)
 
                 # A brand source returns directly to its bike records; accessories remain discoverable.
                 page.locator('[data-tab=brands]').click()
@@ -277,19 +477,25 @@ def main():
                 page.reload(wait_until='networkidle')
                 check_browse_state(page)
 
+                open_reference(page)
+                page.locator('#roadReferenceBack').scroll_into_view_if_needed()
+                page.screenshot(path=str(OUT / f'reference_detail_{mode}.png'))
                 link = product_link(page)
                 expected = next(row['url'] for row in references if row['id'] == MIDLOADER)
                 expect(link).to_have_attribute('href', expected)
                 original_trigger = link.element_handle()
                 link.click()
                 expect(page.locator('#externalExitDomain')).to_have_text('www.canyon.com')
+                expect(page.locator('#externalExitImage')).to_have_attribute('src', next(row['image'] for row in references if row['id'] == MIDLOADER))
                 expect(page.locator('#registrationInterstitial')).to_have_count(0)
                 page.locator('#externalExitCancel').click()
                 expect(link).to_be_focused()
                 assert page.evaluate('(trigger) => document.activeElement === trigger', original_trigger)
+                back_to_references(page)
                 check_exit_mutations(page, base, expected)
 
                 # A newly opened valid link leaves in this tab and restores all browse scope.
+                open_reference(page)
                 product_link(page).click()
                 expect(page.locator('#externalExitConfirm')).to_be_enabled()
                 page.locator('#externalExitConfirm').click()
@@ -326,16 +532,17 @@ def main():
                 assert page.evaluate('activeSource === null')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path=str(OUT / f'groups_{mode}.png'))
-                checks.append(mode + ': inline references before brand directory; honest zero verified count; first-screen price and native scroll; exact links; single-layer group/source/query filters and old-leaf migration; sold-out and stale-link guards; exact cancel focus; same-tab Back/reload scope; global reset')
+                checks.append(mode + ': five one-level groups; clothing-only gender with persisted residue clearing; reference list to internal detail to exact guarded same-tab exit; original/current currency and CNY item-only with current/stale/missing FX; read-only displayed options and practical purchase steps; exact/missing/failed images; brand direct guard; honest zero verified count; mobile price/layout and native scroll; group/source/query migration; stock/DOM/URL/filter mutation gates; cancel and list-return focus; merchant Back/reload scope; global reset')
                 context.close()
             browser.close()
     finally:
         server.shutdown()
         server.server_close()
         thread.join(timeout=5)
-        (OUT / 'results.json').write_text(json.dumps({'checks': checks, 'errors': errors, 'unexpected_external_requests': unexpected}, ensure_ascii=False, indent=2))
+        (OUT / 'results.json').write_text(json.dumps({'checks': checks, 'errors': errors, 'unexpected_external_requests': unexpected, 'unexpected_product_api_requests': product_api_requests}, ensure_ascii=False, indent=2))
     assert not errors, errors
     assert not unexpected, unexpected
+    assert not product_api_requests, product_api_requests
     print(json.dumps({'ok': True, 'checks': checks}, ensure_ascii=False))
 
 

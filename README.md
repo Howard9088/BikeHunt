@@ -287,3 +287,12 @@ node scripts/test_pages_freshness.js
 - 「自行车」仅含整车与车架，零部件、水壶、车包、保养用品和坐垫归「配件与周边」；骑行服饰保留衣服及袜子、手套、帽子等穿戴品。两类中的「官网参考」是单独的只读研究区。Trek、Specialized、Canyon、Colnago 四个官网入口使用文字名称；三条整车／车架和一条 Midloader 配件价格研究记录保留原页面价格对、研究日期和观察时间限制。库存、可购买规格与中国到手总价均未知，没有折扣倒计时，不进入精选，不登记新采集器或新支付支持。
 - Trek 美国站明确不接受转运地址，香港中转也不能绕过；Trek 与 Specialized 美国站不提供中国直邮。Canyon 中国配送仍待核实，Outlet 退货条件冲突和车架机械变速限制保留。参考页面外链仍经精确域名校验和最后离站确认，在同一标签页打开。
 - 回归：`node scripts/test_browse_groups.js`、`python -m unittest discover -s tests -p 'test_browse_taxonomy.py'`、`python -m unittest discover -s tests -p 'test_road_equipment.py'`。`scripts/test_browse_groups_ui.py` 已接入代码推送 CI，覆盖桌面、390px、320px；本地未启动浏览器时不声称已完成视觉验收。
+
+### 自行车参考详情与服饰专属筛选
+
+- 保留一层五分类。全部／男款／女款仅在骑行服饰中显示；离开服饰后清除性别筛选，保留来源、搜索与身体尺寸，避免其他类别被隐藏条件排空。
+- 官网研究卡片先进入本站商品详情与“怎么买”指引。继续使用逐款核实的图片；未取得或载入失败时保留明确文字提示，不借用其他商品图。
+- 记录原价和现价旁使用当前目录的每日汇率换算人民币商品价，展示汇率日期。过期缓存明确提示；汇率、日期或核对时间不完整时显示待换算。换汇不更新历史报价或库存观察时间。
+- 详情中的页面选项只供参考，不是现货选择器。运费、税费未知，不按零元处理；整车、车架、配件不使用服装税率，也不生成到手总价或假 Offer。
+- 购买步骤依次核对官方市场、尺码与适配、商家许可的配送路线、运费税费与退货、支付及账户要求。沿用已有中文图解、注册资料查询和精确链接离站确认；支付未知继续保留未知。最后在同一标签页打开原商品地址，Back 保留分类、来源和搜索。
+- 回归：`node scripts/test_browse_groups.js`、`python -m unittest discover -s tests -p 'test_road_equipment.py'`；代码推送 CI 的 `scripts/test_browse_groups_ui.py` 覆盖桌面、390px 与 320px 的内部详情、费用边界、服饰性别筛选、取消焦点和同页返回。本地不启动 Chromium。

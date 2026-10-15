@@ -49,7 +49,14 @@ assert.ok(index.indexOf('/web/registration-guides.js')<index.indexOf('/web/galle
 const purchaseFlow=fs.readFileSync('web/purchase-flow.js','utf8');
 assert.ok(index.indexOf('/web/flows.js')<index.indexOf('/web/purchase-flow.js'));
 assert.ok(!gallery.includes('registrationHelpMarkup('),'Product details must not start account instructions');
-assert.ok(!flows.includes('registrationHelpMarkup('),'Amazon, inventory and read-only language panels must not contain early registration');
+const referenceDetail=flows.slice(flows.indexOf('function roadReferenceDetailMarkup('),flows.indexOf('function allowedRoadDetailButton('));
+assert.ok(referenceDetail.includes('registrationHelpMarkup(row.source_code,row.market)'), 'Research guide has scoped, read-only help immediately before its final exit');
+assert.ok(!flows.replace(referenceDetail,'').includes('registrationHelpMarkup('),'Amazon, inventory and read-only language panels must not contain early registration');
+for(const code of ['trek','specialized','canyon','colnago']){
+  const markup=context.registrationHelpMarkup(code,'US');
+  assert.ok(markup.includes('注册页面图解待核实'));
+  assert.ok(!/<(?:form|input|select|textarea|iframe|img)\b/.test(markup), 'Unverified new brands cannot borrow a screenshot or submit account data');
+}
 assert.ok(purchaseFlow.includes('registrationHelpMarkup('),'Registration help belongs to the final interstitial');
 assert.ok(purchaseFlow.includes('registrationInterstitial'));
 assert.ok(flows.includes("if(!entry.markets.includes(market))entry.markets.push(market)"));
