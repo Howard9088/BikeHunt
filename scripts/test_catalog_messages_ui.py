@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 from playwright.sync_api import expect, sync_playwright
 from datetime import datetime, timedelta, timezone
+from exit_dialog_test_support import (DISCLAIMER, assert_exit_closed, assert_exit_dialog, cancel_exit_dialog, confirm_exit_dialog, open_final_exit)
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/acceptance'
@@ -30,7 +31,6 @@ AMAZON_HELP = {
 
 
 
-DISCLAIMER = '本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。'
 
 
 def fixture():
@@ -119,6 +119,7 @@ def event(n, family='173', size='M', sold=False, image=True):
 
 def select_purchase_route(page, route='direct', selected=False):
     """Registration is available only after an explicit, enabled route choice."""
+    assert_exit_closed(page)
     comparison = page.locator('#routeComparison')
     expect(comparison).to_be_visible()
     expect(comparison.locator('.registration-help')).to_have_count(0)
@@ -141,6 +142,7 @@ def select_purchase_route(page, route='direct', selected=False):
     expect(page.locator('#registrationInterstitial')).to_be_visible()
     expect(page.locator('#registrationInterstitial .registration-help')).to_have_count(1)
     expect(page.locator('#routeComparison')).to_have_count(0)
+    assert_exit_closed(page)
 
 
 def expect_purchase_restored(page, stage='route'):
@@ -225,11 +227,13 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
         expect(help_link).to_have_attribute('href', href)
         expect(help_link).to_have_attribute('target', '_self')
     help_link = page.locator('[data-amazon-help-link="seller"]')
-    page.once('dialog', lambda d: (assert_disclaimer(d), d.dismiss()))
-    help_link.click(); expect(page).to_have_url(base)
-    page.once('dialog', lambda d: (assert_disclaimer(d), d.accept()))
-    with page.expect_navigation(wait_until='domcontentloaded'):
-        help_link.click(button='middle')
+    help_link.click()
+    assert_exit_dialog(page, AMAZON_HELP['seller'], official=False)
+    cancel_exit_dialog(page)
+    expect(help_link).to_be_focused()
+    expect(page).to_have_url(base)
+    help_link.click(button='middle')
+    confirm_exit_dialog(page, AMAZON_HELP['seller'], official=False)
     expect(page).to_have_url(AMAZON_HELP['seller']); assert len(context.pages) == 1
     page.go_back(wait_until='networkidle')
     expect(page.locator('#q')).to_have_value('Stamp Hoodie')
@@ -253,6 +257,7 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
         link.click()
         expect(page).to_have_url(base)
         expect(page.locator('#registrationInterstitial')).to_have_count(0)
+        assert_exit_closed(page)
     link.evaluate('(el, href) => el.setAttribute("href", href)', original_url)
     page.remove_listener('dialog', reject_unexpected)
     assert not dialogs, dialogs
@@ -280,14 +285,13 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
             expect(page.locator('.amazon-market')).to_have_count(4)
             expect(page.locator('#registrationInterstitial')).to_have_count(0)
             page.locator(f'[data-amazon-search-link="{code}_{category}"]').click()
-            page.once('dialog', lambda d: (assert_disclaimer(d), d.dismiss()))
-            page.locator('#registrationContinue').click()
+            open_final_exit(page, href, official=True)
+            cancel_exit_dialog(page)
             expect(page).to_have_url(base)
             expect(page.locator('.amazon-market')).to_have_count(4)
             page.locator(f'[data-amazon-search-link="{code}_{category}"]').click()
-            page.once('dialog', lambda d: (assert_disclaimer(d), d.accept()))
-            with page.expect_navigation(wait_until='domcontentloaded'):
-                page.locator('#registrationContinue').click()
+            open_final_exit(page, href, official=True)
+            confirm_exit_dialog(page, href, official=True)
             expect(page).to_have_url(href)
             assert len(context.pages) == 1
             page.go_back(wait_until='networkidle')
@@ -430,12 +434,12 @@ def main():
                 page.locator('#registrationCancel').click()
                 expect(page.locator('#routeComparison')).to_be_visible()
                 page.locator('#routeContinue').click()
-                page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()))
-                page.locator('#registrationContinue').click();assert len(context.pages)==1;expect(page).to_have_url(base)
+                open_final_exit(page, 'https://merchant.example/products/26-173-bah?variant=2')
+                cancel_exit_dialog(page);assert len(context.pages)==1;expect(page).to_have_url(base)
                 expect(page.locator('#routeComparison')).to_be_visible()
                 page.locator('#routeContinue').click()
-                page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):page.locator('#registrationContinue').click()
+                open_final_exit(page, 'https://merchant.example/products/26-173-bah?variant=2')
+                confirm_exit_dialog(page, 'https://merchant.example/products/26-173-bah?variant=2')
                 expect(page).to_have_url('https://merchant.example/products/26-173-bah?variant=2');assert len(context.pages)==1
                 page.go_back(wait_until='networkidle')
                 expect(page).to_have_url(base);expect_purchase_restored(page)
@@ -460,10 +464,10 @@ def main():
                 expect(page.locator('#fitReference')).to_contain_text('测试数据');page.locator('[data-variant="S"]').click();expect(page.locator('.guide-start')).to_be_enabled();page.locator('.guide-start').click()
                 select_purchase_route(page)
                 expect(page.locator('#registrationInterstitial')).to_contain_text('MAAP')
-                page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()));page.locator('#registrationContinue').click();expect(page).to_have_url(base);expect(page.locator('#routeComparison')).to_be_visible();assert len(context.pages)==1
+                open_final_exit(page, 'https://merchant.example/bib?variant=S');cancel_exit_dialog(page);expect(page).to_have_url(base);expect(page.locator('#routeComparison')).to_be_visible();assert len(context.pages)==1
                 page.locator('#routeContinue').click()
-                page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):page.locator('#registrationContinue').click()
+                open_final_exit(page, 'https://merchant.example/bib?variant=S')
+                confirm_exit_dialog(page, 'https://merchant.example/bib?variant=S')
                 expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
                 page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect_purchase_restored(page);expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品')
                 expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
@@ -482,10 +486,10 @@ def main():
                 page.evaluate("openProduct('partial')");expect(page.locator('#sheetBody')).to_contain_text('库存待核实');expect(page.locator('[data-variant]')).to_have_count(0)
                 reference=page.locator('.reference-exit');expect(reference).to_be_visible()
                 reference.click();select_purchase_route(page)
-                page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()));page.locator('#registrationContinue').click();expect(page.locator('#routeComparison')).to_be_visible();assert len(context.pages)==1
+                open_final_exit(page, 'https://merchant.example/bib?variant=S');cancel_exit_dialog(page);expect(page.locator('#routeComparison')).to_be_visible();assert len(context.pages)==1
                 page.locator('#routeContinue').click()
-                page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):page.locator('#registrationContinue').click()
+                open_final_exit(page, 'https://merchant.example/bib?variant=S')
+                confirm_exit_dialog(page, 'https://merchant.example/bib?variant=S')
                 expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
                 page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect_purchase_restored(page)
                 page.reload(wait_until='networkidle');expect_purchase_restored(page);expect(page.locator('#messageBadge')).to_have_text('1')

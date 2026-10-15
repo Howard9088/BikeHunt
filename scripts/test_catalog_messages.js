@@ -8,7 +8,7 @@ assert.ok(home.includes('id="priceMessages"'));assert.ok(home.includes('id="amaz
 function section(source,start,end){return source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)))}
 function harness(saved=null){
  const storage=new Map(saved?[['bikehuntMessagesReadCursor',saved]]:[]),badge={setAttribute(k,v){this[k]=v}},refs=new Map(),links=[];
- const c=vm.createContext({Date,URL,Number,Map,Set,JSON,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,window:{confirm:()=>true},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
+ const c=vm.createContext({Date,URL,Number,Map,Set,JSON,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,showExternalExit:()=>{throw Error('Purchase entrances must open local stages before confirmation')},window:{confirm:()=>{throw Error('No native exit prompt')}},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
  vm.runInContext(section(gallery,'const e=value','function money('),c);
  vm.runInContext(section(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(section(flows,'const messageEvents=','const directoryPage='),c);
@@ -43,9 +43,9 @@ async function testReferenceExitCancelContinueSoldoutAndLatestRecheck(){
  const markup=h.c.referenceLinkMarkup(q);assert.ok(markup.includes('比较路线并核实库存'));assert.ok(markup.includes('target="_self"'));assert.ok(!markup.includes('target="_blank"'));const key='o|'+q.offer.url;
  const link={dataset:{referenceLink:key},href:q.offer.url,getAttribute(){return this.href},removeAttribute(){this.href=null},setAttribute(){}};h.links.push(link);
  let routes=0;h.c.startReferenceRoute=quote=>{assert.equal(quote,q);routes++};
- h.c.window.confirm=()=>{throw Error('Reference entry must open routes before registration/disclaimer')};let e;
+ h.c.showExternalExit=()=>{throw Error('Reference entry must open routes before registration/disclaimer')};let e;
  for(const [type,button] of [['click',0],['auxclick',1]]){e=click(link,type,button);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true,'Reference navigation must be staged');}assert.equal(routes,2);
- h.c.window.confirm=()=>{throw Error('No prompt for invalid URL')};link.href='javascript:alert(1)';e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(routes,2);link.href=q.offer.url;
+ h.c.showExternalExit=()=>{throw Error('No prompt for invalid URL')};link.href='javascript:alert(1)';e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(routes,2);link.href=q.offer.url;
  h.c.getJson=async()=>({offers:[{offer:{...q.offer,stock:'out_of_stock'}}]});await h.c.refreshReferenceLinks();assert.equal(q.offer.stock,'out_of_stock');assert.equal(link.href,null);e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);
  assert.equal(h.c.referenceLinkMarkup(q),'');assert.equal(routes,2,'Observed sold-out quote cannot re-enter routes');
  const sold=row(9);sold.product.current_stock='out_of_stock';const html=h.c.messageCardMarkup(sold,{});assert.ok(!html.includes('href='));assert.ok(html.includes('已售罄'));
@@ -135,7 +135,7 @@ function testGuideExitIsStagedAndBoundToExactHref() {
  const h=harness(),url='https://shop.example/products/verified?variant=M',q={offer:{offer_id:'guide',url,stock:'in_stock',collection_state:'current',fetched_at:new Date().toISOString()}};
  let saved=0,stages=0,referenceStages=0;h.c.saveBrowseState=()=>saved++;h.c.continuePurchaseRoute=()=>stages++;h.c.startReferenceRoute=()=>referenceStages++;h.c.guideContext={quote:q};
  const link={dataset:{},href:url,getAttribute(){return this.href}};
- h.c.window.confirm=()=>{throw Error('Only the final registration Continue may prompt')};
+ h.c.showExternalExit=()=>{throw Error('Only the final registration Continue may prompt')};
  for(const [type,button] of [['click',0],['auxclick',1]]){const e=click(link,type,button);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);}assert.equal(stages,2);assert.equal(saved,0);
  link.href='https://shop.example/products/wrong?variant=L';let e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(stages,2,'A mismatched guide href never advances or navigates');
  link.href=url;q.offer.stock='out_of_stock';e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(stages,2,'Sold-out state remains blocked');

@@ -101,10 +101,10 @@ function allowedReadinessLink(link){
 function guardReadinessExit(event){
   const link=event.target.closest?.('a[data-readiness-link]');if(!link||(event.type==='auxclick'&&event.button!==1))return;
   event.preventDefault();const url=allowedReadinessLink(link);if(!url)return;
-  const disclaimer=typeof PURCHASE_DISCLAIMER==='string'?PURCHASE_DISCLAIMER:'本站仅提供信息，不参与交易。';
-  if(!window.confirm(disclaimer+'\n\n即将打开官方规则或费用计算器，仅作资料核对，不代表商家允许转运、接受中国银行卡或保证总费用。不会代你注册、订阅、填卡或付款。\n确定：继续查看；取消：留在本站。'))return;
-  if(allowedReadinessLink(link)!==url)return;
-  if(typeof saveBrowseState==='function')saveBrowseState();window.location.assign(url);
+  showExternalExit({url,kind:'reference',label:link.textContent?.trim()||'规则与费用参考',trigger:link,
+    sourceNote:'本站保存了该规则或服务商资料，资料核对：'+readinessData.checkedAt+'；记录可能有市场、日期或历史资料限制，不等于本次服务已核验。',
+    note:'即将打开官方规则或费用计算器，仅作资料核对，不代表商家允许转运、接受中国银行卡或保证总费用。不会代你注册、订阅、填卡或付款。',
+    validate:()=>allowedReadinessLink(link)===url,onConfirm:()=>{if(typeof saveBrowseState==='function')saveBrowseState()}});
 }
 for(const event of ['click','auxclick'])document.addEventListener(event,guardReadinessExit);
 async function loadPurchaseReadiness(){

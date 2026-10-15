@@ -1,7 +1,12 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const {installExternalExitStub}=require('./external_exit_test_helper');
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8'),index=fs.readFileSync('web/index.html','utf8');
+const externalExit=fs.readFileSync('web/external-exit.js','utf8');
 new vm.Script(gallery);new vm.Script(flows);
+new vm.Script(externalExit);
+assert.ok(externalExit.includes('完整购买提示与免责声明')&&externalExit.includes('PURCHASE_DISCLAIMER'),'Shared UI retains the complete original disclaimer');
+assert.ok(!/\bwindow\.confirm\s*\(/.test(gallery+flows+fs.readFileSync('web/purchase-flow.js','utf8')+fs.readFileSync('web/purchase-readiness.js','utf8')),'All legacy native exit prompts are removed');
 const helper=gallery.slice(gallery.indexOf('function inventoryVerified('),gallery.indexOf('function offerMarkup('));
 const context={Date,Number,URL,safeUrl:value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:''}catch{return ''}}};vm.createContext(context);vm.runInContext(helper,context);
 const fresh={offer:{url:'https://shop.example/products/jersey',stock:'in_stock',fetched_at:new Date().toISOString()}};
@@ -17,7 +22,7 @@ assert.ok(index.includes('世巡车队')&&!index.includes('骑行车队')&&!flow
 assert.ok(index.includes('class="bikehunt-mark"'));
 assert.ok(flows.includes("本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。"));
 const guard=flows.slice(flows.indexOf('function guardPurchaseExit('),flows.indexOf("document.addEventListener('click',guardPurchaseExit)"));
-let confirmed=0,prevented=0,stages=0;const ctx={guideContext:{quote:fresh},referenceAvailable:context.referenceAvailable,merchantUrl:context.merchantUrl,continuePurchaseRoute:()=>stages++,window:{confirm:()=>{confirmed++;return false;}}};vm.createContext(ctx);vm.runInContext(guard,ctx);
+let confirmed=0,prevented=0,stages=0;const ctx={guideContext:{quote:fresh},referenceAvailable:context.referenceAvailable,merchantUrl:context.merchantUrl,continuePurchaseRoute:()=>stages++,showExternalExit:()=>{confirmed++;return false;},window:{confirm:()=>{throw Error('No native exit prompt')}}};vm.createContext(ctx);vm.runInContext(guard,ctx);
 const event={target:{closest:()=>({getAttribute:()=>fresh.offer.url})},type:'click',preventDefault:()=>prevented++};
 ctx.guardPurchaseExit(event);assert.equal(confirmed,0);assert.equal(prevented,1);assert.equal(stages,1);
 ctx.guideContext=null;ctx.guardPurchaseExit(event);assert.equal(prevented,2);assert.equal(stages,1);
@@ -25,10 +30,12 @@ console.log('Safety regression: fresh/expired/soldout/unknown/retained guards, i
 
 // Amazon entrances must be exact fixed searches, not catalogue offers.
 const amazonSource=flows.slice(flows.indexOf('const AMAZON_SEARCH_MARKETS='),flows.indexOf("document.getElementById('amazonChannels').onclick"));
-let amazonPromptCount=0,amazonSaved=0,amazonPrevented=0,amazonPanel='',amazonNavigated=[],amazonStages=[];
-const amazonContext={URL,URLSearchParams,document:{currentScript:{src:'https://bikehunt.example/BikeHunt/web/flows.js?v=release'},getElementById:()=>({querySelectorAll:()=>[]})},PURCHASE_DISCLAIMER:'full disclaimer sentinel',e:value=>String(value),
+let amazonSaved=0,amazonPrevented=0,amazonPanel='',amazonNavigated=[],amazonStages=[],amazonOpen=true,amazonConnected=true;
+const amazonSheet={classList:{contains:()=>amazonOpen}},amazonBody={querySelectorAll:()=>[],contains:()=>amazonConnected};
+const amazonContext={URL,URLSearchParams,sheet:amazonSheet,document:{currentScript:{src:'https://bikehunt.example/BikeHunt/web/flows.js?v=release'},getElementById:id=>id==='sheet'?amazonSheet:amazonBody},PURCHASE_DISCLAIMER:'full disclaimer sentinel',e:value=>String(value),
   openPanel:(title,html)=>{assert.equal(title,'Amazon购买途径');amazonPanel=html;},
-  openAmazonRegistration:search=>amazonStages.push(search),saveBrowseState:()=>amazonSaved++,window:{confirm:message=>{amazonPromptCount++;assert.ok(message.includes('full disclaimer sentinel'));return false;},location:{assign:url=>amazonNavigated.push(url)}}};
+  openAmazonRegistration:search=>amazonStages.push(search),saveBrowseState:()=>amazonSaved++,window:{location:{assign:url=>amazonNavigated.push(url)}}};
+const amazonExit=installExternalExitStub(amazonContext);
 vm.createContext(amazonContext);vm.runInContext(amazonSource,amazonContext);
 const amazonLogo=vm.runInContext('AMAZON_CHANNEL_LOGO_URL',amazonContext);
 assert.equal(amazonLogo,'https://bikehunt.example/BikeHunt/web/assets/brands/amazon-official.png');
@@ -57,7 +64,7 @@ for(let i=0;i<expectedAmazon.length;i++){
     const before=amazonStages.length;
     for(const options of [{},{ctrlKey:true},{metaKey:true},{shiftKey:true},{type:'auxclick',button:1}])amazonContext.guardAmazonSearchExit({...click,...options});
     assert.equal(amazonStages.length,before+5);assert.ok(amazonStages.slice(before).every(item=>item.url===search.url));
-    assert.equal(amazonNavigated.length,0);assert.equal(amazonPromptCount,0,'Search opens local registration before any purchase disclaimer');
+    assert.equal(amazonNavigated.length,0);assert.equal(amazonExit.prompts.length,0,'Search opens local registration before any purchase disclaimer');
     for(const bad of [search.url+'&tag=affiliate-20',search.url+'#fragment',search.url.replace(host,host+'.evil.example'),search.url.replace(host,host+'@evil.example'),search.url.replace('https:','http:'),search.url.replace('/s?','/dp/B000FAKE00?'),search.url.replace('k=','q='),'javascript:alert(1)','']){
       href=bad;assert.equal(amazonContext.allowedAmazonSearch(link),null);amazonContext.guardAmazonSearchExit(click);assert.equal(amazonStages.length,before+5);
     }
@@ -65,7 +72,7 @@ for(let i=0;i<expectedAmazon.length;i++){
     link.dataset.amazonSearchLink=search.key;amazonContext.guardAmazonSearchExit({...click,type:'auxclick',button:2});assert.equal(amazonStages.length,before+5,'Right click never opens a stage');
   }
 }
-assert.equal(amazonSaved,0);assert.equal(amazonPromptCount,0);assert.equal(amazonStages.length,40);assert.ok(amazonPrevented>40);
+assert.equal(amazonSaved,0);assert.equal(amazonExit.prompts.length,0);assert.equal(amazonStages.length,40);assert.ok(amazonPrevented>40);
 amazonContext.showAmazonChannels();assert.equal((amazonPanel.match(/data-amazon-search-link=/g)||[]).length,8);assert.equal((amazonPanel.match(/data-amazon-search-link="[^"]+"[^>]+target="_self"/g)||[]).length,8);assert.ok(!amazonPanel.includes('data-purchase-link')&&!amazonPanel.includes('data-reference-link'));
 for(const note of ['搜索入口，非商品实时报价','Amazon 自营','第三方卖家','Fulfilled by Amazon','不等于 Amazon 自营','中国大陆','运费','进口税费','结账页'])assert.ok(amazonPanel.includes(note),note);
 assert.equal((amazonPanel.match(/class="amazon-channel-logo"/g)||[]).length,4);
@@ -95,19 +102,27 @@ for(let i=0;i<expectedHelp.length;i++){
   const [key,node]=expectedHelp[i],source=importHelp[i];
   assert.ok(Object.isFrozen(source));assert.equal(source.key,key);
   assert.equal(source.url,'https://digprjsurvey.amazon.co.uk/csad/help/node/'+node);
-  let href=source.url;const link={dataset:{amazonHelpLink:key},getAttribute:()=>href};
+  let href=source.url;const link={isConnected:true,dataset:{amazonHelpLink:key},getAttribute:()=>href};
   const click={target:{closest:()=>link},type:'click',button:0,preventDefault:()=>amazonPrevented++};
   const before=amazonNavigated.length;
-  amazonContext.window.confirm=message=>{assert.ok(message.startsWith('full disclaimer sentinel'));assert.ok(message.includes('官方帮助'));return false;};
+  amazonExit.setAnswer(options=>{assert.equal(options.kind,'reference');assert.equal(options.url,source.url);assert.equal(options.trigger,link);assert.ok(options.note.includes('官方帮助'));return false});
   amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before);
-  amazonContext.window.confirm=()=>true;
+  amazonExit.setAnswer(true);
   for(const options of [{},{ctrlKey:true},{metaKey:true},{shiftKey:true},{type:'auxclick',button:1}])amazonContext.guardAmazonHelpExit({...click,...options});
   assert.equal(amazonNavigated.length,before+5);assert.ok(amazonNavigated.slice(before).every(url=>url===source.url));
   for(const bad of [source.url+'?tag=affiliate-20',source.url+'#changed',source.url.replace('amazon.co.uk','amazon.co.uk.evil.example'),'https://www.amazon.com/s?k=road','javascript:alert(1)','']){
     href=bad;assert.equal(amazonContext.allowedAmazonHelp(link),null);amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);
   }
   href=source.url;link.dataset.amazonHelpLink='unknown';amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);
-  link.dataset.amazonHelpLink=key;amazonContext.window.confirm=()=>{href+='?changed';return true;};amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);
-  href=source.url;amazonContext.window.confirm=()=>{throw new Error('Right click must be ignored');};amazonContext.guardAmazonHelpExit({...click,type:'auxclick',button:2});
+  link.dataset.amazonHelpLink=key;amazonExit.setAnswer(()=>{href+='?changed';return true});amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);
+  href=source.url;amazonExit.setAnswer(true);
+  link.isConnected=false;amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);link.isConnected=true;
+  amazonOpen=false;amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);amazonOpen=true;
+  amazonConnected=false;amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);amazonConnected=true;
+  for(const invalidate of [()=>{link.isConnected=false},()=>{amazonOpen=false},()=>{amazonConnected=false}]){
+    amazonExit.setAnswer(()=>{invalidate();return true});amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5,'A detached or dismissed help context cannot navigate after confirmation');link.isConnected=true;amazonOpen=true;amazonConnected=true;
+  }
+  href=source.url;amazonExit.setAnswer(()=>{throw new Error('Right click must be ignored')});amazonContext.guardAmazonHelpExit({...click,type:'auxclick',button:2});
 }
+assert.equal(amazonSaved,amazonNavigated.length,'Cancel, invalid links, and stale contexts never persist exit state');
 console.log('Amazon import guide: eight ordered educational steps, no data collection or checkout, scoped official sources, exact help allowlist, disclaimer Cancel/Continue and forced same-tab links passed');

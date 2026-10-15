@@ -1,8 +1,11 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const {installExternalExitStub}=require('./external_exit_test_helper');
 const script=fs.readFileSync('web/purchase-readiness.js','utf8'),data=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));
 let navigated=[],prevented=0,confirmations=0,open=true,connected=true,callbacks=[];
-const context={URL,Date,Map,Set,Object,JSON,Number,String,Array,document:{currentScript:{src:'https://example.org/BikeHunt/web/purchase-readiness.js'},addEventListener:(...args)=>callbacks.push(args),querySelectorAll:()=>[],getElementById:id=>id==='sheet'?{classList:{contains:()=>open}}:{contains:()=>connected}},window:{confirm:()=>{confirmations++;return false},location:{assign:url=>navigated.push(url)}},fetch:async()=>({ok:true,text:async()=>JSON.stringify(data)}),PURCHASE_DISCLAIMER:'disclaimer',saveBrowseState:()=>{}};
+const context={URL,Date,Map,Set,Object,JSON,Number,String,Array,document:{currentScript:{src:'https://example.org/BikeHunt/web/purchase-readiness.js'},addEventListener:(...args)=>callbacks.push(args),querySelectorAll:()=>[],getElementById:id=>id==='sheet'?{classList:{contains:()=>open}}:{contains:()=>connected}},window:{location:{assign:url=>navigated.push(url)}},fetch:async()=>({ok:true,text:async()=>JSON.stringify(data)}),PURCHASE_DISCLAIMER:'disclaimer',saveBrowseState:()=>{}};
+const exit=installExternalExitStub(context);
+exit.setAnswer(options=>{confirmations++;assert.equal(options.kind,'reference');assert.ok(options.note.includes('不会代你注册'));return false});
 vm.createContext(context);vm.runInContext(script,context);
 assert.equal(context.validateReadinessData(data),data);
 vm.runInContext('readinessData=validateReadinessData('+JSON.stringify(data)+');readinessState="ready"',context);
@@ -44,13 +47,13 @@ let href=data.forwarders[0].calculator;
 const link={isConnected:true,dataset:{readinessLink:'myus'},getAttribute:()=>href};
 const event={target:{closest:()=>link},preventDefault:()=>prevented++,type:'click',button:0};
 assert.equal(context.allowedReadinessLink(link),href);
-context.guardReadinessExit(event);assert.equal(navigated.length,0);
-context.window.confirm=()=>true;context.guardReadinessExit(event);assert.deepEqual(navigated,[href]);
+context.guardReadinessExit(event);assert.equal(navigated.length,0);assert.equal(confirmations,1);assert.equal(exit.prompts[0].url,href);assert.equal(exit.prompts[0].trigger,link);
+exit.setAnswer(true);context.guardReadinessExit(event);assert.deepEqual(navigated,[href]);
 for(const options of [{ctrlKey:true},{shiftKey:true},{metaKey:true},{type:'auxclick',button:1}])context.guardReadinessExit({...event,...options});assert.equal(navigated.length,5);
 const count=navigated.length;
 for(const badUrl of ['https://evil.example/',href+'?tag=tracking',href+'#replace','javascript:alert(1)']){href=badUrl;assert.equal(context.allowedReadinessLink(link),null);context.guardReadinessExit(event);assert.equal(navigated.length,count)}
 href=data.forwarders[0].calculator;open=false;assert.equal(context.allowedReadinessLink(link),null);open=true;connected=false;assert.equal(context.allowedReadinessLink(link),null);connected=true;link.isConnected=false;assert.equal(context.allowedReadinessLink(link),null);link.isConnected=true;
-context.window.confirm=()=>{href+='?substituted';return true};context.guardReadinessExit(event);assert.equal(navigated.length,count);
+exit.setAnswer(()=>{href+='?substituted';return true});context.guardReadinessExit(event);assert.equal(navigated.length,count);
 assert.equal(JSON.stringify(data),before,'No offer, cost engine or policy mutations');
 // The first purchase stage is compact payment feasibility, never account help.
 for(const code of ['visma','maap','poc','teamcycles']){

@@ -1,6 +1,7 @@
 'use strict';
 // Read-only language help must never acquire purchase eligibility or collect data.
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const {installExternalExitStub}=require('./external_exit_test_helper');
 const flows=fs.readFileSync('web/flows.js','utf8'),gallery=fs.readFileSync('web/gallery.js','utf8'),css=fs.readFileSync('web/flows.css','utf8');
 new vm.Script(flows);new vm.Script(gallery);
 const start=flows.indexOf('// Merchant-language guide:'),end=flows.indexOf('function invalidateReferenceLinks(',start);
@@ -12,7 +13,8 @@ const elements={merchantGuideTitle:{focus(){focus='title'}},merchantGuideBack:{}
 const listeners=[];
 const context={Object,Map,URL,Date,document:{getElementById:id=>elements[id],addEventListener:(event,handler)=>listeners.push([event,handler])},e:value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
   openPanel:(name,html)=>{title=name;rendered=html;context.detailSequence++},detailSequence:10,sheet:{classList:{contains:()=>true}},loadDetail:async(id,variant)=>{loaded.push([id,variant]);context.detailSequence++},
-  PURCHASE_DISCLAIMER:'full disclaimer sentinel',saveBrowseState:()=>saved++,window:{confirm:()=>{confirmations++;return false},location:{assign:url=>navigated.push(url)}}};
+  PURCHASE_DISCLAIMER:'full disclaimer sentinel',saveBrowseState:()=>saved++,window:{location:{assign:url=>navigated.push(url)}}};
+const exit=installExternalExitStub(context);
 vm.createContext(context);vm.runInContext(source,context);
 assert.deepEqual(listeners.map(row=>row[0]),['click','auxclick']);
 const detail={product_id:'jersey',variant_id:'M',offers:['maap','visma','decathlon','other'].flatMap(code=>['in_stock','unknown','out_of_stock'].map(stock=>({eligible:false,offer:{source_code:code,source_name:code+' official',stock,url:'https://merchant.example/product?variant=M'}})))};
@@ -52,18 +54,18 @@ for(const entry of ['maap','visma','decathlon','other']){
     const permitted=item.scope==='browser'||item.scope===entry;
     assert.equal(context.allowedMerchantHelp(link),permitted?item:null);
     const before=navigated.length;
-    context.window.confirm=message=>{confirmations++;assert.ok(message.startsWith('full disclaimer sentinel'));assert.ok(message.includes('不会代你注册'));return false};
+    exit.setAnswer(options=>{confirmations++;assert.equal(options.kind,'reference');assert.equal(options.url,item.url);assert.equal(options.trigger,link);assert.ok(options.note.includes('不会代你注册'));return false});
     context.guardMerchantHelpExit(event);assert.equal(navigated.length,before);
-    context.window.confirm=()=>true;
+    exit.setAnswer(true);
     for(const options of [{},{ctrlKey:true},{metaKey:true},{shiftKey:true},{type:'auxclick',button:1}])context.guardMerchantHelpExit({...event,...options});
     assert.equal(navigated.length,before+(permitted?5:0));
     const after=navigated.length;
     for(const bad of [item.url+'#fake',item.url+'?tag=affiliate',item.url.replace('https://','http://'),item.url.replace('https://','https://evil.example/'),'javascript:alert(1)','']){href=bad;assert.equal(context.allowedMerchantHelp(link),null);context.guardMerchantHelpExit(event);assert.equal(navigated.length,after)}
     href=item.url;link.dataset.merchantHelpLink='wrong';context.guardMerchantHelpExit(event);assert.equal(navigated.length,after);link.dataset.merchantHelpLink=item.key;
-    context.window.confirm=()=>{href+='?substituted';return true};context.guardMerchantHelpExit(event);assert.equal(navigated.length,after);
-    href=item.url;context.window.confirm=()=>true;link.isConnected=false;context.guardMerchantHelpExit(event);assert.equal(navigated.length,after);link.isConnected=true;
+    exit.setAnswer(()=>{href+='?substituted';return true});context.guardMerchantHelpExit(event);assert.equal(navigated.length,after);
+    href=item.url;exit.setAnswer(true);link.isConnected=false;context.guardMerchantHelpExit(event);assert.equal(navigated.length,after);link.isConnected=true;
     connected=false;context.guardMerchantHelpExit(event);assert.equal(navigated.length,after);connected=true;
-    context.window.confirm=()=>{throw Error('Right click must not open a prompt')};context.guardMerchantHelpExit({...event,type:'auxclick',button:2});
+    exit.setAnswer(()=>{throw Error('Right click must not open a prompt')});context.guardMerchantHelpExit({...event,type:'auxclick',button:2});
   }
 }
 // Detached, hidden or dismissed help never keeps a live outbound action.

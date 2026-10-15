@@ -6,7 +6,16 @@
       "name_zh": "MAAP 骑行服",
       "official_url": "https://maap.cc",
       "shop_url": "https://maap.cc",
-      "status": "registered"
+      "status": "registered",
+      "logo_images": [
+        "/web/assets/brands/maap.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://maap.cc/tw"
+      ],
+      "logo_evidence_url": "https://maap.cc/tw",
+      "logo_checked_at": "2026-10-15T06:09:19Z"
     },
     {
       "code": "rapha",
@@ -30,7 +39,16 @@
       "name_zh": "ASSOS 骑行服",
       "official_url": "https://www.assos.com",
       "shop_url": "https://www.assos.com",
-      "status": "registered"
+      "status": "registered",
+      "logo_images": [
+        "/web/assets/brands/assos.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.assos.com/int/"
+      ],
+      "logo_evidence_url": "https://www.assos.com/int/",
+      "logo_checked_at": "2026-10-15T06:09:19Z"
     },
     {
       "code": "castelli",
@@ -41,7 +59,16 @@
       "status": "registered",
       "source_codes": [
         "castelli"
-      ]
+      ],
+      "logo_images": [
+        "/web/assets/brands/castelli.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.castelli-cycling.com/cdn/shop/files/logo-castelli.svg?v=1775823031"
+      ],
+      "logo_evidence_url": "https://www.castelli-cycling.com",
+      "logo_checked_at": "2026-10-15T06:09:19Z"
     },
     {
       "code": "santini",
@@ -52,7 +79,16 @@
       "status": "registered",
       "source_codes": [
         "santini"
-      ]
+      ],
+      "logo_images": [
+        "/web/assets/brands/santini.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.santinicycling.com/cdn/shop/files/Santini_Home.svg?height=24&v=1769097266"
+      ],
+      "logo_evidence_url": "https://www.santinicycling.com/",
+      "logo_checked_at": "2026-10-15T06:09:19Z"
     },
     {
       "code": "pns",
@@ -60,7 +96,16 @@
       "name_zh": "PNS 骑行服",
       "official_url": "https://pasnormalstudios.com",
       "shop_url": "https://pasnormalstudios.com",
-      "status": "registered"
+      "status": "registered",
+      "logo_images": [
+        "/web/assets/brands/pns.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://pasnormalstudios.com/eu"
+      ],
+      "logo_evidence_url": "https://pasnormalstudios.com/eu",
+      "logo_checked_at": "2026-10-15T06:09:19Z"
     },
     {
       "code": "poc",
@@ -76,7 +121,16 @@
       "name_zh": "KASK 骑行头盔",
       "official_url": "https://www.kask.com",
       "shop_url": "https://www.kask.com",
-      "status": "registered"
+      "status": "registered",
+      "logo_images": [
+        "/web/assets/brands/kask.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.kask.com/on/demandware.static/Sites-KASK_EU-Site/-/en_IT/v1791943516209/images/sprite.svg#logo-kask"
+      ],
+      "logo_evidence_url": "https://www.kask.com/en-it/Cycling/Road",
+      "logo_checked_at": "2026-10-15T06:09:19Z"
     },
     {
       "code": "fizik",
@@ -87,7 +141,16 @@
       "status": "registered",
       "source_codes": [
         "fizik"
-      ]
+      ],
+      "logo_images": [
+        "/web/assets/brands/fizik.svg"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://www.fizik.com/en-us/"
+      ],
+      "logo_evidence_url": "https://www.fizik.com/en-us/",
+      "logo_checked_at": "2026-10-15T06:09:19Z"
     },
     {
       "code": "oakley",

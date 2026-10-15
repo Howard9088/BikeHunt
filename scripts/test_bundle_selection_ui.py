@@ -18,7 +18,8 @@ from http.server import ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlparse
 
 from playwright.sync_api import expect, sync_playwright
-from test_catalog_messages_ui import DISCLAIMER, OUT, ROOT, QuietHandler, fixture
+from test_catalog_messages_ui import OUT, ROOT, QuietHandler, fixture
+from exit_dialog_test_support import assert_exit_closed, open_final_exit, confirm_exit_dialog
 
 FIXTURE = ROOT / 'tests/fixtures/soudal-outfit-variants.json'
 PARTS = ('jersey', 'bib', 'socks')
@@ -268,6 +269,7 @@ def exercise_real_bundle(page, context, state, mode):
     raw.locator('summary').click()
     page.screenshot(path=str(OUT / f'bundle_selected_{mode}.png'))
     expect(page.locator('.registration-help')).to_have_count(0)
+    assert_exit_closed(page)
     page.locator('.guide-start').click()
     expect(page.locator('#routeComparison')).to_be_visible()
     expect(page.locator('[data-route-select]')).to_have_count(3)
@@ -285,16 +287,11 @@ def exercise_real_bundle(page, context, state, mode):
     page.reload(wait_until='networkidle')
     expect(page.locator('#registrationInterstitial')).to_be_visible()
     assert_exact_history(page, state, row, 'registration')
-    dialogs = []
-    def accept(dialog):
-        dialogs.append(dialog.message)
-        assert DISCLAIMER in dialog.message
-        dialog.accept()
-    page.once('dialog', accept)
-    with page.expect_navigation(wait_until='domcontentloaded'):
-        page.locator('#registrationContinue').click()
+    open_final_exit(page, row['offer']['url'])
+    assert state['outbound'] == [], 'Opening the final modal must not contact the merchant'
+    confirm_exit_dialog(page, row['offer']['url'])
     expect(page).to_have_url(row['offer']['url'])
-    assert len(dialogs) == 1 and state['outbound'] == [row['offer']['url']]
+    assert state['outbound'] == [row['offer']['url']]
     assert len(context.pages) == 1, 'Merchant exit must remain in the same tab'
     page.go_back(wait_until='networkidle')
     expect(page.locator('#routeComparison')).to_be_visible()

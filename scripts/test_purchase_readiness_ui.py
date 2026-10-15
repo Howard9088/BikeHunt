@@ -11,7 +11,8 @@ from http.server import ThreadingHTTPServer
 from urllib.parse import urlparse
 
 from playwright.sync_api import expect, sync_playwright
-from test_catalog_messages_ui import ROOT, OUT, QuietHandler, fixture, assert_disclaimer
+from test_catalog_messages_ui import ROOT, OUT, QuietHandler, fixture
+from exit_dialog_test_support import (assert_exit_closed, assert_exit_dialog, assert_exit_layout, assert_exit_focus_trap, cancel_exit_dialog, confirm_exit_dialog)
 
 
 def main():
@@ -23,7 +24,7 @@ def main():
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(executable_path=os.environ.get('CHROME_EXECUTABLE') or shutil.which('chromium'), headless=True)
-            for mode, viewport in [('desktop', {'width': 1440, 'height': 900}), ('mobile', {'width': 390, 'height': 844})]:
+            for mode, viewport in [('desktop', {'width': 1440, 'height': 900}), ('mobile', {'width': 390, 'height': 844}), ('small_mobile', {'width': 320, 'height': 740})]:
                 state, external = fixture(), []
                 original = state['detail']['offers'][0]
                 state['detail']['offers'] = []
@@ -32,7 +33,7 @@ def main():
                     quote['offer'].update(source_code=code, source_name=code, offer_id='offer-'+code, sales_region=market, url=url)
                     state['detail']['offers'].append(quote)
                 unchanged = json.dumps(state['detail']['offers'], sort_keys=True)
-                context = browser.new_context(viewport=viewport, is_mobile=mode == 'mobile', has_touch=mode == 'mobile')
+                context = browser.new_context(viewport=viewport, is_mobile=mode != 'desktop', has_touch=mode != 'desktop')
                 context.set_default_timeout(7000)
                 context.add_init_script('window.BIKEHUNT_PAGES=true;')
 
@@ -68,7 +69,9 @@ def main():
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
+                assert_exit_closed(page)
                 page.locator('#amazonChannels').click()
+                assert_exit_closed(page)
                 expect(page.locator('.amazon-market .payment-feasibility')).to_have_count(4)
                 expect(page.locator('.amazon-market .purchase-readiness,.amazon-market .registration-help')).to_have_count(0)
                 expect(page.locator('.amazon-market [data-china-card-status=conditional]')).to_have_count(4)
@@ -90,13 +93,49 @@ def main():
                 link = page.locator('a[data-readiness-link=myus]').first
                 target = link.get_attribute('href')
                 expect(link).to_have_attribute('target', '_self')
-                page.once('dialog', lambda dialog: (assert_disclaimer(dialog), dialog.dismiss()))
-                link.click()
-                expect(page).to_have_url(base)
+                assert_exit_closed(page)
+                # Internal navigation and explanatory controls never ask to leave.
+                explain.evaluate('(el) => el.insertAdjacentHTML("beforeend", "<a id=readinessInternalLink href=#internal-entry>站内说明</a>")')
+                page.locator('#readinessInternalLink').click()
+                expect(page).to_have_url(base + '#internal-entry')
+                assert_exit_closed(page)
                 assert external == []
-                page.once('dialog', lambda dialog: (assert_disclaimer(dialog), dialog.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):
-                    link.click()
+                page.evaluate('(url) => history.replaceState(history.state, "", url)', base)
+                page.locator('#readinessInternalLink').evaluate('el => el.remove()')
+                link.click()
+                assert_exit_dialog(page, target, official=False)
+                assert_exit_focus_trap(page)
+                expect(page.locator('#externalExitImageFallback')).to_be_visible()
+                assert page.locator('#externalExitImageFallback').inner_text().strip()
+                assert external == [], 'Opening a help confirmation must not request the external destination'
+                page.screenshot(path=str(OUT / f'purchase_readiness_exit_{mode}.png'))
+                cancel_exit_dialog(page)
+                expect(page).to_have_url(base)
+                expect(link).to_be_focused()
+                expect(explain).to_have_attribute('open', '')
+                assert external == []
+                link.click()
+                assert_exit_dialog(page, target, official=False)
+                cancel_exit_dialog(page, escape=True)
+                expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+                expect(explain).to_have_attribute('open', '')
+                expect(link).to_be_focused()
+                # Exact allowlisting must be checked again after the user has
+                # read the dialog. A changed href cannot bypass confirmation.
+                link.click()
+                assert_exit_dialog(page, target, official=False)
+                link.evaluate('(el) => el.setAttribute("href", "https://evil.example/changed-calculator")')
+                page.locator('#externalExitConfirm').click()
+                expect(page).to_have_url(base)
+                expect(page.locator('#externalExitError')).to_be_visible()
+                expect(page.locator('#externalExitConfirm')).to_be_disabled()
+                assert external == [] and len(context.pages) == 1
+                assert_exit_layout(page)
+                link.evaluate('(el, href) => el.setAttribute("href", href)', target)
+                cancel_exit_dialog(page)
+                expect(link).to_be_focused()
+                link.click()
+                confirm_exit_dialog(page, target, official=False)
                 expect(page).to_have_url(target)
                 assert len(context.pages) == 1 and external == [target]
                 page.go_back(wait_until='networkidle')
@@ -105,6 +144,7 @@ def main():
                 page.locator('[data-variant=S]').click()
                 expect(page.locator('.offer .payment-feasibility')).to_have_count(4)
                 expect(page.locator('#sheetBody .purchase-readiness,#sheetBody .registration-help,[data-merchant-guide]')).to_have_count(0)
+                assert_exit_closed(page)
                 for card in page.locator('.offer').all():
                     expect(card.locator('.payment-feasibility')).to_contain_text('中国发行卡')
                     expect(card.locator('.payment-feasibility')).to_contain_text('不保证')
@@ -144,7 +184,7 @@ def main():
                 assert json.dumps(state['detail']['offers'], sort_keys=True) == unchanged
                 page.keyboard.press('Escape')
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-                checks.append(mode + ': four compact Amazon payment strips, historical evidence, no early registration, China-card caveats, route-scoped EUR shipping and prohibited direct/forwarding choices, retailer isolation, forwarding costs, keyboard, no overflow, guarded same-tab Cancel/Continue/Back and unchanged offers')
+                checks.append(mode + ': four compact Amazon payment strips, historical evidence, no early registration, China-card caveats, route-scoped EUR shipping and prohibited direct/forwarding choices, retailer isolation, forwarding costs, four numbered explanations with exact domain and target label, text fallback, internal navigation without prompts, keyboard focus trap and Escape, no overflow at 320px, live href tamper blocks confirmation, guarded same-tab Cancel/Continue/Back and unchanged offers')
                 context.close()
             browser.close()
         assert not errors, errors

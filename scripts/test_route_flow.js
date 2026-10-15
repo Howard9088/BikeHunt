@@ -2,6 +2,7 @@
 // Executes production route/registration state in an isolated DOM harness.
 // No network request, Chromium rendering, real account or merchant transaction.
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const {installExternalExitStub}=require('./external_exit_test_helper');
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8');
 const source=fs.readFileSync('web/purchase-flow.js','utf8'),readiness=fs.readFileSync('web/purchase-readiness.js','utf8');
 const policy=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));
@@ -10,8 +11,8 @@ function slice(text,start,end){const a=text.indexOf(start),b=text.indexOf(end,a)
 function quote(code='visma',extra={}){return {eligible:false,reasons:[],product_cny:'700',offer:{offer_id:'offer-'+code,source_code:code,source_name:code,sales_region:code==='poc'?'Global EN':'US 市场报价（USD）',url:code==='maap'?'https://maap.cc/products/jersey?variant=M':code==='poc'?'https://poc.com/en/jersey?variant=M':code==='visma'?'https://www.teamvismaleaseabike.com/shop/jersey/?variant=M':'https://shop.example/jersey?variant=M',stock:'in_stock',collection_state:'current',fetched_at:new Date(NOW).toISOString(),price:{amount:'100',currency:'USD'},shipping_to_china:{status:'unknown'},china_issued_card:{status:'unknown'},accepted_card_networks:['Visa'],...extra}}}
 function detail(q=quote()){return {product_id:'jersey',variant_id:'variant-m',name:'Test jersey',name_zh:'骑行服测试',identity:{size:'M',color:'red'},variants:[{variant_id:'variant-m',in_stock:true}],offers:[q]}}
 function harness(){
- let now=NOW,html='',title='',open=false,focused=null,saved=0,answer=false,loadResult=null;
- const elements=new Map(),nodes=[],navigated=[],prompts=[],requested=[],loaded=[],historyCalls=[],listeners=[];
+ let now=NOW,html='',title='',open=false,focused=null,saved=0,loadResult=null;
+ const elements=new Map(),nodes=[],navigated=[],requested=[],loaded=[],historyCalls=[],listeners=[];
  const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const node=attrs=>({attrs,dataset:Object.fromEntries(Object.entries(attrs).filter(([key])=>key.startsWith('data-')).map(([key,value])=>[key.slice(5).replace(/-([a-z])/g,(_,c)=>c.toUpperCase()),value])),disabled:Object.hasOwn(attrs,'disabled'),isConnected:true,style:{},classList:{contains:()=>open},contains:x=>nodes.includes(x),getAttribute(key){return this.attrs[key]??null},setAttribute(key,value){this.attrs[key]=String(value)},focus(){focused=this.attrs.id||this.dataset.routeSelect},querySelectorAll:()=>[]});
  function render(content){html=content;elements.clear();nodes.splice(0);for(const match of content.matchAll(/<[a-z][^>]*>/g)){const attrs={};for(const attr of match[0].matchAll(/([\w-]+)="([^"]*)"/g))attrs[attr[1]]=attr[2];if(/\sdisabled(?:\s|>)/.test(match[0]))attrs.disabled='';const item=node(attrs);nodes.push(item);if(attrs.id)elements.set(attrs.id,item)}}
@@ -19,7 +20,7 @@ function harness(){
  class MockDate extends Date{constructor(...args){super(...(args.length?args:[now]))}static now(){return now}}
  const c=vm.createContext({Date:MockDate,URL,URLSearchParams,Map,Set,Object,JSON,Number,String,Array,Promise,console,
   document:{currentScript:{src:'https://bikehunt.example/BikeHunt/web/flows.js'},addEventListener:(...args)=>listeners.push(args),getElementById:id=>id==='sheet'?sheet:id==='sheetBody'?body:elements.get(id)||null,querySelector:query,querySelectorAll:selector=>selector==='[data-route-select]'?nodes.filter(item=>item.dataset.routeSelect):[]},
-  window:{confirm:message=>{prompts.push(message);return typeof answer==='function'?answer():answer},location:{assign:url=>navigated.push(url)},addEventListener(){}},
+  window:{location:{assign:url=>navigated.push(url)},addEventListener(){}},
   history:{state:{unrelated:'keep',bikehuntBrowse:{source:'visma',category:'jerseys',query:'Test jersey'}},replaceState(value,...args){historyCalls.push([value,...args]);this.state=value}},
   guideContext:null,currentProduct:null,detailSequence:0,guideStep:0,referenceOffers:new Map(),e:esc,safeUrl:value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:''}catch{return ''}},
   cny:value=>'CNY '+value,timeText:value=>value,landedCostMarkup:()=>'<div class="landed-cost-fixture">budget</div>',
@@ -31,13 +32,14 @@ function harness(){
   showInventoryInvalidated(){c.guideContext=null;c.openPanel('库存待核实','<p>库存待核实</p>')},
   fetch:async()=>{throw Error('No network allowed')},
  });
+ const exit=installExternalExitStub(c),prompts=exit.prompts;
  const sheet={classList:{contains:()=>open}},body={contains:item=>nodes.includes(item),querySelectorAll:()=>[]};c.sheet=sheet;
  vm.runInContext(slice(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(readiness.replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.input=policy;vm.runInContext('readinessData=validateReadinessData(input);readinessState="ready"',c);
  vm.runInContext(slice(flows,'const AMAZON_SEARCH_MARKETS=',"document.getElementById('amazonChannels').onclick"),c);
  vm.runInContext(slice(flows,'async function startGuide(','function updateGuideVerificationMetadata('),c);
  vm.runInContext(source,c);
- return {c,elements,nodes,navigated,prompts,requested,loaded,historyCalls,get html(){return html},get title(){return title},get saved(){return saved},get focused(){return focused},setNow:value=>now=value,setAnswer:value=>answer=value,setResult:value=>loadResult=value,get reg(){return vm.runInContext('registrationExitContext',c)},open(d=detail(),options={}){c.currentProduct=d;c.guideContext={detail:d,quote:d.offers[0],route:null,reference:false,book:{documents:[]},...options};c.renderRouteComparison();return c.guideContext},close(){open=false;c.clearPurchaseState();render('')}};
+ return {c,elements,nodes,navigated,prompts,requested,loaded,historyCalls,get html(){return html},get title(){return title},get saved(){return saved},get focused(){return focused},setNow:value=>now=value,setAnswer:value=>exit.setAnswer(value),setResult:value=>loadResult=value,get reg(){return vm.runInContext('registrationExitContext',c)},open(d=detail(),options={}){c.currentProduct=d;c.guideContext={detail:d,quote:d.offers[0],route:null,reference:false,book:{documents:[]},...options};c.renderRouteComparison();return c.guideContext},close(){open=false;c.clearPurchaseState();render('')}};
 }
 function statuses(h,q){return Object.fromEntries(h.c.routeOptions(q).map(row=>[row.id,row.status]))}
 function testThreeScopedRoutesAndHonestCosts(){
@@ -72,12 +74,12 @@ function testRouteSelectionPrecedesRegistration(){
  h.c.cancelRegistrationExit();assert.ok(h.html.includes('id="routeComparison"'));assert.equal(h.c.guideContext.route,'hongkong');assert.ok(!h.html.includes('registration-help'));
  h.elements.get('routeBack').onclick();assert.deepEqual(h.loaded,[['jersey','variant-m']]);
 }
-function testFullDisclaimerOnlyAtFinalSameTabExit(){
+function testSharedConfirmationOnlyAtFinalSameTabExit(){
  const h=harness();h.open();h.c.selectPurchaseRoute('direct');h.c.continuePurchaseRoute();
- h.setAnswer(false);h.c.continueRegistrationExit();assert.equal(h.prompts.length,1);assert.ok(h.prompts[0].startsWith(h.c.PURCHASE_DISCLAIMER));assert.equal(h.navigated.length,0);assert.ok(h.html.includes('routeComparison'));
+ h.setAnswer(false);h.c.continueRegistrationExit();assert.equal(h.prompts.length,1);assert.equal(h.prompts[0].kind,'merchant');assert.equal(h.prompts[0].url,h.c.guideContext.quote.offer.url);assert.ok(h.prompts[0].note.includes('所选运输路线仍需商家核实'));assert.equal(h.navigated.length,0);assert.ok(h.html.includes('routeComparison'));
  h.c.continuePurchaseRoute();h.setAnswer(true);h.c.continueRegistrationExit();assert.deepEqual(h.navigated,[h.c.guideContext.quote.offer.url]);assert.equal(h.c.history.state.bikehuntPurchase.stage,'route');assert.equal(h.c.history.state.bikehuntPurchase.route,'direct');
  for(const mutate of [g=>g.quote.offer.url+='&variant=L',g=>g.quote.offer.price.amount='99',g=>g.quote.offer.source_code='other',g=>g.quote.offer.stock='out_of_stock',g=>g.invalidated=true]){
-  const x=harness();x.open();x.c.selectPurchaseRoute('direct');x.c.continuePurchaseRoute();x.setAnswer(()=>{mutate(x.c.guideContext);return true});x.c.continueRegistrationExit();assert.equal(x.navigated.length,0,'Revalidate exact offer, price, source, status and route after native confirmation');
+  const x=harness();x.open();x.c.selectPurchaseRoute('direct');x.c.continuePurchaseRoute();x.setAnswer(()=>{mutate(x.c.guideContext);return true});x.c.continueRegistrationExit();assert.equal(x.navigated.length,0,'Revalidate exact offer, price, source, status and route after the shared confirmation decision');
  }
  const expired=harness();expired.open();expired.c.selectPurchaseRoute('direct');expired.c.continuePurchaseRoute();expired.setAnswer(()=>{expired.setNow(NOW+3600001);return true});expired.c.continueRegistrationExit();assert.equal(expired.navigated.length,0);
  const hidden=harness();hidden.open();hidden.c.selectPurchaseRoute('direct');hidden.c.continuePurchaseRoute();hidden.close();hidden.setAnswer(true);hidden.c.continueRegistrationExit();assert.equal(hidden.navigated.length,0);assert.equal(hidden.prompts.length,0);
@@ -129,6 +131,6 @@ function testOfficialRouteHelpIsExactAndSameTab(){
  const h=harness();h.open();const links=h.nodes.filter(node=>node.dataset.routeHelp);assert.equal(links.length,4);
  for(const link of links){const event={target:{closest:()=>link},type:'click',button:0,preventDefault(){this.prevented=true}},url=link.getAttribute('href');h.setAnswer(false);h.c.guardRouteHelpExit(event);assert.ok(event.prevented);const before=h.navigated.length;h.setAnswer(true);h.c.guardRouteHelpExit({...event,type:'auxclick',button:1});assert.equal(h.navigated.length,before+1);assert.equal(h.navigated.at(-1),url);link.setAttribute('href',url+'?tracking=1');h.c.guardRouteHelpExit(event);assert.equal(h.navigated.length,before+1);link.setAttribute('href',url);h.setAnswer(()=>{link.setAttribute('href','https://evil.example/');return true});h.c.guardRouteHelpExit(event);assert.equal(h.navigated.length,before+1)}
 }
-async function main(){for(const test of [testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testFullDisclaimerOnlyAtFinalSameTabExit,testReferenceOnlyAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: eight production-JavaScript regression groups passed.');}
+async function main(){for(const test of [testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testSharedConfirmationOnlyAtFinalSameTabExit,testReferenceOnlyAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: eight production-JavaScript regression groups passed.');}
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1});
 module.exports={harness,quote,detail,NOW};

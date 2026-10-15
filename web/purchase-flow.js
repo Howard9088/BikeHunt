@@ -103,11 +103,13 @@ function openRegistrationInterstitial(context){
 function cancelRegistrationExit(){const context=registrationExitContext;registrationExitContext=null;if(context?.kind==='product'&&guideContext===context.guide)renderRouteComparison();else if(context?.kind==='amazon')showAmazonChannels()}
 function continueRegistrationExit(){
   const context=registrationExitContext;if(!validRegistrationContext(context))return;
-  const note=context.kind==='amazon'?'Amazon 官方搜索入口，尚无选定商品或路线报价。':'所选运输路线仍需商家核实；库存、尺码、价格、支付及到手费用以原站为准。';
-  if(!window.confirm(PURCHASE_DISCLAIMER+'\n\n'+note+'\n确定：当前标签页继续前往商家；取消：返回运输路线／搜索入口。')){cancelRegistrationExit();return}
-  if(!validRegistrationContext(context))return;
-  if(context.kind==='product')savePurchaseState('route');else saveBrowseState();
-  window.location.assign(context.url);
+  const product=context.kind==='product',offer=product?context.guide.quote.offer:null;
+  const note=product?'所选运输路线仍需商家核实；库存、尺码、价格、支付及到手费用以原站为准。':'Amazon 官方搜索入口，尚无选定商品或路线报价。';
+  showExternalExit({url:context.url,kind:product?'merchant':'amazon',label:product?offer.source_name+' · '+(context.guide.detail.name_zh||context.guide.detail.name||offer.name||'当前商品'):'Amazon '+context.market.name,
+    sourceCode:offer?.source_code,image:product?(context.guide.detail.image||offer.image||''):'',note,
+    validate:()=>validRegistrationContext(context),onCancel:cancelRegistrationExit,
+    restoreFocus:()=>product?document.getElementById('routeContinue'):document.querySelector('[data-amazon-search-link="'+context.search.key+'"]'),
+    onConfirm:()=>{if(product)savePurchaseState('route');else saveBrowseState()}});
 }
 async function restorePurchaseState(){
   const saved=history.state?.bikehuntPurchase;
@@ -153,8 +155,10 @@ function guardRouteHelpExit(event){
   const link=event.target.closest?.('a[data-route-help]');if(!link||(event.type==='auxclick'&&event.button!==1))return;
   event.preventDefault();const allowed=()=>link.isConnected&&sheet.classList.contains('open')&&document.getElementById('routeComparison')?.contains(link)&&ROUTE_HELP.find(row=>row.key===link.dataset.routeHelp&&row.url===link.getAttribute('href'));
   const row=allowed();if(!row)return;
-  if(!window.confirm(PURCHASE_DISCLAIMER+'\n\n即将查看官方说明，仅作资料核对，不确认商品可运输或免税。确定继续；取消留在本站。'))return;
-  if(allowed()!==row)return;savePurchaseState('route');window.location.assign(row.url);
+  showExternalExit({url:row.url,kind:'reference',label:row.label,trigger:link,
+    sourceNote:'本站保存了这项政府或公共机构资料链接（2026-10-15 核对）；资料适用范围不等于本件商品可运输或免税。',
+    note:'即将查看官方说明，仅作资料核对，不确认商品可运输或免税。',
+    validate:()=>allowed()===row,onConfirm:()=>savePurchaseState('route')});
 }
 document.addEventListener('click',guardRouteHelpExit);
 document.addEventListener('auxclick',guardRouteHelpExit);

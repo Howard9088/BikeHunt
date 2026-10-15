@@ -55,6 +55,8 @@ jobs:
         run: node scripts/test_pages_freshness.js
       - name: Validate purchase safety and visible labels
         run: node scripts/test_purchase_safety.js
+      - name: Validate visual final external exit safety
+        run: node scripts/test_external_exit.js
       - name: Validate exact bundle selection and stock combinations
         run: node scripts/test_bundle_selection.js
       - name: Validate ordered routes and registration safety

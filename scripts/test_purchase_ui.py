@@ -15,10 +15,10 @@ from pathlib import Path
 from urllib.parse import urlparse
 from playwright.sync_api import expect, sync_playwright
 from test_catalog_messages_ui import fixture, select_purchase_route, expect_purchase_restored, cancel_purchase_to_detail, assert_disclaimer
+from exit_dialog_test_support import assert_exit_closed, assert_exit_dialog, open_final_exit, cancel_exit_dialog, confirm_exit_dialog
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / 'artifacts' / 'acceptance'
-DISCLAIMER = '本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。'
 
 
 
@@ -85,7 +85,9 @@ def main():
                 expect(page.locator('[data-variant="M"],[data-variant="XL"]')).to_have_count(0)
                 expect(page.locator('#variant option[value="M"],#variant option[value="XL"]')).to_have_count(0)
                 expect(page.locator('.registration-help,.purchase-readiness,[data-merchant-guide]')).to_have_count(0)
+                assert_exit_closed(page)
                 page.locator('[data-variant="S"]').click()
+                assert_exit_closed(page)
                 expect(page.locator('.offer .payment-feasibility')).to_have_count(1)
                 page.locator('.guide-start').click()
                 expect(page.locator('#routeComparison')).to_be_visible()
@@ -93,22 +95,30 @@ def main():
                 expect(page.locator('.registration-help')).to_have_count(0)
                 page.locator('#sheet').evaluate('el=>Promise.all(el.getAnimations().map(a=>a.finished.catch(()=>{})))')
                 page.screenshot(path=str(OUTPUT / f'purchase_{mode}_routes.png'))
-                # Policy/source links remain ordinary links, outside the guarded purchase exit.
+                # Plain policy/source anchors use the same final gate and
+                # same tab, even if their original markup requested a popup.
                 page.evaluate("document.querySelector('#routeComparison').insertAdjacentHTML('beforeend','<a id=ordinaryLink target=_blank href=https://merchant.example/policy>规则原文</a>')")
-                with context.expect_page() as popup:
-                    page.locator('#ordinaryLink').click()
-                popup.value.wait_for_load_state()
-                assert popup.value.url == 'https://merchant.example/policy'
-                popup.value.close()
+                ordinary_link = page.locator('#ordinaryLink')
+                ordinary_link.click()
+                assert_exit_dialog(page, 'https://merchant.example/policy', official=False)
+                assert external_reads == [] and len(context.pages) == 1
+                cancel_exit_dialog(page)
+                expect(ordinary_link).to_be_focused()
+                expect(page.locator('#routeComparison')).to_be_visible()
+                ordinary_link.click(modifiers=['Control'])
+                confirm_exit_dialog(page, 'https://merchant.example/policy', official=False)
+                assert len(context.pages) == 1
                 assert external_reads == ['https://merchant.example/policy']
+                page.go_back(wait_until='networkidle')
+                expect_purchase_restored(page)
                 select_purchase_route(page)
                 expect(page.locator('#registrationInterstitial')).to_contain_text('MAAP')
                 page.screenshot(path=str(OUTPUT / f'purchase_{mode}_registration.png'))
                 page.reload(wait_until='networkidle')
                 expect_purchase_restored(page, 'registration')
                 for attempt in range(3):
-                    page.once('dialog', lambda dialog: (assert_disclaimer(dialog), dialog.dismiss()))
-                    page.locator('#registrationContinue').click(modifiers=['Control'] if attempt == 1 else [])
+                    open_final_exit(page, 'https://merchant.example/bib?variant=S', modifiers=['Control'] if attempt == 1 else [])
+                    cancel_exit_dialog(page)
                     expect(page.locator('#routeComparison')).to_be_visible()
                     expect(page).to_have_url(base)
                     assert len(context.pages) == 1
@@ -119,9 +129,8 @@ def main():
                 expect(page.locator('#routeContinue')).to_be_enabled()
                 page.locator('#routeContinue').click()
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
-                page.once('dialog', lambda dialog: (assert_disclaimer(dialog), dialog.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):
-                    page.locator('#registrationContinue').click()
+                open_final_exit(page, 'https://merchant.example/bib?variant=S')
+                confirm_exit_dialog(page, 'https://merchant.example/bib?variant=S')
                 expect(page).to_have_url('https://merchant.example/bib?variant=S')
                 assert len(context.pages) == 1
                 assert external_reads == ['https://merchant.example/policy', 'https://merchant.example/bib?variant=S']
@@ -132,7 +141,7 @@ def main():
                 cancel_purchase_to_detail(page)
                 expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed', 'true')
                 expect(page.locator('.guide-start[data-offer=offer-s]')).to_be_enabled()
-                checks.append(f'{mode}: exact disclosure; ordinary source links; route selection before registration; repeated dismissal and interstitial Cancel; modifier click; exact same-tab URL; interstitial reload and merchant Back restore their stage and selected size')
+                checks.append(f'{mode}: exact disclosure; generic source links use the same modal and same tab; route selection before registration; repeated dismissal and interstitial Cancel; modifier click; exact same-tab URL; interstitial reload and merchant Back restore their stage and selected size')
                 # A published retained/sold-out result invalidates the pending registration exit.
                 page.locator('.guide-start').click()
                 select_purchase_route(page, selected=True)
@@ -145,6 +154,26 @@ def main():
                 expect(page).to_have_url(base)
                 assert external_reads == ['https://merchant.example/policy', 'https://merchant.example/bib?variant=S']
                 checks.append(f'{mode}: retained snapshot invalidates pending route/registration exit without merchant traffic')
+                # A plain footer reference has no specialized data-* guard and
+                # must receive the same modal even outside the product sheet.
+                page.locator('#close').click()
+                page.evaluate("document.querySelector('footer.footer').insertAdjacentHTML('beforeend','<a id=footerPolicyLink target=_blank href=https://merchant.example/policy>规则原文</a>')")
+                footer_link = page.locator('#footerPolicyLink')
+                footer_link.click()
+                assert_exit_dialog(page, 'https://merchant.example/policy', official=False)
+                assert external_reads == ['https://merchant.example/policy', 'https://merchant.example/bib?variant=S']
+                cancel_exit_dialog(page, escape=True)
+                expect(footer_link).to_be_focused()
+                expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+                footer_link.click(button='middle')
+                confirm_exit_dialog(page, 'https://merchant.example/policy', official=False)
+                assert len(context.pages) == 1
+                assert external_reads == ['https://merchant.example/policy', 'https://merchant.example/bib?variant=S', 'https://merchant.example/policy']
+                page.go_back(wait_until='networkidle')
+                expect(page).to_have_url(base)
+                expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+                assert_exit_closed(page)
+                checks.append(f'{mode}: generic footer rules link uses exact domain and target-site label; Escape restores link focus; middle-click confirmation navigates only in the same tab; Back stays outside the product sheet')
                 context.close()
             browser.close()
     finally:

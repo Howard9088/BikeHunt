@@ -12,7 +12,8 @@ from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import expect, sync_playwright
 
-from test_catalog_messages_ui import DISCLAIMER, OUT, ROOT, QuietHandler, fixture
+from test_catalog_messages_ui import OUT, ROOT, QuietHandler, fixture
+from exit_dialog_test_support import assert_exit_closed, assert_exit_dialog, cancel_exit_dialog, confirm_exit_dialog
 
 MERCHANTS = {
     'maap': ('MAAP', '已有账户的找回说明'),
@@ -25,13 +26,24 @@ OFFICIAL_HOSTS = {
     'shop.decathloncmacgmteam.com', 'support.apple.com', 'support.google.com',
 }
 STEPS = ['country', 'account', 'size', 'cart', 'address', 'returns']
+DIRECTORY_BRANDS = [
+    {'code': 'maap', 'name': 'MAAP', 'name_zh': 'MAAP 品牌', 'offer_count': 4,
+     'product_count': 2, 'rule_count': 0, 'logo_images': ['/web/assets/brands/maap.svg']},
+    {'code': 'pns', 'name': 'Pas Normal Studios', 'name_zh': 'Pas Normal Studios',
+     'offer_count': 1, 'product_count': 1, 'rule_count': 0,
+     'logo_images': ['/web/assets/brands/pns.svg']},
+    {'code': 'pns-no-image', 'name': 'Pas Normal Studios', 'name_zh': '无图片回归测试',
+     'offer_count': 0, 'product_count': 0, 'rule_count': 0, 'logo_images': []},
+]
+
 
 
 def guide_fixture():
     state = fixture()
     card = state['catalog']['items'][0]
     card.update(name='Guide Bib', name_zh='Guide Bib 图解测试')
-    state['catalog']['items'] = [card, {**card, 'product_id': 'other-bib', 'name': 'Other Bib', 'name_zh': '另一件商品'}]
+    state['catalog']['items'] = [card, {**card, 'product_id': 'other-bib', 'name': 'Other Bib', 'name_zh': '另一件商品'},
+                                 {**card, 'product_id': 'pns-bib', 'name': 'PNS Bib', 'name_zh': 'PNS 目录测试', 'source_codes': ['pns']}]
     original = state['detail']['offers'][0]
     state['detail']['offers'] = []
     for code, (name, _) in MERCHANTS.items():
@@ -55,6 +67,75 @@ def assert_no_overflow(page):
     assert page.locator('#sheetBody').evaluate('(element) => element.scrollWidth <= element.clientWidth + 1')
 
 
+
+def exercise_directory_logos(page, context, base, external_reads, mode, checks):
+    """Real local images and load/error events keep the complete brand identity."""
+    assert_exit_closed(page)
+    page.locator('[data-tab=brands]').click()
+    expect(page.locator('.directory-card')).to_have_count(3)
+    pns = page.locator('.directory-card[data-source=pns]')
+    maap = page.locator('.directory-card[data-source=maap]')
+    text_only = page.locator('.directory-card[data-source=pns-no-image]')
+    expect(text_only.locator('.directory-mark')).to_be_visible()
+    expect(text_only.locator('.directory-mark')).to_have_text('Pas Normal Studios')
+    expect(text_only.locator('img[data-directory-logo]')).to_have_count(0)
+    for card, name, asset in [(pns, 'Pas Normal Studios', '/web/assets/brands/pns.svg'),
+                              (maap, 'MAAP', '/web/assets/brands/maap.svg')]:
+        image = card.locator('img[data-directory-logo]')
+        expect(image).to_have_attribute('src', asset)
+        expect(image).to_have_attribute('alt', name + ' 标志')
+        expect(image).to_be_visible()
+        assert image.evaluate('img => img.complete && img.naturalWidth > 0 && new URL(img.currentSrc).origin === location.origin')
+        expect(card.locator('.directory-mark')).to_be_hidden()
+    initial_area = pns.locator('.directory-logo').bounding_box()
+    text_area = text_only.locator('.directory-logo').bounding_box()
+    assert initial_area and text_area and abs(initial_area['height'] - text_area['height']) <= 1
+    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+    assert page.locator('#directoryPage').evaluate('el => el.scrollWidth <= el.clientWidth + 1')
+    for card in [pns, maap, text_only]:
+        assert card.evaluate('el => el.scrollWidth <= el.clientWidth + 1')
+    page.screenshot(path=str(OUT / f'directory_logos_{mode}.png'))
+    failed_asset = urlparse(base)._replace(path='/web/assets/brands/controlled-missing-logo.svg', query='', fragment='').geturl()
+    page.route(failed_asset, lambda route: route.fulfill(status=404, content_type='text/plain', body='Controlled missing directory image'))
+    pns.locator('img[data-directory-logo]').evaluate('(img, src) => { img.src = src; }', failed_asset)
+    expect(pns.locator('img[data-directory-logo]')).to_be_hidden()
+    expect(pns.locator('.directory-mark')).to_be_visible()
+    expect(pns.locator('.directory-mark')).to_have_text('Pas Normal Studios')
+    failed_area = pns.locator('.directory-logo').bounding_box()
+    assert failed_area and all(abs(initial_area[key] - failed_area[key]) <= 1 for key in ['width', 'height'])
+    assert pns.locator('.directory-logo').evaluate('el => el.scrollWidth <= el.clientWidth + 1 && el.scrollHeight <= el.clientHeight + 1')
+    assert_exit_closed(page)
+    page.screenshot(path=str(OUT / f'directory_logo_fallback_{mode}.png'))
+    # Opening the card renders a fresh image, and its own fallback is also wired.
+    pns.click()
+    expect(page.locator('#sourceProducts')).to_be_enabled()
+    assert_exit_closed(page)
+    expect(page).to_have_url(base)
+    overview = page.locator('.source-overview')
+    expect(overview.locator('img[data-directory-logo]')).to_be_visible()
+    expect(overview.locator('.directory-mark')).to_be_hidden()
+    source_area = overview.locator('.directory-logo').bounding_box()
+    overview.locator('img[data-directory-logo]').evaluate('(img, src) => { img.src = src; }', failed_asset)
+    expect(overview.locator('img[data-directory-logo]')).to_be_hidden()
+    expect(overview.locator('.directory-mark')).to_be_visible()
+    expect(overview.locator('.directory-mark')).to_have_text('Pas Normal Studios')
+    source_failed_area = overview.locator('.directory-logo').bounding_box()
+    assert source_area and source_failed_area and all(abs(source_area[key] - source_failed_area[key]) <= 1 for key in ['width', 'height'])
+    assert_no_overflow(page)
+    page.locator('#sourceProducts').click()
+    assert_exit_closed(page)
+    expect(page).to_have_url(base)
+    expect(page.locator('#browseLabel')).to_have_text('Pas Normal Studios')
+    expect(page.locator('.card')).to_have_count(1)
+    assert len(context.pages) == 1 and external_reads == []
+    # A normal re-render restores the original working asset after the failed URL.
+    page.locator('[data-tab=brands]').click()
+    expect(page.locator('.directory-card[data-source=pns] img[data-directory-logo]')).to_be_visible()
+    expect(page.locator('.directory-card[data-source=pns] .directory-mark')).to_be_hidden()
+    assert_exit_closed(page)
+    checks.append(mode + ': full Pas Normal Studios fallback with absent and failed images; real local PNS/MAAP assets; load/error and fresh render recovery; constant logo area; no overflow; directory and sourceProducts stay internal without an exit prompt')
+
+
 def open_guide(page, code, selected=False):
     if page.locator('#sheet').get_attribute('aria-hidden') == 'false':
         page.locator('#close').click()
@@ -74,6 +155,7 @@ def open_guide(page, code, selected=False):
     page.evaluate('(options) => openMerchantGuide(currentProduct, options.code, options.variant)', {'code': code, 'variant': 'S' if selected else None})
     expect(page.locator('#merchantGuideTitle')).to_be_focused()
     expect(page.locator('#merchantLanguageGuide')).to_be_visible()
+    assert_exit_closed(page)
 
 
 def main():
@@ -86,9 +168,9 @@ def main():
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(executable_path=os.environ.get('CHROME_EXECUTABLE') or shutil.which('chromium'), headless=True)
-            for mode, viewport in [('desktop', {'width': 1440, 'height': 900}), ('mobile', {'width': 390, 'height': 844})]:
+            for mode, viewport in [('desktop', {'width': 1440, 'height': 900}), ('mobile', {'width': 390, 'height': 844}), ('small_mobile', {'width': 320, 'height': 740})]:
                 state, external_reads = guide_fixture(), []
-                context = browser.new_context(viewport=viewport, is_mobile=mode == 'mobile', has_touch=mode == 'mobile')
+                context = browser.new_context(viewport=viewport, is_mobile=mode != 'desktop', has_touch=mode != 'desktop')
                 context.set_default_timeout(7000)
                 context.set_default_navigation_timeout(10000)
                 context.add_init_script('''
@@ -123,7 +205,7 @@ def main():
                         result = state['detail']
                         state['last_variant'] = parse_qs(url.query).get('variant_id', [None])[0]
                     elif url.path == '/api/directories':
-                        result = {'brands': [{'code': 'maap', 'name': 'MAAP', 'name_zh': 'MAAP 品牌', 'offer_count': 4, 'product_count': 2, 'rule_count': 0}], 'teams': []}
+                        result = {'brands': DIRECTORY_BRANDS, 'teams': []}
                     elif url.path == '/api/updates':
                         result = {'items': [], 'cursor': 0, 'fx': state['catalog']['fx']}
                     elif url.path.startswith('/api/rules/'):
@@ -140,9 +222,11 @@ def main():
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
+                exercise_directory_logos(page, context, base, external_reads, mode, checks)
                 page.locator('[data-tab=brands]').click()
                 page.locator('[data-source=maap]').click()
                 page.locator('#sourceProducts').click()
+                assert_exit_closed(page)
                 page.locator('[data-category=bibs]').click()
                 page.locator('#q').fill('Guide Bib')
                 expect(page.locator('.card')).to_have_count(1)
@@ -215,18 +299,16 @@ def main():
                     target = link.get_attribute('href')
                     expect(link).to_have_attribute('target', '_self')
                     before = len(external_reads)
-                    def dismiss(dialog):
-                        assert DISCLAIMER in dialog.message
-                        assert '不会代你注册、登录或下单' in dialog.message
-                        dialog.dismiss()
-                    page.once('dialog', dismiss)
+                    assert_exit_closed(page)
                     link.click()
+                    dialog = assert_exit_dialog(page, target, official=False)
+                    expect(dialog).to_contain_text('不会代你注册、登录或下单')
+                    cancel_exit_dialog(page)
                     expect(page).to_have_url(base)
                     expect(link).to_be_focused()
                     assert len(external_reads) == before
-                    page.once('dialog', lambda dialog: dialog.accept())
-                    with page.expect_navigation(wait_until='domcontentloaded'):
-                        link.click()
+                    link.click()
+                    confirm_exit_dialog(page, target, official=False)
                     expect(page).to_have_url(target)
                     assert len(context.pages) == 1
                     assert external_reads[-1] == target

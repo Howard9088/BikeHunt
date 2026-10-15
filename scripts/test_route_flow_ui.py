@@ -11,10 +11,12 @@ from http.server import ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import expect, sync_playwright
-from test_catalog_messages_ui import DISCLAIMER, OUT, ROOT, QuietHandler, fixture
+from test_catalog_messages_ui import OUT, ROOT, QuietHandler, fixture
+from exit_dialog_test_support import (assert_exit_closed, assert_exit_layout, assert_exit_focus_trap, open_final_exit, cancel_exit_dialog, confirm_exit_dialog)
 
 
 def assert_no_early_registration(page):
+    assert_exit_closed(page)
     expect(page.locator('.registration-help')).to_have_count(0)
     expect(page.locator('#registrationInterstitial')).to_have_count(0)
 
@@ -49,6 +51,7 @@ def main():
             browser = playwright.chromium.launch(executable_path=os.environ.get('CHROME_EXECUTABLE') or shutil.which('chromium'), headless=True)
             for mode, viewport in [('desktop', {'width': 1440, 'height': 900}), ('mobile', {'width': 390, 'height': 844}), ('small_mobile', {'width': 320, 'height': 740})]:
                 state, outbound = fixture(), []
+                state['detail']['image'] = 'https://merchant.example/selected-bib.svg'
                 state['detail']['offers'] = []
                 for code, market, host in [('visma', 'US 市场报价（USD）', 'www.teamvismaleaseabike.com'), ('maap', '', 'maap.cc'), ('poc', 'Global EN', 'poc.com'), ('teamcycles', '英国站', 'www.teamcycles.com')]:
                     q = copy.deepcopy(fixture()['detail']['offers'][0])
@@ -75,7 +78,7 @@ def main():
                         value = state['detail']
                         state['last_variant'] = parse_qs(parsed.query).get('variant_id', [None])[0]
                     elif parsed.path == '/api/directories':
-                        value = {'brands': [], 'teams': []}
+                        value = {'brands': [], 'teams': [{'code': 'visma', 'name': 'Visma', 'name_zh': 'Visma', 'official_url': 'https://www.teamvismaleaseabike.com/', 'shop_url': 'https://www.teamvismaleaseabike.com/shop/', 'status': 'verified_shop', 'shop_evidence_url': 'https://www.teamvismaleaseabike.com/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}]}
                     elif parsed.path == '/api/updates':
                         value = {'items': [], 'cursor': 0, 'fx': state['catalog']['fx']}
                     elif parsed.path.startswith('/api/rules/'):
@@ -130,6 +133,7 @@ def main():
                 select_route(page, 'direct')
                 page.locator('#routeContinue').click()
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
+                assert_exit_closed(page)
                 expect(page.locator('#registrationInterstitial .registration-help')).to_have_count(1)
                 expect(page.locator('#registrationInterstitial')).to_contain_text('visma')
                 expect(page.locator('#registrationInterstitial form, #registrationInterstitial input, #registrationInterstitial textarea, #registrationInterstitial select')).to_have_count(0)
@@ -143,25 +147,63 @@ def main():
                 assert_routes(page)
                 expect(page.locator('[data-route-select="direct"]')).to_have_attribute('aria-pressed', 'true')
                 page.locator('#routeContinue').click()
-                dialogs = []
-                def dismiss(dialog):
-                    dialogs.append(dialog.message)
-                    assert DISCLAIMER in dialog.message
-                    dialog.dismiss()
-                page.once('dialog', dismiss)
-                page.locator('#registrationContinue').click()
-                assert len(dialogs) == 1 and outbound == []
+                target = baseline['offers'][0]['offer']['url']
+                selected_image = baseline['image']
+                dialog = open_final_exit(page, target, official=True, image=selected_image)
+                expect(dialog).to_contain_text(baseline['name_zh'])
+                expect(dialog).to_contain_text('官方来源及商城入口依据')
+                expect(page.locator('#externalExitImage')).to_be_visible()
+                page.wait_for_function('document.getElementById("externalExitImage").naturalWidth > 0')
+                expect(page.locator('#externalExitImageFallback')).to_be_hidden()
+                assert outbound == [], 'Opening the confirmation must never leave BikeHunt'
+                assert_exit_focus_trap(page)
+                dialog.locator('details summary').click()
+                expect(dialog.locator('details[open]')).to_have_count(1)
+                assert_exit_layout(page)
+                dialog.locator('details summary').click()
+                page.screenshot(path=str(OUT / f'purchase_exit_{mode}.png'))
+                # A failed selected-product image has a clear, usable text fallback.
+                failed_image = selected_image + '?simulate-image-failure'
+                page.route(failed_image, lambda route: route.abort())
+                page.locator('#externalExitImage').evaluate('(img, src) => { img.src = src; }', failed_image)
+                expect(page.locator('#externalExitImage')).to_be_hidden()
+                expect(page.locator('#externalExitImageFallback')).to_be_visible()
+                assert page.locator('#externalExitImageFallback').inner_text().strip()
+                assert_exit_layout(page)
+                page.screenshot(path=str(OUT / f'purchase_exit_image_fallback_{mode}.png'))
+                cancel_exit_dialog(page)
+                assert outbound == []
                 assert_routes(page)
+                expect(page.locator('#routeContinue')).to_be_focused()
+                page.locator('#routeContinue').click()
+                open_final_exit(page, target, official=True, image=selected_image)
+                expect(page.locator('#externalExitImage')).to_be_visible()
+                expect(page.locator('#externalExitImageFallback')).to_be_hidden()
+                cancel_exit_dialog(page, escape=True)
+                assert_routes(page)
+                expect(page.locator('#routeContinue')).to_be_focused()
+                expect(page.locator('[data-route-select="direct"]')).to_have_attribute('aria-pressed', 'true')
+                # The exact quote is revalidated when Confirm is clicked, not
+                # merely when the dialog opens. Restore fixture state afterward.
+                for field, changed in [('stock', 'out_of_stock'), ('url', 'https://evil.example/changed-product')]:
+                    page.locator('#routeContinue').click()
+                    open_final_exit(page, target, official=True, image=selected_image)
+                    original = page.evaluate('(field) => guideContext.quote.offer[field]', field)
+                    page.evaluate('([field, value]) => { guideContext.quote.offer[field] = value; }', [field, changed])
+                    page.locator('#externalExitConfirm').click()
+                    expect(page).to_have_url(base)
+                    expect(page.locator('#externalExitError')).to_be_visible()
+                    assert outbound == [] and len(context.pages) == 1
+                    page.evaluate('([field, value]) => { guideContext.quote.offer[field] = value; }', [field, original])
+                    cancel_exit_dialog(page)
+                    assert_routes(page)
                 page.locator('#routeContinue').click()
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
                 page.reload(wait_until='networkidle')
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
                 expect(page.locator('#registrationInterstitial .registration-help')).to_have_count(1)
-                target = baseline['offers'][0]['offer']['url']
-                page.once('dialog', lambda dialog: (dialogs.append(dialog.message), dialog.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):
-                    page.locator('#registrationContinue').click()
-                assert DISCLAIMER in dialogs[-1]
+                open_final_exit(page, target, official=True, image=selected_image)
+                confirm_exit_dialog(page, target, official=True)
                 expect(page).to_have_url(target)
                 assert len(context.pages) == 1 and outbound == [target]
                 page.go_back(wait_until='networkidle')
@@ -178,7 +220,13 @@ def main():
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
                 expect(page.locator('[data-registration-source="amazon_jp"][data-registration-market="日本站"]')).to_have_count(1)
                 expect(page.locator('[data-registration-source="amazon_us"]')).to_have_count(0)
-                page.locator('#registrationCancel').click()
+                assert_exit_closed(page)
+                # The actual encoded URL comes from the trusted search fixture.
+                amazon_target = page.evaluate('registrationExitContext.url')
+                open_final_exit(page, amazon_target, official=True)
+                expect(page.locator('#externalExitImage')).to_have_attribute('src', page.evaluate('AMAZON_CHANNEL_LOGO_URL'))
+                cancel_exit_dialog(page, escape=True)
+                expect(page.locator('[data-amazon-search-link="amazon_jp_jerseys"]')).to_be_focused()
                 expect(page.locator('.amazon-market')).to_have_count(4)
                 assert_no_early_registration(page)
                 # Stale stock can only plan a route, then recheck at the exact official page.
@@ -195,7 +243,7 @@ def main():
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
                 assert len(outbound) == 1
                 page.screenshot(path=str(OUT / f'purchase_registration_{mode}.png'))
-                checks.append(mode + ': compact payment after size; exact three routes; prohibited disabled/unknown planning; registration only after route; full disclosure; same-tab exact URL; cancel/back/reload preserve source, offer, size and route; Amazon scope; stale stock reference stage; no early merchant request')
+                checks.append(mode + ': compact payment after size; exact three routes; prohibited disabled/unknown planning; registration only after route; four numbered modal explanations and exact domain/labels; selected image and failure fallback; full disclosure; Escape/focus trap; stock and URL revalidation; same-tab exact URL; cancel/back/reload preserve source, offer, size and route; Amazon scope; stale stock reference stage; no early merchant request')
                 context.close()
             browser.close()
         assert errors == [], errors

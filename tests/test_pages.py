@@ -26,7 +26,7 @@ class PagesTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         web = self.root/'web'; web.mkdir()
-        for name in ('gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','purchase-flow.js','bundle-variants.js'):
+        for name in ('gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','purchase-flow.js','bundle-variants.js','external-exit.js','external-exit.css'):
             (web/name).write_text('/* Mock public asset */',encoding='utf-8')
         atomic_json(web/'registration-guides.json', {'schemaVersion': 1, 'revision': 'empty-test', 'entries': []})
         (web/'index.html').write_text('<a href="/web/">Home</a><script src="/web/profile.js" defer></script>',encoding='utf-8')
@@ -48,11 +48,14 @@ class PagesTests(unittest.TestCase):
         with patch.dict(os.environ, {"GITHUB_SHA": commit}):
             build_public_site(self.root, make_fx())
         html = (self.root / "_site/index.html").read_text(encoding="utf-8")
-        for asset in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "registration-guides.js", "purchase-readiness.js", "purchase-flow.js", "bundle-variants.js"):
+        for asset in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "registration-guides.js", "purchase-readiness.js", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
             self.assertIn(f'./web/{asset}?v={commit}', html)
         self.assertIn(f'data-release="{commit}"', html)
         self.assertEqual(index.read_text(encoding="utf-8"), original)
         self.assertLess(html.index('bundle-variants.js'), html.index('gallery.js'))
+        self.assertLess(html.index('purchase-flow.js'), html.index('external-exit.js'))
+        for asset in ('external-exit.js', 'external-exit.css'):
+            self.assertEqual((self.root/'_site/web'/asset).read_bytes(), (self.root/'web'/asset).read_bytes())
         self.assertEqual((self.root/'_site/web/bundle-variants.js').read_bytes(),
                          (self.root/'web/bundle-variants.js').read_bytes())
 
