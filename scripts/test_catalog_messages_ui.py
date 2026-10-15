@@ -16,7 +16,7 @@ from exit_dialog_test_support import (DISCLAIMER, assert_exit_closed, assert_exi
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from app.browse_taxonomy import CATEGORY_GROUPS
+from app.public_visibility import public_category_groups
 
 OUT=ROOT/'artifacts/acceptance'
 AMAZON_SEARCHES = [
@@ -71,17 +71,17 @@ def fixture():
               'offers': [{'offer': offer, 'eligible': False, 'reasons': [], 'product_cny': '1080',
                           'shipping_cny': None, 'tax_cny': None, 'total_cny': None}]}
     return {'catalog': {'items': [base, sold, unknown], 'fx': fx, 'source_count': 1,
-                        'category_groups': copy.deepcopy(CATEGORY_GROUPS),
+                        'category_groups': public_category_groups(),
                         'categories': [{'code': 'all', 'name': '全部'}, {'code': 'bibs', 'name': '骑行裤'}]},
             'detail': detail}
 
 
 def assert_single_category_layer(page):
-    """The only category controls are the five exact public groups, in order."""
+    """The only category controls are the four exact public groups, in order."""
     groups = page.locator('#categoryGroupNav [data-category-group]')
-    expect(groups).to_have_text(['自行车', '骑行服饰', '锁鞋', '头盔', '配件与周边'])
+    expect(groups).to_have_text(['骑行服饰', '锁鞋', '头盔', '配件与周边'])
     assert groups.evaluate_all('buttons => buttons.map(button => button.dataset.categoryGroup)') == [
-        'road_equipment', 'clothing', 'cleat_shoes', 'helmets', 'other']
+        'clothing', 'cleat_shoes', 'helmets', 'other']
     expect(page.locator('#categoryNav,[data-category]')).to_have_count(0)
     assert page.evaluate("activeCategory === 'all'")
 
@@ -445,7 +445,7 @@ def main():
                 page.locator('[data-category-group=clothing]').click()
                 assert_card_ids(page, ['partial', 'maap-jersey', 'other-jersey'])
                 expect(page.locator('#browseLabel')).to_have_text('精选好价 · 骑行服饰')
-                checks.append(mode+': exact single five-category layer; brand group/toggle retains source; explicit精选好价 clears source; clothing includes both bibs and jerseys and excludes helmets')
+                checks.append(mode+': exact single four-category layer; brand group/toggle retains source; explicit精选好价 clears source; clothing includes both bibs and jerseys and excludes helmets')
                 return_tab,return_source,return_label=('brands','maap','MAAP 品牌 · 骑行服饰') if mode=='desktop' else ('teams','other','测试车队 · 骑行服饰')
                 page.locator(f'[data-tab={return_tab}]').click();page.locator(f'[data-source={return_source}]').click();page.locator('#sourceProducts').click()
                 # A source opened from the directory retains the selected clothing group.

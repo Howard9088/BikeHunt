@@ -49,6 +49,7 @@ function harness() {
     PURCHASE_DISCLAIMER: 'test disclaimer', saveBrowseState() {},
     renderRouteComparison() { if (context.guideContext && !context.offerAvailable(context.guideContext.quote)) context.showInventoryInvalidated(context.guideContext.quote); },
   });
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../web/public-visibility.js'), 'utf8'), context);
   vm.runInContext(section(gallery, 'function inventoryVerified(', 'async function loadDetail('), context);
   vm.runInContext(section(flows, 'async function startGuide(', 'function renderGuide('), context);
   vm.runInContext(section(flows, 'function renderGuide(', 'function browseSettings('), context);

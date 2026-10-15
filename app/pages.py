@@ -16,7 +16,7 @@ from app.discovery import directories
 from app.fx import FxProvider
 from app.localization import CATEGORIES
 from app.browse_taxonomy import CATEGORY_GROUPS
-from app.road_equipment import BROWSE_CATEGORIES, read_road_references
+from app.public_visibility import public_category_groups, public_categories, public_road_references, public_directories
 from app.policies import PolicyRepository
 from app.publication import build_publication
 from app.updates import UpdateStore
@@ -39,7 +39,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     output.mkdir()
     web = root/"web"
     (output/"web").mkdir()
-    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "payment-methods.js", "payment-methods.json", "payment-channels.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
+    for name in ("public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "payment-methods.js", "payment-methods.json", "payment-channels.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
         shutil.copy2(web/name, output/"web"/name)
     if (web/"icons").is_dir():
         shutil.copytree(web/"icons", output/"web/icons")
@@ -49,7 +49,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
                           '<script src="./web/pages-adapter.js?v=BIKEHUNT_RELEASE_COMMIT" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
     # Tie every copied interactive asset to this exact deployed release.
     # Keep source HTML and pending icon work untouched.
-    index = re.sub(r'(\./web/(?:gallery|flows|external-exit)\.css|\./web/(?:profile|gallery|flows|pages-adapter|registration-guides|purchase-readiness|payment-methods|purchase-flow|bundle-variants|external-exit)\.js)(?:\?[^" ]*)?',
+    index = re.sub(r'(\./web/(?:gallery|flows|external-exit)\.css|\./web/(?:public-visibility|profile|gallery|flows|pages-adapter|registration-guides|purchase-readiness|payment-methods|purchase-flow|bundle-variants|external-exit)\.js)(?:\?[^" ]*)?',
                    r'\1?v=BIKEHUNT_RELEASE_COMMIT', index)
     index = index.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
@@ -66,18 +66,19 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     repository = OfferRepository(root/"data")
     offers = repository.load()
     snapshot = fx or FxProvider(root/"data/fx_latest.json").get()
-    store = ComparisonCatalog(offers, snapshot)
+    store = ComparisonCatalog(offers, snapshot, public_only=True)
+    public_offers = [offer for family in store.families.values() for variant in family for offer in variant]
     catalog = {"items":[row.model_dump(mode="json") for row in store.search()],
-               "categories":BROWSE_CATEGORIES, "category_groups":CATEGORY_GROUPS,
-               "road_equipment_references":read_road_references(root), "fx":snapshot.model_dump(mode="json"),
-               "offer_count":len(offers), "source_count":len({row.source_code for row in offers})}
+               "categories":public_categories(), "category_groups":public_category_groups(),
+               "road_equipment_references":public_road_references(root), "fx":snapshot.model_dump(mode="json"),
+               "offer_count":len(public_offers), "source_count":len({row.source_code for row in public_offers})}
     details = {}
     for card in catalog["items"]:
         detail = store.compare(card["product_id"])
         details[card["product_id"]] = {"default":detail.variant_id, "variants":{
             row.variant_id:store.compare(card["product_id"], row.variant_id).model_dump(mode="json")
             for row in detail.variants}}
-    directory = directories(root)
+    directory = public_directories(root)
     policies = PolicyRepository(root)
     rules = {entry["code"]:policies.get(entry.get("rules_code", entry["code"])).model_dump(mode="json")
              for entry in repository.sources()}
@@ -89,8 +90,10 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
             events = json.loads((root/"data/public_updates.json").read_text(encoding="utf-8"))
         except (OSError, ValueError):
             events = []
-    events = enrich_events(events, store)
+    # Keep local history recoverable while publishing only visible categories.
+    events = enrich_events(events, store, include_hidden=True)
     atomic_json(root/"data/public_updates.json", events)
+    events = enrich_events(events, store)
     try:
         charts = json.loads((root/"data/fit_guides.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):

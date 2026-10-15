@@ -34,6 +34,7 @@ function harness(){
  });
  const exit=installExternalExitStub(c),prompts=exit.prompts;
  const sheet={classList:{contains:()=>open}},body={contains:item=>nodes.includes(item),querySelectorAll:()=>[]};c.sheet=sheet;
+ vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
  vm.runInContext(slice(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(readiness.replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.input=policy;vm.runInContext('readinessData=validateReadinessData(input);readinessState="ready"',c);
  vm.runInContext(slice(flows,'const AMAZON_SEARCH_MARKETS=',"document.getElementById('amazonChannels').onclick"),c);

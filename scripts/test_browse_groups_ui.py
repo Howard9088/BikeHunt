@@ -1,4 +1,4 @@
-"""Hermetic reference detail/exit and five-group UI; run Chromium only in CI."""
+"""Hermetic accessory detail/exit and four public groups with stale-payload rejection; run Chromium only in CI."""
 from __future__ import annotations
 
 import json
@@ -28,6 +28,14 @@ def fixture():
     state['catalog']['category_groups'] = CATEGORY_GROUPS
     state['catalog']['categories'] = BROWSE_CATEGORIES
     state['catalog']['road_equipment_references'] = references
+    # Deliberately serve pre-release payloads. New client code must project them safely.
+    sample = state['catalog']['items'][0]
+    for row in references['products']:
+        if row['category_group'] == 'road_equipment':
+            state['catalog']['items'].append({**sample, 'product_id': 'stale-' + row['id'],
+                'name': row['name'], 'name_zh': row['name'], 'brand': row['brand'],
+                'category': row['category'], 'category_group': row['category_group'],
+                'source_codes': [row['source_code']]})
     state['directories']['brands'] += [
         dict(code=b['code'], name=b['name'], name_zh=b['name'],
              offer_count=0, product_count=0, rule_count=0, road_reference=True,
@@ -80,7 +88,7 @@ def back_to_references(page, identifier=MIDLOADER, owner='#roadReferenceInline',
 
 
 def assert_reference_detail(page, row, state, owner='#roadReferenceInline'):
-    """All four records share the same honest, read-only in-site workflow."""
+    """The retained accessory keeps its honest, read-only in-site workflow."""
     card = page.locator(f'{owner} [data-road-reference-card="{row["id"]}"]')
     expect(card.locator('a[data-road-reference^="product:"]')).to_have_count(0)
     expect(card.locator('[data-road-open]')).to_have_count(1)
@@ -114,7 +122,7 @@ def assert_reference_detail(page, row, state, owner='#roadReferenceInline'):
     for text in ['市场', '尺码', '运费', '税费', '支付', '账户']:
         expect(steps).to_contain_text(text)
     brand = next(b for b in state['catalog']['road_equipment_references']['brands'] if b['code'] == row['source_code'])
-    expect(detail).to_contain_text(brand['note'])
+    expect(detail).to_contain_text('配件研究参考')
     expect(detail).to_contain_text(row['notes'])
     expect(steps).to_contain_text('不套用服装税率')
     expect(detail.locator('#roadReferenceRegistration')).to_be_visible()
@@ -189,7 +197,7 @@ def check_gender_scope(page):
     assert page.evaluate("shopperProfile.gender === 'female'")
     # Existing body measurements survive clearing only the out-of-scope gender filter.
     page.evaluate('shopperProfile.height_cm = 175; shopperProfile.weight_kg = 65; saveProfile()')
-    for group in ['road_equipment', 'cleat_shoes', 'helmets', 'other']:
+    for group in ['cleat_shoes', 'helmets', 'other']:
         page.locator(f'[data-category-group={group}]').click()
         expect(page.locator('#genderFilter')).to_be_hidden()
         assert page.evaluate("shopperProfile.gender === 'all'")
@@ -215,8 +223,33 @@ def check_gender_scope(page):
     expect(page.locator('#grid .card')).to_have_count(1)
 
 
+def check_hidden_bicycle_paths(page, references):
+    hidden = [row for row in references if row['category_group'] == 'road_equipment']
+    assert page.evaluate("categoryGroups.map(row => row.code)") == ['clothing', 'cleat_shoes', 'helmets', 'other']
+    assert page.evaluate("roadReferenceData.products.map(row => row.id)") == [MIDLOADER]
+    assert page.evaluate("items.every(row => row.category_group !== 'road_equipment' && !['road_bikes','frames'].includes(row.category))")
+    for row in hidden:
+        page.evaluate('(id) => openRoadReferenceDetail(id)', row['id'])
+        page.evaluate('(id) => openProduct(id)', 'stale-' + row['id'])
+        expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+        expect(page.locator('#externalExitDialog')).not_to_be_visible()
+    for source in ['trek', 'specialized', 'colnago']:
+        page.evaluate("""source => {
+            history.replaceState({...history.state, bikehuntBrowse: {
+                tab: 'products', source, categoryGroup: 'road_equipment', category: 'frames', query: 'Allez'
+            }}, '');
+        }""", source)
+        page.reload(wait_until='networkidle')
+        assert page.evaluate("activeCategoryGroup === null && activeCategory === 'all' && activeSource === null")
+        expect(page.locator('#q')).to_have_value('Allez')
+        expect(page.locator('#grid .card,#grid [data-road-reference-card]')).to_have_count(0)
+        expect(page.locator('[data-category-group=road_equipment]')).to_have_count(0)
+    page.locator('[data-tab=products]').click()
+    expect(page.locator('#grid .card')).to_have_count(1)
+
+
 def assert_inline_layout(page, viewport):
-    inline = inline_cards(page, 3)
+    inline = inline_cards(page, 1)
     gallery = page.locator('#grid')
     gallery.evaluate('(element) => { element.scrollTop = 0; }')
     first = inline.locator('[data-road-reference-card]').first
@@ -237,11 +270,12 @@ def assert_inline_layout(page, viewport):
         element.dispatchEvent(event);
         return !event.defaultPrevented;
     }""")
-    assert gallery.evaluate('(element) => element.scrollHeight > element.clientHeight')
-    page.mouse.move(gallery_box['x'] + gallery_box['width'] / 2,
-                    gallery_box['y'] + min(gallery_box['height'] / 2, 100))
-    page.mouse.wheel(0, 240)
-    page.wait_for_function("document.getElementById('grid').scrollTop > 0")
+    # One accessory may fit on desktop; exercise native scrolling where it overflows.
+    if gallery.evaluate('(element) => element.scrollHeight > element.clientHeight'):
+        page.mouse.move(gallery_box['x'] + gallery_box['width'] / 2,
+                        gallery_box['y'] + min(gallery_box['height'] / 2, 100))
+        page.mouse.wheel(0, 240)
+        page.wait_for_function("document.getElementById('grid').scrollTop > 0")
     assert page.evaluate('window.scrollY === 0')
     gallery.evaluate('(element) => { element.scrollTop = 0; }')
 
@@ -398,73 +432,68 @@ def main():
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
-                expect(page.locator('[data-category-group]')).to_have_count(5)
-                assert page.locator('[data-category-group]').all_text_contents() == ['自行车', '骑行服饰', '锁鞋', '头盔', '配件与周边']
+                expect(page.locator('[data-category-group]')).to_have_count(4)
+                assert page.locator('[data-category-group]').all_text_contents() == ['骑行服饰', '锁鞋', '头盔', '配件与周边']
                 expect(page.locator('#categoryNav')).to_have_count(0)
                 expect(page.locator('[data-category]')).to_have_count(0)
                 expect(page.locator('#grid .card')).to_have_count(1)
                 expect(page.locator('#roadReferenceInline')).to_have_count(0)
+                check_hidden_bicycle_paths(page, references)
                 check_gender_scope(page)
-                page.locator('[data-category-group=road_equipment]').click()
-                inline = inline_cards(page, 3)
+                page.locator('[data-category-group=other]').click()
+                inline = inline_cards(page, 1)
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+                expect(inline).to_contain_text('Canyon Midloader')
                 expect(inline).to_contain_text('库存待核实')
-                for row in [r for r in references if r['category_group'] == 'road_equipment']:
-                    record = inline.locator(f'[data-road-reference-card="{row["id"]}"]')
-                    expect(record).to_contain_text(row['name'])
-                    expect(record).to_contain_text('库存待核实')
-                    expect(record.locator('a[data-road-reference^="product:"]')).to_have_count(0)
-                    expect(product_opener(page, row['id'])).to_have_count(1)
-                    assert_reference_detail(page, row, state)
+                accessory = next(row for row in references if row['id'] == MIDLOADER)
+                assert_reference_detail(page, accessory, state)
                 assert_inline_layout(page, viewport)
                 page.screenshot(path=str(OUT / f'references_{mode}.png'))
 
-                # An explicitly opened reference sheet can coexist without count leakage.
+                # The accessory panel and inline list cannot leak hidden bicycle entrances.
                 expect(page.locator('#roadReferenceStrip')).to_be_visible()
                 page.locator('#roadReferencesButton').click()
                 panel = page.locator('#roadReferencePanel')
                 expect(panel).to_be_visible()
-                expect(panel.locator('[data-road-reference-card]')).to_have_count(3)
-                expect(inline.locator('[data-road-reference-card]')).to_have_count(3)
-                expect(panel).to_contain_text('不接受转运地址')
+                expect(panel.locator('[data-road-reference-card]')).to_have_count(1)
+                expect(inline.locator('[data-road-reference-card]')).to_have_count(1)
+                expect(panel.locator('[data-road-reference^="brand:"]')).to_have_count(1)
                 expect(page.locator('#count')).to_have_text('0 件商品')
-                assert_reference_detail(page, references[0], state, '#roadReferencePanel')
-                # Brand entrances remain direct but use the same final exit guard.
-                brand = panel.locator('a[data-road-reference="brand:trek"]')
-                expect(brand).to_have_attribute('href', next(b['url'] for b in state['catalog']['road_equipment_references']['brands'] if b['code'] == 'trek'))
+                assert_reference_detail(page, accessory, state, '#roadReferencePanel')
+                brand = panel.locator('a[data-road-reference="brand:canyon"]')
+                expect(brand).to_have_attribute('href', accessory['url'])
                 brand.click()
-                expect(page.locator('#externalExitDomain')).to_have_text('www.trekbikes.com')
+                expect(page.locator('#externalExitDomain')).to_have_text('www.canyon.com')
                 expect(page.locator('#roadReferenceDetail')).not_to_be_visible()
                 page.locator('#externalExitCancel').click()
                 expect(brand).to_be_focused()
                 page.locator('#close').click()
 
-                # One visible category row; search and group reset never create a second layer.
+                # Old bicycle queries never expose saved bicycle/frame references.
                 page.locator('#q').fill('Frameset')
-                expect(inline_cards(page, 1)).to_contain_text('Ultimate CF SL Frameset')
+                inline_cards(page, 0)
                 page.locator('#roadReferencesButton').click()
-                expect(panel.locator('[data-road-reference-card]')).to_have_count(1)
+                expect(panel.locator('[data-road-reference-card]')).to_have_count(0)
                 page.locator('#close').click()
                 page.locator('#q').fill('no matching reference')
                 inline_cards(page, 0)
                 page.locator('#clear').click()
-                inline_cards(page, 3)
-                page.locator('[data-category-group=other]').click()
-                expect(inline_cards(page, 1)).to_contain_text('Canyon Midloader')
+                inline_cards(page, 1)
                 expect(page.locator('[data-category]')).to_have_count(0)
-                assert_reference_detail(page, next(row for row in references if row['id'] == MIDLOADER), state)
                 check_fx_states(page, state)
                 check_language_help(page)
 
-                # A brand source returns directly to its bike records; accessories remain discoverable.
+                # Canyon opens its accessory reference directly; bike-only brands stay hidden.
                 page.locator('[data-tab=brands]').click()
+                for hidden in ['trek', 'specialized', 'colnago']:
+                    expect(page.locator(f'[data-source={hidden}]')).to_have_count(0)
+                expect(page.locator('[data-source=canyon]')).to_contain_text('配件')
                 page.locator('[data-source=canyon]').click()
                 page.locator('#sourceProducts').click()
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-                inline_cards(page, 2)
+                inline_cards(page, 1)
+                expect(page.locator('[data-category-group=other]')).to_have_attribute('aria-pressed', 'true')
                 page.locator('#q').fill('Midloader')
-                inline_cards(page, 0)
-                page.locator('[data-category-group=other]').click()
                 inline_cards(page, 1)
                 image = page.locator('#roadReferenceInline img[data-reference-image]')
                 expect(image).to_have_count(1)
@@ -507,8 +536,9 @@ def main():
                 check_browse_state(page)
                 page.locator('#clear').click()
                 inline_cards(page, 1)
-                page.locator('[data-category-group=road_equipment]').click()
-                inline_cards(page, 2)
+                page.evaluate("chooseCategoryGroup('road_equipment')")
+                assert page.evaluate('activeCategoryGroup === null')
+                expect(page.locator('#grid [data-road-reference-card]')).to_have_count(0)
                 page.locator('[data-category-group=other]').click()
                 inline_cards(page, 1)
 
@@ -532,7 +562,7 @@ def main():
                 assert page.evaluate('activeSource === null')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path=str(OUT / f'groups_{mode}.png'))
-                checks.append(mode + ': five one-level groups; clothing-only gender with persisted residue clearing; reference list to internal detail to exact guarded same-tab exit; original/current currency and CNY item-only with current/stale/missing FX; read-only displayed options and practical purchase steps; exact/missing/failed images; brand direct guard; honest zero verified count; mobile price/layout and native scroll; group/source/query migration; stock/DOM/URL/filter mutation gates; cancel and list-return focus; merchant Back/reload scope; global reset')
+                checks.append(mode + ': four one-level public groups; old five-group payload, bike/frame cards, hidden sources, IDs and history rejected; clothing-only gender with persisted residue clearing; reference list to internal detail to exact guarded same-tab exit; original/current currency and CNY item-only with current/stale/missing FX; read-only displayed options and practical purchase steps; exact/missing/failed images; brand direct guard; honest zero verified count; mobile price/layout and native scroll; group/source/query migration; stock/DOM/URL/filter mutation gates; cancel and list-return focus; merchant Back/reload scope; global reset')
                 context.close()
             browser.close()
     finally:

@@ -23,12 +23,16 @@ function openPanel(title,content,preserveGuide=false){if(typeof roadDetailContex
 async function postJson(url,data={}){const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw new Error(body.detail||'请求失败');return body}
 function saveBrowseState(){
   activeCategory='all'; // Retire hidden leaf filters from older browser history.
+  if(!publicCategoryGroupVisible(activeCategoryGroup))activeCategoryGroup=null;
+  if(!publicSourceVisible(activeSource,publicDirectoryData(directoryData,roadReferenceData)))activeSource=null;
   try{const state=history.state&&typeof history.state==='object'?history.state:{};history.replaceState({...state,bikehuntBrowse:{tab:activeTab,source:activeSource,category:activeCategory,categoryGroup:activeCategoryGroup,query:browseQuery(document.getElementById('q').value)}},'')}catch{}
 }
 function restoreBrowseState(){
   let saved;try{saved=history.state?.bikehuntBrowse}catch{return}
   if(!saved||typeof saved!=='object')return;
   document.getElementById('q').value=browseQuery(saved.query);
+  categoryGroups=categoryGroups.filter(c=>publicCategoryGroupVisible(c.code));
+  directoryData=publicDirectoryData(directoryData,roadReferenceData);
   activeCategoryGroup=categoryGroups.some(c=>c.code===saved.categoryGroup)?saved.categoryGroup:null;
   activeCategory='all';
   activeSource=[...directoryData.brands,...directoryData.teams].some(entry=>entry.code===saved.source)?saved.source:null;
@@ -38,17 +42,19 @@ function restoreBrowseState(){
 function browseQuery(value){return typeof value==='string'&&value.length<=200?value:''}
 function navigate(tab){activeTab=tab;saveBrowseState();document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryGroupNav').hidden=tab!=='products';syncBrowseControls();document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}}
 function chooseCategory(code){activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
-function chooseCategoryGroup(code){activeCategoryGroup=activeCategoryGroup===code?null:categoryGroups.some(c=>c.code===code)?code:null;activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
+function chooseCategoryGroup(code){if(!publicCategoryGroupVisible(code))code=null;activeCategoryGroup=activeCategoryGroup===code?null:categoryGroups.some(c=>c.code===code)?code:null;activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
 function syncBrowseControls(){
   activeCategory='all';
+  if(!publicCategoryGroupVisible(activeCategoryGroup))activeCategoryGroup=null;
   if(typeof syncGenderScope==='function')syncGenderScope();
   document.querySelectorAll('[data-category-group]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.categoryGroup===activeCategoryGroup)));
-  const visible=activeTab==='products'&&['road_equipment','other'].includes(activeCategoryGroup)&&(!activeSource||roadReferenceData.brands.some(b=>b.code===activeSource));
+  const visible=activeTab==='products'&&publicCategoryGroupVisible(activeCategoryGroup)&&['road_equipment','other'].includes(activeCategoryGroup)&&(!activeSource||roadReferenceData.brands.some(b=>b.code===activeSource));
   const strip=document.getElementById('roadReferenceStrip');if(strip)strip.hidden=!visible;
   document.body.classList.toggle('road-reference-visible',visible);
 }
 function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);const label=activeSource?(entry?.name_zh||entry?.name||activeSource):document.getElementById('q').value.trim()?'搜索结果':'精选好价';const group=categoryGroups.find(c=>c.code===activeCategoryGroup);document.getElementById('browseLabel').textContent=label+(group?' · '+group.name:'')}
 function renderDirectory(section){
+  directoryData=publicDirectoryData(directoryData,roadReferenceData);
   const entries=directoryData[section]||[];document.getElementById('browseLabel').textContent=section==='brands'?'品牌官网':'世巡车队';document.getElementById('count').textContent=entries.length+' 个入口';
   const ranking=section==='teams'?directoryData.team_ranking:null;
   directoryPage.innerHTML='<div class="directory-intro"><h2>'+(section==='brands'?'从品牌发现装备':'世巡车队装备，一处查看')+'</h2><p>'+(ranking?e(ranking.season)+' 年 '+e(ranking.title_zh)+' · '+e(ranking.ranking_date)+'<br>':'')+'先看本地商品和中文规则，再决定前往哪个渠道。</p></div><div class="directory-grid">'+entries.map(item=>'<button class="directory-card" data-source="'+e(item.code)+'">'+(item.world_rank?'<span class="team-rank">UCI 第 '+e(item.world_rank)+' 名</span>':'')+directoryLogo(item)+'<strong>'+e(item.name_zh)+'</strong><span>'+e(item.name)+'</span><div class="directory-count">'+(item.product_count??0)+' 款商品 · '+item.offer_count+' 个规格 · '+e(item.catalog_note||'部分目录')+'</div><div class="directory-link">查看商品与中文规则 →</div></button>').join('')+'</div>';
@@ -60,10 +66,12 @@ function ruleMarkup(book){
   return '<div class="rule-meta">规则版本 '+book.version+' · 核对 '+e(timeText(book.checked_at))+'</div>'+book.documents.map(doc=>'<section class="rule-section"><h4>'+e(doc.title_zh)+'</h4>'+(doc.state==='translated'?'<ul>'+doc.summary_zh.map(t=>'<li>'+e(t)+'</li>').join('')+'</ul>':'<p class="offer-note">'+(doc.state==='changed'?'官方原文已有变化，最新中文规则正在复核。':'原文已保存，中文规则正在核实。')+'</p>')+'<details><summary>核对来源</summary><a class="source-original" target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(doc.url))+'">查看官方原文（核对用） ↗</a></details></section>').join('');
 }
 async function openSource(code){
+  directoryData=publicDirectoryData(directoryData,roadReferenceData);if(!publicSourceVisible(code,directoryData))return;
   const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===code);openPanel(entry?.name_zh||'中文规则','<p class="loading">正在读取已保存的中文规则…</p>');
-  try{const book=await getJson('/api/rules/'+encodeURIComponent(code));document.getElementById('sheetBody').innerHTML=(entry?'<div class="source-overview">'+(entry.logo_images?.length?directoryLogo(entry):'')+'<strong>'+e(entry.name_zh)+'</strong><p>'+entry.offer_count+' 条本地报价 · '+entry.rule_count+' 项中文规则</p><button id="sourceProducts" class="compare-button" '+(!entry.offer_count&&!entry.road_reference?'disabled':'')+'>'+(entry.offer_count?'查看该来源商品 →':entry.road_reference?'查看官网参考 →':'商品价格正在接入')+'</button></div>':'')+(entry?.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(entry&&typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+ruleMarkup(book)+(entry?.official_url?'<details class="official-entrances"><summary>官网与官方商城入口</summary><p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.official_url))+'">品牌或车队官网 ↗</a></p>'+(entry.shop_url?'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.shop_url))+'">官方公布的商城入口 ↗</a></p>':'')+'<p>入口已找到不代表中国配送、库存或到手费用已核实。</p></details>':'')+'<div class="service-note">规则按原文变化更新；未核实的条件会明确标记。</div>';bindDirectoryLogos(document.getElementById('sheetBody'));const button=document.getElementById('sourceProducts');if(button)button.onclick=()=>{activeCategory='all';activeSource=code;if(entry.road_reference)activeCategoryGroup='road_equipment';document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category==='all')));document.getElementById('browseLabel').textContent=entry.name_zh;closeSheet();navigate('products')}}catch(error){document.getElementById('sheetBody').innerHTML='<p>'+e(error.message)+'</p>'}
+  try{const book=await getJson('/api/rules/'+encodeURIComponent(code));document.getElementById('sheetBody').innerHTML=(entry?'<div class="source-overview">'+(entry.logo_images?.length?directoryLogo(entry):'')+'<strong>'+e(entry.name_zh)+'</strong><p>'+entry.offer_count+' 条本地报价 · '+entry.rule_count+' 项中文规则</p><button id="sourceProducts" class="compare-button" '+(!entry.offer_count&&!entry.road_reference?'disabled':'')+'>'+(entry.offer_count?'查看该来源商品 →':entry.road_reference?'查看官网参考 →':'商品价格正在接入')+'</button></div>':'')+(entry?.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(entry&&typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+ruleMarkup(book)+(entry?.official_url?'<details class="official-entrances"><summary>官网与官方商城入口</summary><p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.official_url))+'">品牌或车队官网 ↗</a></p>'+(entry.shop_url?'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.shop_url))+'">官方公布的商城入口 ↗</a></p>':'')+'<p>入口已找到不代表中国配送、库存或到手费用已核实。</p></details>':'')+'<div class="service-note">规则按原文变化更新；未核实的条件会明确标记。</div>';bindDirectoryLogos(document.getElementById('sheetBody'));const button=document.getElementById('sourceProducts');if(button)button.onclick=()=>{activeCategory='all';activeSource=code;if(entry.road_reference)activeCategoryGroup=entry.reference_category_group||'road_equipment';document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category==='all')));document.getElementById('browseLabel').textContent=entry.name_zh;closeSheet();navigate('products')}}catch(error){document.getElementById('sheetBody').innerHTML='<p>'+e(error.message)+'</p>'}
 }
 async function startGuide(detail,offerId){
+  if(!publicProductVisible(detail))return;
   const quote=detail.offers.find(x=>x.offer.offer_id===offerId);if(!quote||!offerAvailable(quote))return;
   const saved=history.state?.bikehuntPurchase;
   guideContext={detail,quote,book:null,route:saved?.productId===detail.product_id&&saved.variantId===detail.variant_id&&saved.offerId===offerId?saved.route:null,reference:false};openPanel('中文海淘指引','<p class="loading">读取中文配送与支付规则…</p>',true);const sequence=detailSequence;
@@ -106,8 +114,9 @@ function migrateMessageReadState(events){
 }
 function rememberMessageEvents(data){
   if(!data||!Array.isArray(data.items))throw new Error('价格消息数据无效');
-  const rows=data.items.slice(0,100);
-  if(rows.some(event=>!event||!validMessageKey(event.event_key)||!Number.isSafeInteger(event.id)||event.id<=0))throw new Error('价格消息标识无效');
+  const snapshot=data.items.slice(0,100);
+  if(snapshot.some(event=>!event||!validMessageKey(event.event_key)||!Number.isSafeInteger(event.id)||event.id<=0))throw new Error('价格消息标识无效');
+  const rows=snapshot.filter(publicProductVisible);
   migrateMessageReadState(rows);
   // /api/updates is the authoritative global latest-100 snapshot, not an append-only stream.
   // Reconcile removals/suppression while keeping the independent read-key history intact.
@@ -151,13 +160,13 @@ async function showMessages(){
   document.getElementById('sheetBody').querySelectorAll('.message-card[data-message-product]').forEach(card=>card.onclick=event=>{const target=event.target.closest('[data-message-product]');if(target)openMessageProduct(target.dataset.messageProduct,target.dataset.messageVariant)});
   markMessagesRead(rows);
 }
-async function refreshCatalogSilently(invalidateGuide=true){try{if(invalidateGuide&&guideContext){guideContext=null;closeSheet();}const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;const data=await getJson('/api/catalog');items=data.items;fx=data.fx;roadReferenceData=data.road_equipment_references||{brands:[],products:[]};if(document.getElementById('roadReferencePanel')&&sheet.classList.contains('open'))document.getElementById('sheetBody').innerHTML=roadReferenceMarkup();updateFxLabel();sourceCount=data.source_count;if(activeTab==='products')render(active);refreshRoadReferenceDetail()}catch{}}
+async function refreshCatalogSilently(invalidateGuide=true){try{if(invalidateGuide&&guideContext){guideContext=null;closeSheet();}const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;const data=publicCatalogData(await getJson('/api/catalog'));items=data.items;if(currentProduct&&!publicProductVisible(currentProduct))closeSheet();fx=data.fx;roadReferenceData=data.road_equipment_references||{brands:[],products:[]};if(document.getElementById('roadReferencePanel')&&sheet.classList.contains('open'))document.getElementById('sheetBody').innerHTML=roadReferenceMarkup();updateFxLabel();sourceCount=data.source_count;if(activeTab==='products')render(active);refreshRoadReferenceDetail()}catch{}}
 async function bootFlows(){
-  const data=await getJson('/api/catalog');categories=data.categories||[];categoryGroups=data.category_groups||[];roadReferenceData=data.road_equipment_references||{brands:[],products:[]};
+  const data=publicCatalogData(await getJson('/api/catalog'));categories=data.categories||[];categoryGroups=data.category_groups||[];roadReferenceData=data.road_equipment_references||{brands:[],products:[]};
   document.getElementById('categoryGroupNav').innerHTML=categoryGroups.map(c=>'<button type="button" data-category-group="'+e(c.code)+'" aria-pressed="false" title="再次点击可取消这个分组">'+e(c.name)+'</button>').join('');
   document.querySelectorAll('[data-category-group]').forEach(b=>b.onclick=()=>chooseCategoryGroup(b.dataset.categoryGroup));
   document.getElementById('roadReferencesButton').onclick=()=>openRoadReferences();
-  directoryData=await getJson('/api/directories');
+  directoryData=publicDirectoryData(await getJson('/api/directories'),roadReferenceData);
   restoreBrowseState();
   if(typeof restorePurchaseState==='function')restorePurchaseState().catch(()=>{});
   refreshMessageState().catch(()=>{});
@@ -296,10 +305,11 @@ document.addEventListener('auxclick',guardAmazonHelpExit);
 // Research references never become Offer objects, purchase routes or featured deals.
 const ROAD_REFERENCE_SCOPES=Object.freeze({trek:['www.trekbikes.com','/us/en_US/'],specialized:['www.specialized.com','/us/en/'],canyon:['www.canyon.com','/en-us/'],colnago:['www.colnago.com','/en-us/']});
 function roadReferenceUrl(row){
+  if(!publicProductVisible(row))return '';
   const scope=ROAD_REFERENCE_SCOPES[row?.source_code||row?.code];if(!scope)return '';
   try{const url=new URL(row.url);return url.protocol==='https:'&&!url.username&&!url.password&&!url.port&&url.hostname===scope[0]&&url.pathname.startsWith(scope[1])?url.href:''}catch{return ''}
 }
-function roadReferenceMatches(row){const query=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return (!activeCategoryGroup||activeCategoryGroup===row.category_group)&&(!activeSource||row.source_code===activeSource)&&profileMatches(row)&&query.every(term=>(row.brand+' '+row.name+' '+(row.color||'')+' '+row.category_name).toLowerCase().includes(term))}
+function roadReferenceMatches(row){const query=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return publicProductVisible(row)&&(!activeCategoryGroup||activeCategoryGroup===row.category_group)&&(!activeSource||row.source_code===activeSource)&&profileMatches(row)&&query.every(term=>(row.brand+' '+row.name+' '+(row.color||'')+' '+row.category_name).toLowerCase().includes(term))}
 function roadReferenceLink(row,key,label){const url=roadReferenceUrl(row);return row.stock==='out_of_stock'?'<span class="road-sold">已确认售罄 · 暂无商品访问入口</span>':url?'<a data-road-reference="'+e(key)+'" href="'+e(url)+'" target="_self" rel="noopener noreferrer">'+e(label)+' →</a>':'<span>官方链接待核实</span>'}
 function referenceImageMarkup(url,name){
   let source='';try{const parsed=new URL(url);if(parsed.protocol==='https:'&&!parsed.username&&!parsed.password)source=parsed.href}catch{}
@@ -326,12 +336,14 @@ function roadReferenceFxMarkup(row){
 }
 function roadReferenceOptionsMarkup(row){return '<div id="roadReferenceOptions"><p>页面选项（非现货，不可选择）：'+e((row.listed_options||[]).join(' / ')||'待核实')+'</p>'+(row.color?'<p>记录配色：'+e(row.color)+'</p>':'')+'<p>'+e(row.observation_note)+'</p><p class="road-warning">'+e(row.notes)+'</p></div>'}
 function roadReferenceCard(row){
+  if(!publicProductVisible(row))return '';
   return '<section class="road-reference-card" data-road-reference-card="'+e(row.id)+'"><div class="brand">'+e(row.brand)+' · '+e(row.category_name)+'</div>'+referenceImageMarkup(row.image,row.name)+'<h3>'+e(row.name)+'</h3>'+roadReferencePriceMarkup(row)+roadReferenceFxMarkup(row)+'<p class="road-stock">'+(row.stock==='out_of_stock'?'已确认售罄':'库存待核实')+' · 未取得折扣结束时间</p><p class="road-reference-date">研究核对 '+e((row.research_checked_at||roadReferenceData.research_checked_at||'日期未记录').slice(0,10))+' · 价格观察时间未记录</p><p class="road-item-only">人民币仅为商品价换算；运费、税费待核实，不是到手总价。</p><button type="button" class="compare-button" data-road-open="'+e(row.id)+'">查看详情与怎么买 →</button><details><summary>配色、页面选项与限制</summary>'+(row.color?'<p>记录配色：'+e(row.color)+'</p>':'')+'<p>页面选项（非现货）：'+e((row.listed_options||[]).join(' / '))+'</p><p class="road-warning">'+e(row.notes)+'</p></details></section>';
 }
 function roadReferenceDetailMarkup(row){
+  if(!publicProductVisible(row))return '';
   const brand=roadReferenceData.brands.find(entry=>entry.code===row.source_code),source={code:row.source_code,name:row.brand,name_zh:row.brand,official_url:row.url,shop_url:row.url};
   const fit=row.category==='frames'?'对照身高、跨高、Stack / Reach 与官方几何表，核对车架尺码及变速、轮组等兼容性。':row.category==='road_bikes'?'对照身高、跨高、Stack / Reach 与官方几何表，必要时先向官方确认试骑或 fitting。':'对照容量、尺寸与车架空间，确认安装位置和兼容性。';
-  return '<article id="roadReferenceDetail" data-road-detail="'+e(row.id)+'"><button type="button" id="roadReferenceBack" class="merchant-guide-back">← 返回商品列表</button><div class="brand">'+e(row.brand)+' · '+e(row.category_name)+' · 美国站研究记录</div>'+referenceImageMarkup(row.image,row.name)+'<h2>'+e(row.name)+'</h2>'+roadReferencePriceMarkup(row)+roadReferenceFxMarkup(row)+'<p class="road-item-only">人民币仅为商品价换算；运费、税费待核实，不是到手总价。</p><p class="road-stock">'+(row.stock==='out_of_stock'?'已确认售罄':'库存待核实')+' · 原价与现价均为历史记录 · 未取得折扣结束时间</p><p class="road-reference-date">研究核对 '+e((row.research_checked_at||roadReferenceData.research_checked_at||'日期未记录').slice(0,10))+'；价格观察时间未记录。汇率更新不代表商品价格或库存更新。</p><details class="road-options"><summary>记录配色与页面选项（非现货）</summary>'+roadReferenceOptionsMarkup(row)+'</details><section class="road-purchase-guide"><h3>怎么买 · 先核对这五步</h3><p class="road-warning">'+e(brand?.note||'市场、配送和购买条件待核实。')+'</p><ol id="roadPurchaseSteps"><li><strong>确认官方市场</strong><p>记录来自美国站、以 '+e(row.currency)+' 标价。先确认你能使用的官方销售市场；换到其他市场后，重新核对当地价格和规则，不能沿用这里的折扣。</p></li><li><strong>核对尺码、适配与库存</strong><p>'+e(fit)+' 页面列出的选项不是现货，须在原站重新选择并确认交期。</p></li><li><strong>确认中国配送或商家允许的路线</strong><p>'+e(brand?.note||'中国直邮、转运与香港路线都待核实。')+' 只有商家明确允许且目的地、承运限制已核实，才继续安排路线。</p></li><li><strong>补齐运费、税费与退货条件</strong><p>中国运费和税费待核实，不按 0 元处理；美国本土运费不能当作中国运费。整车、车架和配件不套用服装税率。先取得完整报价，并核对大件运输、关税及 Outlet 退换限制。</p></li><li><strong>核对支付与注册要求</strong><p>支付方式、中国发行卡和账户条件待核实；看见卡组织标志也不能保证支付成功。需要账户时，请在官方页面自行查看注册要求；未实测注册或结账。</p></li></ol></section>'+(typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(source):'<p>支付方式与中国发行卡：待核实。</p>')+'<button type="button" id="roadReferenceLanguage" class="quiet-button">看不懂外文？查看中文操作图解 →</button><section id="roadReferenceRegistration"><h3>离站前：注册与账户帮助</h3><p>Sign in = 登录；Create account = 注册；Guest checkout = 游客结账（是否提供待核实）。本页只提供帮助，不代填资料或创建账户。</p>'+(typeof registrationHelpMarkup==='function'?registrationHelpMarkup(row.source_code,row.market):'<p>注册页面图解待核实；请在原站重新核对。</p>')+'</section><div class="road-reference-final">'+roadReferenceLink(row,'product:'+row.id,'已读购买步骤，去官网核实')+'<p>只访问该商品的官方记录地址，不代表可下单。</p></div></article>';
+  return '<article id="roadReferenceDetail" data-road-detail="'+e(row.id)+'"><button type="button" id="roadReferenceBack" class="merchant-guide-back">← 返回商品列表</button><div class="brand">'+e(row.brand)+' · '+e(row.category_name)+' · 美国站研究记录</div>'+referenceImageMarkup(row.image,row.name)+'<h2>'+e(row.name)+'</h2>'+roadReferencePriceMarkup(row)+roadReferenceFxMarkup(row)+'<p class="road-item-only">人民币仅为商品价换算；运费、税费待核实，不是到手总价。</p><p class="road-stock">'+(row.stock==='out_of_stock'?'已确认售罄':'库存待核实')+' · 原价与现价均为历史记录 · 未取得折扣结束时间</p><p class="road-reference-date">研究核对 '+e((row.research_checked_at||roadReferenceData.research_checked_at||'日期未记录').slice(0,10))+'；价格观察时间未记录。汇率更新不代表商品价格或库存更新。</p><details class="road-options"><summary>记录配色与页面选项（非现货）</summary>'+roadReferenceOptionsMarkup(row)+'</details><section class="road-purchase-guide"><h3>怎么买 · 先核对这五步</h3><p class="road-warning">'+e(brand?.note||'市场、配送和购买条件待核实。')+'</p><ol id="roadPurchaseSteps"><li><strong>确认官方市场</strong><p>记录来自美国站、以 '+e(row.currency)+' 标价。先确认你能使用的官方销售市场；换到其他市场后，重新核对当地价格和规则，不能沿用这里的折扣。</p></li><li><strong>核对尺码、适配与库存</strong><p>'+e(fit)+' 页面列出的选项不是现货，须在原站重新选择并确认交期。</p></li><li><strong>确认中国配送或商家允许的路线</strong><p>'+e(brand?.note||'中国直邮、转运与香港路线都待核实。')+' 只有商家明确允许且目的地、承运限制已核实，才继续安排路线。</p></li><li><strong>补齐运费、税费与退货条件</strong><p>中国运费和税费待核实，不按 0 元处理；美国本土运费不能当作中国运费。配件不套用服装税率。先取得完整报价，并核对运输、关税及退换限制。</p></li><li><strong>核对支付与注册要求</strong><p>支付方式、中国发行卡和账户条件待核实；看见卡组织标志也不能保证支付成功。需要账户时，请在官方页面自行查看注册要求；未实测注册或结账。</p></li></ol></section>'+(typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(source):'<p>支付方式与中国发行卡：待核实。</p>')+'<button type="button" id="roadReferenceLanguage" class="quiet-button">看不懂外文？查看中文操作图解 →</button><section id="roadReferenceRegistration"><h3>离站前：注册与账户帮助</h3><p>Sign in = 登录；Create account = 注册；Guest checkout = 游客结账（是否提供待核实）。本页只提供帮助，不代填资料或创建账户。</p>'+(typeof registrationHelpMarkup==='function'?registrationHelpMarkup(row.source_code,row.market):'<p>注册页面图解待核实；请在原站重新核对。</p>')+'</section><div class="road-reference-final">'+roadReferenceLink(row,'product:'+row.id,'已读购买步骤，去官网核实')+'<p>只访问该商品的官方记录地址，不代表可下单。</p></div></article>';
 }
 function allowedRoadDetailButton(button){
   if(!button?.isConnected)return null;
@@ -388,14 +400,15 @@ function refreshRoadReferenceFxLabels(){
   refreshRoadReferenceDetail();
 }
 function roadReferenceMarkup(inline=false){
-  const brands=roadReferenceData.brands.filter(row=>!activeSource||row.code===activeSource),products=roadReferenceData.products.filter(roadReferenceMatches);
+  const visibleReferences=publicReferenceData(roadReferenceData);
+  const brands=visibleReferences.brands.filter(row=>!activeSource||row.code===activeSource),products=visibleReferences.products.filter(roadReferenceMatches);
   const brandMarkup='<div class="road-brand-grid">'+brands.map(row=>'<section class="road-brand"><h3>'+e(row.name)+'</h3><p>'+e(row.note)+'</p>'+roadReferenceLink(row,'brand:'+row.code,'查看官方入口')+'</section>').join('')+'</div>';
-  return '<article id="'+(inline?'roadReferenceInline':'roadReferencePanel')+'"><h2>官网折扣研究参考 · '+products.length+' 条</h2><p class="road-reference-intro">美国官网标价，库存待核实。不进入精选好价，不代表当前可购买；原价与现价均为历史记录。</p><div class="road-reference-grid">'+products.map(roadReferenceCard).join('')+'</div>'+(!products.length?'<p class="road-empty">这个范围内暂无已保存的报价研究记录；请调整分类或搜索。</p>':'')+'<details class="road-research-method"><summary>研究日期与适用范围</summary><p class="road-reference-date">研究核对：'+e(roadReferenceData.research_checked_at||'日期未记录')+'。'+e(roadReferenceData.method_note||'')+'</p><p>沿用当前品牌、分类和搜索范围；页面选项不是现货尺码。价格、可用规格、运费、税费与支付条件请在原站重新核对。</p><p class="road-warning">这里不计算中国到手总价。整车、车架与零部件不套用服装税费估算；美国本土运费不是中国运费。</p></details>'+ (inline?'<details class="road-brand-entrances"><summary>品牌官网入口 · '+brands.length+' 个（不是商品报价）</summary>'+brandMarkup+'</details>':'<h3>品牌官网入口（不是商品报价）</h3>'+brandMarkup)+'</article>';
+  return '<article id="'+(inline?'roadReferenceInline':'roadReferencePanel')+'"><h2>官网折扣研究参考 · '+products.length+' 条</h2><p class="road-reference-intro">美国官网标价，库存待核实。不进入精选好价，不代表当前可购买；原价与现价均为历史记录。</p><div class="road-reference-grid">'+products.map(roadReferenceCard).join('')+'</div>'+(!products.length?'<p class="road-empty">这个范围内暂无已保存的报价研究记录；请调整分类或搜索。</p>':'')+'<details class="road-research-method"><summary>研究日期与适用范围</summary><p class="road-reference-date">研究核对：'+e(roadReferenceData.research_checked_at||'日期未记录')+'。'+e(roadReferenceData.method_note||'')+'</p><p>沿用当前品牌、分类和搜索范围；页面选项不是现货尺码。价格、可用规格、运费、税费与支付条件请在原站重新核对。</p><p class="road-warning">这里不计算中国到手总价。配件与零部件不套用服装税费估算；美国本土运费不是中国运费。</p></details>'+ (inline?'<details class="road-brand-entrances"><summary>品牌官网入口 · '+brands.length+' 个（不是商品报价）</summary>'+brandMarkup+'</details>':'<h3>品牌官网入口（不是商品报价）</h3>'+brandMarkup)+'</article>';
 }
 function resetReferenceFeed(){gallery.classList.remove('reference-feed');document.body.classList.remove('reference-feed-visible')}
-function historicalDiscountMarkup(products){return '<section id="historicalDiscountReferences"><h2>历史折扣参考 · '+products.length+' 件</h2><p class="road-reference-intro">库存与价格待重新核实，不计入已核实折扣。记录优惠不代表仍在促销。</p><div class="road-reference-grid">'+products.map(p=>'<article class="historical-reference-card" data-history-product="'+e(p.product_id)+'"><div class="brand">'+e(p.brand)+'</div>'+referenceImageMarkup(p.image,p.name_zh||p.name)+'<h3>'+e(p.name_zh||p.name)+'</h3><p class="road-price">记录现价 '+e(money(p.reference_price.amount,p.reference_price.currency))+'<br><small>同规格记录原价 '+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</small></p><p class="road-stock">库存待核实 · '+e(p.reference_source)+'</p><p class="road-reference-date">记录规格：'+e([p.reference_size,p.reference_color].filter(Boolean).join(' / ')||'见商品详情')+'<br>'+(p.fetched_at?'上次采集 '+e(p.fetched_at):'采集时间未记录')+'<br>'+ (p.reference_price_valid_until?'记录有效期至 '+e(p.reference_price_valid_until)+'；请在原站重新核实':'未取得折扣结束时间')+'</p><button type="button" data-history-open="'+e(p.product_id)+'" data-history-variant="'+e(p.reference_variant_id)+'">查看历史报价与官网核实入口 →</button></article>').join('')+'</div></section>'}
+function historicalDiscountMarkup(products){products=products.filter(publicProductVisible);return '<section id="historicalDiscountReferences"><h2>历史折扣参考 · '+products.length+' 件</h2><p class="road-reference-intro">库存与价格待重新核实，不计入已核实折扣。记录优惠不代表仍在促销。</p><div class="road-reference-grid">'+products.map(p=>'<article class="historical-reference-card" data-history-product="'+e(p.product_id)+'"><div class="brand">'+e(p.brand)+'</div>'+referenceImageMarkup(p.image,p.name_zh||p.name)+'<h3>'+e(p.name_zh||p.name)+'</h3><p class="road-price">记录现价 '+e(money(p.reference_price.amount,p.reference_price.currency))+'<br><small>同规格记录原价 '+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</small></p><p class="road-stock">库存待核实 · '+e(p.reference_source)+'</p><p class="road-reference-date">记录规格：'+e([p.reference_size,p.reference_color].filter(Boolean).join(' / ')||'见商品详情')+'<br>'+(p.fetched_at?'上次采集 '+e(p.fetched_at):'采集时间未记录')+'<br>'+ (p.reference_price_valid_until?'记录有效期至 '+e(p.reference_price_valid_until)+'；请在原站重新核实':'未取得折扣结束时间')+'</p><button type="button" data-history-open="'+e(p.product_id)+'" data-history-variant="'+e(p.reference_variant_id)+'">查看历史报价与官网核实入口 →</button></article>').join('')+'</div></section>'}
 function renderEmptyReferences(){
-  const road=['road_equipment','other'].includes(activeCategoryGroup),historical=featuredBrowse()?historicalDiscountItems():[];
+  const road=publicCategoryGroupVisible(activeCategoryGroup)&&['road_equipment','other'].includes(activeCategoryGroup),historical=featuredBrowse()?historicalDiscountItems():[];
   if(!road&&!historical.length)return false;
   // Reference records never enter visibleItems(), the verified count or feed paging.
   gallery.classList.add('reference-feed');document.body.classList.add('reference-feed-visible');
@@ -412,11 +425,11 @@ function allowedRoadReference(link){
   if(!link?.isConnected)return null;
   const key=link.dataset.roadReference,isBrand=key?.startsWith('brand:');
   const panel=document.getElementById('roadReferencePanel'),inline=document.getElementById('roadReferenceInline'),detail=document.getElementById('roadReferenceDetail');
-  const inPanel=sheet.classList.contains('open')&&panel?.contains(link),inInline=activeTab==='products'&&['road_equipment','other'].includes(activeCategoryGroup)&&!gallery.hidden&&!gallery.inert&&inline?.contains(link);
+  const inPanel=sheet.classList.contains('open')&&panel?.contains(link),inInline=activeTab==='products'&&publicCategoryGroupVisible(activeCategoryGroup)&&['road_equipment','other'].includes(activeCategoryGroup)&&!gallery.hidden&&!gallery.inert&&inline?.contains(link);
   const inDetail=activeTab==='products'&&sheet.classList.contains('open')&&detail?.contains(link)&&roadDetailContext&&key==='product:'+roadDetailContext.id&&detail.dataset.roadDetail===roadDetailContext.id;
   // Product exits only exist after the internal detail and purchase guide.
   if(isBrand?!inPanel&&!inInline:!inDetail)return null;
-  const row=isBrand?roadReferenceData.brands.find(row=>'brand:'+row.code===key):roadReferenceData.products.find(row=>'product:'+row.id===key);
+  const row=isBrand?publicReferenceData(roadReferenceData).brands.find(row=>'brand:'+row.code===key):roadReferenceData.products.find(row=>'product:'+row.id===key);
   if(!row||row.stock==='out_of_stock'||roadReferenceUrl(row)!==link.getAttribute('href'))return null;
   return isBrand?(!activeSource||row.code===activeSource?row:null):roadDetailContext.url===roadReferenceUrl(row)&&roadReferenceMatches(row)?row:null;
 }
@@ -426,7 +439,7 @@ function guardRoadReferenceExit(event){
   showExternalExit({url:row.url,kind:'reference',label:row.name,sourceCode:row.source_code||row.code,trigger:link,image:row.image||'',
     sourceNote:'本站保存的官方研究来源，按确切域名与美国站路径绑定；这不是实时库存或购买资格证明。',
     note:(roadReferenceData.brands.find(brand=>brand.code===(row.source_code||row.code))?.note||'')+' 仅查看参考页面；请重新核实价格、库存与退货条件。',
-    validate:()=>allowedRoadReference(link)===row,onConfirm:()=>saveBrowseState()});
+    validate:()=>{const current=allowedRoadReference(link);return !!current&&roadReferenceUrl(current)===roadReferenceUrl(row)},onConfirm:()=>saveBrowseState()});
 }
 document.addEventListener('click',guardRoadReferenceExit);
 document.addEventListener('auxclick',guardRoadReferenceExit);

@@ -296,3 +296,12 @@ node scripts/test_pages_freshness.js
 - 详情中的页面选项只供参考，不是现货选择器。运费、税费未知，不按零元处理；整车、车架、配件不使用服装税率，也不生成到手总价或假 Offer。
 - 购买步骤依次核对官方市场、尺码与适配、商家许可的配送路线、运费税费与退货、支付及账户要求。沿用已有中文图解、注册资料查询和精确链接离站确认；支付未知继续保留未知。最后在同一标签页打开原商品地址，Back 保留分类、来源和搜索。
 - 回归：`node scripts/test_browse_groups.js`、`python -m unittest discover -s tests -p 'test_road_equipment.py'`；代码推送 CI 的 `scripts/test_browse_groups_ui.py` 覆盖桌面、390px 与 320px 的内部详情、费用边界、服饰性别筛选、取消焦点和同页返回。本地不启动 Chromium。
+
+
+### 自行车暂时下架（2026-10-15）
+
+- 公开主分类保留骑行服饰、锁鞋、头盔、配件与周边四组，男女款筛选仅用于骑行服饰。
+- 整车和车架从公开列表、搜索、详情、研究参考和旧状态恢复中隐藏。原始研究数据、审核分类和实现保留，未永久删除。
+- `app/public_visibility.py` 与 `web/public-visibility.js` 的 `BICYCLES_PUBLIC` 为配套发布开关，当前均关闭。恢复时须同时修改并重新验收、发布；不能仅恢复源数据或旧浏览状态。
+- Canyon Midloader 配件及其人民币换算、购买指引、注册帮助和最终同页离站确认保留；Canyon 参考入口只指向该配件，不指向自行车 Outlet。Trek、Specialized、Colnago 当前仅有自行车研究入口，公开目录暂时隐藏。
+- API 和静态导出过滤公开数据；前端额外过滤旧缓存并在打开详情、历史恢复与最终离站时复核。浏览器回归由 CI 运行，本地不启动 Chromium。

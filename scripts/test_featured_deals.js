@@ -8,6 +8,7 @@ function card(changes={}){return {product_id:'sale',name:'Sale Jersey',name_zh:'
 function harness(){
  let now=NOW;class Clock extends Date{constructor(...args){super(...(args.length?args:[now]))}static now(){return now}}
  const elements=new Map([['q',{value:''}]]);const c=vm.createContext({Date:Clock,Number,URL,Map,Set,JSON,Intl,activeSource:null,activeCategory:'all',activeCategoryGroup:null,categoryGroups:[],activeTab:'products',items:[],sourceCount:2,currentIndex:0,currentProduct:null,guideContext:null,observer:null,viewMode:'grid',swipe:null,animationUntil:0,performance:{now:()=>0},document:{getElementById(id){if(!elements.has(id))elements.set(id,{textContent:'',classList:{add(){}}});return elements.get(id)},querySelectorAll:()=>[]},gallery:{innerHTML:'',scrollTop:0,querySelectorAll:()=>[]},profileMatches:()=>true,IntersectionObserver:class{observe(){}disconnect(){}},positionHint(){},updatePosition(){},clearSearch(){},directoryData:{brands:[{code:'brand',name_zh:'品牌目录'}],teams:[]}});
+ vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
  vm.runInContext(fs.readFileSync('web/bundle-variants.js','utf8'),c);
  vm.runInContext(section(gallery,'const e=value','async function getJson('),c);
  vm.runInContext(section(gallery,'function imageMarkup(','function updatePosition('),c);

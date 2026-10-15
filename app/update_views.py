@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from app.catalog.models import Offer
 from app.catalog.service import ComparisonCatalog
+from app.public_visibility import public_product
 
 
 def event_product(offer: Offer) -> dict:
@@ -12,7 +13,7 @@ def event_product(offer: Offer) -> dict:
             "color": identity.color, "size": identity.size, "image": offer.image}
 
 
-def enrich_events(events: list[dict], catalog: ComparisonCatalog) -> list[dict]:
+def enrich_events(events: list[dict], catalog: ComparisonCatalog, *, include_hidden: bool = False) -> list[dict]:
     """Preserve event-time metadata; enrich legacy rows only by exact offer ID + URL.
 
     Current state and catalog routes are separate from historical event prices/stock.
@@ -23,6 +24,9 @@ def enrich_events(events: list[dict], catalog: ComparisonCatalog) -> list[dict]:
              for variant in variants for offer in variant}
     result = []
     for original in events:
+        if catalog.public_only and not include_hidden and (original.get("offer_id") in catalog.hidden_offer_ids
+                or not public_product(original) or not public_product(original.get("product") or {})):
+            continue
         event = dict(original)
         stored = event.get("product")
         product = dict(stored) if (isinstance(stored, dict)

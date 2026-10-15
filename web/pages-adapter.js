@@ -199,6 +199,7 @@ async function readPublishedPair(manifest){
   const status=manifest.schema_version===2?validatePublishedStatus(manifest,base,await readPublishedFile(manifest.status,manifest.version,'最新核实状态')):null;
   const data=status?applyPublishedStatus(base,status):clonePublished(base);
   refreshPublicInventory(data);
+  applyPublicVisibility(data);
   // Commit the complete pair atomically. Neither races nor partial downloads can
   // replace the pristine base, accepted observations, or last safe live data.
   const previous=publicLastData;
@@ -251,7 +252,7 @@ async function loadPublished(force=false){
     if(!publicDataPromise)publicDataPromise=checkPublished().finally(()=>{publicDataPromise=null});
     await publicDataPromise;
   }
-  const data=publicLastData;refreshPublicInventory(data);showPublishedMetadata(data);
+  const data=publicLastData;refreshPublicInventory(data);applyPublicVisibility(data);showPublishedMetadata(data);
   return data;
 }
 function assessPublishedFit(data,id,profile){

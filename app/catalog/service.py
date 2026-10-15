@@ -10,6 +10,7 @@ from app.catalog.models import (
     ColorChoice, ComparedOffer, FxSnapshot, Money, Offer, ProductCard, ProductComparison, VariantChoice,
 )
 from app.browse_taxonomy import browse_classification
+from app.public_visibility import public_product
 from app.localization import category_of, title_zh
 from app.fit import garment_gender
 from app.landed import convert_money, estimate_landed_cost
@@ -127,8 +128,10 @@ def _identifier(value: str) -> str:
 
 class ComparisonCatalog:
     def __init__(self, offers: list[Offer], fx: FxSnapshot,
-                 now: datetime | None = None) -> None:
+                 now: datetime | None = None, *, public_only: bool = False) -> None:
         self.fx = fx
+        self.public_only = public_only
+        self.hidden_offer_ids: set[str] = set()
         self.now = now or datetime.now(timezone.utc)
         self.families: dict[str, list[list[Offer]]] = {}
         variants: list[list[Offer]] = []
@@ -148,6 +151,13 @@ class ComparisonCatalog:
             else:
                 family_key = f"{primary.source_code}|{primary.family_hint or primary.offer_id}|{normalized(ident.color)}"
             self.families.setdefault(_identifier(family_key), []).append(variant)
+        if public_only:
+            for product_id, family in list(self.families.items()):
+                classification = browse_classification(product_id,
+                    (offer for variant in family for offer in variant))
+                if not public_product(classification._asdict()):
+                    self.hidden_offer_ids.update(offer.offer_id for variant in family for offer in variant)
+                    del self.families[product_id]
 
     @staticmethod
     def _variant_id(offers: list[Offer]) -> str:

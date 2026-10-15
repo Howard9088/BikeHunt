@@ -26,7 +26,7 @@ class PagesTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         web = self.root/'web'; web.mkdir()
-        for name in ('gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','payment-methods.js','payment-methods.json','payment-channels.json','purchase-flow.js','bundle-variants.js','external-exit.js','external-exit.css'):
+        for name in ('public-visibility.js','gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','payment-methods.js','payment-methods.json','payment-channels.json','purchase-flow.js','bundle-variants.js','external-exit.js','external-exit.css'):
             (web/name).write_text('/* Mock public asset */',encoding='utf-8')
         repo = Path(__file__).resolve().parents[1]
         (web/'payment-channels.json').write_bytes((repo/'web/payment-channels.json').read_bytes())
@@ -51,10 +51,11 @@ class PagesTests(unittest.TestCase):
         with patch.dict(os.environ, {"GITHUB_SHA": commit}):
             build_public_site(self.root, make_fx())
         html = (self.root / "_site/index.html").read_text(encoding="utf-8")
-        for asset in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "registration-guides.js", "purchase-readiness.js", "payment-methods.js", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
+        for asset in ("public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "registration-guides.js", "purchase-readiness.js", "payment-methods.js", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
             self.assertIn(f'./web/{asset}?v={commit}', html)
         self.assertIn(f'data-release="{commit}"', html)
         self.assertEqual(index.read_text(encoding="utf-8"), original)
+        self.assertLess(html.index('public-visibility.js'), html.index('pages-adapter.js'))
         self.assertLess(html.index('bundle-variants.js'), html.index('gallery.js'))
         self.assertLess(html.index('purchase-flow.js'), html.index('external-exit.js'))
         for asset in ('external-exit.js', 'external-exit.css'):
@@ -63,20 +64,46 @@ class PagesTests(unittest.TestCase):
                          (self.root/'web/bundle-variants.js').read_bytes())
 
     def test_browse_groups_and_reference_evidence_are_published_and_hashed(self):
-        from app.browse_taxonomy import CATEGORY_GROUPS
-        from app.road_equipment import BROWSE_CATEGORIES, read_road_references
+        from app.public_visibility import public_category_groups, public_categories, public_road_references
+        from app.road_equipment import read_road_references
         root = Path(__file__).resolve().parents[1]
         refs = read_road_references(root)
         atomic_json(self.root/'data/road_equipment_references.json', refs)
         build_public_site(self.root, make_fx())
         data = json.loads((self.root/'_site/data/site-data.json').read_bytes())
-        self.assertEqual(data['catalog']['category_groups'], CATEGORY_GROUPS)
-        self.assertEqual(data['catalog']['categories'], BROWSE_CATEGORIES)
-        self.assertEqual(data['catalog']['road_equipment_references'], refs)
+        self.assertEqual(data['catalog']['category_groups'], public_category_groups())
+        self.assertEqual(data['catalog']['categories'], public_categories())
+        self.assertEqual(data['catalog']['road_equipment_references'], public_road_references(root))
         self.assertEqual(len(data['catalog']['items']), 1, 'Research is not mixed into live inventory')
         before = digest(semantic_projection(data))
         data['catalog']['road_equipment_references']['products'][0]['observation_note'] += ' Updated research context.'
         self.assertNotEqual(before, digest(semantic_projection(data)))
+
+    def test_public_export_hides_bike_families_details_and_old_updates(self):
+        from test_public_visibility import offers, classify
+        rows = offers()
+        # Replace the complete temporary fixture; save() deliberately retains unrelated old URLs.
+        atomic_json(self.root/'data/offers/a.json', {
+            'source_code': 'a', 'offers': [row.model_dump(mode='json') for row in rows]})
+        from app.updates import UpdateStore
+        store = UpdateStore(self.root)
+        with store.connect() as db:
+            db.execute('DELETE FROM events')
+        store.capture([], rows)
+        with patch('app.catalog.service.browse_classification', side_effect=classify):
+            internal = ComparisonCatalog(rows, make_fx(), NOW)
+            hidden_ids = {card.product_id for card in internal.search()
+                          if card.category_group == 'road_equipment'}
+            build_public_site(self.root, make_fx())
+        data = json.loads((self.root/'_site/data/site-data.json').read_bytes())
+        self.assertEqual([card['category'] for card in data['catalog']['items']], ['accessories'])
+        self.assertEqual(data['catalog']['offer_count'], 1)
+        self.assertEqual(data['catalog']['source_count'], 1)
+        self.assertTrue(hidden_ids.isdisjoint(data['details']))
+        self.assertEqual(set(data['details']), {card['product_id'] for card in data['catalog']['items']})
+        self.assertEqual([row['offer_id'] for row in data['updates']['items']], ['bag'])
+        self.assertEqual(len(OfferRepository(self.root/'data').load()), 3,
+                         'Public projection never deletes saved internal offers')
 
     def test_official_amazon_channel_logo_is_copied_unchanged(self):
         build_public_site(self.root, make_fx())
@@ -121,8 +148,8 @@ class PagesTests(unittest.TestCase):
 
     def build_at(self, at, fx=None, commit="a" * 40):
         with patch.dict(os.environ, {"GITHUB_SHA": commit}), patch("app.pages.datetime") as clock, \
-                patch("app.pages.ComparisonCatalog", side_effect=lambda offers, snapshot:
-                      ComparisonCatalog(offers, snapshot, at)):
+                patch("app.pages.ComparisonCatalog", side_effect=lambda offers, snapshot, **options:
+                      ComparisonCatalog(offers, snapshot, at, **options)):
             clock.now.return_value = at
             return build_public_site(self.root, fx or make_fx())
 

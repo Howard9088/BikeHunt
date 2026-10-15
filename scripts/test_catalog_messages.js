@@ -9,6 +9,7 @@ function section(source,start,end){return source.slice(source.indexOf(start),sou
 function harness(saved=null){
  const storage=new Map(saved?[['bikehuntMessagesReadCursor',saved]]:[]),badge={setAttribute(k,v){this[k]=v}},refs=new Map(),links=[];
  const c=vm.createContext({Date,URL,Number,Map,Set,JSON,activeCategoryGroup:null,activeTab:'products',categories:[{code:'all'},{code:'jerseys'},{code:'bibs'}],categoryGroups:[],roadReferenceData:{brands:[],products:[]},syncBrowseControls(){},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{addEventListener(){},body:{classList:{toggle(){}}},getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,showExternalExit:()=>{throw Error('Purchase entrances must open local stages before confirmation')},window:{confirm:()=>{throw Error('No native exit prompt')}},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
+ vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
  vm.runInContext(section(gallery,'const e=value','function money('),c);
  vm.runInContext(section(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(section(flows,'const messageEvents=','const directoryPage='),c);
@@ -129,7 +130,7 @@ function testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows(){
  h.c.rememberMessageEvents({items:Array.from({length:100},(_,i)=>row(200+i,{product:null}))});assert.equal(vm.runInContext('messageEvents.size',h.c),100);
  h.c.rememberMessageEvents({items:Array.from({length:100},(_,i)=>row(300+i,{product:null}))});assert.equal(vm.runInContext('messageEvents.size',h.c),100,'Latest-100 snapshots never accumulate an old 500-row window');assert.equal(vm.runInContext('messageEvents.has("'+row(200).event_key+'")',h.c),false);
  h.c.rememberMessageEvents({items:[seen]});assert.equal(h.badge.hidden,true,'Reconciliation does not discard independent seen keys');
- assert.throws(()=>h.c.rememberMessageEvents({items:null}));assert.throws(()=>h.c.rememberMessageEvents({items:[fresh,null]}));assert.equal(vm.runInContext('messageEvents.size',h.c),1,'Malformed responses cannot erase the last valid snapshot');
+ assert.throws(()=>h.c.rememberMessageEvents({items:null}));assert.throws(()=>h.c.rememberMessageEvents({items:[fresh,null]}));assert.throws(()=>h.c.rememberMessageEvents({items:[fresh,{id:4,event_key:'malformed',category:'frames'}]}));assert.equal(vm.runInContext('messageEvents.size',h.c),1,'Malformed responses cannot erase the last valid snapshot');
 }
 function testGuideExitIsStagedAndBoundToExactHref() {
  const h=harness(),url='https://shop.example/products/verified?variant=M',q={offer:{offer_id:'guide',url,stock:'in_stock',collection_state:'current',fetched_at:new Date().toISOString()}};

@@ -34,7 +34,8 @@ function harness(){
     cancelPurchaseContext(){c.guideContext=null},saveBrowseState(){},bindMerchantGuides(){},refreshFitReference(){fitCalls++},startGuide(d,offerId){guides.push([d.variant_id,offerId])},
     getJson:async url=>{requests.push(url);return typeof result==='function'?result(url):result},
   });
-  vm.runInContext(bundle,c);
+  vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
+ vm.runInContext(bundle,c);
   vm.runInContext(section(gallery,'function inventoryVerified(','function detailSelectorVisible('),c);
   vm.runInContext(section(gallery,'function detailSelectorVisible(','function openProduct('),c);
   vm.runInContext(section(purchase,'function rememberPurchaseDetail(','function cancelPurchaseContext('),c);

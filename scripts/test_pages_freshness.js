@@ -171,6 +171,7 @@ async function harness(payload = snapshot(), options = {}) {
     setInterval(callback) { poll = callback; return 1; },
     clearInterval() {},
   });
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../web/public-visibility.js'), 'utf8'), context);
   vm.runInContext(source, context, {filename: 'pages-adapter.js'});
   let initialError;
   try { await context.loadPublished(); } catch (error) {

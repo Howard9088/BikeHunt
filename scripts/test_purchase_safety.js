@@ -8,7 +8,7 @@ new vm.Script(externalExit);
 assert.ok(externalExit.includes('完整购买提示与免责声明')&&externalExit.includes('PURCHASE_DISCLAIMER'),'Shared UI retains the complete original disclaimer');
 assert.ok(!/\bwindow\.confirm\s*\(/.test(gallery+flows+fs.readFileSync('web/purchase-flow.js','utf8')+fs.readFileSync('web/purchase-readiness.js','utf8')),'All legacy native exit prompts are removed');
 const helper=gallery.slice(gallery.indexOf('function inventoryVerified('),gallery.indexOf('function offerMarkup('));
-const context={Date,Number,URL,safeUrl:value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:''}catch{return ''}}};vm.createContext(context);vm.runInContext(helper,context);
+const context={Date,Number,URL,safeUrl:value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:''}catch{return ''}}};vm.createContext(context);vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),context);vm.runInContext(helper,context);
 const fresh={offer:{url:'https://shop.example/products/jersey',stock:'in_stock',fetched_at:new Date().toISOString()}};
 assert.equal(context.offerAvailable(fresh),true);
 assert.equal(context.offerAvailable({offer:{...fresh.offer,stock:'out_of_stock'}}),false);

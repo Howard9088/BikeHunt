@@ -60,7 +60,7 @@ function rememberPurchaseDetail(detail,selected,bundleSelection=null){
 }
 function cancelPurchaseContext(){registrationExitContext=null;guideContext=null}
 function clearPurchaseState(){cancelPurchaseContext();try{const old={...(history.state||{})};delete old.bikehuntPurchase;history.replaceState(old,'')}catch{}}
-function routeUsableContext(){return guideContext&&!guideContext.invalidated&&referenceAvailable(guideContext.quote)&&(guideContext.reference||offerAvailable(guideContext.quote))}
+function routeUsableContext(){return guideContext&&publicProductVisible(guideContext.detail)&&!guideContext.invalidated&&referenceAvailable(guideContext.quote)&&(guideContext.reference||offerAvailable(guideContext.quote))}
 function routeStepMarkup(stage){return '<ol class="purchase-step-order" aria-label="购买步骤">'+['商品与尺码','比较运输路线','注册图解','确认离站'].map((label,index)=>'<li'+(index===stage?' aria-current="step"':'')+'>'+String(index+1)+' '+label+'</li>').join('')+'</ol>'}
 function hongKongNotesMarkup(){return '<details class="route-hk-notes"><summary>香港收货、再寄与本人携带有什么不同？</summary><p>香港收货／自提：先确认收件人同意、服务支持、保管期和费用；这里只完成香港交付。</p><p>香港再寄内地：另核正式寄递线路、真实货值申报、进口税与清关，不使用旅客行李额度。个人寄递进境 2,000 元是限值，不是免税额度；超限或不可分割单件由海关审核。</p><p>本人赴港携带入境：按旅客身份、年龄、全部个人合理自用行李及往返情况核定；不能把旅客额度套到邮寄。此处不自动计算免税额，不建议为省税专程赴港。</p><p>香港一般进口无关税，不代表进入内地免税。MyUS／forward2me 的寄香港线路不证明提供香港仓再寄内地；本次未核实 tenso 香港线路。</p><p>官方资料核对：2026-10-15。具体货品、价值、收件安排及费用仍需逐单确认。</p><ul>'+ROUTE_HELP.map(row=>'<li><a data-route-help="'+row.key+'" href="'+e(row.url)+'" target="_self" rel="noopener noreferrer">'+e(row.label)+' →</a></li>').join('')+'</ul></details>'}
 function renderRouteComparison(){
@@ -122,6 +122,7 @@ async function restorePurchaseState(){
     const detail=await getJson('/api/catalog/'+encodeURIComponent(saved.productId)+(saved.variantId?'?variant_id='+encodeURIComponent(saved.variantId):''));
     if(sequence!==detailSequence||!sheet.classList.contains('open'))return;
     if(detail.product_id!==saved.productId||saved.variantId&&detail.variant_id!==saved.variantId)throw Error('Selected product identity changed');
+    if(!publicProductVisible(detail))throw Error('商品暂未公开');
     currentProduct=detail;
     if(saved.stage==='detail'){await loadDetail(detail.product_id,saved.variantId,{bundleSelection:saved.bundleSelection});return}
     const quote=detail.offers.find(row=>row.offer.offer_id===saved.offerId&&row.offer.source_code===saved.sourceCode&&row.offer.url===saved.url);

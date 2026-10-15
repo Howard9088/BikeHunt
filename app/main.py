@@ -23,7 +23,7 @@ from app.background import RefreshWorker
 from app.discovery import directories
 from app.localization import CATEGORIES
 from app.browse_taxonomy import CATEGORY_GROUPS
-from app.road_equipment import BROWSE_CATEGORIES, read_road_references
+from app.public_visibility import public_category_groups, public_categories, public_road_references, public_directories, public_product
 from app.notifications import PersonalNotifier
 from app.policies import PolicyRepository
 from app.updates import UpdateStore
@@ -54,7 +54,7 @@ app = FastAPI(title="BikeHunt 全球骑行好价", version="0.4.2", lifespan=lif
 
 def catalog() -> ComparisonCatalog:
     """一次请求固定一个汇率快照，全部报价使用相同口径。"""
-    return ComparisonCatalog(repository.load(), fx_provider.get())
+    return ComparisonCatalog(repository.load(), fx_provider.get(), public_only=True)
 
 
 @app.get("/api/health")
@@ -103,8 +103,8 @@ def refresh_fx() -> dict:
 def search_catalog(q: str = Query(default="", max_length=200), category: str = "all", category_group: str | None = None) -> dict:
     store = catalog()
     return {"items": [x.model_dump(mode="json") for x in store.search(q,category,category_group)],
-            "categories":BROWSE_CATEGORIES, "category_groups":CATEGORY_GROUPS,
-            "road_equipment_references":read_road_references(ROOT),
+            "categories":public_categories(), "category_groups":public_category_groups(),
+            "road_equipment_references":public_road_references(ROOT),
             "fx": store.fx.model_dump(mode="json"),
             "offer_count": sum(len(v) for family in store.families.values() for v in family),
             "source_count": len({x.source_code for family in store.families.values()
@@ -121,7 +121,7 @@ def compare_product(product_id: str, variant_id: str | None = None) -> ProductCo
 
 @app.get("/api/directories")
 def discovery_directory() -> dict:
-    return directories(ROOT)
+    return public_directories(ROOT)
 
 
 @app.post("/api/fit/{product_id}", response_model=FitAssessment)
@@ -159,6 +159,7 @@ async def price_stream(request: Request) -> StreamingResponse:
             rows=updates.pending(cursor,limit=100)
             if rows:
                 cursor=max(x["id"] for x in rows)
+                rows = enrich_events(rows, catalog())
                 yield f"id: {cursor}\nevent: prices\ndata: {json.dumps(rows,ensure_ascii=False)}\n\n"
             else:
                 yield ": keepalive\n\n"
@@ -268,6 +269,16 @@ def configure_community(payload: CommunitySettings, request: Request) -> dict:
 @app.get("/")
 def root() -> RedirectResponse:
     return RedirectResponse(url="/web/")
+
+
+@app.get("/data/road_equipment_references.json")
+def public_reference_file() -> dict:
+    return public_road_references(ROOT)
+
+
+@app.get("/data/directories.json")
+def public_directory_file() -> dict:
+    return public_directories(ROOT)
 
 
 app.mount("/data", StaticFiles(directory=str(DATA)), name="data")
