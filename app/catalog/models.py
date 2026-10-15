@@ -214,6 +214,7 @@ class ProductCard(Record):
     reference_price: Money
     reference_cny: Decimal | None
     reference_source: str
+    reference_url: str | None = None
     reference_offer_id: str | None = None
     # Every displayed discount component belongs to this exact offer/variant.
     reference_original_price: Money | None = None

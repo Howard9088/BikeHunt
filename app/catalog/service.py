@@ -260,7 +260,7 @@ class ComparisonCatalog:
                 source_count=len(sources), variant_count=len(variants),
                 source_codes=sorted(sources),
                 reference_price=reference.offer.price, reference_cny=reference.product_cny,
-                reference_source=reference.offer.source_name, reference_offer_id=reference.offer.offer_id,
+                reference_source=reference.offer.source_name, reference_url=reference.offer.url, reference_offer_id=reference.offer.offer_id,
                 reference_original_price=reference.offer.original_price,
                 reference_variant_id=self._variant_id(reference_variant),
                 reference_size=reference.offer.identity.size, reference_color=reference.offer.identity.color,

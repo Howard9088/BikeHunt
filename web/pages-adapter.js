@@ -101,6 +101,7 @@ function validateCatalogIdentities(data){
       const sameMoney=(a,b)=>a==null&&b==null||!!a&&!!b&&a.currency===b.currency&&Number.isFinite(Number(a.amount))&&Number.isFinite(Number(b.amount))&&Number(a.amount)===Number(b.amount);
       if(!offer||!sameMoney(card.reference_price,offer.price)||!sameMoney(card.reference_original_price,offer.original_price)||
         card.reference_cny!==quote.product_cny||card.reference_source!==offer.source_name||
+        ('reference_url' in card&&card.reference_url!==offer.url)||
         card.reference_size!==(offer.identity?.size??null)||card.reference_color!==(offer.identity?.color??null)||
         card.reference_price_valid_until!==(offer.price_valid_until??null)||card.reference_data_kind!==(offer.data_kind||'live_snapshot')||
         card.reference_collection_state!==offer.collection_state||card.fetched_at!==offer.fetched_at)

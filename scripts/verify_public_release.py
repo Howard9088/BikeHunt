@@ -148,6 +148,8 @@ def snapshot_offers(data: dict) -> dict:
                         'reference_price_valid_until': offer.get('price_valid_until'),
                         'reference_data_kind': offer.get('data_kind', 'live_snapshot'),
                         'fetched_at': offer.get('fetched_at')}
+            if 'reference_url' in card:
+                expected['reference_url'] = offer.get('url')
             require(all(key in card and card[key] == value for key, value in expected.items()),
                     'Snapshot discount facts differ from exact reference offer')
     return offers

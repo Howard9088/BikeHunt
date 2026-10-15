@@ -210,6 +210,7 @@ class PagesTests(unittest.TestCase):
         card = payload["catalog"]["items"][0]
         self.assertEqual(card["reference_offer_id"], "sale")
         self.assertEqual(card["reference_size"], "L")
+        self.assertEqual(card["reference_url"], sale.url)
         snapshot_offers(payload)
         verified = NOW + timedelta(minutes=15)
         repo.save("a", [offer.model_copy(update={"fetched_at": verified}) for offer in [cheap, sale]], verified, [])
@@ -221,6 +222,7 @@ class PagesTests(unittest.TestCase):
         import copy
         for key, value in [("reference_original_price", {"amount": "200", "currency": "USD"}),
                            ("reference_cny", "350.00"), ("reference_size", "M"),
+                           ("reference_url", "https://wrong.invalid/product"),
                            ("reference_price_valid_until", "2099-01-01")]:
             changed = copy.deepcopy(payload)
             changed["catalog"]["items"][0][key] = value

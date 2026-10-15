@@ -137,6 +137,32 @@ def main():
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=str(OUT/f'featured_empty_{mode}.png'))
                 checks.append(mode+': exact fresh discount price/spec; no fake deadline; ordinary global search with Back/reload; clear and featured reset; brand/team reference scope; soldout exclusion; live expiry and separate historical discounts; exact stale detail and focus restoration; no full-price/sold-out/ended-promotion fillers')
+                # The same production render handles non-discount recommendations,
+                # narrow model samples, stale labels and exact-spec detail routing.
+                page.evaluate("""() => {
+                  const base=items.find(p=>p.name==='Sale Jersey');
+                  items=[100,200,300].map((price,i)=>({...base,product_id:'helmet-'+i,name:'Helmet '+i,name_zh:'头盔 '+i,brand:'Helmet Brand '+i,category:'helmets',category_group:'helmets',gender:'unisex',reference_cny:String(price),reference_price:{amount:String(price/7),currency:'USD'},reference_original_price:null,reference_url:'https://merchant.invalid/helmet-'+i,reference_stock:'unknown',stock_state:'unknown',reference_price_valid_until:null,reference_variant_id:'helmet-variant-'+i}));
+                  render();window.__openedRecommendation=null;openProduct=(id,variant)=>{window.__openedRecommendation={id,variant}};
+                }""")
+                expect(page.locator('.card')).to_have_count(1)
+                expect(page.locator('.low-price-label')).to_have_text('低价推荐')
+                expect(page.locator('.discount')).to_have_count(0)
+                expect(page.locator('#count')).to_have_text('0 件已核实折扣 · 1 件低价推荐')
+                expect(page.locator('.card')).to_contain_text('参考规格')
+                expect(page.locator('.card')).not_to_contain_text('折扣规格')
+                expect(page.locator('.card')).not_to_contain_text('商家原价')
+                expect(page.locator('.card')).to_contain_text('历史价格与库存待重新核实')
+                expect(page.locator('.low-price-basis summary')).to_contain_text('3 款中第 1 低')
+                assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+                cta=page.locator('.compare-button').bounding_box()
+                assert cta and cta['y']+cta['height']<=viewport['height'],cta
+                page.locator('.low-price-basis summary').click()
+                expect(page.locator('.low-price-basis')).to_contain_text('不同商家／市场')
+                page.locator('.low-price-basis summary').click()
+                page.locator('.compare-button').click()
+                assert page.evaluate('window.__openedRecommendation')=={'id':'helmet-0','variant':'helmet-variant-0'}
+                page.screenshot(path=str(OUT/f'low_price_{mode}.png'))
+                checks.append(mode+': separate low-price count and badge, model comparison basis, no invented original/discount, stale disclosure, mobile CTA and exact-variant internal opening')
                 context.close()
             browser.close()
     finally:

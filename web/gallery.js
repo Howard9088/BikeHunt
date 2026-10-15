@@ -20,42 +20,100 @@ function imageMarkup(url,name,index){
   return '<button class="image-button" type="button" aria-label="查看 '+e(name)+' 的渠道比价"><img '+(index<2?'fetchpriority="high"':'loading="lazy"')+' src="'+e(safeUrl(url))+'" alt="'+e(name)+'"></button><div class="photo-fallback">BikeHunt<span>商品图片暂不可用</span></div>';
 }
 function featuredBrowse(){return !activeSource&&!document.getElementById('q').value.trim()}
-function visibleItems(includeUnverified=false){const q=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return items.filter(p=>publicProductVisible(p)&&p.stock_state!=='out_of_stock'&&profileMatches(p)&&(!featuredBrowse()||includeUnverified||featuredDeal(p))&&(!activeCategoryGroup||p.category_group===activeCategoryGroup)&&(!activeSource||p.source_codes?.includes(activeSource))&&q.every(t=>(p.brand+' '+p.name+' '+(p.name_zh||'')+' '+(p.color||'')).toLowerCase().includes(t)))}
+function scopedCatalogItems(){const q=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return items.filter(p=>publicProductVisible(p)&&p.stock_state!=='out_of_stock'&&profileMatches(p)&&(!activeCategoryGroup||p.category_group===activeCategoryGroup)&&(!activeSource||p.source_codes?.includes(activeSource))&&q.every(t=>(p.brand+' '+p.name+' '+(p.name_zh||'')+' '+(p.color||'')).toLowerCase().includes(t)))}
+function brandRoundRobin(products){
+  const groups=new Map();for(const p of products){const key=String(p.brand||'').trim().toLowerCase();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(p)}
+  const result=[];while(groups.size){for(const [key,queue] of groups){result.push(queue.shift());if(!queue.length)groups.delete(key)}}return result;
+}
+// Narrow, explicit types only. Broad "accessories" or ambiguous clothing is not
+// comparable. Unknown/child gender is deliberately not inferred from marketing.
+function lowPriceBucket(card){
+  if(!['male','female','unisex'].includes(card.gender))return null;
+  const n=String(card.name||'').toLowerCase();
+  if(/\b(kids?|junior|child(?:ren)?|bambino|baby|bundle|kit|set|suit)\b/.test(n))return null;
+  let type=null,label=null;
+  if(card.category==='helmets'&&card.category_group==='helmets'){type='road-helmet';label='骑行头盔'}
+  else if(card.category==='jerseys'&&card.category_group==='clothing'){
+    if(/long[ -]sleeve|\bls\b/.test(n)){type='long-jersey';label='长袖骑行服'}
+    else if(/short[ -]sleeve|\bss\b/.test(n)){type='short-jersey';label='短袖骑行服'}
+  }else if(card.category==='bibs'&&card.category_group==='clothing'){
+    if(/tight|long bib/.test(n)){type='bib-tights';label='长款背带骑行裤'}
+    else if(/bib[ -]?short/.test(n)){type='bib-shorts';label='短款背带骑行裤'}
+  }else if(card.category==='jackets'&&card.category_group==='clothing'&&/\b(vest|gilet)\b/.test(n)){type='vest';label='骑行背心'}
+  // Remaining jackets (thermal/rain/insulation) and accessories require a more
+  // specific, evidenced subtype before they can be used in price comparisons.
+  return type?{key:card.category_group+'|'+type+'|'+card.gender,label:label+' · '+({male:'男款',female:'女款',unisex:'男女通用'})[card.gender]}:null;
+}
+function lowPriceEligible(card,now=Date.now()){
+  const price=card.reference_price,until=card.reference_price_valid_until;
+  return publicProductVisible(card)&&lowPriceBucket(card)&&['in_stock','unknown'].includes(card.stock_state)&&['in_stock','unknown'].includes(card.reference_stock)&&
+    ['live_snapshot','legacy_cache'].includes(card.reference_data_kind)&&typeof card.reference_offer_id==='string'&&!!card.reference_offer_id&&typeof card.reference_variant_id==='string'&&!!card.reference_variant_id&&
+    safeUrl(card.reference_url).startsWith('https://')&&!!price&&/^[A-Z]{3}$/.test(price.currency)&&Number.isFinite(Number(price.amount))&&Number(price.amount)>0&&
+    card.reference_cny!=null&&card.reference_cny!==''&&Number.isFinite(Number(card.reference_cny))&&Number(card.reference_cny)>0&&
+    (!until||/^\d{4}-\d{2}-\d{2}$/.test(until)&&Number.isFinite(Date.parse(until))&&new Date(until).toISOString().slice(0,10)===until&&until>=new Date(now).toISOString().slice(0,10));
+}
+function lowPriceRecommendations(products,now=Date.now()){
+  const buckets=new Map(),result=new Map();
+  for(const p of products){if(!lowPriceEligible(p,now))continue;const b=lowPriceBucket(p);if(!buckets.has(b.key))buckets.set(b.key,{label:b.label,models:new Map()});
+    // Color/size suffixes do not create extra models in the sample denominator.
+    const model=String(p.brand).toLowerCase()+'|'+String(p.name).toLowerCase().split(/\s+-\s+/)[0].replace(/\s+/g,' ').trim();
+    const models=buckets.get(b.key).models,old=models.get(model);
+    if(!old||Number(p.reference_cny)<Number(old.reference_cny)||Number(p.reference_cny)===Number(old.reference_cny)&&p.product_id<old.product_id)models.set(model,p);
+  }
+  for(const bucket of buckets.values()){
+    const pool=[...bucket.models.values()].sort((a,b)=>Number(a.reference_cny)-Number(b.reference_cny)||a.product_id.localeCompare(b.product_id));
+    if(pool.length<3)continue;
+    const take=Math.max(1,Math.floor(pool.length/4)),limit=Number(pool[take-1].reference_cny),brands=new Map();
+    // A flat-price group provides no evidence of a comparatively low price.
+    if(limit>=Number(pool.at(-1).reference_cny))continue;
+    for(const p of pool.slice(0,take)){
+      const brand=String(p.brand).toLowerCase();if((brands.get(brand)||0)>=2)continue;brands.set(brand,(brands.get(brand)||0)+1);
+      result.set(p.product_id,{label:bucket.label,count:pool.length,rank:pool.indexOf(p)+1,selected:take,threshold:limit});
+    }
+  }return result;
+}
+function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(!featuredBrowse()||includeUnverified)return scoped;const low=lowPriceRecommendations(scoped);return brandRoundRobin(scoped.filter(p=>featuredDeal(p)||low.has(p.product_id)))}
+function lowPriceMarkup(card,basis){
+  if(!basis)return '';
+  const verified=card.reference_stock==='in_stock'&&card.reference_collection_state==='current'&&inventoryVerified(card);
+  return '<details class="deal-spec low-price-basis"><summary>'+e(basis.label)+' · '+basis.count+' 款中第 '+basis.rank+' 低</summary><div>仅比较本站已采集的不同型号，取最低约四分之一（至少 1 款），每品牌每组最多 2 款。不同商家／市场的所示规格人民币商品价，不含运税；支付、配送另核实，历史报价可能已变化。不是全尺码价格、全网最低或品质比较。</div></details>'+(!verified?'<div class="deal-spec">历史价格与库存待重新核实 · '+e(timeText(card.fetched_at))+'</div>':'');
+}
 function render(preserveId=null){
   if(observer)observer.disconnect();
   if(typeof resetReferenceFeed==='function')resetReferenceFeed();
   if(typeof updateBrowseLabel==='function'&&activeTab==='products')updateBrowseLabel();
   if(typeof syncBrowseControls==='function')syncBrowseControls();
-  const list=visibleItems();
-  document.getElementById('count').textContent=list.length+' 件商品';
+  const list=visibleItems(),lowPrices=featuredBrowse()?lowPriceRecommendations(scopedCatalogItems()):new Map();
+  const verifiedCount=list.filter(p=>featuredDeal(p)).length,lowCount=list.filter(p=>!featuredDeal(p)&&lowPrices.has(p.product_id)).length;
+  document.getElementById('count').textContent=featuredBrowse()&&list.length?verifiedCount+' 件已核实折扣 · '+lowCount+' 件低价推荐':list.length+' 件商品';
   document.getElementById('sourceCount').textContent=sourceCount+' 个已采集报价源';
   if(!list.length&&typeof renderEmptyReferences==='function'&&renderEmptyReferences()){updatePosition(0,0);return}
-  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无符合条件的已核实折扣</strong>精选只展示最近一小时内核实有货、商家同规格原价高于现价的商品。<br>可搜索商品，或前往品牌官网、世巡车队浏览完整目录。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
+  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无符合条件的已核实折扣</strong>精选包含最近一小时内已核实的真实折扣，以及本站同类型商品的低价参考；样本不足时不推荐。<br>可搜索商品，或前往品牌官网、世巡车队浏览完整目录。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
   gallery.innerHTML=list.map((p,i)=>{
-    const deal=featuredDeal(p);
+    const deal=featuredDeal(p),low=!deal?lowPrices.get(p.product_id):null;
     const stockVerified=p.stock_state==='in_stock'&&inventoryVerified(p)&&p.reference_collection_state!=='retained';
     const isVerified=stockVerified&&p.recommended_total_cny!=null;
     const expired=['库存核实已过期','库存待核实'].includes(p.status)||p.stock_state==='in_stock'&&!stockVerified;
     const sold=p.stock_state==='out_of_stock';
-    return '<article class="card'+(deal?' has-deal':'')+'" data-id="'+e(p.product_id)+'" aria-label="商品 '+(i+1)+'：'+e(p.name)+'"><div class="card-inner">'+
+    return '<article class="card'+(deal?' has-deal':low?' has-low-price':'')+'" data-id="'+e(p.product_id)+'" aria-label="商品 '+(i+1)+'：'+e(p.name)+'"><div class="card-inner">'+
       '<div class="product-visual">'+imageMarkup(p.image,p.name,i)+
-      (deal?'<span class="discount">'+e(discountLabel(p))+'</span>':'')+
+      (deal?'<span class="discount">'+e(discountLabel(p))+'</span>':low?'<span class="low-price-label">低价推荐</span>':'')+
       '<span class="slide-index">'+String(i+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0')+'</span></div>'+
       '<div class="product-info"><div class="brand">'+e(p.brand)+'</div><h2>'+e(p.name_zh||p.name)+'</h2><div class="original-name">'+e(p.name)+'</div>'+
-      '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?e(catalogSizeLabel(p,true)):stockVerified&&p.available_sizes?.length?e(catalogSizeLabel(p,false)):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
+      '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?e(catalogSizeLabel(p,true)):low?e('参考规格 '+[compactVariantLabel(p.reference_size),p.reference_color].filter(Boolean).join(' / ')):stockVerified&&p.available_sizes?.length?e(catalogSizeLabel(p,false)):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
       (sold?'<span class="sold">所示报价已售罄</span>':'')+'</div>'+
-      '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
-      '<div class="best-price">'+e(cny(p.reference_cny))+(deal?'':'<small> 起</small>')+'</div>'+
+      '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':low?'低价参考 · 所示规格商品价，不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
+      '<div class="best-price">'+e(cny(p.reference_cny))+(deal||low?'':'<small> 起</small>')+'</div>'+
       '<div class="foreign-price">'+(deal?'<span class="original-price">商家原价 <s>'+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</s></span> · 现价 ':'')+e(money(p.reference_price.amount,p.reference_price.currency))+' · '+e(p.reference_source)+'</div>'+
-      (deal?'<div class="deal-spec">未取得折扣结束时间</div>':'')+'</div>'+
+      (deal?'<div class="deal-spec">未取得折扣结束时间</div>':lowPriceMarkup(p,low))+'</div>'+ 
       '<button class="compare-button" type="button">选规格，比较 '+p.source_count+' 个渠道 <span aria-hidden="true">→</span></button>'+
       '<div class="data-time">'+(p.fetched_at?'采集 '+e(timeText(p.fetched_at)):e(timeText(null)))+' · 原币价与人民币参考价</div>'+
       '</div></div></article>';
   }).join('');
   const cards=[...gallery.querySelectorAll('.card')];
   cards.forEach(card=>{
-    card.querySelector('.compare-button').onclick=()=>openProduct(card.dataset.id);
-    card.querySelector('.image-button').onclick=()=>openProduct(card.dataset.id);
+    card.querySelector('.compare-button').onclick=()=>openProduct(card.dataset.id,lowPrices.has(card.dataset.id)?list.find(p=>p.product_id===card.dataset.id)?.reference_variant_id:null);
+    card.querySelector('.image-button').onclick=()=>openProduct(card.dataset.id,lowPrices.has(card.dataset.id)?list.find(p=>p.product_id===card.dataset.id)?.reference_variant_id:null);
     const img=card.querySelector('img');img.onerror=()=>img.closest('.product-visual').classList.add('image-missing');
   });
   currentIndex=0;gallery.scrollTop=0;updatePosition(0,cards.length);
@@ -379,7 +437,7 @@ document.getElementById('prev').onclick=()=>move(-1);document.getElementById('ne
 document.getElementById('close').onclick=closeSheet;document.getElementById('overlay').onclick=closeSheet;
 window.addEventListener('resize',positionHint);
 gallery.addEventListener('touchstart',event=>{
-  if(viewMode!=='feed'||gallery.classList.contains('reference-feed')||event.touches.length!==1||sheet.classList.contains('open'))return;
+  if(event.target.closest?.('.low-price-basis')||viewMode!=='feed'||gallery.classList.contains('reference-feed')||event.touches.length!==1||sheet.classList.contains('open'))return;
   cancelAnimationFrame(animationFrame);animationUntil=0;
   const cards=[...gallery.querySelectorAll('.card')];if(!cards.length)return;
   currentIndex=Math.min(cards.length-1,Math.max(0,Math.round(gallery.scrollTop/gallery.clientHeight)));
@@ -402,7 +460,7 @@ function finishSwipe(cancelled=false){
 }
 gallery.addEventListener('touchend',event=>{if(swipe?.dragged)event.preventDefault();finishSwipe()},{passive:false});
 gallery.addEventListener('touchcancel',()=>finishSwipe(true),{passive:true});
-gallery.addEventListener('wheel',event=>{if(viewMode!=='feed'||gallery.classList.contains('reference-feed')||sheet.classList.contains('open')||Math.abs(event.deltaY)<8)return;event.preventDefault();clearTimeout(wheelUnlockTimer);wheelUnlockTimer=setTimeout(()=>{wheelLocked=false},200);if(wheelLocked)return;wheelLocked=true;move(event.deltaY>0?1:-1)},{passive:false});
+gallery.addEventListener('wheel',event=>{if(event.target.closest?.('.low-price-basis'))return;if(viewMode!=='feed'||gallery.classList.contains('reference-feed')||sheet.classList.contains('open')||Math.abs(event.deltaY)<8)return;event.preventDefault();clearTimeout(wheelUnlockTimer);wheelUnlockTimer=setTimeout(()=>{wheelLocked=false},200);if(wheelLocked)return;wheelLocked=true;move(event.deltaY>0?1:-1)},{passive:false});
 document.addEventListener('keydown',event=>{
   if(sheet.classList.contains('open')){
     if(event.key==='Escape'){closeSheet();return}

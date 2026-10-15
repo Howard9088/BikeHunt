@@ -69,6 +69,32 @@ function testPublishedFactsCannotCrossOffers(){
  const p=card(),offer={offer_id:p.reference_offer_id,collection_state:'current',fetched_at:p.fetched_at,stock:'in_stock',price:p.reference_price,original_price:p.reference_original_price,identity:{size:'L',color:'Black'},source_name:'Merchant',data_kind:'live_snapshot',price_valid_until:null};
  const payload={generated_at:p.fetched_at,catalog:{items:[p]},verification_identities:{'offer-sale':'a'.repeat(64)},details:{sale:{variants:{'v-L':{offers:[{offer,product_cny:'630'}]}}}}};
  h.c.validateCatalogIdentities(payload);
+ const withUrl=structuredClone(payload);withUrl.catalog.items[0].reference_url='https://merchant.invalid/sale';withUrl.details.sale.variants['v-L'].offers[0].offer.url='https://merchant.invalid/sale';h.c.validateCatalogIdentities(withUrl);withUrl.catalog.items[0].reference_url='https://wrong.invalid/sale';assert.throws(()=>h.c.validateCatalogIdentities(withUrl),/折扣与参考规格/);
  for(const [key,value] of [['reference_original_price',{amount:'150',currency:'USD'}],['reference_price',{amount:'50',currency:'USD'}],['reference_cny','350'],['reference_size','M'],['reference_color','Blue'],['reference_variant_id','v-M'],['reference_price_valid_until','2026-10-18'],['reference_data_kind','legacy_cache'],['reference_source','Cheaper merchant'],['fetched_at',new Date(NOW+1000).toISOString()]]){const bad=structuredClone(payload);bad.catalog.items[0][key]=value;assert.throws(()=>h.c.validateCatalogIdentities(bad),/折扣与参考规格/,key)}
 }
-for(const test of [testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers]){test();console.log('PASS '+test.name)}
+function helmet(id,amount,changes={}){return card({product_id:id,name:'Helmet '+id,brand:'Brand '+id,category:'helmets',category_group:'helmets',gender:'unisex',reference_url:'https://merchant.invalid/'+id,reference_original_price:null,reference_cny:String(amount),...changes})}
+function testBrandDiversityAndLowPrices(){
+ const h=harness(),a=helmet('a',100),b=helmet('b',200),c=helmet('c',300);
+ h.c.items=[a,b,c,...[1,2,3].map(i=>card({product_id:'sale'+i,brand:'Sale Brand'})),card({product_id:'other-sale',brand:'Other Brand'})];
+ let visible=Array.from(h.c.visibleItems());assert.equal(visible.length,5);assert.equal(new Set(visible.slice(0,3).map(p=>p.brand)).size,3);assert.equal(visible.filter(p=>h.c.featuredDeal(p)).length,4);
+ const low=h.c.lowPriceRecommendations(h.c.items);assert.equal(low.size,1);assert.equal(low.get('a').count,3);
+ h.c.render();assert.equal(h.elements.get('count').textContent,'4 件已核实折扣 · 1 件低价推荐');assert.ok(h.c.gallery.innerHTML.includes('低价推荐'));assert.ok(h.c.gallery.innerHTML.includes('3 款中第 1 低'));assert.ok(h.c.gallery.innerHTML.includes('不含运税'));assert.ok(h.c.gallery.innerHTML.includes('不是全尺码价格'));
+ const onlyLow=h.c.gallery.innerHTML.split('</article>')[0];assert.ok(!onlyLow.includes('商家原价'));assert.ok(!onlyLow.includes('折扣规格'));assert.ok(onlyLow.includes('参考规格'));assert.ok(onlyLow.includes('历史报价可能已变化'));assert.ok(!onlyLow.includes('class="discount"'));assert.ok(onlyLow.includes('L / Black'));
+ h.c.activeSource='brand';assert.equal(h.c.visibleItems().length,7,'Brand directory remains complete');h.c.activeSource=null;h.elements.get('q').value='Helmet';assert.equal(h.c.visibleItems().length,3,'Search remains complete');h.elements.get('q').value='';
+ h.c.activeCategoryGroup='clothing';assert.equal(h.c.visibleItems().length,0,'No scope leaks');h.c.activeCategoryGroup='helmets';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a']);
+ h.c.profileMatches=p=>p.product_id!=='c';assert.equal(h.c.visibleItems().length,0,'Comparison denominator honors profile scope');
+}
+function testLowPriceSafetyAndComparability(){
+ const h=harness(),base=helmet('a',100),pool=[base,helmet('b',200),helmet('c',300)];
+ for(const changes of [{reference_cny:null},{reference_cny:'Infinity'},{reference_cny:0},{reference_price:{amount:0,currency:'USD'}},{reference_url:null},{reference_url:'http://merchant.invalid/'},{reference_url:'https://user:secret@merchant.invalid/'},{reference_url:'javascript:alert(1)'},{reference_offer_id:''},{reference_variant_id:null},{stock_state:'out_of_stock'},{reference_stock:'out_of_stock'},{reference_price_valid_until:'2026-10-14'},{reference_price_valid_until:'2026-02-30'},{gender:'unknown'},{name:'Child Helmet'},{name:'Helmet Kit'},{category_group:'road_equipment'},{category:'accessories',name:'Bottle'},{category:'accessories',name:'Gloves'}])assert.equal(h.c.lowPriceRecommendations([{...base,...changes},...pool.slice(1)]).size,0,JSON.stringify(changes));
+ const stale={...base,fetched_at:new Date(NOW-7200000).toISOString(),reference_stock:'unknown',stock_state:'unknown',reference_collection_state:'retained'};
+ assert.equal(h.c.lowPriceRecommendations([stale,...pool.slice(1)]).size,1);assert.equal(h.c.featuredDeal(stale),false);assert.ok(h.c.lowPriceMarkup(stale,{label:'头盔',count:3,rank:1}).includes('历史价格与库存待重新核实'));
+ assert.equal(h.c.lowPriceRecommendations(pool.map(p=>({...p,reference_cny:'100'}))).size,0,'Equal-price sample does not demonstrate low price');
+ const colors=[helmet('a',100,{name:'Same Helmet - White',brand:'Same'}),helmet('b',200,{name:'Same Helmet - Black',brand:'Same'}),helmet('c',300,{name:'Same Helmet - Red',brand:'Same'})];assert.equal(h.c.lowPriceRecommendations(colors).size,0,'Color variants cannot manufacture a three-model sample');
+ const clothing=(name,category='jerseys',gender='male')=>({...base,name,category,category_group:'clothing',gender});
+ assert.notEqual(h.c.lowPriceBucket(clothing('Short Sleeve Jersey')).key,h.c.lowPriceBucket(clothing('Long Sleeve Jersey')).key);
+ assert.notEqual(h.c.lowPriceBucket(clothing('Short Sleeve Jersey')).key,h.c.lowPriceBucket(clothing('Short Sleeve Jersey','jerseys','female')).key);
+ assert.notEqual(h.c.lowPriceBucket(clothing('Bib Shorts','bibs')).key,h.c.lowPriceBucket(clothing('Bib Tight','bibs')).key);
+ assert.equal(h.c.lowPriceBucket(clothing('Jersey')),null);assert.equal(h.c.lowPriceBucket(clothing('Rain Jacket','jackets')),null);assert.ok(h.c.lowPriceBucket(clothing('Wind Vest','jackets')));
+}
+for(const test of [testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers,testBrandDiversityAndLowPrices,testLowPriceSafetyAndComparability]){test();console.log('PASS '+test.name)}
