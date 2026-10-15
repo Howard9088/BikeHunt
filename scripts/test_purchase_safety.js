@@ -17,8 +17,8 @@ assert.ok(index.includes('世巡车队')&&!index.includes('骑行车队')&&!flow
 assert.ok(index.includes('class="bikehunt-mark"'));
 assert.ok(flows.includes("本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。"));
 const guard=flows.slice(flows.indexOf('function guardPurchaseExit('),flows.indexOf("document.addEventListener('click',guardPurchaseExit)"));
-let confirmed=0,prevented=0;const ctx={guideContext:{quote:fresh},offerAvailable:context.offerAvailable,merchantUrl:context.merchantUrl,PURCHASE_DISCLAIMER:'test',window:{confirm:()=>{confirmed++;return false;}}};vm.createContext(ctx);vm.runInContext(guard,ctx);
-const event={target:{closest:()=>({})},type:'click',preventDefault:()=>prevented++};
+let confirmed=0,prevented=0;const ctx={guideContext:{quote:fresh},offerAvailable:context.offerAvailable,merchantUrl:context.merchantUrl,PURCHASE_DISCLAIMER:'test',saveBrowseState:()=>{},window:{confirm:()=>{confirmed++;return false;}}};vm.createContext(ctx);vm.runInContext(guard,ctx);
+const event={target:{closest:()=>({getAttribute:()=>fresh.offer.url})},type:'click',preventDefault:()=>prevented++};
 ctx.guardPurchaseExit(event);assert.equal(confirmed,1);assert.equal(prevented,1);
 ctx.window.confirm=()=>true;ctx.guardPurchaseExit(event);assert.equal(prevented,1);
 ctx.guideContext=null;ctx.guardPurchaseExit(event);assert.equal(prevented,2);

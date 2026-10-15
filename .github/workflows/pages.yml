@@ -67,6 +67,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_catalog_messages_ui.py
+      - name: Validate conditional cost preview on desktop and mobile
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_cost_preview_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
       - name: Check policy changes once daily

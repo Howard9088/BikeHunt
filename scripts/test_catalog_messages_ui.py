@@ -157,6 +157,18 @@ def main():
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[{id:6,category:'jerseys'}],freshnessChanged:false}}))")
                 expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#messageBadge')).to_be_visible()
                 checks.append(mode+': exact thumbnails and internal product/variant actions; generic-name products separate; soldout opens status without purchase link; same-tab Cancel/Continue; brand/team category restored after Back and reload; no guide reopened; read persisted; new increment')
+                # The final confirmed-stock guide exit also navigates this tab and saves only browse state.
+                page.evaluate("openProduct('partial','S')");expect(page.locator('.guide-start')).to_be_enabled();page.locator('.guide-start').click()
+                for _ in range(3):page.locator('#guideNext').click()
+                purchase=page.locator('[data-purchase-link]');expect(purchase).to_have_attribute('target','_self');expect(purchase).to_have_attribute('href','https://merchant.example/bib?variant=S')
+                page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()));purchase.click();expect(page).to_have_url(base);expect(purchase).to_be_visible();assert len(context.pages)==1
+                page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
+                with page.expect_navigation(wait_until='domcontentloaded'):purchase.click()
+                expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
+                page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true');expect(page.locator('[data-purchase-link]')).to_have_count(0)
+                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
+                page.reload(wait_until='networkidle');expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
+                checks.append(mode+': final guide Step4 Cancel/Continue uses exact same-tab product URL; Back/reload restores scope/read state without reopening guide')
                 page.locator('[data-tab=products]').click();page.locator('[data-category=all]').click()
                 old='2000-01-01T00:00:00Z';state['detail']['offers'][0]['offer']['fetched_at']=old
                 for v in state['detail']['variants']:v['in_stock']=False

@@ -45,7 +45,7 @@ function harness() {
     openPanel(title, content) { context.detailSequence++; panel = title + ' ' + content; elements.delete('variant'); },
     getJson: async () => ({documents: []}),
     refreshCatalogSilently: async () => {}, loadDetail() {},
-    PURCHASE_DISCLAIMER: 'test disclaimer',
+    PURCHASE_DISCLAIMER: 'test disclaimer', saveBrowseState() {},
   });
   vm.runInContext(section(gallery, 'function inventoryVerified(', 'async function loadDetail('), context);
   vm.runInContext(section(flows, 'async function startGuide(', 'const GUIDE_ICONS='), context);
@@ -57,7 +57,7 @@ function harness() {
     get rendered() { return rendered; }, get confirmCalls() { return confirmCalls; }};
 }
 function event(type = 'click', button = 0) {
-  return {type, button, prevented: false, target: {closest: () => ({})},
+  return {type, button, prevented: false, target: {closest: () => ({getAttribute: () => 'https://shop.example/products/jersey?variant=m'})},
     preventDefault() { this.prevented = true; }};
 }
 

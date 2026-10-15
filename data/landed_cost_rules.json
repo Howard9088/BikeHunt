@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "checked_on": "2026-10-14",
+  "version": 2,
+  "checked_on": "2026-10-15",
   "review_after_days": 30,
   "shipping": {
     "visma": {
@@ -19,20 +19,32 @@
     "rate": "0.20",
     "parcel_value_limit_cny": "2000",
     "parcel_tax_waiver_cny": "50",
-    "categories": ["jerseys", "bibs", "jackets"],
+    "categories": [
+      "jerseys",
+      "bibs",
+      "jackets"
+    ],
     "evidence": [
       {
         "title": "海关进出境邮件常见问题：B02018–22、B02046",
         "url": "https://online.customs.gov.cn/ociswebserver/pages/jcjybcx/question.html",
-        "checked_on": "2026-10-14"
+        "checked_on": "2026-10-15"
       }
     ],
     "assumptions": [
       "仅作条件情景：一件服装单独下单、整票只有这一件、数量合理且个人自用。",
+      "中国大陆配送能力与实际报关路径分别核实；出现预估税额不代表此商家已确认可寄中国，也不代表可以按此金额下单。",
       "实际报关路径未确认；只有海关按个人寄递物品并归类为服装时，20% 综合税率情景才适用。UPS 等承运商名称不能证明报关路径。",
       "以商品展示价按当前参考汇率折算后，暂代海关计税价格；不假设自动退还境外 VAT。海关审价、归类和计税汇率可改变税额。",
       "整票应征税额不超过 50 元时才按免征情景计；超过则计全额税，不减去 50 元。合单必须整票重算。",
-      "情景小计含商品、整单运费和上述条件税额，未含未知清关／代垫手续费、可能的额外保险及银行卡费用。"
+      "预估小计只加商品、条件税额及已知运费／手续费；未知费用没有按 0 元计算。运费未知时仅为商品加预估税的小计，不是完整到手价。未含未知清关／代垫手续费、可能的额外保险及银行卡费用。"
+    ],
+    "garment_patterns": [
+      "\\bhoodies?\\b",
+      "\\bsweatshirts?\\b",
+      "\\bt[ -]?shirts?\\b",
+      "\\btees?\\b",
+      "连帽衫|卫衣|[Tt]恤"
     ]
   },
   "cbec": {
@@ -52,5 +64,23 @@
         "checked_on": "2026-10-14"
       }
     ]
+  },
+  "merchant_notes": {
+    "ef_team_shop": {
+      "shipping_note": "EF 美国站称可配送全球，运费按重量、尺寸和目的地在结账时计算；未公布可用于中国订单的固定金额或免邮门槛，也未明确列出中国大陆。中国地址是否可配送及实际运费仍待核实，不填 0 元或臆测区间。",
+      "tax_note": "EF 美国站说明进口 VAT／关税由收件人承担，并可能由承运商收取；未取得此中国订单的报关路径或税费报价，不能视为包税。本页只提供满足条件时的税费预估。",
+      "evidence": [
+        {
+          "title": "EF 美国站配送与进口税政策",
+          "url": "https://efprocycling.shop/us/shipping-policy/",
+          "checked_on": "2026-10-15"
+        },
+        {
+          "title": "EF 美国站运费计算常见问题",
+          "url": "https://efprocycling.shop/us/faq/",
+          "checked_on": "2026-10-15"
+        }
+      ]
+    }
   }
 }

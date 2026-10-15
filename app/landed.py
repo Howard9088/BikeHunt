@@ -63,19 +63,22 @@ def _evidence(check: Evidence, title: str) -> list[CostEvidence]:
 def _clothing(name: str, rule: dict) -> bool:
     # Product browsing categories are not tariff classifications. Exclude mixed
     # sets/accessories even when their titles contain a garment keyword.
-    excluded = r"\b(helmet|shoe\w*|computer|electronic\w*|bottle|bundle|pack|kit|socks?|gloves?)\b|头盔|锁鞋|电子|套装"
-    return category_of(name) in rule.get("categories", []) and not re.search(excluded, name, re.I)
+    excluded = r"\b(helmet|shoe\w*|computer|electronic\w*|bottle|bundle|pack|kit|socks?|gloves?|stickers?|keyrings?|keychains?|posters?|bags?)\b|头盔|锁鞋|电子|套装|钥匙扣|贴纸"
+    garment = (category_of(name) in rule.get("categories", [])
+               or any(re.search(pattern, name, re.I) for pattern in rule.get("garment_patterns", [])))
+    return bool(garment and not re.search(excluded, name, re.I))
 
 
 def estimate_landed_cost(offer: Offer, fx: FxSnapshot, now: datetime) -> LandedCost:
     rules = load_rules()
     current_rules = _rules_fresh(rules, now)
     policy = rules.get("shipping", {}).get(offer.source_code, {})
+    merchant_note = rules.get("merchant_notes", {}).get(offer.source_code, {}) if current_rules else {}
     policy_current = bool(policy and current_rules and _fresh(offer.shipping_to_china, now)
                           and offer.shipping_to_china.url == policy.get("url"))
     notes = ["按一件商品单独下单估算；参考汇率不等于银行卡入账汇率。未知费用保留待确认。"]
     missing: list[str] = []
-    evidence: list[CostEvidence] = []
+    evidence: list[CostEvidence] = [CostEvidence(**entry) for entry in merchant_note.get("evidence", [])]
     product = convert_money(offer.price, fx)
     components = [CostComponent(key="product", label="商品价", original=offer.price,
                                cny=product, status="quoted", evidence=[CostEvidence(
@@ -86,7 +89,7 @@ def estimate_landed_cost(offer: Offer, fx: FxSnapshot, now: datetime) -> LandedC
 
     shipping_money = offer.shipping if offer.shipping_to_china.status != "no" else None
     shipping_status = "quoted" if shipping_money is not None else "unknown"
-    shipping_note = "中国大陆运费须由商家按目的地确认；未知不按免运费处理。"
+    shipping_note = merchant_note.get("shipping_note", "中国大陆运费须由商家按目的地确认；未知不按免运费处理。")
     if policy_current:
         shipping_note = policy["note"]
         evidence.append(CostEvidence(title="商家中国大陆整单运费", url=policy["url"],
@@ -111,7 +114,7 @@ def estimate_landed_cost(offer: Offer, fx: FxSnapshot, now: datetime) -> LandedC
     handling = offer.import_tax_handling
     tax = convert_money(offer.tax, fx)
     tax_status = "quoted" if offer.tax is not None else "unknown"
-    tax_note = "尚未取得中国大陆进口税费报价；境外站点含税价不等于已包含中国进口税。"
+    tax_note = merchant_note.get("tax_note", "尚未取得中国大陆进口税费报价；境外站点含税价不等于已包含中国进口税。")
     if handling == "included_in_price":
         if _fresh(offer.import_tax_evidence, now):
             tax, tax_status = Decimal("0.00"), "included"
@@ -141,9 +144,11 @@ def estimate_landed_cost(offer: Offer, fx: FxSnapshot, now: datetime) -> LandedC
 
     scenarios: list[TaxScenario] = []
     clothing_rule = rules.get("personal_postal_clothing", {})
+    # A tax illustration does not assert China delivery or invent shipping.
+    # Explicitly unsupported destinations must never gain a purchase scenario.
     can_estimate = (current_rules and clothing_rule and _clothing(offer.name, clothing_rule)
-                    and _fresh(offer.shipping_to_china, now) and product is not None
-                    and shipping is not None and offer.tax is None and handling == "unknown")
+                    and offer.shipping_to_china.status != "no" and product is not None
+                    and offer.tax is None and handling == "unknown")
     if can_estimate:
         limit = Decimal(clothing_rule["parcel_value_limit_cny"])
         if product <= limit:
@@ -152,10 +157,21 @@ def estimate_landed_cost(offer: Offer, fx: FxSnapshot, now: datetime) -> LandedC
             assessed = raw_tax.quantize(CENT, rounding=ROUND_HALF_UP)
             waived = raw_tax <= Decimal(clothing_rule["parcel_tax_waiver_cny"])
             payable = Decimal("0.00") if waived else assessed
+            included = ["product", "tax"]
+            partial_subtotal = product + payable
+            scenario_missing = []
+            for key, amount in (("shipping", shipping), ("clearance", clearance)):
+                if amount is None:
+                    scenario_missing.append(key)
+                else:
+                    included.append(key)
+                    partial_subtotal += amount
             scenarios.append(TaxScenario(
                 code="personal_postal_clothing", label="若按个人寄递服装征税（未确认）", rate=rate,
                 tax_base_cny=product, assessed_tax_cny=assessed, payable_tax_cny=payable,
-                subtotal_cny=product + shipping + payable + (clearance if clearance is not None else Decimal(0)),
+                subtotal_cny=partial_subtotal, goods_and_tax_cny=product + payable,
+                included_components=included, missing_components=scenario_missing,
+                china_delivery_confirmed=_fresh(offer.shipping_to_china, now),
                 waiver_applied=waived, assumptions=clothing_rule["assumptions"],
                 evidence=[CostEvidence(**entry) for entry in clothing_rule["evidence"]]))
         else:

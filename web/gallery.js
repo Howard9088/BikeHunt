@@ -93,20 +93,61 @@ function landedCostMarkup(compared){
     const value=c.status==='unsupported'?'此渠道不直邮':c.cny==null?'待确认':cny(c.cny);
     return '<div><dt>'+e(label)+'</dt><dd>'+e(value)+'</dd></div>';
   }).join('');
-  const scenariosMarkup=scenarios.map(s=>'<div class="summary-box"><h4>单件寄中国预算 · 条件估算</h4><div class="summary-price">'+e(cny(s.subtotal_cny))+'</div>'+
-    '<p>商品 + 整单运费 + 条件税额的小计。实际报关路径未确认，未含待确认费用，不能视为完整到手价。</p>'+
-    '<dl class="costs">'+cost('暂用商品价作为计税基数',s.tax_base_cny)+cost('服装税情景（'+Math.round(Number(s.rate)*100)+'%）',s.payable_tax_cny)+'</dl>'+
-    '<p>'+e(s.waiver_applied?'此单件整票的情景应征税额不超过 50 元，暂按免征计算；海关审价及合单会改变结果。':'整票超过 50 元免征门槛时计全额税，不扣减 50 元。')+'</p></div>').join('');
+  const scenariosMarkup=scenarios.map((s,index)=>{
+    const shipping=components.find(c=>c.key==='shipping'),clearance=components.find(c=>c.key==='clearance');
+    const included=s.included_components?.length?s.included_components:['product','tax',...(shipping?.cny!=null?['shipping']:[]),...(clearance?.cny!=null?['clearance']:[])];
+    const extraLabels=[...(included.includes('shipping')?['运费']:[]),...(included.includes('clearance')?['手续费']:[])];
+    const subtotalLabel='商品 + 预估税'+(extraLabels.length?' + '+extraLabels.join(' + '):'')+'小计';
+    const unknownLabels=[...(shipping?.cny==null?['寄中国运费']:[]),...(clearance?.cny==null?['清关／代垫手续费']:[])];
+    const budgetId='shipping-budget-'+encodeURIComponent(compared.offer?.offer_id||'offer')+'-'+index;
+    const budgetMarkup=shipping?.cny==null&&shipping?.status!=='unsupported'&&!included.includes('shipping')?
+      '<div class="shipping-budget" data-shipping-budget-box data-subtotal="'+e(s.subtotal_cny)+'">'+
+      '<label for="'+e(budgetId)+'">运费预算（选填，人民币）</label><input id="'+e(budgetId)+'" data-shipping-budget type="text" inputmode="decimal" autocomplete="off" placeholder="留空表示未知" aria-describedby="'+e(budgetId)+'-help '+e(budgetId)+'-error" aria-invalid="false">'+
+      '<p id="'+e(budgetId)+'-help" class="budget-help">填写你自己的运费预算，不是商家报价；不会改变上方待确认运费。支持 0–100,000 元，最多两位小数。</p>'+
+      '<p id="'+e(budgetId)+'-error" class="budget-error" data-budget-error role="alert" hidden></p>'+
+      '<div data-budget-result role="status" aria-live="polite" hidden><dl class="costs"><div><dt>自填运费预算</dt><dd data-budget-shipping></dd></div><div class="total"><dt>加上自填预算后的小计</dt><dd data-budget-subtotal></dd></div></dl>'+
+      '<p>仅在上述预估小计上加自填运费；'+(clearance?.cny==null?'未知清关／代垫手续费仍需另计。':'已知清关／代垫手续费已含在上述小计中。')+'不是商家报价，也不是完整到手价。</p><p data-budget-zero hidden>你填写了 0 元，仅是自己的预算假设，不代表商家免邮。</p></div></div>':'';
+    return '<section class="summary-box cost-estimate" aria-label="条件费用预估"><h4>费用预估 · 服装个人寄递情景</h4>'+
+      '<p>若海关按个人寄递服装征税，暂用商品价估算 '+Math.round(Number(s.rate)*100)+'% 税费。</p>'+
+      '<dl class="costs">'+cost('商品参考价',s.tax_base_cny)+cost('预估进口税（条件估算）',s.payable_tax_cny)+
+      cost('寄中国运费'+(shipping?.status==='policy_estimate'?'（政策参考）':''),shipping?.cny)+cost('清关／代垫手续费',clearance?.cny)+cost(subtotalLabel,s.subtotal_cny,true)+'</dl>'+
+      '<p>'+(unknownLabels.length?'还需另加待确认的'+unknownLabels.map(e).join('、')+'。':'')+'实际报关路径未确认，不能视为完整到手价。</p>'+
+      (!s.china_delivery_confirmed?'<p class="offer-note">中国大陆配送仍待核实；税费预估不代表已确认可寄中国。</p>':'')+
+      '<p>'+e(s.waiver_applied?'此单件整票的情景应征税额不超过 50 元，暂按免征计算；海关审价及合单会改变结果。':'整票超过 50 元免征门槛时计全额税，不扣减 50 元。')+'</p>'+budgetMarkup+'</section>';
+  }).join('');
   const originalShipping=components.find(c=>c.key==='shipping');
-  return '<dl class="costs">'+componentRows+cost('已知费用小计（不含待确认项）',landed.known_subtotal_cny,true)+
-    (compared.total_cny!=null?cost('已报价费用合计',compared.total_cny,true):'')+'</dl>'+
+  return scenariosMarkup+(scenarios.length?'<details><summary>查看已报价费用（与预估分开）</summary>':'')+'<dl class="costs">'+componentRows+cost('已知费用小计（不含待确认项）',landed.known_subtotal_cny,true)+
+    (compared.total_cny!=null?cost('已报价费用合计',compared.total_cny,true):'')+'</dl>'+(scenarios.length?'</details>':'')+
     (originalShipping?.original?'<div class="offer-note">运费原币：'+e(money(originalShipping.original.amount,originalShipping.original.currency))+(landed.shipping_scope==='order'?' / 单；单件下单计整单运费，合单不能逐件相加。':'；订单计费范围仍需核实。')+'</div>':'')+
     (landed.missing?.length?'<div class="offer-note">仍待确认：'+landed.missing.map(e).join('、')+'。未知费用没有按 0 元计入。</div>':'')+
-    scenariosMarkup+
     '<details><summary>查看运税假设、原币与官方依据</summary>'+
     components.filter(c=>c.note).map(c=>'<p>'+e(c.label)+'：'+e(c.note)+'</p>').join('')+
     scenarios.flatMap(s=>s.assumptions||[]).concat(landed.notes||[]).map(note=>'<p>'+e(note)+'</p>').join('')+
     uniqueSources.map(source=>'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(source.url))+'">'+e(source.title)+'</a> · 核实 '+e(source.checked_on||'日期待确认')+'</p>').join('')+'</details>';
+}
+function shippingBudgetPreview(raw,base){
+  const value=String(raw??'').trim();
+  if(!value)return {status:'empty'};
+  const invalid={status:'invalid',error:'请输入 0–100,000 元的数字，最多两位小数；留空可取消预算。'};
+  // A blank field is unknown. Exponents, signs, non-finite values and excessive
+  // amounts are rejected rather than coerced into zero or an apparent quote.
+  if(!/^\d{1,6}(?:\.\d{1,2})?$/.test(value))return invalid;
+  const amount=Number(value),baseAmount=Number(base);
+  if(!Number.isFinite(amount)||amount<0||amount>100000)return invalid;
+  const cents=Math.round(amount*100),baseCents=Math.round(baseAmount*100);
+  if(base==null||base===''||!Number.isFinite(baseAmount)||baseAmount<0||!Number.isSafeInteger(baseCents)||!Number.isSafeInteger(baseCents+cents))return {status:'invalid',error:'当前预估小计不可用，请重新打开商品。'};
+  return {status:'valid',shipping_cny:cents/100,subtotal_cny:(baseCents+cents)/100};
+}
+function updateShippingBudget(event){
+  const input=event.target;if(!input?.matches?.('[data-shipping-budget]'))return;
+  const box=input.closest('[data-shipping-budget-box]');if(!box)return;
+  const preview=shippingBudgetPreview(input.value,box.dataset.subtotal),error=box.querySelector('[data-budget-error]'),result=box.querySelector('[data-budget-result]');
+  input.setAttribute('aria-invalid',String(preview.status==='invalid'));
+  error.textContent=preview.error||'';error.hidden=preview.status!=='invalid';
+  result.hidden=preview.status!=='valid';
+  box.querySelector('[data-budget-shipping]').textContent=preview.status==='valid'?cny(preview.shipping_cny):'';
+  box.querySelector('[data-budget-subtotal]').textContent=preview.status==='valid'?cny(preview.subtotal_cny):'';
+  box.querySelector('[data-budget-zero]').hidden=preview.status!=='valid'||preview.shipping_cny!==0;
 }
 function inventoryVerified(offer,now=Date.now()){
   const timestamp=offer?.fetched_at;if(typeof timestamp!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})$/i.test(timestamp))return false;
@@ -237,6 +278,7 @@ async function init(){
     document.getElementById('sourceCount').textContent=data.source_count+' 个已采集报价源';
   }catch(error){gallery.innerHTML='<div class="empty"><strong>商品暂时无法加载</strong>'+e(error.message)+'<br><button id="retry" type="button">重新加载</button></div>';document.getElementById('retry').onclick=init}
 }
+document.addEventListener('input',updateShippingBudget);
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
 document.getElementById('q').addEventListener('input',()=>render());document.getElementById('clear').onclick=clearSearch;
 document.getElementById('prev').onclick=()=>move(-1);document.getElementById('next').onclick=()=>move(1);

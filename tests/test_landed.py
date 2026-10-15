@@ -13,7 +13,7 @@ from app.catalog.models import Evidence, FxSnapshot, Money, Offer, ProductIdenti
 from app.catalog.service import ComparisonCatalog, compare_offer
 from app.landed import estimate_landed_cost
 
-NOW = datetime(2026, 10, 14, 16, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 10, 15, 0, 0, tzinfo=timezone.utc)
 SHIPPING_URL = "https://www.teamvismaleaseabike.com/shop-delivery/"
 
 
@@ -59,6 +59,49 @@ class LandedCostTests(unittest.TestCase):
         self.assertEqual(landed.shipping_scope, "order")
         self.assertEqual(landed.quantity, 1)
 
+    def test_ef_hoodie_has_grounded_partial_estimate_without_shipping_or_route(self):
+        offer = quote(source_code="ef_team_shop", name="Stamp Hoodie", shipping=None,
+                      price=Money(amount="89", currency="USD"), shipping_to_china=Evidence())
+        fx = rates(rates={"CNY": Decimal(1), "USD": Decimal("6.6927")})
+        result = compare_offer(offer, fx, NOW)
+        scenario = result.landed_cost.scenarios[0]
+        self.assertEqual(result.product_cny, Decimal("595.65"))
+        self.assertEqual(scenario.assessed_tax_cny, Decimal("119.13"))
+        self.assertEqual(scenario.goods_and_tax_cny, Decimal("714.78"))
+        self.assertEqual(scenario.subtotal_cny, Decimal("714.78"))
+        self.assertEqual(scenario.included_components, ["product", "tax"])
+        self.assertFalse(scenario.china_delivery_confirmed)
+        self.assertIsNone(result.shipping_cny)
+        self.assertIsNone(result.tax_cny)
+        self.assertIsNone(result.total_cny)
+        self.assertFalse(result.eligible)
+        self.assertFalse(result.landed_cost.complete)
+        self.assertIn("未明确列出中国大陆", result.landed_cost.components[1].note)
+        self.assertTrue(any(x.url == "https://efprocycling.shop/us/shipping-policy/"
+                            for x in result.landed_cost.evidence))
+        catalog = ComparisonCatalog([offer], fx, NOW)
+        card = catalog.search()[0]
+        self.assertIsNone(card.recommended_total_cny)
+        self.assertIsNone(catalog.compare(card.product_id).recommended_offer_id)
+
+    def test_audited_casual_clothing_is_not_tied_to_browsing_category(self):
+        for name in ["Stamp Hoodie", "Dispatched T-Shirt", "Team T shirt", "Team Tee", "Sweatshirt", "车队卫衣"]:
+            with self.subTest(name=name):
+                result = estimate_landed_cost(quote(name=name, shipping=None, source_code="ef_team_shop",
+                                                     shipping_to_china=Evidence()), rates(), NOW)
+                self.assertEqual(result.scenarios[0].payable_tax_cny, Decimal("140.00"))
+        for name in ["Hoodie keyring", "T-shirt sticker", "Road helmet", "Cycling shoes", "GPS computer"]:
+            with self.subTest(name=name):
+                self.assertEqual(estimate_landed_cost(quote(name=name), rates(), NOW).scenarios, [])
+
+    def test_explicit_zero_shipping_is_distinct_from_unknown_shipping(self):
+        offer = quote(source_code="ef_team_shop", shipping=Money(amount=0, currency="CNY"))
+        result = estimate_landed_cost(offer, rates(), NOW)
+        self.assertEqual(result.components[1].cny, Decimal("0.00"))
+        self.assertEqual(result.components[1].status, "quoted")
+        self.assertIn("shipping", result.scenarios[0].included_components)
+        self.assertNotIn("shipping", result.scenarios[0].missing_components)
+
     def test_scenario_never_becomes_confirmed_tax_total_or_recommendation(self):
         offer = quote()
         result = compare_offer(offer, rates(), NOW)
@@ -84,14 +127,22 @@ class LandedCostTests(unittest.TestCase):
             with self.subTest(check=check):
                 result = estimate_landed_cost(quote(shipping=None, shipping_to_china=check), rates(), NOW)
                 self.assertIsNone(result.components[1].cny)
-                self.assertEqual(result.scenarios, [])
+                if check.status == "no":
+                    self.assertEqual(result.scenarios, [])
+                else:
+                    self.assertEqual(result.scenarios[0].subtotal_cny, Decimal("840.00"))
+                    self.assertIn("shipping", result.scenarios[0].missing_components)
 
     def test_unknown_shipping_and_tax_are_null_not_zero(self):
         result = compare_offer(quote(source_code="unknown", shipping=None, shipping_to_china=Evidence()), rates(), NOW)
         self.assertIsNone(result.shipping_cny)
         self.assertIsNone(result.tax_cny)
         self.assertEqual(result.landed_cost.known_subtotal_cny, Decimal("700.00"))
-        self.assertEqual(result.landed_cost.scenarios, [])
+        scenario = result.landed_cost.scenarios[0]
+        self.assertEqual(scenario.subtotal_cny, Decimal("840.00"))
+        self.assertEqual(scenario.included_components, ["product", "tax"])
+        self.assertEqual(scenario.missing_components, ["shipping", "clearance"])
+        self.assertFalse(scenario.china_delivery_confirmed)
         self.assertIsNone(result.landed_cost.components[3].cny)
 
     def test_unsupported_channels_do_not_gain_shipping_or_tax_estimates(self):
@@ -107,7 +158,9 @@ class LandedCostTests(unittest.TestCase):
         for code in ["rapha", "rapha_kr"]:
             result = compare_offer(quote(source_code=code, shipping=None, shipping_to_china=Evidence()), rates(), NOW)
             self.assertIsNone(result.tax_cny)
-            self.assertEqual(result.landed_cost.scenarios, [])
+            self.assertEqual(result.landed_cost.scenarios[0].payable_tax_cny, Decimal("140.00"))
+            self.assertFalse(result.landed_cost.scenarios[0].china_delivery_confirmed)
+            self.assertIsNone(result.total_cny)
             self.assertIn("境外站点含税价不等于已包含中国进口税", result.landed_cost.components[2].note)
 
     def test_included_tax_is_not_added_twice(self):
@@ -178,7 +231,13 @@ class LandedCostTests(unittest.TestCase):
         for fx in [rates(rates={"CNY": Decimal(1), "USD": Decimal(7)}),
                    rates(rates={"CNY": Decimal(1), "EUR": Decimal(8)})]:
             result = compare_offer(quote(), fx, NOW)
-            self.assertEqual(result.landed_cost.scenarios, [])
+            if result.product_cny is None:
+                self.assertEqual(result.landed_cost.scenarios, [])
+            else:
+                scenario = result.landed_cost.scenarios[0]
+                self.assertEqual(scenario.subtotal_cny, Decimal("840.00"))
+                self.assertIn("shipping", scenario.missing_components)
+                self.assertNotIn("shipping", scenario.included_components)
             self.assertIsNone(result.total_cny)
             self.assertFalse(result.eligible)
 
@@ -203,11 +262,82 @@ class LandedCostTests(unittest.TestCase):
         result = compare_offer(quote(), rates(), NOW).model_dump(mode="json")
         landed = result["landed_cost"]
         self.assertEqual(landed["components"][1]["original"], {"amount": "47.95", "currency": "EUR"})
-        self.assertEqual(landed["scenarios"][0]["evidence"][0]["checked_on"], "2026-10-14")
+        self.assertEqual(landed["scenarios"][0]["evidence"][0]["checked_on"], "2026-10-15")
         self.assertEqual(landed["scenarios"][0]["rate"], "0.20")
         self.assertTrue(all(s["code"] != "cbec" for s in landed["scenarios"]))
         self.assertTrue(any("不能自动套用 9.1%" in note for note in landed["notes"]))
         self.assertTrue(any("VAT" in note and "不自动扣除" in note for note in landed["notes"]))
+
+    @unittest.skipUnless(shutil.which("node"), "Node is required for the UI rendering check")
+    def test_ef_guide_step_three_reuses_partial_preview_without_a_full_total(self):
+        offer = quote(source_code="ef_team_shop", name="Stamp Hoodie", shipping=None,
+                      price=Money(amount="89", currency="USD"), shipping_to_china=Evidence())
+        payload = compare_offer(offer, rates(rates={"USD": Decimal("6.6927")}), NOW).model_dump(mode="json")
+        root = Path(__file__).resolve().parents[1]
+        program = r"""
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const js=fs.readFileSync(process.argv[1],'utf8'),flows=fs.readFileSync(process.argv[2],'utf8');
+const helpers=js.slice(js.indexOf('const e='),js.indexOf('function timeText('));
+const renderer=js.slice(js.indexOf('function landedCostMarkup('),js.indexOf('function inventoryVerified('));
+const guide=flows.slice(flows.indexOf('function renderGuide('),flows.indexOf('function updateGuideVerificationMetadata('));
+const quote=JSON.parse(fs.readFileSync(0,'utf8'));
+let html='';
+const ctx={Intl,URL,Map,Math,Number,String,guideContext:{quote,detail:{identity:{size:'M'}},book:{documents:[]}},guideStep:2,
+  offerAvailable:()=>true,guideMap:()=>'',openPanel:(_title,content)=>html=content,
+  document:{getElementById:()=>({})}};
+vm.createContext(ctx);vm.runInContext(helpers+renderer+guide,ctx);ctx.renderGuide();
+for(const text of ['第 3 步','US$89.00','595.65','119.13','714.78','商品 + 预估税小计','寄中国运费','清关／代垫手续费','待确认','实际报关路径未确认','中国大陆配送仍待核实','不能视为完整到手价'])assert.ok(html.includes(text),text);
+assert.ok(!html.includes('预计总成本'));assert.ok(!html.includes('商品 + 整单运费'));
+assert.ok(html.indexOf('119.13')<html.indexOf('查看已报价费用'));
+"""
+        subprocess.run(["node", "-e", program, str(root / "web/gallery.js"), str(root / "web/flows.js")],
+                       input=json.dumps(payload), text=True, capture_output=True, check=True)
+
+    @unittest.skipUnless(shutil.which("node"), "Node is required for the UI rendering check")
+    def test_optional_shipping_budget_is_local_validated_and_never_a_quote(self):
+        offer = quote(source_code="ef_team_shop", name="Stamp Hoodie", shipping=None,
+                      price=Money(amount="89", currency="USD"), shipping_to_china=Evidence())
+        fx = rates(rates={"USD": Decimal("6.6927"), "CNY": Decimal(1), "EUR": Decimal(8)})
+        payload = compare_offer(offer, fx, NOW).model_dump(mode="json")
+        known = compare_offer(quote(), fx, NOW).model_dump(mode="json")
+        unsupported = compare_offer(offer.model_copy(update={"shipping_to_china": Evidence(status="no")}), fx, NOW).model_dump(mode="json")
+        ddp = compare_offer(offer.model_copy(update={"import_tax_handling": "included_in_price", "import_tax_evidence": tax_evidence()}), fx, NOW).model_dump(mode="json")
+        source = Path(__file__).resolve().parents[1] / "web" / "gallery.js"
+        program = r"""
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const js=fs.readFileSync(process.argv[1],'utf8');
+const helpers=js.slice(js.indexOf('const e='),js.indexOf('function timeText('));
+const renderer=js.slice(js.indexOf('function landedCostMarkup('),js.indexOf('function inventoryVerified('));
+const ctx={Intl,URL,Map,Math,Number,String};vm.createContext(ctx);vm.runInContext(helpers+renderer,ctx);
+const data=JSON.parse(fs.readFileSync(0,'utf8')),original=JSON.stringify(data),html=ctx.landedCostMarkup(data.unknown);
+assert.ok(html.includes('data-shipping-budget type="text"'));assert.ok(html.includes('留空表示未知'));
+assert.ok(!html.match(/data-shipping-budget[^>]*value=/));
+for(const text of ['自己的运费预算','不是商家报价','未知清关／代垫手续费仍需另计','不代表商家免邮','中国大陆配送仍待核实'])assert.ok(html.includes(text),text);
+for(const item of [data.known,data.unsupported,data.ddp])assert.ok(!ctx.landedCostMarkup(item).includes('data-shipping-budget type='));
+const calc=raw=>ctx.shippingBudgetPreview(raw,'714.78');
+for(const raw of ['', ' ',null,undefined])assert.equal(calc(raw).status,'empty');
+for(const raw of ['-1','-0','NaN','Infinity','1e2','1e309','100000.01','1000000','999999999999999999','0.001','abc','<img src=x>'])assert.equal(calc(raw).status,'invalid',raw);
+for(const [raw,amount,total] of [['0',0,714.78],['0.00',0,714.78],['120.50',120.5,835.28],['0.01',.01,714.79],['100000',100000,100714.78]]){
+  const value=calc(raw);assert.equal(value.status,'valid');assert.equal(value.shipping_cny,amount);assert.equal(value.subtotal_cny,total);
+}
+for(const base of [null,'',NaN,Infinity,-1,'9007199254740992'])assert.equal(ctx.shippingBudgetPreview('100',base).status,'invalid');
+// Exercise production event handling with DOM-shaped nodes. It changes only the
+// local preview, leaving the quote, actual shipping, eligibility and evidence intact.
+const nodes=Object.fromEntries(['error','result','shipping','subtotal','zero'].map(k=>[k,{textContent:'',hidden:true}]));
+const box={dataset:{subtotal:'714.78'},querySelector:selector=>nodes[selector.slice(13,-1)]};
+const attributes={};const input={value:'',matches:s=>s==='[data-shipping-budget]',closest:()=>box,setAttribute:(k,v)=>attributes[k]=v};
+const edit=value=>{input.value=value;ctx.updateShippingBudget({target:input});};
+edit('');assert.equal(nodes.result.hidden,true);assert.equal(nodes.subtotal.textContent,'');assert.equal(attributes['aria-invalid'],'false');
+edit('120.50');assert.equal(nodes.result.hidden,false);assert.ok(nodes.subtotal.textContent.includes('835.28'));assert.ok(nodes.shipping.textContent.includes('120.50'));assert.equal(nodes.zero.hidden,true);
+edit('0');assert.equal(nodes.zero.hidden,false);assert.ok(nodes.subtotal.textContent.includes('714.78'));
+edit('-1');assert.equal(nodes.result.hidden,true);assert.equal(nodes.error.hidden,false);assert.equal(attributes['aria-invalid'],'true');assert.equal(nodes.subtotal.textContent,'');
+edit('');assert.equal(nodes.result.hidden,true);assert.equal(nodes.error.hidden,true);assert.equal(nodes.subtotal.textContent,'');assert.equal(attributes['aria-invalid'],'false');
+assert.equal(JSON.stringify(data),original);assert.equal(data.unknown.shipping_cny,null);assert.equal(data.unknown.total_cny,null);assert.equal(data.unknown.eligible,false);assert.equal(data.unknown.landed_cost.complete,false);
+assert.equal(js.split("document.addEventListener('input',updateShippingBudget);").length-1,1);
+"""
+        subprocess.run(["node", "-e", program, str(source)],
+                       input=json.dumps({"unknown": payload, "known": known, "unsupported": unsupported, "ddp": ddp}),
+                       text=True, capture_output=True, check=True)
 
     @unittest.skipUnless(shutil.which("node"), "Node is required for the UI rendering check")
     def test_breakdown_ui_renders_partial_labels_and_escapes_content(self):

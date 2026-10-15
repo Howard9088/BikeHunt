@@ -125,7 +125,12 @@ class TaxScenario(Record):
     tax_base_cny: Decimal
     assessed_tax_cny: Decimal
     payable_tax_cny: Decimal
+    # Partial conditional subtotal only; never a checkout or complete landed total.
     subtotal_cny: Decimal
+    goods_and_tax_cny: Decimal | None = None
+    included_components: list[str] = Field(default_factory=list)
+    missing_components: list[str] = Field(default_factory=list)
+    china_delivery_confirmed: bool = False
     waiver_applied: bool = False
     assumptions: list[str] = Field(default_factory=list)
     evidence: list[CostEvidence] = Field(default_factory=list)
