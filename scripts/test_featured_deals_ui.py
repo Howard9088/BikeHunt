@@ -86,9 +86,9 @@ def main():
                 context.route('**/*',intercept)
                 page=context.new_page();page.on('pageerror',lambda error:errors.append(str(error)))
                 page.goto(base,wait_until='networkidle')
-                expect(page.locator('.card')).to_have_count(1)
+                expect(page.locator('.card')).to_have_count(2)
                 expect(page.locator('#browseLabel')).to_have_text('精选好价')
-                deal=page.locator('.card')
+                deal=page.locator('.card.has-deal')
                 for text in ['商家原价','120.00','90.00','630.00','−25%','L / Black','未取得折扣结束时间']:
                     expect(deal).to_contain_text(text)
                 expect(deal).not_to_contain_text('350.00');expect(deal).not_to_contain_text('限时')
@@ -112,7 +112,7 @@ def main():
                 page.locator('#q').fill('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#browseLabel')).to_have_text('测试品牌')
                 page.locator('#clear').click();page.locator('[data-tab=teams]').click();page.locator('[data-source=team]').click();page.locator('#sourceProducts').click()
                 expect(page.locator('#browseLabel')).to_have_text('测试车队');expect(page.locator('.card')).to_have_count(2);expect(page.locator('.discount')).to_have_count(0)
-                page.locator('[data-tab=products]').click();expect(page.locator('.card')).to_have_count(1)
+                page.locator('[data-tab=products]').click();expect(page.locator('.card')).to_have_count(2)
                 page.evaluate("for(const card of items)card.fetched_at='2000-01-01T00:00:00Z';expireLocalInventory()")
                 expect(page.locator('.card')).to_have_count(0)
                 expect(page.locator('#count')).to_have_text('0 件商品')
@@ -141,28 +141,27 @@ def main():
                 # narrow model samples, stale labels and exact-spec detail routing.
                 page.evaluate("""() => {
                   const base=items.find(p=>p.name==='Sale Jersey');
-                  items=[100,200,300].map((price,i)=>({...base,product_id:'helmet-'+i,name:'Helmet '+i,name_zh:'头盔 '+i,brand:'Helmet Brand '+i,category:'helmets',category_group:'helmets',gender:'unisex',reference_cny:String(price),reference_price:{amount:String(price/7),currency:'USD'},reference_original_price:null,reference_url:'https://merchant.invalid/helmet-'+i,reference_stock:'unknown',stock_state:'unknown',reference_price_valid_until:null,reference_variant_id:'helmet-variant-'+i}));
+                  items=[100,200,300].map((price,i)=>({...base,product_id:'helmet-'+i,name:'Helmet '+i,name_zh:'头盔 '+i,brand:'Helmet Brand '+i,category:'helmets',category_group:'helmets',gender:'unisex',reference_cny:String(price),reference_price:{amount:String(price/7),currency:'USD'},reference_original_price:null,reference_url:'https://merchant.invalid/helmet-'+i,reference_stock:'in_stock',stock_state:'in_stock',reference_collection_state:'current',fetched_at:new Date().toISOString(),reference_price_valid_until:null,reference_variant_id:'helmet-variant-'+i}));
                   render();window.__openedRecommendation=null;openProduct=(id,variant)=>{window.__openedRecommendation={id,variant}};
                 }""")
-                expect(page.locator('.card')).to_have_count(1)
-                expect(page.locator('.low-price-label')).to_have_text('低价推荐')
+                expect(page.locator('.card')).to_have_count(2)
+                expect(page.locator('.low-price-label')).to_have_count(2)
                 expect(page.locator('.discount')).to_have_count(0)
-                expect(page.locator('#count')).to_have_text('0 件已核实折扣 · 1 件低价推荐')
-                expect(page.locator('.card')).to_contain_text('参考规格')
-                expect(page.locator('.card')).not_to_contain_text('折扣规格')
-                expect(page.locator('.card')).not_to_contain_text('商家原价')
-                expect(page.locator('.card')).to_contain_text('历史价格与库存待重新核实')
-                expect(page.locator('.low-price-basis summary')).to_contain_text('3 款中第 1 低')
+                expect(page.locator('#count')).to_have_text('2 件渠道精选 · 0 件有折扣')
+                first=page.locator('.card').first
+                expect(first).to_contain_text('参考规格')
+                expect(first).not_to_contain_text('商家原价')
+                expect(first).to_contain_text('不是同类比价或全网最低价')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-                cta=page.locator('.compare-button').bounding_box()
+                cta=first.locator('.compare-button').bounding_box()
                 assert cta and cta['y']+cta['height']<=viewport['height'],cta
-                page.locator('.low-price-basis summary').click()
-                expect(page.locator('.low-price-basis')).to_contain_text('不同商家／市场')
-                page.locator('.low-price-basis summary').click()
-                page.locator('.compare-button').click()
+                first.locator('.compare-button').click()
                 assert page.evaluate('window.__openedRecommendation')=={'id':'helmet-0','variant':'helmet-variant-0'}
-                page.screenshot(path=str(OUT/f'low_price_{mode}.png'))
-                checks.append(mode+': separate low-price count and badge, model comparison basis, no invented original/discount, stale disclosure, mobile CTA and exact-variant internal opening')
+                page.screenshot(path=str(OUT/f'channel_selection_{mode}.png'))
+                page.evaluate("items[0].reference_stock='out_of_stock';render()")
+                expect(page.locator('.card')).to_have_count(2)
+                expect(page.locator('[data-id=helmet-0]')).to_have_count(0)
+                checks.append(mode+': 2 lower-priced in-stock items per channel; no invented discount; exact variant; sold-out replacement')
                 context.close()
             browser.close()
     finally:

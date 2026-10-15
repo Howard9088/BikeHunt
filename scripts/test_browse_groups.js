@@ -17,6 +17,7 @@ function harness(){
  vm.runInContext(section(flows,'function saveBrowseState(','function navigate('),c);
  vm.runInContext(section(flows,'function chooseCategory(','function renderDirectory('),c);
  vm.runInContext(section(flows,'const ROAD_REFERENCE_SCOPES=','// Merchant-language guide:'),c);
+ c.channelSelections=products=>products.filter(p=>p.featured===true); // selection is tested separately; exercise scope here
  return {c,elem,groupButtons,leafButtons,productButton,eventHandlers,genderButtons};
 }
 function mountDetail(c,elem,row){c.openRoadReferenceDetail(row.id);elem('roadReferenceDetail').dataset.roadDetail=row.id;elem('roadReferenceDetail').contains=()=>true}

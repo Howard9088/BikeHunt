@@ -72,7 +72,29 @@ function lowPriceRecommendations(products,now=Date.now()){
     }
   }return result;
 }
-function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(!featuredBrowse()||includeUnverified)return scoped;const low=lowPriceRecommendations(scoped);return brandRoundRobin(scoped.filter(p=>featuredDeal(p)||low.has(p.product_id)))}
+function channelOfferEligible(card,now=Date.now()){
+  const price=card.reference_price,until=card.reference_price_valid_until;
+  return publicProductVisible(card)&&card.stock_state==='in_stock'&&card.reference_stock==='in_stock'&&card.reference_collection_state==='current'&&card.reference_data_kind==='live_snapshot'&&inventoryVerified(card,now)&&
+    typeof card.reference_offer_id==='string'&&!!card.reference_offer_id&&typeof card.reference_variant_id==='string'&&!!card.reference_variant_id&&
+    !!card.reference_source&&safeUrl(card.reference_url).startsWith('https://')&&!!price&&/^[A-Z]{3}$/.test(price.currency)&&Number.isFinite(Number(price.amount))&&Number(price.amount)>0&&
+    card.reference_cny!=null&&card.reference_cny!==''&&Number.isFinite(Number(card.reference_cny))&&Number(card.reference_cny)>0&&
+    (!until||/^\d{4}-\d{2}-\d{2}$/.test(until)&&Number.isFinite(Date.parse(until))&&new Date(until).toISOString().slice(0,10)===until&&until>=new Date(now).toISOString().slice(0,10));
+}
+function channelSelections(products,now=Date.now()){
+  const channels=new Map();
+  for(const p of products){if(!channelOfferEligible(p,now))continue;
+    // Bind the channel to the actual displayed offer, never every source that
+    // happens to sell the product. Preserve regional merchant names.
+    const key=p.reference_source+'|'+new URL(p.reference_url).origin;
+    if(!channels.has(key))channels.set(key,[]);channels.get(key).push(p);
+  }
+  const groups=[...channels.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+  for(const [,pool] of groups){pool.sort((a,b)=>Number(a.reference_cny)-Number(b.reference_cny)||a.product_id.localeCompare(b.product_id));
+    const models=new Set();const selected=pool.filter(p=>{const model=(p.brand+'|'+p.name.split(/\s+-\s+/)[0]).toLowerCase();if(models.has(model))return false;models.add(model);return true}).slice(0,2);pool.splice(0,pool.length,...selected);
+  }
+  const result=[];for(let round=0;round<2;round++)for(const [,pool] of groups)if(pool[round])result.push(pool[round]);return result;
+}
+function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(!featuredBrowse()||includeUnverified)return scoped;return channelSelections(scoped)}
 function lowPriceMarkup(card,basis){
   if(!basis)return '';
   const verified=card.reference_stock==='in_stock'&&card.reference_collection_state==='current'&&inventoryVerified(card);
@@ -83,37 +105,37 @@ function render(preserveId=null){
   if(typeof resetReferenceFeed==='function')resetReferenceFeed();
   if(typeof updateBrowseLabel==='function'&&activeTab==='products')updateBrowseLabel();
   if(typeof syncBrowseControls==='function')syncBrowseControls();
-  const list=visibleItems(),lowPrices=featuredBrowse()?lowPriceRecommendations(scopedCatalogItems()):new Map();
-  const verifiedCount=list.filter(p=>featuredDeal(p)).length,lowCount=list.filter(p=>!featuredDeal(p)&&lowPrices.has(p.product_id)).length;
-  document.getElementById('count').textContent=featuredBrowse()&&list.length?verifiedCount+' 件已核实折扣 · '+lowCount+' 件低价推荐':list.length+' 件商品';
+  const list=visibleItems(),lowPrices=new Map();
+  const verifiedCount=list.filter(p=>featuredDeal(p)).length,lowCount=list.length-verifiedCount;
+  document.getElementById('count').textContent=featuredBrowse()&&list.length?list.length+' 件渠道精选 · '+verifiedCount+' 件有折扣':list.length+' 件商品';
   document.getElementById('sourceCount').textContent=sourceCount+' 个已采集报价源';
   if(!list.length&&typeof renderEmptyReferences==='function'&&renderEmptyReferences()){updatePosition(0,0);return}
-  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无符合条件的已核实折扣</strong>精选包含最近一小时内已核实的真实折扣，以及本站同类型商品的低价参考；样本不足时不推荐。<br>可搜索商品，或前往品牌官网、世巡车队浏览完整目录。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
+  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款商品价较低的现货，折扣另行标注；暂未核实的商品可在渠道目录查看。<br>可搜索商品，或前往品牌官网、世巡车队浏览完整目录。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
   gallery.innerHTML=list.map((p,i)=>{
-    const deal=featuredDeal(p),low=!deal?lowPrices.get(p.product_id):null;
+    const deal=featuredDeal(p),low=!deal?lowPrices.get(p.product_id):null,channel=featuredBrowse()&&!deal;
     const stockVerified=p.stock_state==='in_stock'&&inventoryVerified(p)&&p.reference_collection_state!=='retained';
     const isVerified=stockVerified&&p.recommended_total_cny!=null;
     const expired=['库存核实已过期','库存待核实'].includes(p.status)||p.stock_state==='in_stock'&&!stockVerified;
     const sold=p.stock_state==='out_of_stock';
-    return '<article class="card'+(deal?' has-deal':low?' has-low-price':'')+'" data-id="'+e(p.product_id)+'" aria-label="商品 '+(i+1)+'：'+e(p.name)+'"><div class="card-inner">'+
+    return '<article class="card'+(deal?' has-deal':low||channel?' has-low-price':'')+'" data-id="'+e(p.product_id)+'" aria-label="商品 '+(i+1)+'：'+e(p.name)+'"><div class="card-inner">'+
       '<div class="product-visual">'+imageMarkup(p.image,p.name,i)+
-      (deal?'<span class="discount">'+e(discountLabel(p))+'</span>':low?'<span class="low-price-label">低价推荐</span>':'')+
+      (deal?'<span class="discount">'+e(discountLabel(p))+'</span>':low||channel?'<span class="low-price-label">渠道精选</span>':'')+
       '<span class="slide-index">'+String(i+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0')+'</span></div>'+
       '<div class="product-info"><div class="brand">'+e(p.brand)+'</div><h2>'+e(p.name_zh||p.name)+'</h2><div class="original-name">'+e(p.name)+'</div>'+
-      '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?e(catalogSizeLabel(p,true)):low?e('参考规格 '+[compactVariantLabel(p.reference_size),p.reference_color].filter(Boolean).join(' / ')):stockVerified&&p.available_sizes?.length?e(catalogSizeLabel(p,false)):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
+      '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?e(catalogSizeLabel(p,true)):low||channel?e('参考规格 '+[compactVariantLabel(p.reference_size),p.reference_color].filter(Boolean).join(' / ')):stockVerified&&p.available_sizes?.length?e(catalogSizeLabel(p,false)):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
       (sold?'<span class="sold">所示报价已售罄</span>':'')+'</div>'+
-      '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':low?'低价参考 · 所示规格商品价，不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
-      '<div class="best-price">'+e(cny(p.reference_cny))+(deal||low?'':'<small> 起</small>')+'</div>'+
+      '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':low||channel?'所示规格商品价 · 不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
+      '<div class="best-price">'+e(cny(p.reference_cny))+(deal||low||channel?'':'<small> 起</small>')+'</div>'+
       '<div class="foreign-price">'+(deal?'<span class="original-price">商家原价 <s>'+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</s></span> · 现价 ':'')+e(money(p.reference_price.amount,p.reference_price.currency))+' · '+e(p.reference_source)+'</div>'+
-      (deal?'<div class="deal-spec">未取得折扣结束时间</div>':lowPriceMarkup(p,low))+'</div>'+ 
+      (deal?'<div class="deal-spec">未取得折扣结束时间</div>':channel?'<div class="deal-spec">从该渠道已采集现货中按商品价选择；不是同类比价或全网最低价。</div>':lowPriceMarkup(p,low))+'</div>'+ 
       '<button class="compare-button" type="button">选规格，比较 '+p.source_count+' 个渠道 <span aria-hidden="true">→</span></button>'+
       '<div class="data-time">'+(p.fetched_at?'采集 '+e(timeText(p.fetched_at)):e(timeText(null)))+' · 原币价与人民币参考价</div>'+
       '</div></div></article>';
   }).join('');
   const cards=[...gallery.querySelectorAll('.card')];
   cards.forEach(card=>{
-    card.querySelector('.compare-button').onclick=()=>openProduct(card.dataset.id,lowPrices.has(card.dataset.id)?list.find(p=>p.product_id===card.dataset.id)?.reference_variant_id:null);
-    card.querySelector('.image-button').onclick=()=>openProduct(card.dataset.id,lowPrices.has(card.dataset.id)?list.find(p=>p.product_id===card.dataset.id)?.reference_variant_id:null);
+    card.querySelector('.compare-button').onclick=()=>openProduct(card.dataset.id,featuredBrowse()?list.find(p=>p.product_id===card.dataset.id)?.reference_variant_id:null);
+    card.querySelector('.image-button').onclick=()=>openProduct(card.dataset.id,featuredBrowse()?list.find(p=>p.product_id===card.dataset.id)?.reference_variant_id:null);
     const img=card.querySelector('img');img.onerror=()=>img.closest('.product-visual').classList.add('image-missing');
   });
   currentIndex=0;gallery.scrollTop=0;updatePosition(0,cards.length);
