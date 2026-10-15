@@ -181,7 +181,7 @@ function referenceOffersMarkup(detail){
   const quotes=detail.offers.filter(referenceAvailable);
   for(const quote of quotes){quote.reference_product_id=detail.product_id;quote.reference_variant_id=detail.variant_id;}
   if(!quotes.length)return '';
-  return '<div class="reference-offers"><h4>查看官网商品页</h4><p class="spec-note">历史报价仅供参考，库存待核实。官网链接不代表所示尺码可购买，请在商家页面重新选择并核对尺码、颜色、价格和库存。</p>'+quotes.map(q=>'<div class="reference-channel"><span>'+e(q.offer.source_name)+'</span>'+referenceLinkMarkup(q)+'</div>').join('')+'</div>';
+  return '<div class="reference-offers"><h4>查看官网商品页</h4><p class="spec-note">历史报价仅供参考，库存待核实。官网链接不代表所示尺码可购买，请在商家页面重新选择并核对尺码、颜色、价格和库存。</p>'+quotes.map(q=>'<div class="reference-channel"><span>'+e(q.offer.source_name)+'</span>'+(typeof registrationHelpMarkup==='function'?registrationHelpMarkup(q.offer.source_code,q.offer.sales_region):'')+referenceLinkMarkup(q)+'</div>').join('')+'</div>';
 }
 function offerMarkup(compared){
   const o=compared.offer;
@@ -195,6 +195,7 @@ function offerMarkup(compared){
     (o.accepted_card_networks?.length?'<div class="offer-note">中国发行、具备境外支付功能的对应卡种可按此条件使用，招商银行等发卡行均按卡种核对。付款结果以银行授权为准。</div>':'')+
     (compared.reasons.length?'<div class="offer-note">'+compared.reasons.map(e).join(' · ')+'</div>':'')+
     '<div class="source-time">'+(o.fetched_at?'采集 '+e(timeText(o.fetched_at)):e(timeText(null)))+'</div>'+
+    (typeof registrationHelpMarkup==='function'?registrationHelpMarkup(o.source_code,o.sales_region):'')+
     '<button class="go guide-start" type="button" data-offer="'+e(o.offer_id)+'" '+(!offerAvailable(compared)?'disabled':'')+'>按中文步骤海淘 <span>→</span></button>'+
     (!available?referenceLinkMarkup(compared):'')+
     '<details><summary>来源与核实依据</summary><p>'+e(o.identity_evidence)+'</p>'+

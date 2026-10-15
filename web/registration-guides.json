@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "revision": "registration-20261015-v1",
+  "entries": [
+    {
+      "sourceCode": "visma",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "Visma 英文公开账户页；国家未选择，未显示币种",
+      "revision": "visma-public-account-20261015-v1",
+      "status": "verified",
+      "frames": [
+        {
+          "id": "visma-login-register-entry",
+          "asset": "assets/registration/visma-login-register-entry-20261015.jpg",
+          "sourceUrl": "https://www.teamvismaleaseabike.com/login/",
+          "verifiedAt": "2026-10-15",
+          "viewport": {
+            "width": 1170,
+            "height": 751
+          },
+          "caption": "1. 先分清已有账户登录与新用户注册",
+          "alt": "Visma 英文公开登录页：左侧是邮箱、密码和 Login；右侧黄色区域有 Register 注册入口。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "Register＝注册入口",
+              "description": "新用户在右侧黄色 Become a member 区域找到 Register。点开的是注册表单；本图未执行注册。",
+              "x": 63.1,
+              "y": 43.4,
+              "width": 11.7,
+              "height": 5.4
+            },
+            {
+              "label": "已有账户的登录字段",
+              "description": "左侧 E-mail address 是邮箱，Password 是密码。已有账户才在此填写自己的资料。",
+              "x": 6.3,
+              "y": 28.9,
+              "width": 48.5,
+              "height": 19.5
+            },
+            {
+              "label": "Login＝登录",
+              "description": "这是已有账户的登录按钮；下方 Forgot password? 是忘记密码入口。",
+              "x": 6.4,
+              "y": 54.6,
+              "width": 9.4,
+              "height": 5.3
+            }
+          ]
+        },
+        {
+          "id": "visma-register-fields",
+          "asset": "assets/registration/visma-register-fields-20261015.jpg",
+          "sourceUrl": "https://www.teamvismaleaseabike.com/register/",
+          "verifiedAt": "2026-10-15",
+          "viewport": {
+            "width": 1170,
+            "height": 751
+          },
+          "caption": "2. 注册表单：对照姓名、邮箱、密码和国家字段",
+          "alt": "Visma 公开注册表单空白截图，显示 First name、Last name、E-mail address、Password、Confirm password 和 Country。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "First name＝名字",
+              "description": "按自己的名字填写；不要把姓氏填在这一栏。",
+              "x": 44.4,
+              "y": 34.5,
+              "width": 23.1,
+              "height": 8.7
+            },
+            {
+              "label": "Last name＝姓氏",
+              "description": "按自己的姓氏填写。",
+              "x": 69.6,
+              "y": 34.5,
+              "width": 23.2,
+              "height": 8.7
+            },
+            {
+              "label": "E-mail address＝邮箱",
+              "description": "填写自己能接收邮件的邮箱；后续验证方式以商家实际页面为准。",
+              "x": 44.4,
+              "y": 45.2,
+              "width": 48.4,
+              "height": 8.9
+            },
+            {
+              "label": "Password＝密码",
+              "description": "在商家原站自行设置密码，不要向 BikeHunt 提供。",
+              "x": 44.4,
+              "y": 56.1,
+              "width": 48.4,
+              "height": 8.7
+            },
+            {
+              "label": "Confirm password＝确认密码",
+              "description": "再次输入同一个密码，具体要求以原站提示为准。",
+              "x": 44.4,
+              "y": 66.9,
+              "width": 48.4,
+              "height": 8.8
+            },
+            {
+              "label": "Country＝国家",
+              "description": "截图中未选择国家。此字段不等于已经验证该国家配送或结账。",
+              "x": 44.4,
+              "y": 77.8,
+              "width": 48.4,
+              "height": 8.7
+            }
+          ]
+        },
+        {
+          "id": "visma-register-bottom",
+          "asset": "assets/registration/visma-register-bottom-20261015.jpg",
+          "sourceUrl": "https://www.teamvismaleaseabike.com/register/",
+          "verifiedAt": "2026-10-15",
+          "viewport": {
+            "width": 1170,
+            "height": 751
+          },
+          "caption": "3. 分别阅读条款与订阅选项，再自行决定是否创建账户",
+          "alt": "Visma 注册表单底部空白截图：条款同意、车队邮件订阅、合作方推广为三个独立选项，下方是 Create account。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "terms and conditions＝条款",
+              "description": "先打开并阅读条款，再自行决定是否同意。截图中的复选框未勾选。",
+              "x": 44.4,
+              "y": 39.1,
+              "width": 48.4,
+              "height": 4.4
+            },
+            {
+              "label": "newsletter＝车队邮件订阅",
+              "description": "这是独立的车队邮件订阅选项，请自行判断是否需要。",
+              "x": 44.4,
+              "y": 45.4,
+              "width": 48.4,
+              "height": 4.2
+            },
+            {
+              "label": "promotions from partners＝合作方推广",
+              "description": "这是另一项营销订阅，涉及合作方或第三方推广，应与上一项分别判断。",
+              "x": 44.4,
+              "y": 51.7,
+              "width": 48.4,
+              "height": 5.0
+            },
+            {
+              "label": "Create account＝创建账户",
+              "description": "确认全部字段和选项后，由你自行决定是否提交。BikeHunt 未提交表单，也未验证注册成功。",
+              "x": 44.4,
+              "y": 62.3,
+              "width": 16.3,
+              "height": 5.2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "amazon_us",
+      "scope": "market",
+      "salesRegion": "美国站",
+      "marketLabel": "Amazon 美国站",
+      "revision": "amazon_us-20261015-pending",
+      "status": "unverified",
+      "checkedAt": "2026-10-15",
+      "reviewReason": "本次云端未能打开页面，尚无可用注册截图。",
+      "frames": []
+    },
+    {
+      "sourceCode": "amazon_uk",
+      "scope": "market",
+      "salesRegion": "英国站",
+      "marketLabel": "Amazon 英国站",
+      "revision": "amazon_uk-20261015-pending",
+      "status": "unverified",
+      "checkedAt": "2026-10-15",
+      "reviewReason": "本次云端未能打开页面，尚无可用注册截图。",
+      "frames": []
+    },
+    {
+      "sourceCode": "amazon_de",
+      "scope": "market",
+      "salesRegion": "德国站",
+      "marketLabel": "Amazon 德国站",
+      "revision": "amazon_de-20261015-pending",
+      "status": "unverified",
+      "checkedAt": "2026-10-15",
+      "reviewReason": "本次云端未能打开页面，尚无可用注册截图。",
+      "frames": []
+    },
+    {
+      "sourceCode": "amazon_jp",
+      "scope": "market",
+      "salesRegion": "日本站",
+      "marketLabel": "Amazon 日本站",
+      "revision": "amazon_jp-20261015-pending",
+      "status": "unverified",
+      "checkedAt": "2026-10-15",
+      "reviewReason": "本次云端未能打开页面，尚无可用注册截图。",
+      "frames": []
+    },
+    {
+      "sourceCode": "decathlon",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 报价；未验证其他市场库存",
+      "marketLabel": "Decathlon CMA CGM 车队商城",
+      "revision": "decathlon-team-20261015-pending",
+      "status": "unverified",
+      "checkedAt": "2026-10-15",
+      "reviewReason": "车队商城账户页尚待核实；未将迪卡侬零售商店的同名账户视为车队商城账户。",
+      "frames": []
+    }
+  ]
+}

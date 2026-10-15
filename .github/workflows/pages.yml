@@ -65,6 +65,10 @@ jobs:
         run: node scripts/test_featured_deals.js
       - name: Validate read-only merchant language guides
         run: node scripts/test_merchant_guides.js
+      - name: Validate real registration screenshot scope and trusted assets
+        run: |
+          node scripts/test_registration_guides.js
+          python scripts/verify_registration_guides.py
       - name: Install Chromium for changed-code browser regression
         if: github.event_name == 'push'
         timeout-minutes: 5
@@ -89,6 +93,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_merchant_guides_ui.py
+      - name: Validate real registration screenshots on desktop and mobile
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_registration_guides_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
       - name: Check policy changes once daily

@@ -133,7 +133,8 @@ def main():
                     expect(guide).to_contain_text('2026-10-15')
                     expect(guide).to_contain_text('未实测注册或结账成功')
                     expect(guide).to_contain_text(special_text)
-                    expect(guide.locator('form,input,select,textarea,iframe,img,[data-purchase-link],[data-reference-link]')).to_have_count(0)
+                    expect(guide.locator('form,input,select,textarea,iframe,[data-purchase-link],[data-reference-link]')).to_have_count(0)
+                    expect(guide.locator('img:not([data-registration-image])')).to_have_count(0)
                     expect(guide.locator('.merchant-guide-step')).to_have_count(6)
                     assert external_reads == [], 'Opening a local guide must not contact help or account websites'
                     translation = guide.locator('.merchant-translation')

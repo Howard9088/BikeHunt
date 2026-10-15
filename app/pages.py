@@ -19,11 +19,14 @@ from app.policies import PolicyRepository
 from app.publication import build_publication
 from app.updates import UpdateStore
 from app.update_views import enrich_events
+from app.registration_guides import read_registration_guides, registration_assets, publish_registration_guides
 
 
 def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     """将已核实快照与交互网页导出到固定的 root/_site，返回发布元数据。"""
     root = root.resolve()
+    registration = read_registration_guides(root)
+    registration_assets(root, registration)
     output = (root/"_site").resolve()
     if output.parent != root or output.name != "_site":
         raise ValueError("Public output must stay in the dedicated workspace _site directory")
@@ -32,7 +35,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     output.mkdir()
     web = root/"web"
     (output/"web").mkdir()
-    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css"):
+    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js"):
         shutil.copy2(web/name, output/"web"/name)
     if (web/"icons").is_dir():
         shutil.copytree(web/"icons", output/"web/icons")
@@ -42,7 +45,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
                           '<script src="./web/pages-adapter.js?v=BIKEHUNT_RELEASE_COMMIT" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
     # Tie every copied interactive asset to this exact deployed release.
     # Keep source HTML and pending icon work untouched.
-    index = re.sub(r'(\./web/(?:gallery|flows)\.css|\./web/(?:profile|gallery|flows|pages-adapter)\.js)(?:\?[^" ]*)?',
+    index = re.sub(r'(\./web/(?:gallery|flows)\.css|\./web/(?:profile|gallery|flows|pages-adapter|registration-guides)\.js)(?:\?[^" ]*)?',
                    r'\1?v=BIKEHUNT_RELEASE_COMMIT', index)
     index = index.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
@@ -103,6 +106,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
         target = output/url.lstrip("/")
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
+    publish_registration_guides(root, output, registration)
     payload = {"generated_at":datetime.now(timezone.utc).isoformat(), "mode":"published_snapshot",
                "publication":{"commit":os.environ.get("GITHUB_SHA"), "run_id":os.environ.get("GITHUB_RUN_ID"), "trigger":os.environ.get("GITHUB_EVENT_NAME")},
                "collection_status":{p.stem:json.loads(p.read_text(encoding="utf-8")) for p in (root/"data/collection_status").glob("*.json")},
