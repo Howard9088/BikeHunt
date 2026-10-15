@@ -37,7 +37,7 @@ def fixture():
         return Offer(**values)
     sale = offer('sale')
     offers = [sale, offer('cheaper', price='50', original=None, identity=sale.identity.model_copy(update={'size':'M'})),
-              offer('hoodie', name='Stamp Hoodie', price='89', original=None),
+              offer('hoodie', name='Stamp Hoodie', price='99', original=None),
               offer('stale', name='Stale Jersey', source='team', fetched_at=now-timedelta(hours=2)),
               offer('retained', name='Retained Jersey', source='team', collection_state='retained'),
               offer('sold', name='Sold Jersey', source='team', stock='out_of_stock')]
