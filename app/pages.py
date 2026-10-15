@@ -15,6 +15,8 @@ from app.community import Community
 from app.discovery import directories
 from app.fx import FxProvider
 from app.localization import CATEGORIES
+from app.browse_taxonomy import CATEGORY_GROUPS
+from app.road_equipment import BROWSE_CATEGORIES, read_road_references
 from app.policies import PolicyRepository
 from app.publication import build_publication
 from app.updates import UpdateStore
@@ -66,7 +68,8 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     snapshot = fx or FxProvider(root/"data/fx_latest.json").get()
     store = ComparisonCatalog(offers, snapshot)
     catalog = {"items":[row.model_dump(mode="json") for row in store.search()],
-               "categories":CATEGORIES, "fx":snapshot.model_dump(mode="json"),
+               "categories":BROWSE_CATEGORIES, "category_groups":CATEGORY_GROUPS,
+               "road_equipment_references":read_road_references(root), "fx":snapshot.model_dump(mode="json"),
                "offer_count":len(offers), "source_count":len({row.source_code for row in offers})}
     details = {}
     for card in catalog["items"]:

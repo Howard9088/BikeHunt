@@ -9,6 +9,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from app.catalog.models import (
     ColorChoice, ComparedOffer, FxSnapshot, Money, Offer, ProductCard, ProductComparison, VariantChoice,
 )
+from app.browse_taxonomy import browse_classification
 from app.localization import category_of, title_zh
 from app.fit import garment_gender
 from app.landed import convert_money, estimate_landed_cost
@@ -206,19 +207,25 @@ class ComparisonCatalog:
                              in_stock=any(self.available(x) for v in group for x in v))
                   for pid,group in self.families.items()
                   if self.color_group(group[0][0]) == self.color_group(primary)]
+        classification = browse_classification(product_id,
+            (offer for variant in variants for offer in variant), name=primary.name)
         return ProductComparison(product_id=product_id, variant_id=variant_id,
                                  identity=primary.identity, name=primary.name, image=primary.image,
-                                 name_zh=title_zh(primary.name), category=category_of(primary.name),
+                                 name_zh=title_zh(primary.name), category=classification.category,
+                                 category_group=classification.category_group,
                                  variants=choices, colors=colors, offers=compared,
                                  recommended_offer_id=recommended, fx=self.fx)
 
-    def search(self, query: str = "", category: str = "all") -> list[ProductCard]:
+    def search(self, query: str = "", category: str = "all",
+               category_group: str | None = None) -> list[ProductCard]:
         """商品是入口；同颜色不同尺码合为一张卡，详情选择具体规格。"""
         cards: list[ProductCard] = []
         terms = normalized(query).split()
         for product_id, variants in self.families.items():
             detail = self.compare(product_id)
-            if category != "all" and category_of(detail.name) != category:
+            if category != "all" and detail.category != category:
+                continue
+            if category_group and detail.category_group != category_group:
                 continue
             text = normalized(" ".join(x.name + " " + title_zh(x.name) + " " + x.identity.brand + " " + (x.identity.mpn or "")
                                        for v in variants for x in v))
@@ -236,6 +243,7 @@ class ComparisonCatalog:
             cards.append(ProductCard(
                 product_id=product_id, name=detail.name, brand=detail.identity.brand,
                 name_zh=detail.name_zh, category=detail.category,
+                category_group=detail.category_group,
                 gender=garment_gender(detail.name, next((x.identity.gender for v in variants for x in v
                                     if x.identity.gender), None), detail.category),
                 color=detail.identity.color, image=detail.image,

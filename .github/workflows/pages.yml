@@ -65,6 +65,8 @@ jobs:
         run: node scripts/test_stock_guards.js
       - name: Validate stable group QR expiry and loading safeguards
         run: node scripts/test_group.js
+      - name: Validate five-group browsing and official research safety
+        run: node scripts/test_browse_groups.js
       - name: Validate scoped browsing and price messages
         run: node scripts/test_catalog_messages.js
       - name: Validate verified featured deals and exact discount quotes
@@ -83,6 +85,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 5
         run: python -m playwright install --with-deps chromium
+      - name: Validate desktop and mobile five-group browsing
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_browse_groups_ui.py
       - name: Validate desktop and mobile purchase reference UI
         if: github.event_name == 'push'
         timeout-minutes: 3

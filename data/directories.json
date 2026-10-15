@@ -159,6 +159,50 @@
       "official_url": "https://www.oakley.com",
       "shop_url": "https://www.oakley.com",
       "status": "registered"
+    },
+    {
+      "code": "trek",
+      "name": "Trek",
+      "name_zh": "Trek 公路车装备",
+      "official_url": "https://www.trekbikes.com/us/en_US/clearance-event/",
+      "shop_url": "https://www.trekbikes.com/us/en_US/clearance-event/",
+      "status": "official_link_found",
+      "shop_evidence_url": "https://www.trekbikes.com/us/en_US/clearance-event/",
+      "road_reference": true,
+      "reference_note": "美国站仅寄美国地址，明确不接受转运地址；不可用海外转运或香港中转绕过。尚无可发布的商品级折扣记录。"
+    },
+    {
+      "code": "specialized",
+      "name": "Specialized",
+      "name_zh": "Specialized 公路车装备",
+      "official_url": "https://www.specialized.com/us/en/shop/sale",
+      "shop_url": "https://www.specialized.com/us/en/shop/sale",
+      "status": "official_link_found",
+      "shop_evidence_url": "https://www.specialized.com/us/en/shop/sale",
+      "road_reference": true,
+      "reference_note": "美国站仅寄美国住宅或美国零售店，不支持直接寄中国；库存、支付和完整费用待核实。"
+    },
+    {
+      "code": "canyon",
+      "name": "Canyon",
+      "name_zh": "Canyon 公路车装备",
+      "official_url": "https://www.canyon.com/en-us/outlet-bikes/",
+      "shop_url": "https://www.canyon.com/en-us/outlet-bikes/",
+      "status": "official_link_found",
+      "shop_evidence_url": "https://www.canyon.com/en-us/outlet-bikes/",
+      "road_reference": true,
+      "reference_note": "美国站报价；中国直邮和转运许可均待核实。美国本土运费不能当作中国运费。Outlet 退货条件有冲突，请逐款确认。"
+    },
+    {
+      "code": "colnago",
+      "name": "Colnago",
+      "name_zh": "Colnago 公路车装备",
+      "official_url": "https://www.colnago.com/en-us/collections/bikes",
+      "shop_url": "https://www.colnago.com/en-us/collections/bikes",
+      "status": "official_link_found",
+      "shop_evidence_url": "https://www.colnago.com/en-us/collections/bikes",
+      "road_reference": true,
+      "reference_note": "未找到已核实的原价／现价折扣对。美国路径页面的地区提示不一致，实际市场与币种仍需核实。"
     }
   ],
   "teams": [

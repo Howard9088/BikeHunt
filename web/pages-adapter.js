@@ -275,7 +275,7 @@ window.fetch=async(input,init={})=>{
   if(!url.pathname.startsWith('/api/'))return publicFetch(input,init);
   try{
     const data=await loadPublished();let result;const path=url.pathname;
-    if(path==='/api/catalog')result={...data.catalog,items:data.catalog.items.filter(p=>(!url.searchParams.get('category')||url.searchParams.get('category')==='all'||p.category===url.searchParams.get('category'))&&(!url.searchParams.get('q')||(p.name+' '+p.name_zh+' '+p.brand).toLowerCase().includes(url.searchParams.get('q').toLowerCase())))};
+    if(path==='/api/catalog')result={...data.catalog,items:data.catalog.items.filter(p=>(!url.searchParams.get('category_group')||p.category_group===url.searchParams.get('category_group'))&&(!url.searchParams.get('category')||url.searchParams.get('category')==='all'||p.category===url.searchParams.get('category'))&&(!url.searchParams.get('q')||(p.name+' '+p.name_zh+' '+p.brand).toLowerCase().includes(url.searchParams.get('q').toLowerCase())))};
     else if(path.startsWith('/api/catalog/')){const family=data.details[decodeURIComponent(path.split('/').at(-1))];if(!family)throw new Error('商品不存在');const variant=url.searchParams.get('variant_id')||family.default;result=family.variants[variant];if(!result)throw new Error('规格不存在');}
     else if(path==='/api/directories')result=data.directories;
     else if(path.startsWith('/api/rules/'))result=data.rules[decodeURIComponent(path.split('/').at(-1))]||{source_code:path.split('/').at(-1),version:0,documents:[]};

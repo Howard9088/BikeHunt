@@ -279,3 +279,11 @@ node scripts/test_pages_freshness.js
 - 原始尺码原文与商品图片不改写。售罄/待核实选项不可选；部分选择没有购买入口。价格、币种、库存或报价身份变化会清除最终选择并要求重新确认。返回详情或商家同页返回会按精确 variant 恢复，并重新核对数据。
 - 离线回归：`node scripts/test_bundle_selection.js`。实数据夹具记录 60 个原始商家规格及其 ID，其中抓取时 50 个有库存；测试冻结在该快照时间，不把旧库存当作今天的现货。
 - 浏览器回归：`python scripts/test_bundle_selection_ui.py`，CI 推送时执行，覆盖桌面、390px、320px、稀疏组合、部分选择、售罄/涨价、回退格式，以及商品→运输路线→注册说明→同页官网与 Back。所有外部请求均被模拟，不操作商家账户或付款。
+
+### 五个装备大类与公路车官网参考
+
+- 顶层按「公路车装备、骑行服、头盔、锁鞋、其他」排列；再次点击当前大类可取消。原细分类保留，筛选与品牌／车队、搜索相交；进入来源时清除细分类，保留明确的大类与搜索。点击「精选好价」明确重置来源、大类、细分类与搜索。
+- 本次逐项复核的 232 个商品为 14 / 150 / 24 / 1 / 43，商品与规格 ID 不变。已复核的鞋套、头盔钥匙扣及特定头盔模型纠正细分类；未知 Fizik 鞋款和 FLAT 款不推定为锁鞋。大类仅用于浏览，不能授予服装尺码或税费估算资格。
+- 公路车装备中的「官网参考」是单独的只读研究区。Trek、Specialized、Canyon、Colnago 四个官网入口使用文字名称；四条价格研究记录保留原页面价格对、研究日期和观察时间限制。库存、可购买规格与中国到手总价均未知，没有折扣倒计时，不进入精选，不登记新采集器或新支付支持。
+- Trek 美国站明确不接受转运地址，香港中转也不能绕过；Trek 与 Specialized 美国站不提供中国直邮。Canyon 中国配送仍待核实，Outlet 退货条件冲突和车架机械变速限制保留。参考页面外链仍经精确域名校验和最后离站确认，在同一标签页打开。
+- 回归：`node scripts/test_browse_groups.js`、`python -m unittest discover -s tests -p 'test_browse_taxonomy.py'`、`python -m unittest discover -s tests -p 'test_road_equipment.py'`。`scripts/test_browse_groups_ui.py` 已接入代码推送 CI，覆盖桌面、390px、320px；本地未启动浏览器时不声称已完成视觉验收。

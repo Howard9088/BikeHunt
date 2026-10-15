@@ -8,7 +8,7 @@ assert.ok(home.includes('id="priceMessages"'));assert.ok(home.includes('id="amaz
 function section(source,start,end){return source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)))}
 function harness(saved=null){
  const storage=new Map(saved?[['bikehuntMessagesReadCursor',saved]]:[]),badge={setAttribute(k,v){this[k]=v}},refs=new Map(),links=[];
- const c=vm.createContext({Date,URL,Number,Map,Set,JSON,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,showExternalExit:()=>{throw Error('Purchase entrances must open local stages before confirmation')},window:{confirm:()=>{throw Error('No native exit prompt')}},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
+ const c=vm.createContext({Date,URL,Number,Map,Set,JSON,activeCategoryGroup:null,activeTab:'products',categories:[{code:'all'},{code:'jerseys'},{code:'bibs'}],categoryGroups:[],roadReferenceData:{brands:[],products:[]},syncBrowseControls(){},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{addEventListener(){},body:{classList:{toggle(){}}},getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,showExternalExit:()=>{throw Error('Purchase entrances must open local stages before confirmation')},window:{confirm:()=>{throw Error('No native exit prompt')}},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
  vm.runInContext(section(gallery,'const e=value','function money('),c);
  vm.runInContext(section(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(section(flows,'const messageEvents=','const directoryPage='),c);
@@ -57,7 +57,7 @@ function testXssAndUrlGuards(){
 function testCategoryScopeAndExplicitGlobalReset(){
  const h=harness(),categoryButtons=['all','jerseys','bibs'].map(category=>({dataset:{category},setAttribute(){}})),productButton={dataset:{tab:'products'}};
  Object.assign(h.c,{activeSource:'bahrain',activeCategory:'all',directoryData:{brands:[],teams:[{code:'bahrain',name_zh:'巴林车队'}]},navigate:()=>{},profileMatches:()=>true,items:[{source_codes:['bahrain'],category:'jerseys',stock_state:'unknown',brand:'Ale',name:'Jersey'},{source_codes:['other'],category:'jerseys',stock_state:'in_stock',brand:'Other',name:'Jersey'}]});
- h.c.document.querySelectorAll=selector=>selector==='[data-category]'?categoryButtons:[productButton];h.badge.value='';
+ h.c.document.querySelectorAll=selector=>selector==='[data-category]'?categoryButtons:selector==='[data-tab]'?[productButton]:[];h.badge.value='';
  vm.runInContext(section(flows,'function chooseCategory(','function renderDirectory('),h.c);
  vm.runInContext(section(gallery,'function featuredBrowse(','function render('),h.c);
  h.c.chooseCategory('jerseys');assert.equal(h.c.activeSource,'bahrain');assert.equal(h.badge.textContent,'巴林车队');assert.equal(h.c.visibleItems().length,1);

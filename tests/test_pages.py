@@ -62,6 +62,22 @@ class PagesTests(unittest.TestCase):
         self.assertEqual((self.root/'_site/web/bundle-variants.js').read_bytes(),
                          (self.root/'web/bundle-variants.js').read_bytes())
 
+    def test_browse_groups_and_reference_evidence_are_published_and_hashed(self):
+        from app.browse_taxonomy import CATEGORY_GROUPS
+        from app.road_equipment import BROWSE_CATEGORIES, read_road_references
+        root = Path(__file__).resolve().parents[1]
+        refs = read_road_references(root)
+        atomic_json(self.root/'data/road_equipment_references.json', refs)
+        build_public_site(self.root, make_fx())
+        data = json.loads((self.root/'_site/data/site-data.json').read_bytes())
+        self.assertEqual(data['catalog']['category_groups'], CATEGORY_GROUPS)
+        self.assertEqual(data['catalog']['categories'], BROWSE_CATEGORIES)
+        self.assertEqual(data['catalog']['road_equipment_references'], refs)
+        self.assertEqual(len(data['catalog']['items']), 1, 'Research is not mixed into live inventory')
+        before = digest(semantic_projection(data))
+        data['catalog']['road_equipment_references']['products'][0]['observation_note'] += ' Updated research context.'
+        self.assertNotEqual(before, digest(semantic_projection(data)))
+
     def test_official_amazon_channel_logo_is_copied_unchanged(self):
         build_public_site(self.root, make_fx())
         asset = 'web/assets/brands/amazon-official.png'

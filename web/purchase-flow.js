@@ -13,7 +13,9 @@ const ROUTE_HELP=Object.freeze([
 function routeOriginal(value){return value&&/^[A-Z]{3}$/.test(value.currency)&&value.amount!==null&&value.amount!==undefined&&value.amount!==''&&typeof value.amount!=='boolean'&&Number.isFinite(Number(value.amount))&&Number(value.amount)>=0?value.currency+' '+Number(value.amount).toFixed(value.currency==='JPY'?0:2):'待确认'}
 function routePolicy(offer){return typeof readinessPolicy==='function'?readinessPolicy(offer):null}
 function routeMerchantMatches(offer,code,hosts){try{return offer.source_code===code&&hosts.includes(new URL(offer.url).hostname)}catch{return false}}
+function routeUsMarketMatches(offer,code,hosts,path){if(!routeMerchantMatches(offer,code,hosts))return false;try{return new URL(offer.url).pathname.startsWith(path)}catch{return false}}
 function routeProhibition(offer){
+  if(routeUsMarketMatches(offer,'trek',['www.trekbikes.com','trekbikes.com'],'/us/en_US/'))return {forwarding:{status:'prohibited',note:'Trek 美国站只寄美国地址，明确禁止转运地址；香港中转也不能绕过。'},sources:['https://www.trekbikes.com/us/en_US/customer_service/']};
   const row=routePolicy(offer);if(row?.forwarding.status==='prohibited')return row;
   // Restrictive fallback only: failure to load optional summaries must never
   // turn a known prohibited merchant route into a selectable plan.
@@ -29,7 +31,7 @@ function routeOptions(quote){
   const component=key=>components.find(item=>item.key===key);
   const amount=(key,fallback)=>{const c=component(key);return c?.status==='included'?'已包含（有依据，无新增费用）':routeOriginal(c?.original||fallback)+(c?.status==='policy_estimate'?'（政策参考，结账核对）':'')};
   const ship=o.shipping_to_china||{};
-  let direct=ship.status==='no'||policy?.directChina.status==='prohibited'||routeMerchantMatches(o,'maap',['maap.cc','www.maap.cc'])?'prohibited':changed?'unknown':policy?.directChina.status==='confirmed'||policy?.directChina.status==='conditional_checkout'||ship.status==='yes'?'conditional':'unknown';
+  let direct=routeUsMarketMatches(o,'trek',['www.trekbikes.com','trekbikes.com'],'/us/en_US/')||routeUsMarketMatches(o,'specialized',['www.specialized.com','specialized.com'],'/us/en/')||ship.status==='no'||policy?.directChina.status==='prohibited'||routeMerchantMatches(o,'maap',['maap.cc','www.maap.cc'])?'prohibited':changed?'unknown':policy?.directChina.status==='confirmed'||policy?.directChina.status==='conditional_checkout'||ship.status==='yes'?'conditional':'unknown';
   // Confirmed is reserved for item/address-scoped evidence with complete fees;
   // catalogue-wide destination lists only support a conditional route.
   const verifiedCosts=['product','shipping','tax','clearance','payment'].every(key=>{const c=component(key);return c&&['quoted','included'].includes(c.status)&&c.cny!==null&&c.cny!==undefined&&Number.isFinite(Number(c.cny))&&Number(c.cny)>=0});

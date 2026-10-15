@@ -73,4 +73,12 @@ if(!process.argv.includes('--fixtures-only')){
  assert.equal(production.entries.length,35,'Release must cover all 35 current channels, including zero-offer directories');
  for(const channel of catalog.channels)assert.ok(production.entries.some(r=>r.source_code===channel.source_code&&(r.scope==='merchant'||channel.sales_regions.includes(r.sales_region))));
 }
+
+// Explicit merchant-wide rejection must not acquire a contradictory China uncertainty suffix.
+assert.equal(c.paymentChinaLabel({status:'not_supported',note:'官网明确不接受此方式。',evidence_class:'insufficient_evidence'}),'官方明确不支持。官网明确不接受此方式。');
+assert.ok(c.paymentChinaLabel({status:'unknown',note:'中国账户适用性未核实。',evidence_class:'insufficient_evidence'}).includes('依据不足'));
+assert.ok(c.paymentChinaLabel({status:'not_supported',note:'官方限制。',evidence_class:'explicitly_unsupported'}).includes('官方明确限制'));
+assert.equal(c.paymentDisplayText('cash_on_delivery'),'货到付款');
+assert.ok(!c.paymentChinaLabel({status:'unknown',note:'requires_eligible_foreign_account'}).includes('requires_'));
+assert.equal(c.paymentDisplayText('记录 observed_market=JP/JPY'),'记录 本次观察为日本站／日元报价');
 console.log('Payment matrix passed: complete method categories, exact merchant/market scope, China issuer independence, honest missing evidence, source-directory coverage, escaped text, and guarded official links.');

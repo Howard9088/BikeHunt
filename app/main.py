@@ -22,6 +22,8 @@ from app.fx import FxProvider
 from app.background import RefreshWorker
 from app.discovery import directories
 from app.localization import CATEGORIES
+from app.browse_taxonomy import CATEGORY_GROUPS
+from app.road_equipment import BROWSE_CATEGORIES, read_road_references
 from app.notifications import PersonalNotifier
 from app.policies import PolicyRepository
 from app.updates import UpdateStore
@@ -98,10 +100,11 @@ def refresh_fx() -> dict:
 
 
 @app.get("/api/catalog")
-def search_catalog(q: str = Query(default="", max_length=200), category: str = "all") -> dict:
+def search_catalog(q: str = Query(default="", max_length=200), category: str = "all", category_group: str | None = None) -> dict:
     store = catalog()
-    return {"items": [x.model_dump(mode="json") for x in store.search(q,category)],
-            "categories":CATEGORIES,
+    return {"items": [x.model_dump(mode="json") for x in store.search(q,category,category_group)],
+            "categories":BROWSE_CATEGORIES, "category_groups":CATEGORY_GROUPS,
+            "road_equipment_references":read_road_references(ROOT),
             "fx": store.fx.model_dump(mode="json"),
             "offer_count": sum(len(v) for family in store.families.values() for v in family),
             "source_count": len({x.source_code for family in store.families.values()

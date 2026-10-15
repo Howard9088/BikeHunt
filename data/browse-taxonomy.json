@@ -1,0 +1,2802 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-15",
+  "snapshot_generated_at": "2026-10-15T06:10:51.416607+00:00",
+  "snapshot_sha256": "74034bf09967fd6ed3fea11bcd077dab6cee3aad87c9e61379a2979e91450fb7",
+  "description": "Reviewed navigation-only partition of 232 existing products. Match stable product ID plus exact source and canonical product URL. This is not evidence for fit, customs, prices, stock, payment, or shipping. Unresolved footwear stays Other until product-specific cleat compatibility is reviewed.",
+  "expected_group_counts": {
+    "road_equipment": 14,
+    "clothing": 150,
+    "helmets": 24,
+    "cleat_shoes": 1,
+    "other": 43
+  },
+  "products": [
+    {
+      "product_id": "99d41b24c2c7906f4b45",
+      "name": "Beanie",
+      "source_codes": [
+        "lotto"
+      ],
+      "source_url": "https://www.lotto-intermarche.be/nl/shop/product/250/beanie",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "fa34412f5f2970841b59",
+      "name": "Women's Mechanism Thermal Jacket",
+      "source_codes": [
+        "pns"
+      ],
+      "source_url": "https://pasnormalstudios.com/eu/products/womens-mechanism-thermal-jacket-black",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "2fbf43c6d1b37a7112d6",
+      "name": "France Bottle",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/France-Bottle/M-RBB26044/?preselectedVariant=M-RBB26044001",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "37dec41d212c7a185cb0",
+      "name": "France T-Shirt",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/France-T-Shirt/M-RBB26045/?preselectedVariant=M-RBB26045001",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "58b01e0b3fcad7942934",
+      "name": "Hybrid 3-in-1 Jacket",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Hybrid-3-in-1-Jacket/M-RBB262022/?preselectedVariant=M-RBB262022002",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "60cfefdab6e76e754185",
+      "name": "Insulated Shirt Jacket",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Insulated-Shirt-Jacket/M-RBB262024/?preselectedVariant=M-RBB262024001",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "70b27f074ae13224b91b",
+      "name": "Italy Backpack",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Italy-Backpack/M-RBB26031/?preselectedVariant=M-RBB26031001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "840fbf9e42aeb784b418",
+      "name": "Italy Drinking Bottle 550ml",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Italy-Drinking-Bottle-550ml/M-RBB264012/?preselectedVariant=M-RBB264012001",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "141c5ad44251a59e4df2",
+      "name": "Italy Seat Bag",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Italy-Seat-Bag/M-RBB26033/?preselectedVariant=M-RBB26033001",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6963e3e39a5b16919d0b",
+      "name": "Italy Weekender",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Italy-Weekender/M-RBB26032/?preselectedVariant=M-RBB26032001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3b181c0d15506ef69b90",
+      "name": "RBH 100% Slendale SL Sunglasses",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-100%25-Slendale-SL-Sunglasses/M-RBB26036/?preselectedVariant=M-RBB26036001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "87d60261708a7cf334e6",
+      "name": "RBH 100% Speedcraft Sunglasses",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-100%25-Speedcraft-Sunglasses/M-RBB26037/?preselectedVariant=M-RBB26037001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7aff67ab81c028a76ed6",
+      "name": "RBH 3-Pack of Socks",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-3-Pack-of-Socks/M-RBB262011/?preselectedVariant=M-RBB262011001",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ef72f0bb0fa85835c964",
+      "name": "RBH Bandana",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-Bandana/M-RBB264022/?preselectedVariant=M-RBB264022001",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e20082fa21622d46a217",
+      "name": "RBH Cycling Microfiber Towel",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-Cycling-Microfiber-Towel/M-RBB264023/?preselectedVariant=M-RBB264023001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "18f085d4eca709d679e4",
+      "name": "RBH Helmet Keyring",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-Helmet-Keyring/M-RBB264017/?preselectedVariant=M-RBB264017001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Souvenir exclusion must precede helmet keyword",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "313a3620df57b465bbc2",
+      "name": "RBH Phone Strap",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-Phone-Strap/M-RBB264021/?preselectedVariant=M-RBB264021001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7d631c3003312be9020f",
+      "name": "RBH Winter Pompom Beanie",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-Winter-Pompom-Beanie/M-RBB264026/?preselectedVariant=M-RBB264026001",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "492fb9364ebdfde4b092",
+      "name": "RBH Winter Scarf",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/RBH-Winter-Scarf/M-RBB264027/?preselectedVariant=M-RBB264027001",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "34d3b3fdeb87a88a12c1",
+      "name": "Red Bull - BORA - hansgrohe Winter Sweater",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Red-Bull---BORA---hansgrohe-Winter-Sweater/M-RBB262017/?preselectedVariant=M-RBB262017002",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6c52db4d32df1affc25b",
+      "name": "Red Bull Glass",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Red-Bull-Glass/M-GEN25053/?preselectedVariant=M-GEN25053001",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "70dcc8a7249f602a7bda",
+      "name": "Spain Bottle",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Spain-Bottle/M-RBB26047/?preselectedVariant=M-RBB26047001",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e201af653b6257aa13cf",
+      "name": "Spain T-Shirt",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Spain-T-Shirt/M-RBB26043/?preselectedVariant=M-RBB26043001",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "711123bc24330291348a",
+      "name": "SPECIALIZED France Race Jersey",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Men/SPECIALIZED-France-Race-Jersey/M-RBB26039/?preselectedVariant=M-RBB26039001",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "05080683d692ad74beee",
+      "name": "Winter Jacket",
+      "source_codes": [
+        "redbull"
+      ],
+      "source_url": "https://www.redbullshop.com/en-jp/p/Winter-Jacket/M-RBB262023/?preselectedVariant=M-RBB262023002",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d813316fac4ea3b1d5d7",
+      "name": "UAE TEAM EMIRATES - XRG 2026 PRIMAPELLE OFFICIAL LONG SLEEVE JERSEY",
+      "source_codes": [
+        "uae"
+      ],
+      "source_url": "https://www.pissei.com/en/man/top/long-sleeve-jerseys/uae-team-emirates-xrg-2026-primapelle-official-long-sleeve-jersey-812975.html",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "87ba1a31a8abfe3e4e54",
+      "name": "UAE TEAM EMIRATES - XRG 2026 OFFICIAL JACKET",
+      "source_codes": [
+        "uae"
+      ],
+      "source_url": "https://www.pissei.com/en/man/top/jackets/uae-team-emirates-xrg-2026-official-jacket-813272.html",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "234d211d8534e0eff2d0",
+      "name": "Helmet EKOI Racing R-AERO LTD Proteam NSN Team",
+      "source_codes": [
+        "nsn"
+      ],
+      "source_url": "https://www.ekoi.com/en-ae/road-bike-helmets/18082-helmet-ekoi-racing-r-aero-ltd-proteam-nsn-team.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7cdf8811f572ee23981a",
+      "name": "UAE TEAM EMIRATES - XRG 2026 PRIMAPELLE OFFICIAL HEAVY JACKET",
+      "source_codes": [
+        "uae"
+      ],
+      "source_url": "https://www.pissei.com/en/man/top/jackets/uae-team-emirates-xrg-2026-primapelle-official-heavy-jacket-812984.html",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d41e42413707135c7de6",
+      "name": "Men's Mechanism Thermal Long Bibs",
+      "source_codes": [
+        "pns"
+      ],
+      "source_url": "https://pasnormalstudios.com/eu/products/mens-mechanism-thermal-long-bibs-black",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "54b22598893dd57833a1",
+      "name": "Stamp Hoodie",
+      "source_codes": [
+        "ef_team_shop"
+      ],
+      "source_url": "https://efprocycling.shop/us/product/stamp-hoodie/",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "47045bd2378a80d77fb9",
+      "name": "Men's Mechanism Thermal Long Sleeve Jersey 2.0",
+      "source_codes": [
+        "pns"
+      ],
+      "source_url": "https://pasnormalstudios.com/eu/products/mens-mechanism-thermal-long-sleeve-jersey-2-0-linen",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e0c57f3aa4d03a5a859b",
+      "name": "Dispatched T-Shirt",
+      "source_codes": [
+        "ef_team_shop"
+      ],
+      "source_url": "https://efprocycling.shop/us/product/dispatched-t-shirt/",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "c7f40fbf6ed79c1bfefb",
+      "name": "Women's Escapism Cargo Bibs",
+      "source_codes": [
+        "pns"
+      ],
+      "source_url": "https://pasnormalstudios.com/eu/products/womens-escapism-cargo-bibs-dark-olive",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "1529bbd706b0364a37a4",
+      "name": "Nirvana",
+      "source_codes": [
+        "kask"
+      ],
+      "source_url": "https://www.kask.com/en-it/Nirvana/CHE00109-CE-WG-465.58.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "b5f8f052fb079a0012e2",
+      "name": "Utopia Y",
+      "source_codes": [
+        "kask"
+      ],
+      "source_url": "https://www.kask.com/en-it/Utopia-Y/CHE00104-CE-WG-496.58.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "8d6a2a1c0d800a100a2b",
+      "name": "Men's Escapism Long Cargo Bibs",
+      "source_codes": [
+        "pns"
+      ],
+      "source_url": "https://pasnormalstudios.com/eu/products/mens-escapism-long-cargo-bibs-dark-olive",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3569c9df5590d494fa7b",
+      "name": "Valegro",
+      "source_codes": [
+        "kask"
+      ],
+      "source_url": "https://www.kask.com/en-it/Valegro/CHE00052-CE-WG-210.58.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4843ab37f9d68f07255b",
+      "name": "Casquette d’été Groupama – FDJ UNITED",
+      "source_codes": [
+        "groupama"
+      ],
+      "source_url": "https://shop.bioracer.com/fr/products/casquette-d-ete-groupama-fdj-united?variant=57091655598405",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "483e3da3eaf15e94adb2",
+      "name": "Chaussettes Techniques Groupama – FDJ UNITED",
+      "source_codes": [
+        "groupama"
+      ],
+      "source_url": "https://shop.bioracer.com/fr/products/chaussettes-techniques-groupama-fdj-united?variant=57091768942917",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "a2ad196751bacfa950ae",
+      "name": "Cuissard Icon Groupama – FDJ UNITED",
+      "source_codes": [
+        "groupama"
+      ],
+      "source_url": "https://shop.bioracer.com/fr/products/cuissard-icon-groupama-fdj-united?variant=57091239706949",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f6ac010590a6d259174d",
+      "name": "Gants d’été Groupama – FDJ UNITED",
+      "source_codes": [
+        "groupama"
+      ],
+      "source_url": "https://shop.bioracer.com/fr/products/gants-d-ete-groupama-fdj-united?variant=57091505619269",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d981e1f4a87855a9773f",
+      "name": "Maillot Icon Groupama – FDJ UNITED",
+      "source_codes": [
+        "groupama"
+      ],
+      "source_url": "https://shop.bioracer.com/fr/products/maillot-icon-groupama-fdj-united?variant=57091156508997",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "b31fa7b82c0096a266ea",
+      "name": "MILLE GTO Jersey S11",
+      "source_codes": [
+        "assos"
+      ],
+      "source_url": "https://www.assos.com/int/mille-gto-jersey-s11-11-20-434-6q.html",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "301605c769e16fc4528d",
+      "name": "Elemento",
+      "source_codes": [
+        "kask"
+      ],
+      "source_url": "https://www.kask.com/en-it/Elemento/CHE00101-CE-WG-492.58.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d5375c50626abdbfb357",
+      "name": "Sintesi",
+      "source_codes": [
+        "kask"
+      ],
+      "source_url": "https://www.kask.com/en-it/Sintesi/CHE00100-CE-WG-408.58.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6e098f6126934bd02bf0",
+      "name": "Mojito³",
+      "source_codes": [
+        "kask"
+      ],
+      "source_url": "https://www.kask.com/en-it/Mojito%C2%B3/CHE00076-CE-WG-201.58.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "85b45e989c3ce148c7cb",
+      "name": "Men's Escapism Jersey",
+      "source_codes": [
+        "pns"
+      ],
+      "source_url": "https://pasnormalstudios.com/eu/products/mens-escapism-jersey-dark-olive",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "99beaceea5ecf1663315",
+      "name": "Protone Icon",
+      "source_codes": [
+        "kask"
+      ],
+      "source_url": "https://www.kask.com/en-it/Protone-Icon/CHE00097-CE-WG-494.58.html",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "68aab32d660c34ced086",
+      "name": "MILLE GT Jersey S11 EVO",
+      "source_codes": [
+        "assos"
+      ],
+      "source_url": "https://www.assos.com/int/mille-gt-jersey-s11-evo-11-20-432-3r.html",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "94b12cc7bc925a007560",
+      "name": "MILLE GT Jersey S11 EVO EF",
+      "source_codes": [
+        "assos"
+      ],
+      "source_url": "https://www.assos.com/int/mille-gt-jersey-s11-evo-ef-11-20-454-99.html",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "cad3d6f80bddac706753",
+      "name": "Equipe RS Collective 13 Jersey S11",
+      "source_codes": [
+        "assos"
+      ],
+      "source_url": "https://www.assos.com/int/equipe-rs-collective-13-jersey-s11-11-20-430-17.html",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6a0fd8ec00db81688626",
+      "name": "EQUIPE R Jersey S11 OGAT",
+      "source_codes": [
+        "assos"
+      ],
+      "source_url": "https://www.assos.com/int/equipe-r-jersey-s11-ogat-33-26-368-99.html",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f8d66a48e5bad4f7f98f",
+      "name": "EQUIPE R Jersey S11 OGAT - NIMBO EDITION",
+      "source_codes": [
+        "assos"
+      ],
+      "source_url": "https://www.assos.com/int/equipe-r-jersey-s11-ogat-nimbo-edition-11-20-500-18.html",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "fbcd7e822c01ccade976",
+      "name": "CASTELLI INSIDER TOWEL",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/castelli-insider-towel-4522530?variant=60043742282112",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ecec9e51f04136c0a1f5",
+      "name": "ESPRESSO GT GLOVE",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/espresso-gt-glove-4520532?variant=60044037030272",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "512ca59afa77f9b0cec4",
+      "name": "GEAR BACKPACK",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/gear-backpack-8900103?variant=60070987170176",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "053f6b5bf6a784f31f79",
+      "name": "GEAR DUFFLE BAG 2",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/gear-duffle-bag-2-8900110?variant=60070979699072",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "296dc129bffd9746708d",
+      "name": "MID WEIGHT 2 LS JERSEY",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/mid-weight-2-ls-jersey-4236346?variant=60070989529472",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5225994aef47fc8b41e7",
+      "name": "ROLLING TRAVEL BAG",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/rolling-travel-bag-8900100?variant=60070985859456",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f49583aa2defe25f1b72",
+      "name": "TROPPO SHOECOVER",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/troppo-shoecover-4515571?variant=60070985662848",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Wearable shoe cover, not cleat-compatible shoe",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "8257208240d7752984ca",
+      "name": "TUTTO NANO GLOVE",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/tutto-nano-glove-4520534?variant=60044042862976",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7893b60ae80018ffe2ef",
+      "name": "UNLIMITED W JERSEY",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/unlimited-w-jersey-4520076?variant=60070984384896",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "dc8667a44ac0ff4c99ac",
+      "name": "VISO FACE MASK",
+      "source_codes": [
+        "castelli"
+      ],
+      "source_url": "https://www.castelli-cycling.com/products/viso-face-mask-4512548?variant=60043742216576",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "550321b986df6c5b6fd0",
+      "name": "DRIIVE Pro AERO 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/driive-pro-aero-2026?variant=53359313224019",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Model-only DRIIVE title or unspecified fan bundle; stored product data lacks decisive subtype/composition",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "fa263f17cf3a9e72694f",
+      "name": "DRIIVE Pro RACE 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/driive-pro-race-2026?variant=53359315976531",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Model-only DRIIVE title or unspecified fan bundle; stored product data lacks decisive subtype/composition",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "bc743ef9a5b852a0f98c",
+      "name": "DRIIVE Pro TEMPO 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/driive-pro-tempo-1?variant=53359314731347",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Model-only DRIIVE title or unspecified fan bundle; stored product data lacks decisive subtype/composition",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "60e344872b046ead947d",
+      "name": "FLY Team Bottle Team Picnic PostNL 550ml 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/fly-team-bottle-team-picnic-postnl-550ml-2026?variant=53360087073107",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "db254a6b8389ccb6f944",
+      "name": "Team Picnic PostNL Bibshort Lady 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-bibshort-lady-2026?variant=53250718302547",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "22a83d020a0a88982577",
+      "name": "Team Picnic PostNL Collar 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-collar-2026?variant=53223511064915",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "cbdecdf70f85381f7078",
+      "name": "Team Picnic PostNL Cycling Cap 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-cycling-cap-1?variant=53223506903379",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "8db663bbf5160d62fcd7",
+      "name": "Team Picnic PostNL Lady Jersey 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-ss-lady-jersey-2026?variant=53223656423763",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "bffe62217a406494b800",
+      "name": "Team Picnic PostNL Man Racing Bib 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-racing-bib-2026?variant=53223627522387",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "80e06133616939325c4b",
+      "name": "Team Picnic PostNL Man Training Bib 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-training-bib-2026?variant=53223648035155",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f795c5becfd6b9aa331f",
+      "name": "Team Picnic PostNL Racing Man Jersey 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-racing-jersey-2026?variant=53223539310931",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "b2d1147bc98252575b2d",
+      "name": "Team Picnic PostNL Socks 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-socks-1?variant=53223669694803",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6db94a6160f6162fcc01",
+      "name": "Team Picnic PostNL Summer Gloves 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-summer-gloves?variant=53223665205587",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "bbfab4e515261e625f0f",
+      "name": "Team Picnic PostNL Training Jersey 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-training-jersey-2026?variant=53723642364243",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "dfc034204f9997ed05f2",
+      "name": "Team Picnic PostNL Unisex LS Jersey 2026",
+      "source_codes": [
+        "picnic"
+      ],
+      "source_url": "https://teampicnicpostnl.store/products/team-picnic-postnl-ls-jersey-2026?variant=53223537836371",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "140e7ad4919f37fc3840",
+      "name": "DECATHLON CMA CGM 2026 Cycle Cap",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/casquette-cycle-cap-356-044?variant=52694232858966",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "32508a5a8fd3bb385772",
+      "name": "DECATHLON CMA CGM 2026 Musette",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/musette-decathlon-cma-cgm-2026?variant=52892825878870",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "86dfc6bf772020973e27",
+      "name": "DECATHLON CMA CGM 2026 Neck Warmer",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/tour-de-cou-decathlon-cma-cgm-2026-copie?variant=52892828959062",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7ab083d100911df772de",
+      "name": "DECATHLON CMA CGM 2026 Official AERO Socks",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/chaussettes-aero-decathlon-cma-cgm-2026?variant=52919955423574",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "b9b7d09cac979f5fdff9",
+      "name": "DECATHLON CMA CGM 2026 Supporter T-shirt",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/tee-shirt-replica-decathlon-cma-cgm-2026?variant=52926272405846",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6b97d11ff238bf7a423a",
+      "name": "DECATHLON CMA CGM Official Cycling Shorts 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/cuissard-replica-copie?variant=52918879846742",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "72012857fe1d6b21d423",
+      "name": "DECATHLON CMA CGM Official Kit 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/combinaison-decathlon-cma-cgm-2026?variant=55016592671062",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "86aac1f94267fe23d2be",
+      "name": "KWARE DECATHLON CMA CGM 2026 Glasses",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/lunettes-kware-decathlon-cma-cgm-2026?variant=53174097346902",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "341f7dd4619101d91d3b",
+      "name": "Membrane Vest DECATHLON CMA CGM 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/gilet-membrane-decathlon-cma-cgm-2026-copie?variant=52892816638294",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4ecdb1ec8320ccb6a11a",
+      "name": "Official DECATHLON CMA CGM 2026 Jersey",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/maillot-officiel-decathlon-cma-cgm-2026?variant=52892751561046",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "106fca64e8a8ae700792",
+      "name": "Official DECATHLON CMA CGM AERO Gloves 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/gants-aero-decathlon-cma-cgm-2026?variant=52919726145878",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ca96331660aa90eef095",
+      "name": "Official Long-Sleeve Jersey DECATHLON CMA CGM 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/maillot-officiel-manches-longues-decathlon-cma-cgm-2026?variant=52892768797014",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ca341ce58d1f6113fb3e",
+      "name": "Pack of 28 DECATHLON CMA CGM 2026 rider cards",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/carte-coureur-decathlon-cma-cgm-2026?variant=53179943289174",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "980cad33498feddc2ec2",
+      "name": "Racer Jacket DECATHLON CMA CGM 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/veste-racer-decathlon-cma-cgm-2026?variant=52892822569302",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5e7a2fc676058b2d487c",
+      "name": "RCR-F Van Rysel DECATHLON CMA CGM 2026 Helmet",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/casque-rcr-f-van-rysel-decathlon-cma-cgm-2026?variant=53056609157462",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7b07355af4e38d1fd617",
+      "name": "Replica Cycling Shorts DECATHLON CMA CGM 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/cuissard-replica?variant=52687810396502",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "58209f53d1d799f25c43",
+      "name": "Replica Jersey DECATHLON CMA CGM 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/maillot-replica-decathlon-cma-cgm-2026?variant=52687517155670",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "305177109ddff87f193c",
+      "name": "TAAIEN DECATHLON CMA CGM 2026 Glasses",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/lunettes-taaien-decathlon-cma-cgm?variant=53173969191254",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "2d55461014d7f6d7557f",
+      "name": "Waterproof jacket DECATHLON CMA CGM 2026",
+      "source_codes": [
+        "decathlon"
+      ],
+      "source_url": "https://shop.decathloncmacgmteam.com/en/products/veste-impermeable-decathlon-cma-cgm-2026?variant=55024787161430",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5b5aa15b245ac1acd460",
+      "name": "Bibshorts Man Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/bibshorts-man-bahrain-victorious-26-180-bah?variant=56371644727676",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ae7268220c21d4626b4d",
+      "name": "Bibshorts Man Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/bibshorts-man-bahrain-victorious-26-174-bah?variant=56371643449724",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4c5674513ef4b17e9e92",
+      "name": "Cap Unisex Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/cap-unisex-bahrain-victorious-26-184-bah?variant=56815235137916",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "fb90d89298a70024ffe4",
+      "name": "Gilet Uomo Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/uomo-bahrain-victorious-26-178-bah?variant=56371644432764",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "0bd62470f2a38a855aff",
+      "name": "Long Sleeve Jersey Man Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/long-sleeve-jersey-man-bahrain-victorious-26-177-bah?variant=56371644105084",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "2b7f5f87d4df95c1bc37",
+      "name": "Short Sleeve Jersey Bambino Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/short-sleeve-jersey-bambino-bahrain-victorious-26-182-bah?variant=56371645120892",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "2657de5fec8816ffe51e",
+      "name": "Short Sleeve Jersey Man Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/short-sleeve-jersey-man-bahrain-victorious-26-173-bah?variant=56371643056508",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "2ef5a83e004b7f863f5b",
+      "name": "Short Sleeve Jersey Man Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/short-sleeve-jersey-man-bahrain-victorious-26-175-bah?variant=56371643777404",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f1a41c723ab158a0b172",
+      "name": "Shorts Bambino Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/shorts-bambino-bahrain-victorious-26-183-bah?variant=56371645448572",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "8434bd944524608c2738",
+      "name": "Skinsuits Man Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/skinsuits-man-bahrain-victorious-26-234-bah?variant=56371647578492",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "1d48515dbedc64f5c635",
+      "name": "Socks Unisex Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/socks-unisex-bahrain-victorious-26-185-bah?variant=56815235170684",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "259f83e44f84a011ad84",
+      "name": "Socks Unisex Bahrain Victorious",
+      "source_codes": [
+        "bahrain"
+      ],
+      "source_url": "https://alecycling.com/en-us/products/socks-unisex-bahrain-victorious-26-235-bah?variant=56371647840636",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "1f0f73f25e148d2af0c3",
+      "name": "2026 Men’s Short Sleeve Reactive Jersey 2.0 - Green/White",
+      "source_codes": [
+        "ineos"
+      ],
+      "source_url": "https://store.netcompanyineos.com/products/netcompany-ineos-cycling-team-2026-men-s-short-sleeve-reactive-jersey-2-0?variant=53996478988626",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "a0082558951d0ebefae0",
+      "name": "INEOS Grenadiers X adidas Cycling Cap - White",
+      "source_codes": [
+        "ineos"
+      ],
+      "source_url": "https://store.netcompanyineos.com/products/ineos-grenadiers-adidas-cycling-cap?variant=52746659266898",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "dc3c1f32d147b9df7ae5",
+      "name": "Bib Short Men I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-bib-short-2026?variant=52076911100245",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "74dd7e33732f21862734",
+      "name": "Bidon I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-bidon-2026?variant=52075860951381",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "11a2a129d4aff1df7cd3",
+      "name": "Cap I Magnierfique",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/giro-cap-i-magnierfique?variant=54041923944789",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "84052fb59b1c65afa178",
+      "name": "Cap I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-cap-2026?variant=53917274276181",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "a6b5a24069f0874ecf73",
+      "name": "Cycling Cap I Giro '26",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-giro-special-cap-2026?variant=53800424669525",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "261a56cd2076b265caf3",
+      "name": "Cycling Jersey I Giro '26",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-giro-special-jersey-2026?variant=53800422867285",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "bc4028a49b40df70c870",
+      "name": "Cycling Jersey Men I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-jersey-2026?variant=52077061603669",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d641981e4dd1fb08f1e3",
+      "name": "Cycling outfit I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361222485",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "db4f93555ad423ee9f0e",
+      "name": "Diamond ProTech I Bike Coating Kit",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/diamond-protech-bike-coating-kit?variant=54445406945621",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "c3d809155e8bba61d8eb",
+      "name": "Gloves I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-gloves-2026?variant=52076837568853",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "11e87ca064a3740b7c70",
+      "name": "Hoodie I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-hoodie-2026?variant=52536387174741",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "63ff7d834ebefd506c77",
+      "name": "Jersey Men Fix All Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/cycling-jersey-men-fix-all-quick-step?variant=54817438302549",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6b2952bf1aefa914db9d",
+      "name": "Jersey Men T-Rex Gold",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/t-rex-gold?variant=54520187355477",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5036d4848adfe4adf390",
+      "name": "Long Sleeve Jersey Men I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-long-sleeve-jersey-2026?variant=52098375909717",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "c291a77f8b5ab6857285",
+      "name": "Magnierfique Fan Bundle",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/magnierfique-fan-bundle?variant=54913790312789",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Model-only DRIIVE title or unspecified fan bundle; stored product data lacks decisive subtype/composition",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "b2fe4f53cec5655ca6a8",
+      "name": "Musette I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-musette-2026?variant=52596044169557",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6d79982c7927473ff1f6",
+      "name": "Photo Cards I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-photo-cards-2026?variant=52346670547285",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "74689899b6736a263fad",
+      "name": "Race Cap | Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-cap-2026?variant=52074831642965",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3adc5f8013653c3e515a",
+      "name": "Socks I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-socks-2026?variant=52098473230677",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "fd9a4c355da2b1d081ca",
+      "name": "Socks I The Wolfpack",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/the-wolfpack-socks?variant=54373867979093",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ef5328181a3e4bc03cf2",
+      "name": "T-Shirt I Allez Les Loups",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/t-shirt-allez-les-loups?variant=54280239022421",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "9da6a820170d7c9e26c1",
+      "name": "T-Shirt I Magnierfique",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/giro-t-shirt-i-magnierfique?variant=54041892716885",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "dcf0a70c2437581f5569",
+      "name": "T-Shirt I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-t-shirt-2026?variant=52536428036437",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6db9beb3f69ba0f7c297",
+      "name": "Wind Vest I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/soudal-quick-step-wind-vest-2026?variant=52098336686421",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "c232a1037eb049cbf9ed",
+      "name": "Zip Training Jacket I Soudal Quick-Step",
+      "source_codes": [
+        "soudal"
+      ],
+      "source_url": "https://thewolfpack.shop/products/zip-training-jacket-2026-soudal-quick-step?variant=52536347099477",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "afb5136488c6def7e017",
+      "name": "RCC Women's Pro Team Bib Shorts II - Regular",
+      "source_codes": [
+        "rapha"
+      ],
+      "source_url": "https://www.rapha.cc/jp/en/product/rcc-womens-pro-team-bib-shorts-ii---regular/AFR01RGDNY",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ce8ff0f07120f2542761",
+      "name": "Men's RCC Pro Team Bib Shorts II - Regular",
+      "source_codes": [
+        "rapha",
+        "rapha_kr"
+      ],
+      "source_url": "https://www.rapha.cc/jp/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "dd780a0a040a855a4ae8",
+      "name": "2025 UCI ROAD WORLD CHAMPIONSHIPS KIGALI MONKEY PLUSH TOY - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/2025-uci-road-world-championships-kigali-monkey-plush-toy-print-emmasc-kigal25?variant=58411279876479",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4f6d8707e3eb8684b3aa",
+      "name": "DRY MEN'S BASE LAYER - Nero",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/dry-men-s-base-layer-nero-bm001glldry-ne?variant=58123614585215",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ae3a8f89372c78b64c78",
+      "name": "HYDRO MICROFIBER TOWEL - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/hydro-microfiber-towel-print-5ttelomcf?variant=58410401268095",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3deb7a7d28e09d921399",
+      "name": "HYDRO RACE BELT - Nero",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/hydro-race-belt-nero-5tracebel-ne?variant=58410401137023",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3d5495129d42179a5af8",
+      "name": "HYDRO SWIMMING CAP - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/hydro-swimming-cap-print-5tcuf?variant=58410401202559",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Conservative non-cycling swim accessory; grouping is an explicit navigation choice",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "53c7aa10779644afd163",
+      "name": "MARTEN VAN RIEL KONA TECH T-SHIRT - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/marten-van-riel-kona-tech-t-shirt-print-re499gllkmvr?variant=58604108218751",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ce2c506ec5760d83ab7a",
+      "name": "SANTINI X BROOKLYN CUSHION COVER - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/santini-x-brooklyn-cushion-cover-print-repill-brook?variant=58125211664767",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "8f3ddea5ac1bd68d1b3c",
+      "name": "STREAM MEN'S RUNNING SHORTS - Blu",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/stream-men-s-running-shorts-blu-5t70-strm-nt?variant=58469622514047",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "1482ee53940af41e4f9f",
+      "name": "STREAM MEN'S RUNNING SHORTS - Nero",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/stream-men-s-running-shorts-nero-5t70-strm-ne?variant=58469623595391",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "b9437199eda537581d3d",
+      "name": "TOUR DE FRANCE DESIGN SHORT SLEEVE JERSEY - Bianco",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/tour-de-france-design-short-sleeve-jersey-bianco-re97175ctdfdsg-bi?variant=58470537396607",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "49894188dc4ffe3b05f2",
+      "name": "TREK DRIFTLESS BIB SHORTS - Blu",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/trek-driftless-bib-shorts-blu-re1375fb26dri-nt?variant=58470439256447",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7fa7cb58d8bf4fb1b293",
+      "name": "TREK DRIFTLESS LONG SLEEVE JERSEY - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/trek-driftless-long-sleeve-jersey-print-re216675c26dri?variant=58470449807743",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6fa648a1bebd2778999e",
+      "name": "TREK DRIFTLESS SHORT SLEEVE JERSEY - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/trek-driftless-short-sleeve-jersey-print-re97175c26dri?variant=58470534939007",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "8b671c0b980744dd5d4b",
+      "name": "TREK DRIFTLESS SOCKS - Blu",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/trek-driftless-socks-blu-re652mp26dri-nt?variant=58470526124415",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f0f3623d57eeef3ecd36",
+      "name": "TREK DRIFTLESS WIND VEST - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/trek-driftless-wind-vest-print-re545u7526dri?variant=58470525305215",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3bde57844dd01082c5b0",
+      "name": "TREK FACTORY RACING BIB SHORTS - Nero",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/trek-factory-racing-bib-shorts-nero-re1375fb26xc-ne?variant=58470438797695",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "19bb09e76b197c959ded",
+      "name": "TREK FACTORY RACING SHORT SLEEVE JERSEY - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/trek-factory-racing-short-sleeve-jersey-print-re97175c26xc?variant=58470537625983",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "31bdf4e936b5260677bd",
+      "name": "UCI WORLD CHAMPION BIG BOBBLE HAT BEANIE - Bianco",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/uci-world-champion-big-bobble-hat-beanie-bianco-sp480bbhbeani-bi?variant=58412476334463",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "57725610755116bca505",
+      "name": "UCI WORLD CHAMPION BIG BOBBLE HAT BEANIE - Bianco",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/uci-world-champion-big-bobble-hat-beanie-bianco-um480bbhuci-bi?variant=58412538823039",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "0aadaa1bd6403695df89",
+      "name": "UCI WORLD CHAMPION BIG BOBBLE HAT BEANIE - Blu",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/uci-world-champion-big-bobble-hat-beanie-blu-um480bbhuci-nt?variant=58412538790271",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "1af46d50c8922ecc5fcd",
+      "name": "UCI WORLD CHAMPION BIG BOBBLE HAT BEANIE - Blu",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/uci-world-champion-big-bobble-hat-beanie-blu-sp480bbhbeani-nt?variant=58412476432767",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "01b90c9685db77bf1c5e",
+      "name": "UCI WORLD CHAMPION BIG BOBBLE HAT BEANIE - Nero",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/uci-world-champion-big-bobble-hat-beanie-nero-um480bbhuci-ne?variant=58412538855807",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e6a9abcda06a917e20ed",
+      "name": "UCI WORLD CHAMPION BIG BOBBLE HAT BEANIE - Nero",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/uci-world-champion-big-bobble-hat-beanie-nero-sp480bbhbeani-ne?variant=58412476367231",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3463e66c12b52a2c1c35",
+      "name": "UCI WORLD CHAMPION KEYCHAIN - Print",
+      "source_codes": [
+        "santini"
+      ],
+      "source_url": "https://www.santinicycling.com/products/uci-world-champion-keychain-print-umport-uci?variant=58125198295423",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f248016dda67cfaf52c2",
+      "name": "Cycling jersey men - The Architect",
+      "source_codes": [
+        "visma"
+      ],
+      "source_url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "810c3f5968373a4bf9f0",
+      "name": "AERIS LONG DISTANCE R1 LIGHT",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/saddles-aeris-ld-r1-light-black-aerldr1ea0?variant=52285970547030",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7cb498d6e683893f49f5",
+      "name": "AERIS SHORT DISTANCE R1 LIGHT",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/saddles-aeris-sd-r1-light-black-aersdr1ea0?variant=52285971824982",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4ebfe1967c462b483c23",
+      "name": "ERGOLACE 2",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-2-dark-blue-black-tex2emr1v4510?variant=53589464940886",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "513016c2f137ed7c78bb",
+      "name": "ERGOLACE 2",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-2-off-white-tex2emr1v20pn?variant=53589464088918",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "4d2ca7ada71ec8f59f8e",
+      "name": "ERGOLACE 2 FLAT",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-2-flat-forest-green-caramel-tef2emr1v5e86?variant=53589463400790",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "9a07bf563ca56d45df39",
+      "name": "ERGOLACE 2 FLAT",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-2-flat-off-white-tef2emr1v20pn?variant=53589460156758",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e15de842c81699d8f2ba",
+      "name": "ERGOLACE 2 FLAT",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-2-flat-dark-blue-black-tef2emr1v4510?variant=53589458846038",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5ad5212be3060e67e469",
+      "name": "ERGOLACE 2 GTX",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-gtx-2-black-black-tex2egr2v1010?variant=53608138670422",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "f6a4ed47a7f00945317a",
+      "name": "ERGOLACE 2 GTX",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-gtx-2-desert-grey-tex2egr2v7670?variant=53608137883990",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "605372f654b93c9fd105",
+      "name": "ERGOLACE 2 GTX FLAT",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-gtx-2-flat-desert-grey-tef2egr2v7670?variant=53589458223446",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d184f4dc651ca9dcd9c1",
+      "name": "ERGOLACE 2 GTX FLAT",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ergolace-gtx-2-flat-black-black-tef2egr2v1010?variant=53589459861846",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "72a6789fb4c602b77c92",
+      "name": "Ferox 2 Carbon Team Amani",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-ferox-2-amani-blue-black-vex1wpr1k4010?variant=54533756911958",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "a51786b59bf7bced4008",
+      "name": "KASSIS",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/helmets-kassis-mud-grape-fhe1000048598?variant=54696878735702",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "93dccd88d927efae08f4",
+      "name": "Performance Cycling Socks",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/cycling-socks-performance-white-fzsockroa00020?variant=50758812500310",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Named garment or wearable clothing accessory; includes casual and running apparel",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6dcd80d8f81aff55fe4d",
+      "name": "Proxy Black Mamba",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-proxy-mamba-neon-green-black-vex3bpr1k5d10?variant=54533755994454",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "1b69bc0c93d723bbfaa4",
+      "name": "Tempo Overcurve R4 wide",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/overcurve-r4-wide-tpr4oiw1k8310?variant=53996542820694",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "4d9d83be3fc1b1c269b2",
+      "name": "Tempo Overcurve R4 wide",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/overcurve-r4-wide-tpr4oxw1k7030?variant=53996543443286",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "645ab1bd2bf0e061a5ca",
+      "name": "VENTO ARGO X1",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/saddles-vento-argo-x1-black-vargox1fa5?variant=53589469364566",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "982fae9ae7c15027d0b6",
+      "name": "VENTO ARGO X3",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/saddles-vento-argo-x3-black-vargox3fa4?variant=53589469462870",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "426256003809f244ce2c",
+      "name": "VENTO ARGO X5",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/saddles-vento-argo-x5-black-vargox5fa3?variant=53589469823318",
+      "category": "accessories",
+      "category_group": "road_equipment",
+      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "278398453a8bc7f987bd",
+      "name": "Versor 2",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-versor-2-off-white-anthracite-grgcvtr1k2w12?variant=53947079950678",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "721a76cb87222c272cc3",
+      "name": "Versor 2",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-versor-2-anthracite-black-grgcvtr1k1210?variant=53947078967638",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Footwear identified, but stored evidence does not establish cleat compatibility; retain under Other until reviewed",
+      "needs_type_review": true
+    },
+    {
+      "product_id": "a2c3d6e5806b099fe272",
+      "name": "Versor 2 Flat",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-versor-2-flat-off-white-anthracite-grgfvtr1k2w12?variant=53927450607958",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d16dab0e7fd9c64d5a34",
+      "name": "Versor 2 Flat",
+      "source_codes": [
+        "fizik"
+      ],
+      "source_url": "https://www.fizik.com/en-us/products/shoes-versor-2-flat-anthracite-black-grgfvtr1k1210?variant=53927451427158",
+      "category": "accessories",
+      "category_group": "other",
+      "reason": "Other merchandise / unresolved product type",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "9cf63893fc9d74bfeba9",
+      "name": "Training Bib 3.0",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "49112bac4db8954077ae",
+      "name": "Cycling jersey men 2026 - Team Visma | Lease a Bike",
+      "source_codes": [
+        "visma"
+      ],
+      "source_url": "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3bec2b61d05fe454370c",
+      "name": "Evade Pro Base Jersey 2.0",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e603072074fe096bb4ef",
+      "name": "Evade Pro Base Jersey 2.0",
+      "source_codes": [
+        "maap",
+        "teamcycles"
+      ],
+      "source_url": "https://maap.cc/products/evade-pro-base-jersey-2-0-black",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "0db2f1ed790586c3c35d",
+      "name": "Apex Deep Winter Bib Tight",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/maap-apex-deep-winter-tight-navy",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "a8fd79269a0fafacca45",
+      "name": "Eclipse Pro LS Race Suit",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/eclipse-pro-base-ls-roadsuit-frost",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "b5f376d1d697834fa49b",
+      "name": "Eclipse Pro LS Race Suit",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/eclipse-pro-ls-race-suit-antarctica-titanium",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3b85f39a4f2235fa9b9f",
+      "name": "Eclipse Pro Race Jersey",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/eclipse-pro-race-jersey-magenta",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4f3da79f3ed5db3e3722",
+      "name": "Eclipse Pro Race Suit",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/eclipse-pro-base-roadsuit-berry",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ec19393e9cdb3bd7201d",
+      "name": "Eclipse Pro Race Suit",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/eclipse-pro-base-roadsuit-odyssey",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "69ad5ee7ce480242f131",
+      "name": "Elements Pro Race SS Jacket",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/elements-pro-race-ss-jacket-black",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "a99fd813e7d7ff4993ba",
+      "name": "Elements Pro Race SS Jacket",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/elements-pro-race-ss-jacket-mulberry",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "04988b05052a01f6b268",
+      "name": "Evade Pro Base LS Jersey 2.0",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/evade-pro-base-ls-jersey-2-0-black",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5d044975ef96b715f3d6",
+      "name": "Evade Pro Base LS Jersey 2.0",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/evade-pro-base-ls-jersey-2-0-antarctica",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "aa0693837ee632f9a511",
+      "name": "Evade X Pro Air Jersey 3.0",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/evade-x-pro-air-jersey-3-0-sage",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "015ad076674399c9e058",
+      "name": "Evade X Pro Air LS Jersey 3.0",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/evade-x-pro-air-ls-jersey-3-0-uniform-blue",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e9849b796fc7702c2d80",
+      "name": "Flow Jacket",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/flow-jacket-dark-ore",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "83b71aa7113148046f9e",
+      "name": "Flow Vest",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/flow-vest-dark-ore",
+      "category": "jackets",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "d64fc007e38c0435a592",
+      "name": "MAAP X QUOC M3 Pro",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/maap-x-quoc-m3-musk",
+      "category": "shoes",
+      "category_group": "cleat_shoes",
+      "reason": "Existing MAAP X QUOC M3 Pro",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6c9cd321495880a4e0cf",
+      "name": "Pro Emerge Jersey",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/emerge-jersey-antler",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3380665e0d658d8f0d2d",
+      "name": "Pro Emerge LS Jersey",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/emerge-ls-jersey-quicksand",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "cb9022d38a2d755d1329",
+      "name": "Team Bib Evo",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/team-bib-evo-bronze-shadow",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "adfa7d99fe598fbd1a2a",
+      "name": "Team Bib Evo Cargo",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/team-bib-evo-cargo-white",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "69460b29103678df53e4",
+      "name": "Team Evo Thermal Bib Tight",
+      "source_codes": [
+        "maap"
+      ],
+      "source_url": "https://maap.cc/products/team-evo-thermal-bib-tight-navy",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4e6026c2d82e3d6735b7",
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Antartica",
+      "source_codes": [
+        "sigmasports"
+      ],
+      "source_url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1758595",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5e9caa003dbd7d8da283",
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Black",
+      "source_codes": [
+        "sigmasports"
+      ],
+      "source_url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1758593",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f4741572559305022578",
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Ghost Gray",
+      "source_codes": [
+        "sigmasports"
+      ],
+      "source_url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1843051",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5ce263022ae530021e9e",
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Mauve",
+      "source_codes": [
+        "sigmasports"
+      ],
+      "source_url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1869148",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "73fdd8304990fe9cc4c8",
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Meadow",
+      "source_codes": [
+        "sigmasports"
+      ],
+      "source_url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1869021",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3f73e512303f99689602",
+      "name": "Evade Pro Base 2.0 Short Sleeve Jersey - XS / Midnight",
+      "source_codes": [
+        "sigmasports"
+      ],
+      "source_url": "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI?id=1868894",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Existing garment category retained",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3aaf979c76ee88982ae1",
+      "name": "Ventral Air MIPS Cycling Helmet - Apatite Navy Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-apatite-navy-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "66288a3182e1f428f7b0",
+      "name": "Ventral Air MIPS Cycling Helmet - Bronzite Brown - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-bronzite-brown-matt-lazurite-blue-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "1548a7d00f448efd3a08",
+      "name": "Ventral Air MIPS Cycling Helmet - Fluorescent Orange Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-fluorescent-orange-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "cde0395011c9eec8682e",
+      "name": "Ventral Air MIPS Cycling Helmet - Granite Grey Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-granite-grey-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "c864576ced28dc90c144",
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "377f4670fd2564e0ca0a",
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Fluorescent Orange - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-fluorescent-orange",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f64cb1a137ceb3f01005",
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5baa996751515d078eaa",
+      "name": "Ventral Air MIPS Cycling Helmet - Hydrogen White/Uranium Black Matt w. Logo - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-hydrogen-white-uranium-black-matt-w-logo",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7afb4632bf83201c9c41",
+      "name": "Ventral Air MIPS Cycling Helmet - Pargasite Green Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-pargasite-green-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "af7cbeea76a32620762b",
+      "name": "Ventral Air MIPS Cycling Helmet - Prismane Red Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-prismane-red-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e4eb97e0cd14d1e17d69",
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "9c548d3f824531678163",
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Fluorescent Orange Matt - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-fluorescent-orange-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "bff1dbb424f0d2b0ad56",
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-matt",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "67a21d71cc5cd8b1de4c",
+      "name": "Ventral Air MIPS Cycling Helmet - Uranium Black Matt/Hydrogen White w. Logo - S",
+      "source_codes": [
+        "poc"
+      ],
+      "source_url": "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt-hydrogen-white-w-logo",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
+      "needs_type_review": false
+    }
+  ]
+}

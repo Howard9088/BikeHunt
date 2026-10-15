@@ -2,7 +2,7 @@
 let items=[],fx={},currentIndex=0,currentProduct=null,detailSequence=0,lastFocus=null,sourceCount=0;
 let observer=null,viewMode='feed',currentBundleSelection=null;
 const referenceOffers=new Map();
-let activeCategory='all',activeSource=null,activeTab='products';
+let activeCategory='all',activeCategoryGroup=null,activeSource=null,activeTab='products';
 let swipe=null,animationFrame=0,animationUntil=0,wheelLocked=false,wheelUnlockTimer=0;
 const gallery=document.getElementById('grid');
 const sheet=document.getElementById('sheet');
@@ -20,10 +20,11 @@ function imageMarkup(url,name,index){
   return '<button class="image-button" type="button" aria-label="查看 '+e(name)+' 的渠道比价"><img '+(index<2?'fetchpriority="high"':'loading="lazy"')+' src="'+e(safeUrl(url))+'" alt="'+e(name)+'"></button><div class="photo-fallback">BikeHunt<span>商品图片暂不可用</span></div>';
 }
 function featuredBrowse(){return !activeSource&&!document.getElementById('q').value.trim()}
-function visibleItems(){const q=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return items.filter(p=>p.stock_state!=='out_of_stock'&&profileMatches(p)&&(!featuredBrowse()||featuredDeal(p))&&(activeCategory==='all'||p.category===activeCategory)&&(!activeSource||p.source_codes?.includes(activeSource))&&q.every(t=>(p.brand+' '+p.name+' '+(p.name_zh||'')+' '+(p.color||'')).toLowerCase().includes(t)))}
+function visibleItems(){const q=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return items.filter(p=>p.stock_state!=='out_of_stock'&&profileMatches(p)&&(!featuredBrowse()||featuredDeal(p))&&(!activeCategoryGroup||p.category_group===activeCategoryGroup)&&(activeCategory==='all'||p.category===activeCategory)&&(!activeSource||p.source_codes?.includes(activeSource))&&q.every(t=>(p.brand+' '+p.name+' '+(p.name_zh||'')+' '+(p.color||'')).toLowerCase().includes(t)))}
 function render(preserveId=null){
   if(observer)observer.disconnect();
   if(typeof updateBrowseLabel==='function'&&activeTab==='products')updateBrowseLabel();
+  if(typeof syncBrowseControls==='function')syncBrowseControls();
   const list=visibleItems();
   document.getElementById('count').textContent=list.length+' 件商品';
   document.getElementById('sourceCount').textContent=sourceCount+' 个已采集报价源';
@@ -83,7 +84,7 @@ function setView(mode,save=true){
   if(save){try{localStorage.setItem('bikehuntView',viewMode)}catch{}}
   document.getElementById('scrollHint').classList.remove('hidden');render(active);
 }
-function clearSearch(){document.getElementById('q').value='';render();document.getElementById('q').focus()}
+function clearSearch(){document.getElementById('q').value='';render();if(typeof saveBrowseState==='function')saveBrowseState();document.getElementById('q').focus()}
 function tag(status,label){const style=status==='yes'?'ok':status==='no'?'no':'wait';const text=status==='yes'?'已核实':status==='no'?'不支持':'待核实';return '<span class="tag '+style+'">'+e(label)+' '+text+'</span>'}
 function landedCostMarkup(compared){
   const landed=compared.landed_cost;
@@ -355,7 +356,7 @@ async function init(){
 }
 document.addEventListener('input',updateShippingBudget);
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-document.getElementById('q').addEventListener('input',()=>render());document.getElementById('clear').onclick=clearSearch;
+document.getElementById('q').addEventListener('input',()=>{render();if(typeof saveBrowseState==='function')saveBrowseState()});document.getElementById('clear').onclick=clearSearch;
 document.getElementById('prev').onclick=()=>move(-1);document.getElementById('next').onclick=()=>move(1);
 document.getElementById('close').onclick=closeSheet;document.getElementById('overlay').onclick=closeSheet;
 window.addEventListener('resize',positionHint);

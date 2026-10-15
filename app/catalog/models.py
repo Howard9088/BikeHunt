@@ -7,6 +7,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.browse_taxonomy import CategoryGroup
+
 
 class Record(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -187,6 +189,7 @@ class ProductComparison(Record):
     name: str
     name_zh: str = ""
     category: str = "accessories"
+    category_group: CategoryGroup = "other"
     image: str | None
     variants: list[VariantChoice]
     colors: list[ColorChoice] = Field(default_factory=list)
@@ -200,6 +203,7 @@ class ProductCard(Record):
     name: str
     name_zh: str = ""
     category: str = "accessories"
+    category_group: CategoryGroup = "other"
     gender: Literal["male", "female", "unisex", "unknown"] = "unknown"
     brand: str
     color: str | None

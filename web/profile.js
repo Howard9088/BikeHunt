@@ -3,7 +3,7 @@ const PROFILE_KEY='bikehunt.profile.v1';
 const emptyProfile=()=>({gender:'all',height_cm:null,weight_kg:null,chest_cm:null});
 let shopperProfile=emptyProfile();
 try{const saved=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null');if(saved&&['all','male','female'].includes(saved.gender))shopperProfile={...shopperProfile,...saved}}catch{}
-function profileMatches(product){return shopperProfile.gender==='all'||product.gender===shopperProfile.gender||product.gender==='unisex'}
+function profileMatches(product){return ['road_equipment','helmets','cleat_shoes','other'].includes(product.category_group)&&(!product.gender||product.gender==='unknown')||shopperProfile.gender==='all'||product.gender===shopperProfile.gender||product.gender==='unisex'}
 function updateProfileBar(){
   document.querySelectorAll('[data-gender]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.gender===shopperProfile.gender)));
   document.getElementById('bodyProfile').textContent=[shopperProfile.height_cm?shopperProfile.height_cm+' cm':'',shopperProfile.weight_kg?shopperProfile.weight_kg+' kg':''].filter(Boolean).join(' / ')||'身高 / 体重';
@@ -28,3 +28,4 @@ async function refreshFitReference(detail,sequence){
 document.querySelectorAll('[data-gender]').forEach(button=>button.onclick=()=>{shopperProfile.gender=button.dataset.gender;saveProfile()});
 document.getElementById('bodyProfile').onclick=showBodyProfile;
 updateProfileBar();
+
