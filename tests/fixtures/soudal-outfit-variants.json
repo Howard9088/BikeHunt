@@ -1,0 +1,5433 @@
+{
+  "provenance": {
+    "snapshot_generated_at": "2026-10-15T03:38:35.713697+00:00",
+    "description": "Actual merchant observations from cached BikeHunt public snapshot; tests adjust the clock, never manufacture purchasable combinations."
+  },
+  "product_id": "d641981e4dd1fb08f1e3",
+  "name": "Cycling outfit I Soudal Quick-Step",
+  "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+  "card": {
+    "product_id": "d641981e4dd1fb08f1e3",
+    "name": "Cycling outfit I Soudal Quick-Step",
+    "name_zh": "Cycling outfit I Soudal Quick-Step",
+    "category": "accessories",
+    "gender": "male",
+    "brand": "Soudal Quick-Step",
+    "color": null,
+    "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+    "source_count": 1,
+    "variant_count": 60,
+    "source_codes": [
+      "soudal"
+    ],
+    "reference_price": {
+      "amount": "228.00",
+      "currency": "EUR"
+    },
+    "reference_cny": "1708.29",
+    "reference_source": "Soudal Quick-Step 官方商城",
+    "reference_offer_id": "03cfcc6c0be6a1dda042",
+    "reference_collection_state": "current",
+    "reference_stock": "in_stock",
+    "fetched_at": "2026-10-15T03:25:05.084688Z",
+    "discount_pct": 4,
+    "recommended_total_cny": null,
+    "status": "渠道待核实",
+    "available_sizes": [
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M"
+    ],
+    "stock_state": "in_stock",
+    "purchase_requirements": []
+  },
+  "variants": [
+    {
+      "stock_state": "in_stock",
+      "variant_id": "64ce58d520a63899fd73",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "03cfcc6c0be6a1dda042",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361222485",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "91bba05adf6f3117282b",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "061c914858acd775618c",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361877845",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "342ce7b78adff2c37c91",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "063caf869c714882b541",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362107221",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "5f6998cbced634ad1142",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "0bb8bf0ca1b5c5370f26",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362271061",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "f41b0d108cbd6f6e69a7",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "0eb48324b526cd2053b5",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362828117",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "62d192e4ae8d60b6bac5",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "134eb4e416573bd235d9",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362434901",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "fb072f18c1d08a18c4e8",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "16087ce45b500fc64aee",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362303829",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "fc4cb3f082b3967d98c9",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "1a3fcd6b6d21d975a46e",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361091413",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "3f88ce24ea5eba8f151e",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "225dc32b80e7c975b352",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361025877",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "439841897f1b5c4fadc7",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "2934f58d0c5d13079f44",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361353557",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "3bd3aac6954d6daef8e7",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "2ad855a72199d60add9e",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361714005",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "f837d6026b1e989871a3",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "3747f2d3728f9be4eea0",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361386325",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "1ca0ea8383a3d1918238",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "3d8699ec59114ebc0382",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362041685",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "2633e56dbec230eda13d",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "404fd30e59cf78395d6b",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264360927573",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "a0d29128d33544c565f5",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "41f0b17f0a1fb0243468",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361812309",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "ab024dc40ceaf9c6f072",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "45bd40e3f86274edbc00",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361976149",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "069ac4cbc3e644112c07",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "482a5017958cc10fe5e9",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361189717",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "d10307b117b065b2e769",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "4936c90c76ebd905e5fb",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362336597",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "5ee482af78acb0292f77",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "523d20d5284f1fff93e7",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362729813",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "9b59b473a1fbb4d9c97a",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "564af8320ea5602dbdcf",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361517397",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "f502933490efa6838021",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "5ea6e1f4457ac69ce544",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362402133",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "ae01ee41a137b8a88577",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "611498fb199debae88c5",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362664277",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "1e7e015cc4bbde540059",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "6316992654b75ef2853d",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361419093",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "b901915fcd04bb7c049a",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "69d2e3eb3518c1fcf56c",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361255253",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "306f9d472309827f17ac",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "6e077d818a39691430f5",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362074453",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "e92308c21a3e7562e51c",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "6e40d5bd683e86c73360",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361320789",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "2d1f5ce4e88789dcbdba",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "7042cbf7016e1b715dfa",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362205525",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "09e5e6930ab0732574a8",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "7254e2d5e8ce38acbb67",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362139989",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "ee02ecd3cf4c490e5dd1",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "7290fa358a6adf025b67",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362533205",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "eb90091059962180a639",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "73d77786332e742eebc8",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362762581",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "023c78b85a7beea4050f",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "741ced9f5527de7894bc",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264360993109",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "7b919413f8a9474be70a",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "76d9197a09659ce21ae2",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361910613",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "9cc2b9e155ac7d41a8b8",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "79f46056f60ded481b9a",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362598741",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "54368ad2d12fafb5738f",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "7ee8f4b951dcdfe73289",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362795349",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "65c4df4ee3781dc0218a",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "820b689bfb75a1177d94",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361648469",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "6de861430123558578e3",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "89993627daf97bbe850d",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362697045",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "a23d22094f6a0476e923",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "8ad9e3c0e3e9d22989fd",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362467669",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "e7ee206e28bdc928d7b5",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "903786c597f90f46f05b",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361582933",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "ad187b5df608e0b3ba4c",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "91cbc4aaf5181554fd1f",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264360960341",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "a1a34a0acd6b511b2140",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "a9e2e1573e6f00ae55df",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361058645",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "be12c0a54b72d1c3fc32",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "ac789304ab0d8227e042",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362238293",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "52dbc4af00bf3bf61c0e",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "b5c35463cc84129535a9",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361550165",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "9a55d67717151c502f6e",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "b61db6049bbccc655f37",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362631509",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "bda01a9291bea5ee47df",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "bfe255a93dc403d62f76",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361484629",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "41ac4455dbd58dd441c6",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "c29fa5536652f9048419",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362500437",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "76f03d0aef61d5f9b3d0",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "c7176f83a2fce43863e1",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361124181",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "f79e2e37341f284a64c2",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "c8b988ced3dcd6fbc592",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361288021",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "out_of_stock",
+      "variant_id": "6e53c5852d08ce6e01cb",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": false,
+      "product_cny_from": null,
+      "offer": {
+        "offer_id": "c9c991f11f32a65b2fa8",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 3XL / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362565973",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "out_of_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "2e4f8bef46bfebf39794",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "d36aefccb128d5df145c",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361845077",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "9243a9c41e4d6950df2f",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "d3da5bd761e4d52759ce",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): 2XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362369365",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "004b720c698404bcb01d",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "d3fe1f6a7297f7d504a2",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361779541",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "8f81d8b2f29baed376c8",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "d855cfd4f6f827d93785",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): M / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361451861",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "852f6c94bcc3ff829c89",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "d8d0f6f78a609b79672e",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): L-XL",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362172757",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "c6897c5c687d1b995253",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "e05bbb112c9be06641cd",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264362008917",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "93f8234a779d8bbaf29c",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "e1358ef1317103a24710",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361615701",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "9de904d4a8e1cbca7def",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "edba541d8ab7c6a5ea0c",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): XL / Jersey 2026 I Soudal Quick-Step (Size): M / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361943381",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "86fe04ce29a98299fcc2",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "f27ffd8b79eedc415099",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): L / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361681237",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "3b0eded3840823420026",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "f5c826098eae6cbd9209",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): 2XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361156949",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "c44d80181c934a3fc1df",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "f7ec9429329322a67e39",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): S / Jersey 2026 I Soudal Quick-Step (Size): S / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264360894805",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    },
+    {
+      "stock_state": "in_stock",
+      "variant_id": "69b16a8a4e79a7f03eca",
+      "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+      "source_count": 1,
+      "in_stock": true,
+      "product_cny_from": "1708.29",
+      "offer": {
+        "offer_id": "f9a4de2f385be0c03063",
+        "source_code": "soudal",
+        "source_name": "Soudal Quick-Step 官方商城",
+        "identity": {
+          "brand": "Soudal Quick-Step",
+          "model": "Cycling outfit I Soudal Quick-Step",
+          "gtin": null,
+          "mpn": null,
+          "size": "Bib Short 2026 I Soudal Quick-Step (Size): L / Jersey 2026 I Soudal Quick-Step (Size): XL / Socks 2026 I Soudal Quick-Step (Accessory size): S-M",
+          "color": null,
+          "year": null,
+          "gender": "male"
+        },
+        "name": "Cycling outfit I Soudal Quick-Step",
+        "url": "https://thewolfpack.shop/products/soudal-quick-step-cycling-outfit?variant=54264361746773",
+        "image": "https://cdn.shopify.com/s/files/1/0996/8402/4661/files/Bundle.png?v=1782986520",
+        "price": {
+          "amount": "228.00",
+          "currency": "EUR"
+        },
+        "original_price": {
+          "amount": "238.00",
+          "currency": "EUR"
+        },
+        "shipping": null,
+        "tax": null,
+        "import_tax_handling": "unknown",
+        "import_tax_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "clearance": null,
+        "stock": "in_stock",
+        "shipping_to_china": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆配送目的地及运费尚未核实，不据当地免邮条款推断。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "china_issued_card": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "中国大陆发行信用卡可用性尚未核实。",
+          "scope": "site",
+          "content_hash": null
+        },
+        "accepted_card_networks": [],
+        "card_networks_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "fetched_at": "2026-10-15T03:25:05.084688Z",
+        "price_valid_until": null,
+        "collection_state": "current",
+        "data_kind": "live_snapshot",
+        "family_hint": "shopify:11399681704277",
+        "identity_evidence": "官方 Shopify 商品系列；逐规格 ID、价格及币种与商品页 JSON-LD 一致；尺码来自公开选项；商家 SKU 不作为跨站型号；可购买状态与商品页一致",
+        "sales_region": "BE 市场 · EUR 报价；未验证其他市场库存",
+        "dispatch_origin": null,
+        "dispatch_origin_evidence": {
+          "status": "unknown",
+          "url": null,
+          "checked_at": null,
+          "note": "",
+          "scope": "offer",
+          "content_hash": null
+        },
+        "purchase_requirements": []
+      }
+    }
+  ]
+}

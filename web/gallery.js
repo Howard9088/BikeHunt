@@ -1,6 +1,6 @@
 'use strict';
 let items=[],fx={},currentIndex=0,currentProduct=null,detailSequence=0,lastFocus=null,sourceCount=0;
-let observer=null,viewMode='feed';
+let observer=null,viewMode='feed',currentBundleSelection=null;
 const referenceOffers=new Map();
 let activeCategory='all',activeSource=null,activeTab='products';
 let swipe=null,animationFrame=0,animationUntil=0,wheelLocked=false,wheelUnlockTimer=0;
@@ -39,7 +39,7 @@ function render(preserveId=null){
       (deal?'<span class="discount">'+e(discountLabel(p))+'</span>':'')+
       '<span class="slide-index">'+String(i+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0')+'</span></div>'+
       '<div class="product-info"><div class="brand">'+e(p.brand)+'</div><h2>'+e(p.name_zh||p.name)+'</h2><div class="original-name">'+e(p.name)+'</div>'+
-      '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?'折扣规格 '+e([p.reference_size,p.reference_color].filter(Boolean).join(' / ')||'商家默认规格'):stockVerified&&p.available_sizes?.length?'现货 '+e(p.available_sizes.join(' / ')):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
+      '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?e(catalogSizeLabel(p,true)):stockVerified&&p.available_sizes?.length?e(catalogSizeLabel(p,false)):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
       (sold?'<span class="sold">所示报价已售罄</span>':'')+'</div>'+
       '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
       '<div class="best-price">'+e(cny(p.reference_cny))+(deal?'':'<small> 起</small>')+'</div>'+
@@ -158,7 +158,7 @@ function inventoryVerified(offer,now=Date.now()){
   const day=timestamp.slice(0,10),dayTime=Date.parse(day);if(!Number.isFinite(dayTime)||new Date(dayTime).toISOString().slice(0,10)!==day)return false;
   const age=now-Date.parse(timestamp);return Number.isFinite(age)&&age>=0&&age<=3600000;
 }
-function offerAvailable(quote,now=Date.now()){const o=quote?.offer;if(!o||o.stock!=='in_stock'||o.collection_state==='retained'||!inventoryVerified(o,now))return false;const until=o.price_valid_until;return !until||/^\d{4}-\d{2}-\d{2}$/.test(until)&&Number.isFinite(Date.parse(until))&&new Date(until).toISOString().slice(0,10)===until&&until>=new Date(now).toISOString().slice(0,10);}
+function offerAvailable(quote,now=Date.now()){if(typeof bundleQuoteAllowed==='function'&&!bundleQuoteAllowed(quote))return false;const o=quote?.offer;if(!o||o.stock!=='in_stock'||o.collection_state==='retained'||!inventoryVerified(o,now))return false;const until=o.price_valid_until;return !until||/^\d{4}-\d{2}-\d{2}$/.test(until)&&Number.isFinite(Date.parse(until))&&new Date(until).toISOString().slice(0,10)===until&&until>=new Date(now).toISOString().slice(0,10);}
 function inventoryLabel(offer,now=Date.now()){return offer.stock==='out_of_stock'?'已售罄':offer.collection_state==='retained'?'最近采集失败；库存待重新核实':offer.stock!=='in_stock'?'库存待核实':!inventoryVerified(offer,now)?'库存待核实（上次核实已超过一小时）':offerAvailable({offer},now)?'有库存':'报价有效期已结束；库存待重新核实'}
 function featuredDeal(card,now=Date.now()){
   const current=card.reference_price,original=card.reference_original_price;
@@ -171,7 +171,7 @@ function featuredDeal(card,now=Date.now()){
 }
 function discountLabel(card){const percent=(1-Number(card.reference_price.amount)/Number(card.reference_original_price.amount))*100;return percent<1?'优惠不足 1%':percent>=99.95?'优惠超过 99.9%':'−'+Number(percent.toFixed(1))+'%'}
 function merchantUrl(value){const url=safeUrl(value);return url.startsWith('https://')?url:''}
-function referenceAvailable(quote){return !!quote?.offer&&!quote.reference_verifying&&quote.offer.stock!=='out_of_stock'&&!!merchantUrl(quote.offer.url)}
+function referenceAvailable(quote){if(typeof bundleQuoteAllowed==='function'&&!bundleQuoteAllowed(quote))return false;return !!quote?.offer&&!quote.reference_verifying&&quote.offer.stock!=='out_of_stock'&&!!merchantUrl(quote.offer.url)}
 function referenceLinkMarkup(quote,label='比较路线并核实库存',className='go reference-exit'){
   if(!referenceAvailable(quote))return '';
   const o=quote.offer,key=o.offer_id+'|'+o.url;referenceOffers.set(key,quote);
@@ -245,38 +245,96 @@ function updateGalleryVerificationMetadata(verification){
   }
 }
 if(window.BIKEHUNT_PAGES)window.addEventListener('bikehunt-verification',event=>updateGalleryVerificationMetadata(event.detail));
-async function loadDetail(id,variantId=null){
+function detailSelectorVisible(){return !!(document.getElementById('variant')||document.getElementById('bundleChoices'))}
+function detailSelectionId(){return document.getElementById('variant')?.value||currentBundleSelection?.variantId||null}
+function detailQuoteIdentity(detail){return JSON.stringify((detail?.offers||[]).map(q=>[q.offer.offer_id,q.offer.source_code,q.offer.url,q.offer.identity?.size,q.offer.price?.amount,q.offer.price?.currency,q.offer.stock,q.offer.collection_state,q.offer.verification_identity||null]))}
+function refreshOpenProductDetail(events=[]){
+  if(!currentProduct||!detailSelectorVisible())return;
+  recordBundleQuoteChanges(currentProduct,events);
+  const selection=currentBundleSelection?.productId===currentProduct.product_id?currentBundleSelection.selection:null;
+  const observedChange=events.some(event=>event.recovered_history!==true&&currentProduct.offers.some(q=>event.offer_id===q.offer.offer_id&&(event.stock==='out_of_stock'||event.new_price!=null&&String(event.new_price)!==String(q.offer.price?.amount)||event.currency&&event.currency!==q.offer.price?.currency)));
+  const selectedId=detailSelectionId();
+  return loadDetail(currentProduct.product_id,selectedId||(selection?currentProduct.variant_id:null),{bundleSelection:selection,preservePartial:!!selection&&!selectedId,refresh:true,forceReset:observedChange});
+}
+async function recheckBundleQuotes(){
+  if(!currentProduct||!document.getElementById('bundleChoices'))return;
+  const id=currentProduct.product_id,selection=currentBundleSelection?.selection||{},selectedId=detailSelectionId(),sequence=++detailSequence;
+  const pending=[...bundleQuoteGuards().values()].filter(guard=>guard.productId===id&&!guard.confirmed);
+  document.getElementById('sheetBody').innerHTML='<p class="loading" role="status">正在重新核对变化的组合…</p>';
+  await Promise.all([...new Set(pending.map(guard=>guard.variantId))].map(async variantId=>{
+    try{const detail=await getJson('/api/catalog/'+encodeURIComponent(id)+'?variant_id='+encodeURIComponent(variantId));
+      if(sequence!==detailSequence||!sheet.classList.contains('open')||detail.product_id!==id||detail.variant_id!==variantId)return;
+      observeBundleDetail(detail);
+    }catch{/* Keep the exact offer fenced until it can actually be verified. */}
+  }));
+  if(sequence!==detailSequence||!sheet.classList.contains('open'))return;
+  return loadDetail(id,selectedId,{bundleSelection:selection,refresh:true,message:'已重新读取当前报价；仍未同步的组合继续停用。',focusId:'bundle-jersey'});
+}
+async function loadDetail(id,variantId=null,options={}){
   if(typeof cancelPurchaseContext==='function')cancelPurchaseContext();
-  const sequence=++detailSequence;
+  const previous=currentProduct?.product_id===id?currentProduct:null,sequence=++detailSequence;
   const body=document.getElementById('sheetBody');body.innerHTML='<div class="loading" role="status">正在读取同款报价…</div>';
   try{
     const detail=await getJson('/api/catalog/'+encodeURIComponent(id)+(variantId?'?variant_id='+encodeURIComponent(variantId):''));
     if(sequence!==detailSequence||!sheet.classList.contains('open'))return;
-    currentProduct=detail;for(const quote of detail.offers){quote.reference_product_id=detail.product_id;quote.reference_variant_id=detail.variant_id;}
-    document.getElementById('sheetImg').style.display='';document.getElementById('sheetImg').src=safeUrl(detail.image);document.getElementById('sheetBrand').textContent=detail.identity.brand;
-    document.getElementById('sheetName').textContent=detail.name_zh||detail.name;
-    const best=detail.offers.find(o=>o.offer.offer_id===detail.recommended_offer_id&&offerAvailable(o));
-    const confirmedSoldOut=detail.offers.length>0&&detail.offers.every(q=>q.offer.stock==='out_of_stock');
-    const inventoryExpired=detail.offers.some(q=>q.offer.stock==='in_stock'&&!inventoryVerified(q.offer));
-    const summary='<div class="summary-box"><h4>下一步：比较运输路线</h4><p>先选择具体商店报价，再比较直邮、转运和香港途径。费用、库存或中国发卡条件未齐时，仅供核实，不确认最低到手价。</p></div>';
-    const available=detail.variants.filter(v=>v.in_stock&&v.size&&(v.variant_id!==detail.variant_id||detail.offers.some(q=>offerAvailable(q))));
-    const selected=variantId&&available.some(v=>v.variant_id===variantId);
-    const colors=detail.colors?.filter(c=>c.in_stock)||[];
-    const variants=(colors.length>1?'<div class="variant-bar"><label for="colorChoice">现货颜色</label><select id="colorChoice">'+colors.map(c=>'<option value="'+e(c.product_id)+'" '+(c.product_id===id?'selected':'')+'>'+e(c.color)+'</option>').join('')+'</select></div>':'')+'<div class="variant-bar"><label for="variant">先选现货尺码</label><select id="variant"><option value="">请选择剩余现货规格</option>'+available.map(v=>'<option value="'+e(v.variant_id)+'" '+(selected&&v.variant_id===detail.variant_id?'selected':'')+'>'+e(v.size)+' · '+v.source_count+' 个渠道 · 商品参考 '+e(cny(v.product_cny_from))+'</option>').join('')+'</select></div><div class="size-choices">'+available.map(v=>'<button type="button" data-variant="'+e(v.variant_id)+'" aria-pressed="'+Boolean(selected&&v.variant_id===detail.variant_id)+'">'+e(v.size)+'</button>').join('')+'</div><p class="spec-note">颜色：'+e(detail.identity.color||'参照当前商品图，原站核对颜色')+'。只列最近一小时内核实有库存的尺码；售罄、核实过期和未知库存不作为现货尺码展示；可从下方官网链接核对当前情况。</p>';
-    body.innerHTML=variants+'<div id="fitReference"></div>'+
-      (detail.identity.mpn?'<div class="model-code">制造商型号 '+e(detail.identity.mpn)+(detail.identity.color?' · '+e(detail.identity.color):'')+'</div>':'')+
-      (selected?summary+'<div class="offers"><h4>已选 '+e(detail.identity.size)+' · '+e(detail.identity.color||'当前款')+' · '+detail.offers.length+' 条同规格报价</h4>'+detail.offers.map(offerMarkup).join('')+'</div>':'<div class="summary-box"><h4>'+(confirmedSoldOut?'所示规格 '+e(detail.identity.size||'')+' 已售罄':available.length?'选择上方尺码后，显示对应价格':inventoryExpired?'库存待核实':'尚未取得可选的现货规格')+'</h4><p>'+(confirmedSoldOut?'该规格已确认售罄，目前没有购买链接。其他尺码请分别核对。':available.length?'不同尺码的库存与价格可能不同，先选规格再比较。':inventoryExpired?'历史价格仍可参考；上次库存核实已超过一小时，尺码待核实。可前往官网商品页查看当前情况。':'当前报价可供参考；未知库存不会作为现货尺码显示。可前往官网商品页自行核对。')+'</p></div>')+
-      (!selected?referenceOffersMarkup(detail):'')+
-
-      '<div class="service-note">汇率日期 '+e(detail.fx.rate_date||'待获取')+(detail.fx.stale?' · 使用过期缓存':'')+'。人民币金额为参考，信用卡入账及手续费以发卡行为准。<br>BikeHunt 只提供信息与外链，付款、订单及售后由第三方网站负责。</div>';
-    document.getElementById('variant').onchange=event=>loadDetail(id,event.target.value||null);
-    const colorSelect=document.getElementById('colorChoice');if(colorSelect)colorSelect.onchange=event=>loadDetail(event.target.value,null);
-    body.querySelectorAll('[data-variant]').forEach(button=>button.onclick=()=>loadDetail(id,button.dataset.variant));
-    body.querySelectorAll('.guide-start').forEach(button=>button.onclick=()=>startGuide(detail,button.dataset.offer));
-    bindMerchantGuides(detail,selected?detail.variant_id:null);
-    refreshFitReference(detail,sequence);
-    if(typeof rememberPurchaseDetail==='function')rememberPurchaseDetail(detail,selected);
-  }catch(error){if(sequence!==detailSequence)return;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>'+e(error.message)+'<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId)}
+    if(detail.product_id!==id||variantId&&detail.variant_id!==variantId)throw Error('所选规格已变化，请重新选择商品');
+    const resetBundle=!!bundleVariantModel(detail)&&options.refresh&&!options.preservePartial&&variantId&&(options.forceReset||previous&&detailQuoteIdentity(previous)!==detailQuoteIdentity(detail));
+    if(resetBundle){const parts=parseBundleSize(detail.identity.size)||options.bundleSelection||{};options={...options,bundleSelection:{jersey:parts.jersey,bib:parts.bib},message:'所选组合的价格或库存已变化，请重新选择袜子，确认最新报价。'};variantId=null;}
+    renderProductDetail(detail,options.preservePartial?null:variantId,sequence,options);
+    if(options.focusId)document.getElementById(options.focusId)?.focus();
+  }catch(error){if(sequence!==detailSequence)return;currentBundleSelection=null;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>'+e(error.message)+'<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId,options)}
+}
+function renderProductDetail(detail,variantId,sequence,options={}){
+  const id=detail.product_id,body=document.getElementById('sheetBody');
+  observeBundleDetail(detail);
+  currentProduct=detail;referenceOffers.clear();for(const quote of detail.offers){quote.reference_product_id=detail.product_id;quote.reference_variant_id=detail.variant_id;}
+  document.getElementById('sheetImg').style.display='';document.getElementById('sheetImg').src=safeUrl(detail.image);document.getElementById('sheetBrand').textContent=detail.identity.brand;
+  document.getElementById('sheetName').textContent=detail.name_zh||detail.name;
+  const confirmedSoldOut=detail.offers.length>0&&detail.offers.every(q=>q.offer.stock==='out_of_stock');
+  const inventoryExpired=detail.offers.some(q=>q.offer.stock==='in_stock'&&!inventoryVerified(q.offer));
+  const summary='<div class="summary-box"><h4>下一步：比较运输路线</h4><p>先选择具体商店报价，再比较直邮、转运和香港途径。费用、库存或中国发卡条件未齐时，仅供核实，不确认最低到手价。</p></div>';
+  const available=detail.variants.filter(v=>v.in_stock&&v.size&&(v.variant_id!==detail.variant_id||detail.offers.some(q=>offerAvailable(q))));
+  // VariantChoice.in_stock comes from the server's exact-offer freshness check.
+  // Recheck the loaded variant's quotes as well before allowing an action.
+  const model=bundleVariantModel(detail)?.map(row=>({...row,variant:{...row.variant,in_stock:available.some(v=>v.variant_id===row.variant.variant_id)&&!bundleVariantBlocked(id,row.variant.variant_id)}}));
+  let selected=!!variantId&&available.some(v=>v.variant_id===variantId),selection={};
+  if(model){
+    const saved=history.state?.bikehuntPurchase;
+    const wanted=selected?parseBundleSize(detail.identity.size):options.bundleSelection||(saved?.productId===id&&saved.stage==='detail'?saved.bundleSelection:null);
+    selection=normalizeBundleSelection(model,wanted);
+    selected=selected&&exactBundleVariant(model,selection)?.variant_id===detail.variant_id;
+    currentBundleSelection={productId:id,selection,variantId:selected?detail.variant_id:null};
+  }else currentBundleSelection=null;
+  const colors=detail.colors?.filter(c=>c.in_stock)||[];
+  const colorMarkup=colors.length>1?'<div class="variant-bar"><label for="colorChoice">现货颜色</label><select id="colorChoice">'+colors.map(c=>'<option value="'+e(c.product_id)+'" '+(c.product_id===id?'selected':'')+'>'+e(c.color)+'</option>').join('')+'</select></div>':'';
+  const longLabels=!model&&detail.variants.some(v=>String(v.size).length>40);
+  const ordinaryMarkup='<div class="variant-bar"><label for="variant">先选现货尺码</label><select id="variant"><option value="">请选择剩余现货规格</option>'+available.map((v,index)=>'<option value="'+e(v.variant_id)+'" '+(selected&&v.variant_id===detail.variant_id?'selected':'')+'>'+e(compactVariantLabel(v.size,detail.variants.indexOf(v)))+' · '+v.source_count+' 个渠道 · 商品参考 '+e(cny(v.product_cny_from))+'</option>').join('')+'</select></div><div class="size-choices">'+available.map((v,index)=>'<button type="button" data-variant="'+e(v.variant_id)+'" aria-pressed="'+Boolean(selected&&v.variant_id===detail.variant_id)+'">'+e(compactVariantLabel(v.size,detail.variants.indexOf(v)))+'</button>').join('')+'</div>'+(longLabels?'<details class="variant-original"><summary>查看组合编号与商家原始规格</summary>'+detail.variants.map((v,index)=>'<p>'+e(compactVariantLabel(v.size,index))+(v.in_stock?'':v.stock_state==='out_of_stock'?'（已售罄）':'（库存待核实）')+'：'+e(v.size)+'</p>').join('')+'</details>':'');
+  const retryGuards=model&&[...bundleQuoteGuards().values()].some(guard=>guard.productId===id&&!guard.confirmed)?'<button type="button" class="bundle-recheck" data-bundle-recheck>重新核对变化的组合</button>':'';
+  const variants=colorMarkup+(model?bundleSelectorMarkup(model,selection,options.message||(variantId&&!selected?'原选组合已售罄、报价更新尚未同步或库存待核实，请重新选择。':'')):ordinaryMarkup)+retryGuards+'<p class="spec-note">颜色：'+e(detail.identity.color||'参照当前商品图，原站核对颜色')+'。只列最近一小时内核实有库存的尺码；售罄、核实过期和未知库存不作为现货尺码展示；可从官网核对当前情况。</p>';
+  const selectedLabel=compactVariantLabel(detail.identity.size,detail.variants.findIndex(v=>v.variant_id===detail.variant_id));
+  body.innerHTML=variants+'<div id="fitReference"></div>'+
+    (detail.identity.mpn?'<div class="model-code">制造商型号 '+e(detail.identity.mpn)+(detail.identity.color?' · '+e(detail.identity.color):'')+'</div>':'')+
+    (selected?summary+'<div class="offers"><h4>已选 '+e(selectedLabel)+' · '+e(detail.identity.color||'当前款')+' · '+detail.offers.length+' 条同规格报价</h4>'+detail.offers.map(offerMarkup).join('')+'</div>':'<div class="summary-box"><h4>'+(model?'选齐三件套后，显示对应价格':confirmedSoldOut?'所示规格 '+e(selectedLabel)+' 已售罄':available.length?'选择上方尺码后，显示对应价格':inventoryExpired?'库存待核实':'尚未取得可选的现货规格')+'</h4><p>'+(model?'每个完整组合对应商家的一个实际规格；未选齐时不显示购买入口。':confirmedSoldOut?'该规格已确认售罄，目前没有购买链接。其他尺码请分别核对。':available.length?'不同尺码的库存与价格可能不同，先选规格再比较。':inventoryExpired?'历史价格仍可参考；上次库存核实已超过一小时，尺码待核实。可前往官网商品页查看当前情况。':'当前报价可供参考；未知库存不会作为现货尺码显示。可前往官网商品页自行核对。')+'</p></div>')+
+    (!selected&&!model?referenceOffersMarkup(detail):'')+
+    '<div class="service-note">汇率日期 '+e(detail.fx.rate_date||'待获取')+(detail.fx.stale?' · 使用过期缓存':'')+'。人民币金额为参考，信用卡入账及手续费以发卡行为准。<br>BikeHunt 只提供信息与外链，付款、订单及售后由第三方网站负责。</div>';
+  const single=document.getElementById('variant');if(single)single.onchange=event=>loadDetail(id,event.target.value||null);
+  const colorSelect=document.getElementById('colorChoice');if(colorSelect)colorSelect.onchange=event=>loadDetail(event.target.value,null);
+  body.querySelectorAll('[data-variant]').forEach(button=>button.onclick=()=>loadDetail(id,button.dataset.variant));
+  body.querySelectorAll('[data-bundle-part]').forEach(select=>select.onchange=()=>{
+    const index=BUNDLE_PARTS.findIndex(part=>part.key===select.dataset.bundlePart),next={};
+    for(const part of BUNDLE_PARTS.slice(0,index))next[part.key]=selection[part.key];
+    next[select.dataset.bundlePart]=select.value;
+    const clean=normalizeBundleSelection(model,next),exact=exactBundleVariant(model,clean),focusId='bundle-'+BUNDLE_PARTS[Math.min(index+1,2)].key;
+    if(exact){loadDetail(id,exact.variant_id,{bundleSelection:clean,focusId});return}
+    if(typeof cancelPurchaseContext==='function')cancelPurchaseContext();
+    renderProductDetail(detail,null,++detailSequence,{bundleSelection:clean});
+    const target=document.getElementById(focusId);(target&&!target.disabled?target:document.getElementById(select.id))?.focus();
+  });
+  body.querySelectorAll('[data-bundle-recheck]').forEach(button=>button.onclick=()=>recheckBundleQuotes());
+  body.querySelectorAll('.guide-start').forEach(button=>button.onclick=()=>startGuide(detail,button.dataset.offer));
+  bindMerchantGuides(detail,selected?detail.variant_id:null);
+  if(!model)refreshFitReference(detail,sequence);
+  if(typeof rememberPurchaseDetail==='function')rememberPurchaseDetail(detail,selected,model?selection:null);
 }
 function openProduct(id,variantId=null,allowSoldOut=false){
   if(!allowSoldOut&&items.find(p=>p.product_id===id)?.stock_state==='out_of_stock')return;
@@ -285,7 +343,7 @@ function openProduct(id,variantId=null,allowSoldOut=false){
   const item=items.find(p=>p.product_id===id);if(item){document.getElementById('sheetName').textContent=item.name;document.getElementById('sheetBrand').textContent=item.brand;document.getElementById('sheetImg').src=safeUrl(item.image)}
   document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus();loadDetail(id,variantId);
 }
-function closeSheet(){if(typeof clearPurchaseState==='function')clearPurchaseState();referenceOffers.clear();if(typeof merchantGuideSource!=='undefined')merchantGuideSource=null;if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
+function closeSheet(){currentBundleSelection=null;if(typeof clearPurchaseState==='function')clearPurchaseState();referenceOffers.clear();if(typeof merchantGuideSource!=='undefined')merchantGuideSource=null;if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
 async function init(){
   gallery.innerHTML='<div class="empty loading" role="status"><strong>正在整理骑行好价</strong>读取商品与人民币参考价…</div>';
   try{

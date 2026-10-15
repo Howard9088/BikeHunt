@@ -55,6 +55,8 @@ jobs:
         run: node scripts/test_pages_freshness.js
       - name: Validate purchase safety and visible labels
         run: node scripts/test_purchase_safety.js
+      - name: Validate exact bundle selection and stock combinations
+        run: node scripts/test_bundle_selection.js
       - name: Validate ordered routes and registration safety
         run: node scripts/test_route_flow.js
       - name: Validate stock expiry and open purchase flows
@@ -109,6 +111,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_route_flow_ui.py
+      - name: Validate bundle selectors and exact purchase restoration
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_bundle_selection_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
       - name: Check policy changes once daily

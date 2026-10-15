@@ -35,7 +35,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     output.mkdir()
     web = root/"web"
     (output/"web").mkdir()
-    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "purchase-flow.js"):
+    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "purchase-flow.js", "bundle-variants.js"):
         shutil.copy2(web/name, output/"web"/name)
     if (web/"icons").is_dir():
         shutil.copytree(web/"icons", output/"web/icons")
@@ -45,7 +45,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
                           '<script src="./web/pages-adapter.js?v=BIKEHUNT_RELEASE_COMMIT" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
     # Tie every copied interactive asset to this exact deployed release.
     # Keep source HTML and pending icon work untouched.
-    index = re.sub(r'(\./web/(?:gallery|flows)\.css|\./web/(?:profile|gallery|flows|pages-adapter|registration-guides|purchase-readiness|purchase-flow)\.js)(?:\?[^" ]*)?',
+    index = re.sub(r'(\./web/(?:gallery|flows)\.css|\./web/(?:profile|gallery|flows|pages-adapter|registration-guides|purchase-readiness|purchase-flow|bundle-variants)\.js)(?:\?[^" ]*)?',
                    r'\1?v=BIKEHUNT_RELEASE_COMMIT', index)
     index = index.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')

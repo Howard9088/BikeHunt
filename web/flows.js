@@ -142,7 +142,7 @@ async function bootFlows(){
   if(typeof restorePurchaseState==='function')restorePurchaseState().catch(()=>{});
   refreshMessageState().catch(()=>{});
     if(activeTab!=='products')renderDirectory(activeTab);
-  const onPrices=(events,freshnessChanged=false)=>{const wasMessages=messagesOpen;if(typeof invalidatePurchaseFlow==='function')invalidatePurchaseFlow(events);invalidateReferenceLinks(events);refreshReferenceLinks().catch(()=>{});if(hasNewPriceMessages(events)){document.getElementById('updateToast').hidden=false;setTimeout(()=>document.getElementById('updateToast').hidden=true,5000)}if(wasMessages)showMessages().catch(panelError);else refreshMessageState().catch(()=>{});refreshCatalogSilently(false);if(currentProduct&&document.getElementById('variant')&&(freshnessChanged||events.some(x=>currentProduct.offers.some(q=>q.offer.offer_id===x.offer_id)))){loadDetail(currentProduct.product_id,document.getElementById('variant').value||null)}};
+  const onPrices=(events,freshnessChanged=false)=>{const wasMessages=messagesOpen;if(typeof invalidatePurchaseFlow==='function')invalidatePurchaseFlow(events);invalidateReferenceLinks(events);refreshReferenceLinks().catch(()=>{});if(hasNewPriceMessages(events)){document.getElementById('updateToast').hidden=false;setTimeout(()=>document.getElementById('updateToast').hidden=true,5000)}if(wasMessages)showMessages().catch(panelError);else refreshMessageState().catch(()=>{});refreshCatalogSilently(false);if(currentProduct&&(document.getElementById('variant')||document.getElementById('bundleChoices'))&&(freshnessChanged||events.some(x=>currentProduct.offers.some(q=>q.offer.offer_id===x.offer_id))||document.getElementById('bundleChoices'))){refreshOpenProductDetail(events)}};
   if(window.BIKEHUNT_PAGES){window.addEventListener('bikehunt-published',event=>onPrices(event.detail.events,event.detail.freshnessChanged));return}
   const eventSource=new EventSource('/api/updates/stream');eventSource.addEventListener('prices',event=>onPrices(JSON.parse(event.data)));window.addEventListener('pagehide',()=>{eventSource.close()},{once:true});
 }
@@ -441,11 +441,11 @@ function expireLocalInventory(now=Date.now()){
   let changed=false;
   for(const card of items){if(card.stock_state==='in_stock'&&!inventoryVerified(card,now)){card.stock_state='unknown';card.reference_stock='unknown';card.available_sizes=[];card.recommended_total_cny=null;card.status='库存待核实';changed=true}else if(card.reference_stock==='in_stock'&&!offerAvailable({offer:{stock:card.reference_stock,collection_state:card.reference_collection_state,fetched_at:card.fetched_at,price_valid_until:card.reference_price_valid_until}},now)){card.reference_stock='unknown';card.recommended_total_cny=null;changed=true}}
   if(guideContext&&!guideContext.reference&&!offerAvailable(guideContext.quote,now))showInventoryInvalidated(guideContext.quote);
-  else if(currentProduct&&document.getElementById('variant')&&currentProduct.variants.some(v=>v.variant_id===currentProduct.variant_id&&v.in_stock)&&!currentProduct.offers.some(q=>offerAvailable(q,now)))showInventoryInvalidated(currentProduct.offers.find(q=>q.offer.stock==='in_stock')||currentProduct.offers[0]);
+  else if(currentProduct&&(document.getElementById('variant')||document.getElementById('bundleChoices'))&&currentProduct.variants.some(v=>v.variant_id===currentProduct.variant_id&&v.in_stock)&&!currentProduct.offers.some(q=>offerAvailable(q,now)))showInventoryInvalidated(currentProduct.offers.find(q=>q.offer.stock==='in_stock')||currentProduct.offers[0]);
   if(changed&&activeTab==='products'){const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;render(active)}
 }
 // Run independently of network success and price-change events, including resumed tabs.
-const inventoryTimer=setInterval(()=>{expireLocalInventory();if(!window.BIKEHUNT_PAGES){refreshCatalogSilently(false);if(!guideContext&&currentProduct&&document.getElementById('variant'))loadDetail(currentProduct.product_id,document.getElementById('variant').value||null)}},60000);
+const inventoryTimer=setInterval(()=>{expireLocalInventory();if(!window.BIKEHUNT_PAGES){refreshCatalogSilently(false);if(!guideContext&&currentProduct&&(document.getElementById('variant')||document.getElementById('bundleChoices')))refreshOpenProductDetail()}},60000);
 window.addEventListener('focus',()=>expireLocalInventory());
 window.addEventListener('pagehide',()=>clearInterval(inventoryTimer),{once:true});
 
