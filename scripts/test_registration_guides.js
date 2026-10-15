@@ -46,10 +46,12 @@ for(const modify of [d=>d.entries.push(structuredClone(d.entries[0])),d=>d.entri
 const malicious=structuredClone(data);malicious.entries[0].frames[0].caption='<img src=x onerror=alert(1)>';install(malicious);assert.ok(context.registrationPublicAccountMarkup('visma').includes('&lt;img src=x onerror=alert(1)&gt;'));
 const flows=fs.readFileSync('web/flows.js','utf8'),gallery=fs.readFileSync('web/gallery.js','utf8'),index=fs.readFileSync('web/index.html','utf8');
 assert.ok(index.indexOf('/web/registration-guides.js')<index.indexOf('/web/gallery.js'));
-assert.ok(gallery.includes('registrationHelpMarkup(q.offer.source_code,q.offer.sales_region)'));
-assert.ok(gallery.includes('registrationHelpMarkup(o.source_code,o.sales_region)'));
-assert.ok(flows.includes('registrationHelpMarkup(market.code,market.salesRegion)'));
-assert.ok(flows.indexOf('registrationHelpMarkup(o.source_code,o.sales_region)')<flows.indexOf('data-purchase-link'));
+const purchaseFlow=fs.readFileSync('web/purchase-flow.js','utf8');
+assert.ok(index.indexOf('/web/flows.js')<index.indexOf('/web/purchase-flow.js'));
+assert.ok(!gallery.includes('registrationHelpMarkup('),'Product details must not start account instructions');
+assert.ok(!flows.includes('registrationHelpMarkup('),'Amazon, inventory and read-only language panels must not contain early registration');
+assert.ok(purchaseFlow.includes('registrationHelpMarkup('),'Registration help belongs to the final interstitial');
+assert.ok(purchaseFlow.includes('registrationInterstitial'));
 assert.ok(flows.includes("if(!entry.markets.includes(market))entry.markets.push(market)"));
 (async()=>{
  response=data;await context.loadRegistrationGuides();assert.equal(requests.length,1);assert.equal(requests[0][1].cache,'no-store');assert.ok(requests[0][0].startsWith('https://bikehunt.example/BikeHunt/web/registration-guides.json?check='));

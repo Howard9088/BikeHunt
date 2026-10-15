@@ -56,12 +56,14 @@ def assert_no_overflow(page):
 
 
 def open_guide(page, code, selected=False):
+    if page.locator('#sheet').get_attribute('aria-hidden') == 'false':
+        page.locator('#close').click()
     page.locator('.card .compare-button').click()
-    expect(page.locator('[data-merchant-guide]')).to_have_count(4)
+    expect(page.locator('[data-merchant-guide],.registration-help,.purchase-readiness')).to_have_count(0)
     if selected:
         page.locator('[data-variant=S]').click()
         expect(page.locator('.guide-start')).to_have_count(4)
-    page.locator(f'[data-merchant-guide={code}]').click()
+    page.evaluate('(options) => openMerchantGuide(currentProduct, options.code, options.variant)', {'code': code, 'variant': 'S' if selected else None})
     expect(page.locator('#merchantGuideTitle')).to_be_focused()
     expect(page.locator('#merchantLanguageGuide')).to_be_visible()
 
@@ -134,7 +136,7 @@ def main():
                     expect(guide).to_contain_text('未实测注册或结账成功')
                     expect(guide).to_contain_text(special_text)
                     expect(guide.locator('form,input,select,textarea,iframe,[data-purchase-link],[data-reference-link]')).to_have_count(0)
-                    expect(guide.locator('img:not([data-registration-image])')).to_have_count(0)
+                    expect(guide.locator('img,.registration-help,.registration-guide,.purchase-readiness')).to_have_count(0)
                     expect(guide.locator('.merchant-guide-step')).to_have_count(6)
                     assert external_reads == [], 'Opening a local guide must not contact help or account websites'
                     translation = guide.locator('.merchant-translation')
@@ -169,7 +171,7 @@ def main():
                     page.locator('#sheetBody').evaluate('(element) => element.scrollTop = 0')
                     page.screenshot(path=str(OUT / f'merchant_guide_{code}_{mode}.png'))
                     page.locator('#merchantGuideBack').click()
-                    expect(page.locator(f'[data-merchant-guide={code}]')).to_be_focused()
+                    expect(page.locator('[data-merchant-guide],.registration-help,.purchase-readiness')).to_have_count(0)
                     expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed', 'true')
                     assert state['last_variant'] == 'S'
                     expect(page.locator('.guide-start')).to_have_count(4)
@@ -179,7 +181,7 @@ def main():
                 page.keyboard.press('Escape')
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
                 expect(page.locator('.card .compare-button')).to_be_focused()
-                checks.append(mode + ': all merchant entrances, exact return variant/focus, six keyboard accordions, labelled schematic graphics, source limits, mobile translations, no forms or automatic requests')
+                checks.append(mode + ': callable read-only merchant helper, no early account entry, exact return variant, six keyboard accordions, labelled schematic graphics, source limits, mobile translations, no forms or automatic requests')
 
                 # Each scoped official destination remains optional, same-tab and guarded.
                 for code in MERCHANTS:
@@ -209,12 +211,16 @@ def main():
                     assert len(context.pages) == 1
                     assert external_reads[-1] == target
                     page.go_back(wait_until='networkidle')
-                    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+                    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+                    expect(page.locator('#variant')).to_be_visible()
+                    expect(page.locator('#merchantLanguageGuide')).to_have_count(0)
                     assert_scope(page, base, read_state)
                     page.reload(wait_until='networkidle')
-                    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+                    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+                    expect(page.locator('#variant')).to_be_visible()
+                    expect(page.locator('#merchantLanguageGuide')).to_have_count(0)
                     assert_scope(page, base, read_state)
-                checks.append(mode + ': scoped official-help Cancel/Continue, forced same-tab navigation, Back/reload restores source/category/search/read state without reopening a guide')
+                checks.append(mode + ': scoped official-help Cancel/Continue, forced same-tab navigation, Back/reload restores detail and source/category/search/read state without reopening a guide')
 
                 # Changing stock while help is open cannot enable any buying path.
                 open_guide(page, 'maap', selected=True)
@@ -229,8 +235,8 @@ def main():
                 page.locator('#merchantGuideBack').click()
                 expect(page.locator('#sheetBody')).to_contain_text('已售罄')
                 expect(page.locator('.guide-start,[data-purchase-link],[data-reference-link]')).to_have_count(0)
-                expect(page.locator('[data-merchant-guide]')).to_have_count(4)
-                page.locator('[data-merchant-guide=visma]').click()
+                expect(page.locator('[data-merchant-guide]')).to_have_count(0)
+                page.evaluate("openMerchantGuide(currentProduct, 'visma', 'S')")
                 expect(page.locator('#merchantGuideTitle')).to_be_focused()
                 expect(page.locator('.merchant-guide-step')).to_have_count(6)
                 expect(page.locator('[data-purchase-link],[data-reference-link]')).to_have_count(0)

@@ -87,6 +87,47 @@ def event(n, family='173', size='M', sold=False, image=True):
             'product_id':family,'variant_id':size,'current_stock':'out_of_stock' if sold else 'in_stock'}}
 
 
+
+def select_purchase_route(page, route='direct', selected=False):
+    """Registration is available only after an explicit, enabled route choice."""
+    comparison = page.locator('#routeComparison')
+    expect(comparison).to_be_visible()
+    expect(comparison.locator('.registration-help')).to_have_count(0)
+    expect(comparison.locator('[data-route]')).to_have_count(3)
+    for name in ['direct', 'forwarding', 'hongkong']:
+        card = comparison.locator(f'[data-route="{name}"]')
+        expect(card).to_have_count(1)
+        assert card.get_attribute('data-route-status') in {'confirmed', 'conditional', 'unknown', 'prohibited'}
+    if selected:
+        expect(page.locator('#routeContinue')).to_be_enabled()
+    else:
+        expect(page.locator('#routeContinue')).to_be_disabled()
+    choice = comparison.locator(f'[data-route-select="{route}"]')
+    expect(choice).to_be_enabled()
+    choice.click()
+    expect(page.locator('#routeContinue')).to_be_enabled()
+    if comparison.locator(f'[data-route="{route}"]').get_attribute('data-route-status') == 'unknown':
+        expect(page.locator('#routeContinue')).to_have_text('去官网核实 →')
+    page.locator('#routeContinue').click()
+    expect(page.locator('#registrationInterstitial')).to_be_visible()
+    expect(page.locator('#registrationInterstitial .registration-help')).to_have_count(1)
+    expect(page.locator('#routeComparison')).to_have_count(0)
+
+
+def expect_purchase_restored(page, stage='route'):
+    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+    expect(page.locator('#registrationInterstitial' if stage == 'registration' else '#routeComparison')).to_be_visible()
+    assert page.evaluate('history.state && history.state.bikehuntPurchase && history.state.bikehuntPurchase.stage') == stage
+
+
+def cancel_purchase_to_detail(page):
+    if page.locator('#registrationCancel').count():
+        page.locator('#registrationCancel').click()
+    expect(page.locator('#routeComparison')).to_be_visible()
+    page.locator('#routeBack').click()
+    expect(page.locator('#routeComparison,#registrationInterstitial')).to_have_count(0)
+
+
 def exercise_amazon_searches(page, context, base, mode, return_label, checks):
     """No Amazon traffic: intercept every official search and validate each exit."""
     saved_read = page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")
@@ -95,6 +136,7 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
     expect(page.locator('#sheetName')).to_have_text('Amazon购买途径')
     expect(page.locator('[data-amazon-search-link]')).to_have_count(8)
     expect(page.locator('[data-purchase-link],[data-reference-link]')).to_have_count(0)
+    expect(page.locator('.amazon-market .registration-help,.amazon-market .purchase-readiness')).to_have_count(0)
     for text in ['搜索入口，非商品实时报价', '未核实搜索结果中的卖家、价格或库存', '第三方卖家', '不等于 Amazon 自营', '中国大陆', '进口税费', '结账页']:
         expect(page.locator('#sheetBody')).to_contain_text(text)
     logos = page.locator('.amazon-channel-logo')
@@ -178,6 +220,7 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
         link.evaluate('(el, href) => el.setAttribute("href", href)', bad)
         link.click()
         expect(page).to_have_url(base)
+        expect(page.locator('#registrationInterstitial')).to_have_count(0)
     link.evaluate('(el, href) => el.setAttribute("href", href)', original_url)
     page.remove_listener('dialog', reject_unexpected)
     assert not dialogs, dialogs
@@ -189,26 +232,38 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
             assert parsed.scheme == 'https' and parsed.netloc == host and parsed.path == '/s'
             assert parse_qs(parsed.query) == {'k': [query]} and not parsed.fragment
             expect(link).to_have_attribute('target', '_self')
-            page.once('dialog', lambda d: (assert_disclaimer(d), d.dismiss()))
-            link.click()
+            if market_index == 0 and category_index == 0:
+                link.click(modifiers=['Control'])
+            elif market_index == 0 and category_index == 1:
+                link.click(button='middle')
+            elif market_index == 1 and category_index == 0:
+                link.focus(); page.keyboard.press('Enter')
+            else:
+                link.click()
             expect(page).to_have_url(base)
-            expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+            expect(page.locator('#registrationInterstitial')).to_be_visible()
+            expect(page.locator('#registrationInterstitial [data-registration-source]')).to_have_attribute('data-registration-source', code)
             assert len(context.pages) == 1
+            page.locator('#registrationCancel').click()
+            expect(page.locator('.amazon-market')).to_have_count(4)
+            expect(page.locator('#registrationInterstitial')).to_have_count(0)
+            page.locator(f'[data-amazon-search-link="{code}_{category}"]').click()
+            page.once('dialog', lambda d: (assert_disclaimer(d), d.dismiss()))
+            page.locator('#registrationContinue').click()
+            expect(page).to_have_url(base)
+            expect(page.locator('.amazon-market')).to_have_count(4)
+            page.locator(f'[data-amazon-search-link="{code}_{category}"]').click()
             page.once('dialog', lambda d: (assert_disclaimer(d), d.accept()))
             with page.expect_navigation(wait_until='domcontentloaded'):
-                if market_index == 0 and category_index == 0:
-                    link.click(modifiers=['Control'])
-                elif market_index == 0 and category_index == 1:
-                    link.click(button='middle')
-                elif market_index == 1 and category_index == 0:
-                    link.focus(); page.keyboard.press('Enter')
-                else:
-                    link.click()
+                page.locator('#registrationContinue').click()
             expect(page).to_have_url(href)
             assert len(context.pages) == 1
             page.go_back(wait_until='networkidle')
             expect(page).to_have_url(base)
             expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+            if market_index == 0 and category_index == 0:
+                page.reload(wait_until='networkidle')
+                expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
             expect(page.locator('#q')).to_have_value('Stamp Hoodie')
             expect(page.locator('#browseLabel')).to_have_text(return_label)
             expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed', 'true')
@@ -216,6 +271,7 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
             expect(page.locator('#messageBadge')).to_have_text(initial_badge)
             assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
             page.locator('#amazonChannels').click()
+            expect(page.locator('.amazon-market')).to_have_count(4)
     page.locator('#close').click()
     expect(page.locator('#amazonChannels')).to_be_focused()
     page.reload(wait_until='networkidle')
@@ -341,20 +397,31 @@ def main():
                 page.locator('.message-card').filter(has_text='R26173').locator('.message-spec').click();expect(page.locator('#sheetBody')).to_contain_text('制造商型号 R26173');assert state['last_detail_request']==('173','L');expect(page).to_have_url(base)
                 # The separately labelled merchant action is offered only inside product details.
                 reference=page.locator('.reference-exit');expect(reference).to_be_visible()
+                reference.click()
+                select_purchase_route(page)
+                page.locator('#registrationCancel').click()
+                expect(page.locator('#routeComparison')).to_be_visible()
+                page.locator('#routeContinue').click()
                 page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()))
-                reference.click();assert len(context.pages)==1;expect(page).to_have_url(base)
+                page.locator('#registrationContinue').click();assert len(context.pages)==1;expect(page).to_have_url(base)
+                expect(page.locator('#routeComparison')).to_be_visible()
+                page.locator('#routeContinue').click()
                 page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):reference.click()
+                with page.expect_navigation(wait_until='domcontentloaded'):page.locator('#registrationContinue').click()
                 expect(page).to_have_url('https://merchant.example/products/26-173-bah?variant=2');assert len(context.pages)==1
                 page.go_back(wait_until='networkidle')
-                expect(page).to_have_url(base);expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('.card')).to_have_count(1)
-                expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true');expect(page.locator('#messageBadge')).to_be_hidden()
-                page.reload(wait_until='networkidle')
+                expect(page).to_have_url(base);expect_purchase_restored(page)
+                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('.card')).to_have_count(1)
+                expect(page.locator('#messageBadge')).to_be_hidden()
+                page.reload(wait_until='networkidle');expect_purchase_restored(page)
                 expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#messageBadge')).to_be_hidden()
+                cancel_purchase_to_detail(page)
+                expect(page.locator('#sheetBody')).to_contain_text('制造商型号 R26173')
+                page.locator('#close').click()
                 state['events'].insert(0,event(6,'new'))
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[{id:6,category:'jerseys'}],freshnessChanged:false}}))")
                 expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#messageBadge')).to_be_visible()
-                checks.append(mode+': exact thumbnails and internal product/variant actions; generic-name products separate; soldout opens status without purchase link; same-tab Cancel/Continue; brand/team category restored after Back and reload; no guide reopened; read persisted; new increment')
+                checks.append(mode+': exact thumbnails and internal product/variant actions; generic-name products separate; soldout opens status without purchase link; same-tab Cancel/Continue; brand/team category restored after Back and reload; selected route and exact reference restored; read persisted; new increment')
                 # Search is part of the history entry; Back must restore actual results, not just scope.
                 scoped=next(card for card in state['catalog']['items'] if card['category']=='jerseys' and return_source in card['source_codes'])
                 scoped['name']='Stamp Hoodie';scoped['name_zh']='Stamp Hoodie 测试商品'
@@ -363,32 +430,38 @@ def main():
                 page.locator('#q').fill('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品');expect(page.locator('#clear')).to_be_enabled()
                 page.locator('.card .compare-button').click();expect(page.locator('[data-variant="S"]')).to_be_visible();expect(page.locator('.guide-start')).to_have_count(0)
                 expect(page.locator('#fitReference')).to_contain_text('测试数据');page.locator('[data-variant="S"]').click();expect(page.locator('.guide-start')).to_be_enabled();page.locator('.guide-start').click()
-                for _ in range(3):page.locator('#guideNext').click()
-                purchase=page.locator('[data-purchase-link]');expect(purchase).to_have_attribute('target','_self');expect(purchase).to_have_attribute('href','https://merchant.example/bib?variant=S')
-                page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()));purchase.click();expect(page).to_have_url(base);expect(purchase).to_be_visible();assert len(context.pages)==1
+                select_purchase_route(page)
+                expect(page.locator('#registrationInterstitial')).to_contain_text('MAAP')
+                page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()));page.locator('#registrationContinue').click();expect(page).to_have_url(base);expect(page.locator('#routeComparison')).to_be_visible();assert len(context.pages)==1
+                page.locator('#routeContinue').click()
                 page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
-                with page.expect_navigation(wait_until='domcontentloaded'):purchase.click()
+                with page.expect_navigation(wait_until='domcontentloaded'):page.locator('#registrationContinue').click()
                 expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
-                page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true');expect(page.locator('[data-purchase-link]')).to_have_count(0);expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品')
+                page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect_purchase_restored(page);expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品')
                 expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
-                page.reload(wait_until='networkidle');expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
+                page.reload(wait_until='networkidle');expect_purchase_restored(page);expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
                 expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品');expect(page.locator('#clear')).to_be_visible();expect(page.locator('#clear')).to_be_enabled()
+                cancel_purchase_to_detail(page)
+                expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed','true')
+                page.locator('#close').click()
                 exercise_amazon_searches(page, context, base, mode, return_label, checks)
                 exercise_group_entry(page, context, base, mode, return_label, checks)
                 page.locator('#clear').click();expect(page.locator('#q')).to_have_value('');expect(page.locator('.card')).to_have_count(2)
-                checks.append(mode+': search Stamp Hoodie narrows two scoped results to one; final guide Step4 Cancel/Continue uses exact same-tab URL; Back/reload restores query/results, scope/read state and working clear control without reopening guide')
+                checks.append(mode+': search Stamp Hoodie narrows two scoped results to one; explicit route and registration Cancel/Continue use exact same-tab URL; Back/reload restores selected route, query/results, source/size/read state and working clear control')
                 page.locator('[data-tab=products]').click();page.locator('[data-category=all]').click()
                 old='2000-01-01T00:00:00Z';state['detail']['offers'][0]['offer']['fetched_at']=old
                 for v in state['detail']['variants']:v['in_stock']=False
                 page.evaluate("openProduct('partial')");expect(page.locator('#sheetBody')).to_contain_text('库存待核实');expect(page.locator('[data-variant]')).to_have_count(0)
                 reference=page.locator('.reference-exit');expect(reference).to_be_visible()
-                page.once('dialog',lambda d:d.dismiss());reference.click();expect(reference).to_be_visible();assert len(context.pages)==1
-                page.once('dialog',lambda d:d.accept())
-                with page.expect_navigation(wait_until='domcontentloaded'):reference.click()
+                reference.click();select_purchase_route(page)
+                page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()));page.locator('#registrationContinue').click();expect(page.locator('#routeComparison')).to_be_visible();assert len(context.pages)==1
+                page.locator('#routeContinue').click()
+                page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
+                with page.expect_navigation(wait_until='domcontentloaded'):page.locator('#registrationContinue').click()
                 expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
-                page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
-                page.reload(wait_until='networkidle');expect(page.locator('#messageBadge')).to_have_text('1')
-                page.evaluate("openProduct('partial')");expect(page.locator('.reference-exit')).to_be_visible()
+                page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect_purchase_restored(page)
+                page.reload(wait_until='networkidle');expect_purchase_restored(page);expect(page.locator('#messageBadge')).to_have_text('1')
+                cancel_purchase_to_detail(page);expect(page.locator('.reference-exit')).to_be_visible()
                 page.screenshot(path=str(OUT/f'catalog_stale_reference_{mode}.png'))
                 state['detail']['offers'][0]['offer']['stock']='out_of_stock'
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[],freshnessChanged:true}}))")

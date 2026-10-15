@@ -74,7 +74,9 @@ vm.runInContext('merchantGuideSource=null',context);assert.equal(context.allowed
 assert.equal(saved,navigated.length);assert.ok(prevented>saved);assert.ok(confirmations>0);
 assert.equal(JSON.stringify(detail),unchanged,'Guide never changes any offer');
 assert.ok(gallery.includes("if(typeof merchantGuideSource!=='undefined')merchantGuideSource=null;"));
-assert.ok(gallery.includes('merchantGuidesMarkup(detail)+'));assert.ok(gallery.includes('bindMerchantGuides(detail,selected?detail.variant_id:null)'));
+assert.ok(!gallery.includes('merchantGuidesMarkup(detail)+'),'Account instructions are not an early product-detail entry');
+assert.ok(!source.includes('registrationHelpMarkup(')&&!source.includes('registrationGuideMarkup('),'Read-only language guide does not duplicate registration');
+assert.ok(!source.includes('purchaseReadinessMarkup('));
 assert.ok(css.includes('.merchant-guide-buttons button:focus-visible'));assert.ok(css.includes('@media(max-width:450px)'));assert.ok(css.includes('.merchant-diagram-cells{grid-template-columns:1fr}'));
 (async()=>{
   context.openMerchantGuide(detail,'maap','M');await elements.merchantGuideBack.onclick();assert.deepEqual(loaded.at(-1),['jersey','M']);assert.equal(focus,'maap');assert.equal(vm.runInContext('merchantGuideSource',context),null);

@@ -41,8 +41,8 @@ function render(preserveId=null){
       '<div class="product-info"><div class="brand">'+e(p.brand)+'</div><h2>'+e(p.name_zh||p.name)+'</h2><div class="original-name">'+e(p.name)+'</div>'+
       '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?'折扣规格 '+e([p.reference_size,p.reference_color].filter(Boolean).join(' / ')||'商家默认规格'):stockVerified&&p.available_sizes?.length?'现货 '+e(p.available_sizes.join(' / ')):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
       (sold?'<span class="sold">所示报价已售罄</span>':'')+'</div>'+
-      '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':sold?'所示报价已售罄':isVerified?'最低预计成本 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
-      '<div class="best-price">'+e(cny(!deal&&isVerified?p.recommended_total_cny:p.reference_cny))+(deal?'':'<small> 起</small>')+'</div>'+
+      '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
+      '<div class="best-price">'+e(cny(p.reference_cny))+(deal?'':'<small> 起</small>')+'</div>'+
       '<div class="foreign-price">'+(deal?'<span class="original-price">商家原价 <s>'+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</s></span> · 现价 ':'')+e(money(p.reference_price.amount,p.reference_price.currency))+' · '+e(p.reference_source)+'</div>'+
       (deal?'<div class="deal-spec">未取得折扣结束时间</div>':'')+'</div>'+
       '<button class="compare-button" type="button">选规格，比较 '+p.source_count+' 个渠道 <span aria-hidden="true">→</span></button>'+
@@ -172,7 +172,7 @@ function featuredDeal(card,now=Date.now()){
 function discountLabel(card){const percent=(1-Number(card.reference_price.amount)/Number(card.reference_original_price.amount))*100;return percent<1?'优惠不足 1%':percent>=99.95?'优惠超过 99.9%':'−'+Number(percent.toFixed(1))+'%'}
 function merchantUrl(value){const url=safeUrl(value);return url.startsWith('https://')?url:''}
 function referenceAvailable(quote){return !!quote?.offer&&!quote.reference_verifying&&quote.offer.stock!=='out_of_stock'&&!!merchantUrl(quote.offer.url)}
-function referenceLinkMarkup(quote,label='去官网查看',className='go reference-exit'){
+function referenceLinkMarkup(quote,label='比较路线并核实库存',className='go reference-exit'){
   if(!referenceAvailable(quote))return '';
   const o=quote.offer,key=o.offer_id+'|'+o.url;referenceOffers.set(key,quote);
   return '<a class="'+e(className)+'" data-reference-link="'+e(key)+'" target="_self" rel="noopener noreferrer" href="'+e(merchantUrl(o.url))+'">'+label+'</a>';
@@ -181,23 +181,20 @@ function referenceOffersMarkup(detail){
   const quotes=detail.offers.filter(referenceAvailable);
   for(const quote of quotes){quote.reference_product_id=detail.product_id;quote.reference_variant_id=detail.variant_id;}
   if(!quotes.length)return '';
-  return '<div class="reference-offers"><h4>查看官网商品页</h4><p class="spec-note">历史报价仅供参考，库存待核实。官网链接不代表所示尺码可购买，请在商家页面重新选择并核对尺码、颜色、价格和库存。</p>'+quotes.map(q=>'<div class="reference-channel"><span>'+e(q.offer.source_name)+'</span>'+(typeof purchaseReadinessMarkup==='function'?purchaseReadinessMarkup(q.offer):'')+(typeof registrationHelpMarkup==='function'?registrationHelpMarkup(q.offer.source_code,q.offer.sales_region):'')+referenceLinkMarkup(q)+'</div>').join('')+'</div>';
+  return '<div class="reference-offers"><h4>库存待核实的报价参考</h4><p class="spec-note">历史报价仅供参考，库存待核实。官网链接不代表所示尺码可购买，请在商家页面重新选择并核对尺码、颜色、价格和库存。</p>'+quotes.map(q=>'<div class="reference-channel"><span>'+e(q.offer.source_name)+'</span>'+(typeof paymentFeasibilityMarkup==='function'?paymentFeasibilityMarkup(q.offer):'')+referenceLinkMarkup(q)+'</div>').join('')+'</div>';
 }
 function offerMarkup(compared){
   const o=compared.offer;
   const available=offerAvailable(compared),stock=inventoryLabel(o),recommended=compared.eligible&&available;
-  return '<div class="offer" data-source="'+e(o.source_code)+'"><div class="offer-top"><div class="source-name">'+e(o.source_name)+'</div><span class="tag '+(recommended?'ok':o.stock==='out_of_stock'?'no':'wait')+'">'+(recommended?'推荐渠道':stock)+'</span></div>'+
+  return '<div class="offer" data-source="'+e(o.source_code)+'"><div class="offer-top"><div class="source-name">'+e(o.source_name)+'</div><span class="tag '+(recommended?'ok':o.stock==='out_of_stock'?'no':'wait')+'">'+stock+'</span></div>'+
     '<div class="source-logistics">'+e(o.sales_region||'渠道报价')+' · 发货地：'+e(o.dispatch_origin||'尚待官方核实')+'</div>'+
     (o.purchase_requirements?.length?'<div class="offer-note">'+o.purchase_requirements.map(e).join(' · ')+'</div>':'')+
     '<div class="price">'+e(money(o.price.amount,o.price.currency))+' <span>≈ '+e(cny(compared.product_cny))+'</span></div>'+
-    landedCostMarkup(compared)+
-    '<div class="checks">'+tag(o.shipping_to_china.status,'直邮中国')+(o.china_issued_card.status==='no'?tag('no','中国发行卡'):o.accepted_card_networks?.length?'<span class="tag ok">支持 '+e(o.accepted_card_networks.join(' / '))+'</span>':tag(o.china_issued_card.status,'银行卡支付'))+'</div>'+
-    (o.accepted_card_networks?.length?'<div class="offer-note">支持 Visa、Mastercard 等卡组织，不等于已确认接受中国发行的银行卡。请先向商家确认发卡地区限制；实际付款仍须银行与商家授权。</div>':'')+
+    '<p class="offer-note">先比较运输路线，再核对该路线的费用。未知运费、税费和银行卡费用不按 0 计算。</p>'+ 
+    (typeof paymentFeasibilityMarkup==='function'?paymentFeasibilityMarkup(o):'')+
     (compared.reasons.length?'<div class="offer-note">'+compared.reasons.map(e).join(' · ')+'</div>':'')+
     '<div class="source-time">'+(o.fetched_at?'采集 '+e(timeText(o.fetched_at)):e(timeText(null)))+'</div>'+
-    (typeof purchaseReadinessMarkup==='function'?purchaseReadinessMarkup(o):'')+
-    (typeof registrationHelpMarkup==='function'?registrationHelpMarkup(o.source_code,o.sales_region):'')+
-    '<button class="go guide-start" type="button" data-offer="'+e(o.offer_id)+'" '+(!offerAvailable(compared)?'disabled':'')+'>按中文步骤海淘 <span>→</span></button>'+
+    '<button class="go guide-start" type="button" data-offer="'+e(o.offer_id)+'" '+(!offerAvailable(compared)?'disabled':'')+'>比较运输路线 <span>→</span></button>'+
     (!available?referenceLinkMarkup(compared):'')+
     '<details><summary>来源与核实依据</summary><p>'+e(o.identity_evidence)+'</p>'+
     [o.shipping_to_china,o.china_issued_card].map(check=>'<p>'+e(check.note)+(safeUrl(check.url)?' <a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(check.url))+'">查看依据</a>':'')+'</p>').join('')+'</details></div>';
@@ -249,6 +246,7 @@ function updateGalleryVerificationMetadata(verification){
 }
 if(window.BIKEHUNT_PAGES)window.addEventListener('bikehunt-verification',event=>updateGalleryVerificationMetadata(event.detail));
 async function loadDetail(id,variantId=null){
+  if(typeof cancelPurchaseContext==='function')cancelPurchaseContext();
   const sequence=++detailSequence;
   const body=document.getElementById('sheetBody');body.innerHTML='<div class="loading" role="status">正在读取同款报价…</div>';
   try{
@@ -260,7 +258,7 @@ async function loadDetail(id,variantId=null){
     const best=detail.offers.find(o=>o.offer.offer_id===detail.recommended_offer_id&&offerAvailable(o));
     const confirmedSoldOut=detail.offers.length>0&&detail.offers.every(q=>q.offer.stock==='out_of_stock');
     const inventoryExpired=detail.offers.some(q=>q.offer.stock==='in_stock'&&!inventoryVerified(q.offer));
-    const summary=best?'<div class="summary-box verified"><h4>公开条件与费用已齐的最低预计成本</h4><div class="summary-price">'+e(cny(best.total_cny))+'</div><p>'+e(best.offer.source_name)+' · 商品、运费与税费已计入，银行卡仍需实际授权</p></div>':'<div class="summary-box"><h4>已找到报价，购买条件仍需核实</h4><p>运费、税费或直邮及支付条件未齐，暂时无法确认最低到手价。各渠道提供已保存的中文规则和分步指引。</p></div>';
+    const summary='<div class="summary-box"><h4>下一步：比较运输路线</h4><p>先选择具体商店报价，再比较直邮、转运和香港途径。费用、库存或中国发卡条件未齐时，仅供核实，不确认最低到手价。</p></div>';
     const available=detail.variants.filter(v=>v.in_stock&&v.size&&(v.variant_id!==detail.variant_id||detail.offers.some(q=>offerAvailable(q))));
     const selected=variantId&&available.some(v=>v.variant_id===variantId);
     const colors=detail.colors?.filter(c=>c.in_stock)||[];
@@ -269,7 +267,7 @@ async function loadDetail(id,variantId=null){
       (detail.identity.mpn?'<div class="model-code">制造商型号 '+e(detail.identity.mpn)+(detail.identity.color?' · '+e(detail.identity.color):'')+'</div>':'')+
       (selected?summary+'<div class="offers"><h4>已选 '+e(detail.identity.size)+' · '+e(detail.identity.color||'当前款')+' · '+detail.offers.length+' 条同规格报价</h4>'+detail.offers.map(offerMarkup).join('')+'</div>':'<div class="summary-box"><h4>'+(confirmedSoldOut?'所示规格 '+e(detail.identity.size||'')+' 已售罄':available.length?'选择上方尺码后，显示对应价格':inventoryExpired?'库存待核实':'尚未取得可选的现货规格')+'</h4><p>'+(confirmedSoldOut?'该规格已确认售罄，目前没有购买链接。其他尺码请分别核对。':available.length?'不同尺码的库存与价格可能不同，先选规格再比较。':inventoryExpired?'历史价格仍可参考；上次库存核实已超过一小时，尺码待核实。可前往官网商品页查看当前情况。':'当前报价可供参考；未知库存不会作为现货尺码显示。可前往官网商品页自行核对。')+'</p></div>')+
       (!selected?referenceOffersMarkup(detail):'')+
-      merchantGuidesMarkup(detail)+
+
       '<div class="service-note">汇率日期 '+e(detail.fx.rate_date||'待获取')+(detail.fx.stale?' · 使用过期缓存':'')+'。人民币金额为参考，信用卡入账及手续费以发卡行为准。<br>BikeHunt 只提供信息与外链，付款、订单及售后由第三方网站负责。</div>';
     document.getElementById('variant').onchange=event=>loadDetail(id,event.target.value||null);
     const colorSelect=document.getElementById('colorChoice');if(colorSelect)colorSelect.onchange=event=>loadDetail(event.target.value,null);
@@ -277,6 +275,7 @@ async function loadDetail(id,variantId=null){
     body.querySelectorAll('.guide-start').forEach(button=>button.onclick=()=>startGuide(detail,button.dataset.offer));
     bindMerchantGuides(detail,selected?detail.variant_id:null);
     refreshFitReference(detail,sequence);
+    if(typeof rememberPurchaseDetail==='function')rememberPurchaseDetail(detail,selected);
   }catch(error){if(sequence!==detailSequence)return;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>'+e(error.message)+'<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId)}
 }
 function openProduct(id,variantId=null,allowSoldOut=false){
@@ -286,7 +285,7 @@ function openProduct(id,variantId=null,allowSoldOut=false){
   const item=items.find(p=>p.product_id===id);if(item){document.getElementById('sheetName').textContent=item.name;document.getElementById('sheetBrand').textContent=item.brand;document.getElementById('sheetImg').src=safeUrl(item.image)}
   document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus();loadDetail(id,variantId);
 }
-function closeSheet(){referenceOffers.clear();if(typeof merchantGuideSource!=='undefined')merchantGuideSource=null;if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
+function closeSheet(){if(typeof clearPurchaseState==='function')clearPurchaseState();referenceOffers.clear();if(typeof merchantGuideSource!=='undefined')merchantGuideSource=null;if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
 async function init(){
   gallery.innerHTML='<div class="empty loading" role="status"><strong>正在整理骑行好价</strong>读取商品与人民币参考价…</div>';
   try{

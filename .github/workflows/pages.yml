@@ -55,6 +55,8 @@ jobs:
         run: node scripts/test_pages_freshness.js
       - name: Validate purchase safety and visible labels
         run: node scripts/test_purchase_safety.js
+      - name: Validate ordered routes and registration safety
+        run: node scripts/test_route_flow.js
       - name: Validate stock expiry and open purchase flows
         run: node scripts/test_stock_guards.js
       - name: Validate stable group QR expiry and loading safeguards
@@ -103,6 +105,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_purchase_readiness_ui.py
+      - name: Validate ordered purchase stages on desktop and mobile
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_route_flow_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
       - name: Check policy changes once daily

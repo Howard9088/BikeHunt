@@ -52,9 +52,23 @@ for(const badUrl of ['https://evil.example/',href+'?tag=tracking',href+'#replace
 href=data.forwarders[0].calculator;open=false;assert.equal(context.allowedReadinessLink(link),null);open=true;connected=false;assert.equal(context.allowedReadinessLink(link),null);connected=true;link.isConnected=false;assert.equal(context.allowedReadinessLink(link),null);link.isConnected=true;
 context.window.confirm=()=>{href+='?substituted';return true};context.guardReadinessExit(event);assert.equal(navigated.length,count);
 assert.equal(JSON.stringify(data),before,'No offer, cost engine or policy mutations');
+// The first purchase stage is compact payment feasibility, never account help.
+for(const code of ['visma','maap','poc','teamcycles']){
+ const html=context.paymentFeasibilityMarkup(offer(code,code==='poc'?'Global EN':''));
+ assert.ok(html.includes('class="payment-feasibility"'));assert.ok(html.includes('中国发行卡'));assert.ok(html.includes('不保证'));assert.ok(!/<(?:form|input|select|textarea|iframe|img|a|details)\b/.test(html));assert.ok(!html.includes('registration-help'));assert.ok(!html.includes('purchase-readiness'));
+ assert.ok(html.includes('data-china-card-status="'+(code==='teamcycles'?'unknown':'conditional')+'"'));
+}
+for(const code of ['amazon_de','amazon_jp'])assert.ok(context.paymentFeasibilityContent(offer(code,code==='amazon_de'?'德国站':'日本站')).includes('历史官方资料'));
+assert.ok(context.paymentFeasibilityContent({...offer('visma'),china_issued_card:{status:'no'}}).includes('data-china-card-status="no"'));
+assert.ok(context.paymentFeasibilityContent({...offer('visma'),china_issued_card:validEvidence}).includes('data-china-card-status="evidence"'));
+assert.ok(context.paymentFeasibilityContent({...offer('visma'),china_issued_card:{...validEvidence,checked_at:'2030-01-01T00:00:00Z'}}).includes('data-china-card-status="conditional"'));
+assert.ok(context.paymentFeasibilityContent({...offer('visma'),card_networks_evidence:{note:'原文已变化'}}).includes('data-china-card-status="unknown"'));
+assert.ok(context.paymentFeasibilityContent(offer('visma','US','https://evil.example/product')).includes('data-china-card-status="unknown"'));
 const flows=fs.readFileSync('web/flows.js','utf8'),gallery=fs.readFileSync('web/gallery.js','utf8');
-assert.ok(flows.includes('entry.offers.push(o)'));assert.ok(flows.includes('purchaseReadinessMarkup({source_code:market.code'));
-assert.ok(gallery.includes('purchaseReadinessMarkup(q.offer)'));assert.ok(gallery.includes('purchaseReadinessMarkup(o)'));
+assert.ok(flows.includes('entry.offers.push(o)'));assert.ok(flows.includes('paymentFeasibilityMarkup({source_code:market.code'));
+assert.ok(gallery.includes('paymentFeasibilityMarkup(q.offer)'));assert.ok(gallery.includes('paymentFeasibilityMarkup(o)'));
+assert.ok(!gallery.includes('purchaseReadinessMarkup('));
+assert.ok(!flows.includes('purchaseReadinessMarkup('));
 assert.ok(!gallery.includes('对应卡种可按此条件使用'));
-vm.runInContext('readinessData=null;readinessState="error"',context);assert.ok(context.readinessContent(offer('visma')).includes('data-china-card-status="unknown"'));assert.ok(!context.readinessContent(offer('visma')).includes('47.95'));assert.ok(!context.readinessContent({...offer('visma'),china_issued_card:validEvidence}).includes('data-china-card-status="evidence"'));
+vm.runInContext('readinessData=null;readinessState="error"',context);assert.ok(context.readinessContent(offer('visma')).includes('data-china-card-status="unknown"'));assert.ok(!context.readinessContent(offer('visma')).includes('47.95'));assert.ok(!context.readinessContent({...offer('visma'),china_issued_card:validEvidence}).includes('data-china-card-status="evidence"'));assert.ok(context.paymentFeasibilityContent(offer('visma')).includes('data-china-card-status="unknown"'));assert.ok(context.paymentFeasibilityContent({...offer('visma'),china_issued_card:validEvidence}).includes('data-china-card-status="unknown"'),'Policy failure cannot upgrade compact card evidence');
 console.log('Purchase readiness passed: exact merchant/market scopes, conditional Chinese card status, no global brand mapping, dated historical Amazon policies, EUR shipping, MAAP/POC restrictions, honest forwarding costs, safe same-tab exits and unavailable-data fallback.');

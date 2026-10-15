@@ -87,6 +87,8 @@ function forwardingExplainerContent(){
 }
 function forwardingExplainerMarkup(){return '<details class="forwarding-explainer"><summary>看懂转运和额外费用（一般知识）</summary><div data-forwarding-content>'+forwardingExplainerContent()+'</div></details>'}
 function refreshReadinessMarkup(){
+  document.querySelectorAll('[data-feasibility-context]').forEach(node=>{const offer=readinessContexts.get(node.dataset.feasibilityContext);if(offer)node.innerHTML=paymentFeasibilityContent(offer)});
+  if(typeof refreshPurchaseRoutePolicy==='function')refreshPurchaseRoutePolicy();
   document.querySelectorAll('[data-readiness-context]').forEach(node=>{const offer=readinessContexts.get(node.dataset.readinessContext);if(offer)node.innerHTML=readinessContent(offer)});
   document.querySelectorAll('[data-forwarding-content]').forEach(node=>{node.innerHTML=forwardingExplainerContent()});
 }
@@ -110,3 +112,19 @@ async function loadPurchaseReadiness(){
   refreshReadinessMarkup();
 }
 loadPurchaseReadiness();
+
+// One short, visible payment warning before route selection. Detailed evidence
+// stays optional; card networks and wallets never imply issuer approval.
+function paymentFeasibilityContent(offer={}){
+  const row=readinessPolicy(offer),card=offer.china_issued_card||{};
+  const changed=[card,offer.shipping_to_china||{},offer.card_networks_evidence||{}].some(check=>/原文已变化|正在复核/.test(check.note||''));
+  const verified=readinessState==='ready'&&!!row&&!changed&&card.status==='yes'&&card.scope==='offer'&&readinessUrl(card.url,offer.source_code)&&readinessObservation(card.checked_at);
+  const status=card.status==='no'?'no':verified?'evidence':row&&!changed?'conditional':'unknown';
+  const label=card.status==='no'?'中国发行卡：已知限制，先核对其他支付方式':verified?'中国发行卡：有接受依据，仍需本卡授权':row&&!changed?'中国发行卡：有条件，未确认本卡获批':'中国发行卡：待核实';
+  const methods=row&&!changed?row.payment.methods.join(' / '):offer.accepted_card_networks?.join(' / ')||'支付方式待核实';
+  return '<strong data-china-card-status="'+status+'">'+readinessEscape(label)+'</strong><span>'+readinessEscape(methods)+(row?.payment.status==='historical_official_only'?'（历史官方资料，当前方式待核实）':'')+'。卡组织和钱包支持不保证中国发卡获批；扣款不明先查订单，勿重复试付。</span>';
+}
+function paymentFeasibilityMarkup(offer={}){
+  const key=String(++readinessSequence);readinessContexts.set(key,offer);
+  return '<div class="payment-feasibility" data-feasibility-context="'+key+'">'+paymentFeasibilityContent(offer)+'</div>';
+}

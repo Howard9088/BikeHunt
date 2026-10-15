@@ -31,7 +31,7 @@ function harness() {
     static now() { return now; }
   }
   const context = vm.createContext({
-    Date: MockDate, URL, referenceOffers:new Map(), guideContext: null, currentProduct: null, detailSequence: 0,
+    Date: MockDate, URL, history:{state:{}}, referenceOffers:new Map(), guideContext: null, currentProduct: null, detailSequence: 0,
     guideStep: 0, items: [], fx: {}, currentIndex: 0, activeTab: 'products',
     gallery: {querySelectorAll: () => cardNodes},
     document: {getElementById: id => elements.get(id) || null, querySelectorAll: selector => selector === '.offer' ? offerNodes : []},
@@ -46,9 +46,10 @@ function harness() {
     getJson: async () => ({documents: []}),
     refreshCatalogSilently: async () => {}, loadDetail() {},
     PURCHASE_DISCLAIMER: 'test disclaimer', saveBrowseState() {},
+    renderRouteComparison() { if (context.guideContext && !context.offerAvailable(context.guideContext.quote)) context.showInventoryInvalidated(context.guideContext.quote); },
   });
   vm.runInContext(section(gallery, 'function inventoryVerified(', 'async function loadDetail('), context);
-  vm.runInContext(section(flows, 'async function startGuide(', 'const GUIDE_ICONS='), context);
+  vm.runInContext(section(flows, 'async function startGuide(', 'function renderGuide('), context);
   vm.runInContext(section(flows, 'function renderGuide(', 'function browseSettings('), context);
   vm.runInContext(section(flows, 'function guardPurchaseExit(', "document.addEventListener('click',guardPurchaseExit)"), context);
   vm.runInContext(flows.slice(flows.indexOf('function showInventoryInvalidated(')), context);
@@ -108,28 +109,21 @@ function testClockTimerInvalidatesOpenSelectionAndGuide() {
   }
 }
 
-function testPurchaseDisclaimerCancelContinueAndStaleConfirmation() {
+function testPurchaseExitUsesLocalStageAndBlocksInvalidTargets() {
   const h = harness();
+  let stages = 0;
+  h.context.continuePurchaseRoute = () => { stages++; };
   h.context.guideContext = {quote: quote()};
-  const cancelled = event(); h.context.guardPurchaseExit(cancelled);
-  assert.equal(cancelled.prevented, true);
-  assert.notEqual(h.context.guideContext, null, 'Cancel preserves guide');
-  assert.equal(h.confirmCalls, 1);
-  h.context.window.confirm = () => true;
   for (const [type, button] of [['click', 0], ['auxclick', 1]]) {
-    const accepted = event(type, button); h.context.guardPurchaseExit(accepted);
-    assert.equal(accepted.prevented, false, 'Accept preserves normal and middle-click navigation');
+    const clicked = event(type, button); h.context.guardPurchaseExit(clicked);
+    assert.equal(clicked.prevented, true, 'Every merchant activation is intercepted until the registration interstitial');
   }
-  h.context.window.confirm = () => { throw new Error('Right click must not prompt'); };
-  h.context.guardPurchaseExit(event('auxclick', 2));
-  h.context.window.confirm = () => { h.setNow(START + 3600001); return true; };
-  const expiredWhileConfirming = event(); h.context.guardPurchaseExit(expiredWhileConfirming);
-  assert.equal(expiredWhileConfirming.prevented, true);
-  assert.equal(h.context.guideContext, null);
-  assert.ok(h.panel.includes('库存待核实'));
-  h.context.window.confirm = () => { throw new Error('Expired selection must not prompt'); };
-  const repeated = event(); h.context.guardPurchaseExit(repeated);
-  assert.equal(repeated.prevented, true);
+  assert.equal(stages, 2);assert.equal(h.confirmCalls, 0);
+  h.context.guardPurchaseExit(event('auxclick', 2));assert.equal(stages, 2);
+  h.context.guideContext.quote.offer.stock = 'out_of_stock';
+  const sold = event(); h.context.guardPurchaseExit(sold);assert.equal(sold.prevented, true);assert.equal(stages, 2);
+  h.context.guideContext = null;
+  const dismissed = event(); h.context.guardPurchaseExit(dismissed);assert.equal(dismissed.prevented, true);assert.equal(stages, 2);
 }
 
 async function testAsyncGuideCannotReviveExpiredOrDismissedSelection() {
@@ -139,7 +133,7 @@ async function testAsyncGuideCannotReviveExpiredOrDismissedSelection() {
     h.context.getJson = () => new Promise(done => { resolve = done; });
     let rendered = 0;
     h.context.renderGuide = () => rendered++;
-    const work = h.context.startGuide({offers: [q]}, 'offer');
+    const work = h.context.startGuide({product_id:'p',variant_id:'v',offers: [q]}, 'offer');
     assert.ok(h.context.guideContext, 'Pending guide participates in invalidation');
     if (dismiss) h.context.closeSheet();
     else h.setNow(START + 3600001);
@@ -254,7 +248,7 @@ async function testPendingGuideReceivesIdentityBoundHeartbeatWithoutResurrection
 
 (async () => {
   for (const test of [testGalleryStockBoundariesAndLabels, testClockTimerInvalidatesOpenSelectionAndGuide,
-    testPurchaseDisclaimerCancelContinueAndStaleConfirmation, testAsyncGuideCannotReviveExpiredOrDismissedSelection,
+    testPurchaseExitUsesLocalStageAndBlocksInvalidTargets, testAsyncGuideCannotReviveExpiredOrDismissedSelection,
     testVerifiedHeartbeatPreservesOpenSelectionAndGuideWithoutRendering, testMetadataRejectsWrongIdentityAndChangedSafety,
     testMetadataCannotReviveExpiredOrDismissedGuide, testPendingGuideReceivesIdentityBoundHeartbeatWithoutResurrection]) {
     await test(); console.log('PASS ' + test.name);

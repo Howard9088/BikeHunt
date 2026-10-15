@@ -269,7 +269,7 @@ class LandedCostTests(unittest.TestCase):
         self.assertTrue(any("VAT" in note and "不自动扣除" in note for note in landed["notes"]))
 
     @unittest.skipUnless(shutil.which("node"), "Node is required for the UI rendering check")
-    def test_ef_guide_step_three_reuses_partial_preview_without_a_full_total(self):
+    def test_route_budget_reuses_partial_preview_without_a_full_total(self):
         offer = quote(source_code="ef_team_shop", name="Stamp Hoodie", shipping=None,
                       price=Money(amount="89", currency="USD"), shipping_to_china=Evidence())
         payload = compare_offer(offer, rates(rates={"USD": Decimal("6.6927")}), NOW).model_dump(mode="json")
@@ -282,15 +282,14 @@ const renderer=js.slice(js.indexOf('function landedCostMarkup('),js.indexOf('fun
 const guide=flows.slice(flows.indexOf('function renderGuide('),flows.indexOf('function updateGuideVerificationMetadata('));
 const quote=JSON.parse(fs.readFileSync(0,'utf8'));
 let html='';
-const ctx={Intl,URL,Map,Math,Number,String,guideContext:{quote,detail:{identity:{size:'M'}},book:{documents:[]}},guideStep:2,
-  offerAvailable:()=>true,guideMap:()=>'',openPanel:(_title,content)=>html=content,
-  document:{getElementById:()=>({})}};
-vm.createContext(ctx);vm.runInContext(helpers+renderer+guide,ctx);ctx.renderGuide();
-for(const text of ['第 3 步','US$89.00','595.65','119.13','714.78','商品 + 预估税小计','寄中国运费','清关／代垫手续费','待确认','实际报关路径未确认','中国大陆配送仍待核实','不能视为完整到手价'])assert.ok(html.includes(text),text);
+const ctx={Intl,URL,Map,Math,Number,String};
+vm.createContext(ctx);vm.runInContext(helpers+renderer,ctx);html=ctx.landedCostMarkup(quote);
+const route=fs.readFileSync(process.argv[3],'utf8');assert.ok(route.includes('landedCostMarkup(g.quote)'));assert.ok(route.includes('直邮费用预算与依据'));
+for(const text of ['595.65','119.13','714.78','商品 + 预估税小计','寄中国运费','清关／代垫手续费','待确认','实际报关路径未确认','中国大陆配送仍待核实','不能视为完整到手价'])assert.ok(html.includes(text),text);
 assert.ok(!html.includes('预计总成本'));assert.ok(!html.includes('商品 + 整单运费'));
 assert.ok(html.indexOf('119.13')<html.indexOf('查看已报价费用'));
 """
-        subprocess.run(["node", "-e", program, str(root / "web/gallery.js"), str(root / "web/flows.js")],
+        subprocess.run(["node", "-e", program, str(root / "web/gallery.js"), str(root / "web/flows.js"), str(root / "web/purchase-flow.js")],
                        input=json.dumps(payload), text=True, capture_output=True, check=True)
 
     @unittest.skipUnless(shutil.which("node"), "Node is required for the UI rendering check")

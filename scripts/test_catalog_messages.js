@@ -40,13 +40,14 @@ function testReadIdsReloadIncrementFilteredAndCap(){
 }
 async function testReferenceExitCancelContinueSoldoutAndLatestRecheck(){
  const h=harness(),q={reference_product_id:'p',reference_variant_id:'v',offer:{offer_id:'o',url:'https://shop.example/products/stale?variant=m',stock:'in_stock',fetched_at:'2000-01-01T00:00:00Z'}};
- const markup=h.c.referenceLinkMarkup(q);assert.ok(markup.includes('去官网查看'));assert.ok(markup.includes('target="_self"'));assert.ok(!markup.includes('target="_blank"'));const key='o|'+q.offer.url;
+ const markup=h.c.referenceLinkMarkup(q);assert.ok(markup.includes('比较路线并核实库存'));assert.ok(markup.includes('target="_self"'));assert.ok(!markup.includes('target="_blank"'));const key='o|'+q.offer.url;
  const link={dataset:{referenceLink:key},href:q.offer.url,getAttribute(){return this.href},removeAttribute(){this.href=null},setAttribute(){}};h.links.push(link);
- h.c.window.confirm=()=>false;let e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);
- h.c.window.confirm=()=>true;for(const [type,button] of [['click',0],['auxclick',1]]){e=click(link,type,button);h.c.guardPurchaseExit(e);assert.equal(e.prevented,false,'Timestamp alone does not block reference navigation')}
- h.c.window.confirm=()=>{throw Error('No prompt for invalid URL')};link.href='javascript:alert(1)';e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);link.href=q.offer.url;
+ let routes=0;h.c.startReferenceRoute=quote=>{assert.equal(quote,q);routes++};
+ h.c.window.confirm=()=>{throw Error('Reference entry must open routes before registration/disclaimer')};let e;
+ for(const [type,button] of [['click',0],['auxclick',1]]){e=click(link,type,button);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true,'Reference navigation must be staged');}assert.equal(routes,2);
+ h.c.window.confirm=()=>{throw Error('No prompt for invalid URL')};link.href='javascript:alert(1)';e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(routes,2);link.href=q.offer.url;
  h.c.getJson=async()=>({offers:[{offer:{...q.offer,stock:'out_of_stock'}}]});await h.c.refreshReferenceLinks();assert.equal(q.offer.stock,'out_of_stock');assert.equal(link.href,null);e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);
- assert.equal(h.c.referenceLinkMarkup(q),'');
+ assert.equal(h.c.referenceLinkMarkup(q),'');assert.equal(routes,2,'Observed sold-out quote cannot re-enter routes');
  const sold=row(9);sold.product.current_stock='out_of_stock';const html=h.c.messageCardMarkup(sold,{});assert.ok(!html.includes('href='));assert.ok(html.includes('已售罄'));
 }
 function testXssAndUrlGuards(){
@@ -130,18 +131,18 @@ function testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows(){
  h.c.rememberMessageEvents({items:[seen]});assert.equal(h.badge.hidden,true,'Reconciliation does not discard independent seen keys');
  assert.throws(()=>h.c.rememberMessageEvents({items:null}));assert.throws(()=>h.c.rememberMessageEvents({items:[fresh,null]}));assert.equal(vm.runInContext('messageEvents.size',h.c),1,'Malformed responses cannot erase the last valid snapshot');
 }
-function testGuideExitSameTabExactHrefAndSavedState(){
+function testGuideExitIsStagedAndBoundToExactHref() {
  const h=harness(),url='https://shop.example/products/verified?variant=M',q={offer:{offer_id:'guide',url,stock:'in_stock',collection_state:'current',fetched_at:new Date().toISOString()}};
- let saved=0,confirmed=0,invalidated=0;h.c.saveBrowseState=()=>saved++;h.c.showInventoryInvalidated=()=>invalidated++;h.c.guideContext={quote:q};
+ let saved=0,stages=0,referenceStages=0;h.c.saveBrowseState=()=>saved++;h.c.continuePurchaseRoute=()=>stages++;h.c.startReferenceRoute=()=>referenceStages++;h.c.guideContext={quote:q};
  const link={dataset:{},href:url,getAttribute(){return this.href}};
- h.c.window.confirm=()=>{confirmed++;return false};let e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(saved,0);assert.equal(confirmed,1);
- h.c.window.confirm=()=>{confirmed++;return true};e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,false);assert.equal(saved,1);
- link.href='https://shop.example/products/wrong?variant=L';e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(confirmed,2,'A mismatched guide href never prompts or navigates');assert.equal(saved,1);assert.equal(invalidated,1);
- link.href=url;h.c.window.confirm=()=>{confirmed++;link.href='https://shop.example/products/changed';return true};e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(saved,1,'A changed URL after confirmation cannot save/exit');
- link.href=url;h.c.window.confirm=()=>{confirmed++;q.offer.stock='out_of_stock';return true};e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(saved,1,'Post-confirmation sold-out state remains blocked');
- assert.ok(flows.includes('data-purchase-link target="_self"'));assert.ok(!flows.includes('data-purchase-link target="_blank"'));
- const reference={offer:{offer_id:'reference',url:'https://shop.example/products/reference',stock:'unknown'}};h.c.referenceLinkMarkup(reference);const ref={dataset:{referenceLink:'reference|'+reference.offer.url},getAttribute:()=>reference.offer.url};h.c.window.confirm=()=>true;e=click(ref);h.c.guardPurchaseExit(e);assert.equal(e.prevented,false);assert.equal(saved,2,'Both authorized purchase and reference exits save browse state');
+ h.c.window.confirm=()=>{throw Error('Only the final registration Continue may prompt')};
+ for(const [type,button] of [['click',0],['auxclick',1]]){const e=click(link,type,button);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);}assert.equal(stages,2);assert.equal(saved,0);
+ link.href='https://shop.example/products/wrong?variant=L';let e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(stages,2,'A mismatched guide href never advances or navigates');
+ link.href=url;q.offer.stock='out_of_stock';e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(stages,2,'Sold-out state remains blocked');
+ assert.ok(!flows.includes('data-purchase-link target="_blank"'));
+ const reference={offer:{offer_id:'reference',url:'https://shop.example/products/reference',stock:'unknown'}};h.c.referenceLinkMarkup(reference);const ref={dataset:{referenceLink:'reference|'+reference.offer.url},getAttribute:()=>reference.offer.url};e=click(ref);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);assert.equal(referenceStages,1);assert.equal(saved,0,'Reference stage does not navigate or save final-exit state early');
 }
+
 function testCurrencyMarketUpdateLabelWithoutPriceComparison(){
  const h=harness(),event=row(1700,{source_code:'visma',source_name:'Visma',old_price:null,new_price:'63.36',currency:'GBP'});
  const html=h.c.messageCardMarkup(event,{rates:{GBP:9.2}});
@@ -161,4 +162,4 @@ function testCurrencyMarketUpdateLabelWithoutPriceComparison(){
  }
  assert.ok(h.c.messageCardMarkup({...event,recovered_history:true},{}).includes('历史记录：GBP63.36'));
 }
-(async()=>{for(const t of [testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows,testHistoryScopeValidationAndBackPollingRestart,testMessagesOpenOnlyExactInternalProducts,testStableReadKeysSurviveIdReuseAndTimestampRepeats,testLegacyIdReadsMigrateExactlyOnce,testRecoveredHistoryDoesNotNotifyOrBecomeUnread,testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows,testGuideExitSameTabExactHrefAndSavedState,testCurrencyMarketUpdateLabelWithoutPriceComparison]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 14 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});
+(async()=>{for(const t of [testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows,testHistoryScopeValidationAndBackPollingRestart,testMessagesOpenOnlyExactInternalProducts,testStableReadKeysSurviveIdReuseAndTimestampRepeats,testLegacyIdReadsMigrateExactlyOnce,testRecoveredHistoryDoesNotNotifyOrBecomeUnread,testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows,testGuideExitIsStagedAndBoundToExactHref,testCurrencyMarketUpdateLabelWithoutPriceComparison]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 14 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});

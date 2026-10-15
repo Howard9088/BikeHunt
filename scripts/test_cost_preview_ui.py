@@ -51,7 +51,7 @@ def fixture():
 
 
 def exercise_shipping_budget(page, estimate, screenshot):
-    """Exercise the same delegated DOM handler in detail and Step 3."""
+    """Exercise the delegated budget handler after explicit direct-route selection."""
     field = estimate.locator('[data-shipping-budget]')
     preview = estimate.locator('[data-budget-result]')
     error = estimate.locator('[data-budget-error]')
@@ -108,6 +108,7 @@ def main():
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     checks, errors = [], []
+    base = f'http://127.0.0.1:{server.server_port}/web/'
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(executable_path=os.environ.get('CHROME_EXECUTABLE') or shutil.which('chromium'), headless=True)
@@ -121,6 +122,8 @@ def main():
                         if url.path.endswith('.svg'):
                             return route.fulfill(content_type='image/svg+xml', body='<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500"><rect width="500" height="500" fill="#f1f2f4"/><text x="40" y="250" font-size="28">EF Hoodie UI fixture</text></svg>')
                         raise AssertionError('Test must not visit a merchant')
+                    if url.netloc != urlparse(base).netloc:
+                        return route.abort()
                     if not url.path.startswith('/api/'):
                         return route.continue_()
                     if url.path == '/api/catalog': result = state['catalog']
@@ -133,7 +136,7 @@ def main():
                 context.route('**/*', intercept)
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
-                page.goto(f'http://127.0.0.1:{server.server_port}/web/', wait_until='networkidle')
+                page.goto(base, wait_until='networkidle')
                 expect(page.locator('.card')).to_have_count(0)
                 expect(page.locator('.empty')).to_contain_text('暂无符合条件的已核实折扣')
                 page.locator('#q').fill('Stamp Hoodie')
@@ -141,30 +144,41 @@ def main():
                 expect(page.locator('.card')).to_have_count(1)
                 page.locator('.card .compare-button').click()
                 page.locator('[data-variant]').first.click()
-                estimate = page.locator('.cost-estimate')
-                for text in ['595.65', '119.13', '714.78', '中国大陆配送仍待核实', '不能视为完整到手价', '待确认']:
-                    expect(estimate).to_contain_text(text)
+                expect(page.locator('.cost-estimate,.registration-help,.purchase-readiness')).to_have_count(0)
                 expect(page.locator('.tag').filter(has_text='推荐渠道')).to_have_count(0)
-                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-                estimate.scroll_into_view_if_needed()
-                estimate.screenshot(path=str(OUTPUT / f'cost_{mode}_detail.png'))
-                exercise_shipping_budget(page, estimate, OUTPUT / f'cost_{mode}_detail_budget.png')
                 page.locator('.guide-start').click()
-                page.locator('#guideNext').click()
-                expect(page.locator('.guide-conclusion')).to_contain_text('尚需核实')
-                page.locator('#guideNext').click()
-                expect(page.locator('.guide-progress')).to_contain_text('第 3 步')
-                for text in ['595.65', '119.13', '714.78', '商品 + 预估税小计', '中国大陆配送仍待核实', '不能视为完整到手价']:
-                    expect(page.locator('.guide-content')).to_contain_text(text)
-                expect(page.locator('.guide-content')).not_to_contain_text('预计总成本')
+                comparison = page.locator('#routeComparison')
+                expect(comparison).to_be_visible()
+                expect(page.locator('#routeContinue')).to_be_disabled()
+                expect(comparison.locator('.cost-estimate,.registration-help')).to_have_count(0)
+                page.locator('[data-route-select=direct]').click()
+                expect(page.locator('[data-route-select=direct]')).to_have_attribute('aria-pressed', 'true')
+                budget = page.locator('#routeComparison .route-budget')
+                expect(budget).not_to_have_attribute('open', '')
+                budget.locator('>summary').click()
+                estimate = budget.locator('.cost-estimate')
+                for text in ['595.65', '119.13', '714.78', '商品 + 预估税小计', '中国大陆配送仍待核实', '不能视为完整到手价', '待确认']:
+                    expect(estimate).to_contain_text(text)
+                expect(estimate).not_to_contain_text('预计总成本')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 assert page.locator('#sheetBody').evaluate('el=>el.scrollWidth <= el.clientWidth')
+                estimate.scroll_into_view_if_needed()
+                estimate.screenshot(path=str(OUTPUT / f'cost_{mode}_route_estimate.png'))
+                exercise_shipping_budget(page, estimate, OUTPUT / f'cost_{mode}_route_budget.png')
+                # A budget is neither a quoted charge nor shared with other routes.
+                page.locator('[data-route-select=forwarding]').click()
+                expect(page.locator('.route-budget,.cost-estimate')).to_have_count(0)
+                expect(page.locator('[data-route-select=forwarding]')).to_have_attribute('aria-pressed', 'true')
+                page.locator('[data-route-select=direct]').click()
+                budget = page.locator('#routeComparison .route-budget')
+                budget.locator('>summary').click()
+                exercise_shipping_budget(page, budget.locator('.cost-estimate'), OUTPUT / f'cost_{mode}_reopened_budget.png')
                 page.locator('#sheetBody').evaluate('el=>el.scrollTop=0')
                 page.locator('#sheet').evaluate('el=>Promise.all(el.getAnimations().map(a=>a.finished.catch(()=>{})))')
-                page.screenshot(path=str(OUTPUT / f'cost_{mode}_guide.png'))
-                page.locator('.cost-estimate').screenshot(path=str(OUTPUT / f'cost_{mode}_estimate.png'))
-                exercise_shipping_budget(page, page.locator('.cost-estimate'), OUTPUT / f'cost_{mode}_guide_budget.png')
-                checks.append(f'{mode}: detail and Step 3 show conditional ¥119.13 tax and ¥714.78 incomplete subtotal; blank → ¥120.50 user budget → clear, explicit zero and invalid inputs verified; quote/evidence/storage unchanged, no recommendation or horizontal overflow')
+                page.screenshot(path=str(OUTPUT / f'cost_{mode}_routes.png'))
+                expect(page.locator('.registration-help')).to_have_count(0)
+                expect(page).to_have_url(base)
+                checks.append(f'{mode}: budget appears only after direct-route selection; conditional ¥119.13 tax and ¥714.78 incomplete subtotal; blank → ¥120.50 user budget → clear, explicit zero and invalid inputs verified; other routes do not inherit budget; quote/evidence/storage unchanged, no recommendation, merchant visit or horizontal overflow')
                 context.close()
             browser.close()
     finally:

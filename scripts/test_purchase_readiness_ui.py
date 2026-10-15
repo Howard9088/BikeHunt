@@ -11,7 +11,7 @@ from http.server import ThreadingHTTPServer
 from urllib.parse import urlparse
 
 from playwright.sync_api import expect, sync_playwright
-from test_catalog_messages_ui import ROOT, OUT, QuietHandler, fixture
+from test_catalog_messages_ui import ROOT, OUT, QuietHandler, fixture, assert_disclaimer
 
 
 def main():
@@ -69,13 +69,14 @@ def main():
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
                 page.locator('#amazonChannels').click()
-                expect(page.locator('.amazon-market .purchase-readiness')).to_have_count(4)
+                expect(page.locator('.amazon-market .payment-feasibility')).to_have_count(4)
+                expect(page.locator('.amazon-market .purchase-readiness,.amazon-market .registration-help')).to_have_count(0)
                 expect(page.locator('.amazon-market [data-china-card-status=conditional]')).to_have_count(4)
                 for card in page.locator('.amazon-market').all():
-                    expect(card.locator('.purchase-readiness')).to_contain_text('2026-10-15')
-                    assert card.evaluate("el => !!(el.querySelector('.purchase-readiness').compareDocumentPosition(el.querySelector('.registration-help')) & Node.DOCUMENT_POSITION_FOLLOWING)")
+                    expect(card.locator('.payment-feasibility')).to_contain_text('中国发行卡')
+                    expect(card.locator('.payment-feasibility')).to_contain_text('不保证')
                 for country in ['德国站', '日本站']:
-                    expect(page.locator('.amazon-market').filter(has=page.locator('.amazon-country', has_text=country)).locator('.purchase-readiness')).to_contain_text('历史官方资料')
+                    expect(page.locator('.amazon-market').filter(has=page.locator('.amazon-country', has_text=country)).locator('.payment-feasibility')).to_contain_text('历史官方资料')
                 assert external == []
                 explain = page.locator('.forwarding-explainer')
                 explain.locator('>summary').focus()
@@ -89,11 +90,11 @@ def main():
                 link = page.locator('a[data-readiness-link=myus]').first
                 target = link.get_attribute('href')
                 expect(link).to_have_attribute('target', '_self')
-                page.once('dialog', lambda dialog: dialog.dismiss())
+                page.once('dialog', lambda dialog: (assert_disclaimer(dialog), dialog.dismiss()))
                 link.click()
                 expect(page).to_have_url(base)
                 assert external == []
-                page.once('dialog', lambda dialog: dialog.accept())
+                page.once('dialog', lambda dialog: (assert_disclaimer(dialog), dialog.accept()))
                 with page.expect_navigation(wait_until='domcontentloaded'):
                     link.click()
                 expect(page).to_have_url(target)
@@ -102,26 +103,42 @@ def main():
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
                 page.locator('.card .compare-button').first.click()
                 page.locator('[data-variant=S]').click()
-                expect(page.locator('.offer .purchase-readiness')).to_have_count(4)
+                expect(page.locator('.offer .payment-feasibility')).to_have_count(4)
+                expect(page.locator('#sheetBody .purchase-readiness,#sheetBody .registration-help,[data-merchant-guide]')).to_have_count(0)
                 for card in page.locator('.offer').all():
-                    assert card.evaluate("el => !!(el.querySelector('.purchase-readiness').compareDocumentPosition(el.querySelector('.registration-help')) & Node.DOCUMENT_POSITION_FOLLOWING)")
-                expect(page.locator('.offer[data-source=visma] .purchase-readiness')).to_contain_text('EUR 47.95')
-                expect(page.locator('.offer[data-source=maap] .purchase-readiness')).to_contain_text('不直邮中国大陆')
+                    expect(card.locator('.payment-feasibility')).to_contain_text('中国发行卡')
+                    expect(card.locator('.payment-feasibility')).to_contain_text('不保证')
                 expect(page.locator('.offer[data-source=teamcycles] [data-china-card-status]')).to_have_attribute('data-china-card-status', 'unknown')
-                page.locator('[data-merchant-guide=maap]').click()
+                page.locator('.guide-start[data-offer=offer-visma]').click()
+                routes = page.locator('#routeComparison')
+                expect(routes).to_be_visible()
+                expect(routes.locator('.registration-help')).to_have_count(0)
+                expect(routes).to_contain_text('EUR 47.95')
+                page.locator('#routeBack').click()
+                expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed', 'true')
+                page.locator('.guide-start[data-offer=offer-maap]').click()
+                expect(page.locator('#routeComparison [data-route=direct]')).to_have_attribute('data-route-status', 'prohibited')
+                expect(page.locator('#routeComparison [data-route-select=direct]')).to_be_disabled()
+                expect(page.locator('#routeContinue')).to_be_disabled()
+                page.locator('#routeBack').click()
+                page.locator('.guide-start[data-offer=offer-poc]').click()
+                expect(page.locator('#routeComparison [data-route=forwarding]')).to_have_attribute('data-route-status', 'prohibited')
+                expect(page.locator('#routeComparison [data-route-select=forwarding]')).to_be_disabled()
+                page.locator('#routeBack').click()
+                # The retained language helper is read-only and carries no purchase setup.
+                page.evaluate("openMerchantGuide(currentProduct, 'maap', 'S')")
                 guide = page.locator('#merchantLanguageGuide')
-                expect(guide.locator('.purchase-readiness')).to_contain_text('不直邮中国大陆')
+                expect(guide.locator('.purchase-readiness,.registration-help,.registration-guide')).to_have_count(0)
                 expect(guide.locator('[data-purchase-link],[data-reference-link],form,input')).to_have_count(0)
-                assert guide.evaluate("el => !!(el.querySelector('.purchase-readiness').compareDocumentPosition(el.querySelector('.registration-guide')) & Node.DOCUMENT_POSITION_FOLLOWING)")
+                expect(guide.locator('.merchant-translation')).to_be_visible()
                 page.locator('#sheetBody').evaluate('el => el.scrollTop=0')
                 page.screenshot(path=str(OUT / f'purchase_readiness_{mode}.png'))
                 page.locator('#merchantGuideBack').click()
-                expect(page.locator('[data-merchant-guide=maap]')).to_be_focused()
                 expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed', 'true')
                 assert json.dumps(state['detail']['offers'], sort_keys=True) == unchanged
                 page.keyboard.press('Escape')
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-                checks.append(mode + ': four scoped Amazon summaries, historic evidence, source/registration order, China-card caveats, EUR shipping, retailer isolation, forwarding costs, keyboard, no overflow, guarded same-tab Cancel/Continue/Back and unchanged offers')
+                checks.append(mode + ': four compact Amazon payment strips, historical evidence, no early registration, China-card caveats, route-scoped EUR shipping and prohibited direct/forwarding choices, retailer isolation, forwarding costs, keyboard, no overflow, guarded same-tab Cancel/Continue/Back and unchanged offers')
                 context.close()
             browser.close()
         assert not errors, errors
