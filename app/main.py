@@ -242,7 +242,8 @@ def require_local_admin(request: Request) -> None:
 
 
 @app.get("/api/community")
-def community_entry() -> dict:
+def community_entry(response: Response) -> dict:
+    response.headers["Cache-Control"] = "no-store"
     return community.get()
 
 

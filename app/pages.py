@@ -32,7 +32,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     output.mkdir()
     web = root/"web"
     (output/"web").mkdir()
-    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js"):
+    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css"):
         shutil.copy2(web/name, output/"web"/name)
     if (web/"icons").is_dir():
         shutil.copytree(web/"icons", output/"web/icons")
@@ -48,6 +48,13 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
     (output/"index.html").write_text(index, encoding="utf-8")
     (output/".nojekyll").touch()
+    (output/"group").mkdir()
+    group = (web/"group/index.html").read_text(encoding="utf-8")
+    group = group.replace('../group.', '../web/group.').replace('../icons/', '../web/icons/').replace(
+        'data-community-source="../../api/community"', 'data-community-source="../data/community.json"').replace(
+        'data-image-base="../../"', 'data-image-base="../"')
+    group = group.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))
+    (output/"group/index.html").write_text(group, encoding="utf-8")
 
     repository = OfferRepository(root/"data")
     offers = repository.load()
@@ -81,9 +88,12 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     except (OSError, ValueError):
         charts = []
     community = Community(root).get()
+    atomic_json(output/"data/community.json", community)
     assets = {image for entry in directory["brands"] + directory["teams"] for image in entry.get("logo_images", [])}
     if community.get("available"):
         assets.add(community["image_url"])
+    if (web/"assets/community/group-entry.png").is_file():
+        assets.add("/web/assets/community/group-entry.png")
     for url in assets:
         source = (root/url.lstrip("/")).resolve()
         if not source.is_relative_to(web.resolve()) or not source.is_file():

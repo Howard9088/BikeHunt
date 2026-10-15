@@ -198,7 +198,7 @@ BikeHunt 是**信息服务与导购导航**，不是商城。
 
 个人提醒使用 WxPusher 扫码绑定，支持按商品类型订阅及停止提醒。同一接收 UID 的相同批次去重；不明确的发送结果不自动重复发送。当前没有应用凭据，尚未进行真实微信发送或到账验收。
 
-管理员在电脑本机打开 `http://127.0.0.1:18888/web/push-settings.html` 配置个人推送服务，在 `http://127.0.0.1:18888/web/community-settings.html` 保存实际微信群二维码。密钥仅保存于私有 `config/`；群二维码到期后隐藏并提示更新。当前群二维码待提供。
+管理员在电脑本机打开 `http://127.0.0.1:18888/web/push-settings.html` 配置个人推送服务，在 `http://127.0.0.1:18888/web/community-settings.html` 保存实际微信群二维码。密钥仅保存于私有 `config/`；群二维码到期后隐藏并提示更新。公开入群入口固定为 `/group/`（GitHub Pages 为 `/BikeHunt/group/`）。首页按钮为“加入骑游海淘交流群”，在当前标签页进入，返回后保留商品筛选与搜索。
 
 ### 启动与更新
 
@@ -247,3 +247,13 @@ node scripts/test_pages_freshness.js
 
 
 消息按精确报价身份补充款式图片、型号、颜色及尺码，已读记录按事件 ID 保存；同名但不同商品链接不混为一款。进入品牌或车队后的分类筛选保留当前范围。库存核实超过一小时仍可在购买提示后前往原商品页查看，但不声称旧尺码仍有现货；已确认售罄的规格不提供购买跳转。
+
+### 稳定微信群入口维护
+
+- 实际群名：骑游海淘交流群。稳定网页：`https://howard9088.github.io/BikeHunt/group/`；其长期入口二维码为 `web/assets/community/group-entry.png`，只编码该网页网址，不是永久微信群码。
+- 公开配置纳入版本管理：`data/community.json`。其中只放群名、站内二维码图片路径、版本标识、真实更新时间、明确带时区的有效期和微信原始日期提示，不放个人推送密钥或接收者信息。本机 `config/community.json` 仍优先覆盖；损坏或过期的本机配置不会回退复活旧群码。
+- 换码时将管理员提供的真实 PNG/JPG 保存为新的 `web/assets/community/group-日期.png`，修改公开配置的 `image_url`、`revision`、`updated_at`、`expires_at`、`expiry_label` 后正常发布。二维码图片名只支持英文字母、数字、连字符或下划线，不支持外部链接。固定网页地址和长期入口码无需更换。
+- 本次微信只标注“10月22日前有效”。配置采用北京时间 2026-10-22 00:00 作为保守隐藏边界，不把该边界宣称为微信精确失效时刻。微信提前撤回、群满等情况仍以微信实际提示为准。
+- 页面每次打开或恢复前台都使用 `no-store` 和独立查询参数读取当前配置；长时间打开时每分钟复核。配置读取失败、离线、图片加载失败、缺少有效期或到期均不展示旧群码。到期构建也不复制旧群码；稳定入口码继续保留。没有开通 API 提醒。
+- 本地管理员配置页的有效期现为必填。按微信实际日期保守填写，不应留下永久有效的空值。
+- 确定性测试：`python -m unittest discover -s tests -p 'test_*.py'`、`node scripts/test_group.js`。桌面和手机测试：`python scripts/test_group_ui.py`、`python scripts/test_catalog_messages_ui.py`。CI 的代码推送流程会执行这两套浏览器检查。

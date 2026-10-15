@@ -217,9 +217,10 @@ def main() -> None:
         page.locator('#close').click()
         results['checks'].append('wechat_unconfigured_honest_and_real_price_messages')
         page.locator('#wechatCommunity').click()
-        expect(page.locator('#sheetBody')).to_contain_text('等待群二维码')
-        page.locator('#close').click()
-        results['checks'].append('wechat_group_entry_waiting_real_qr')
+        expect(page.locator('#groupTitle')).to_have_text('骑游海淘交流群')
+        expect(page.locator('#groupStatus')).not_to_have_text('正在读取群二维码…')
+        page.go_back(wait_until='networkidle')
+        results['checks'].append('wechat_group_stable_entry')
         assert not errors, errors
         mobile.close()
 
@@ -247,3 +248,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

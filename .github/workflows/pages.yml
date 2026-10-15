@@ -57,6 +57,8 @@ jobs:
         run: node scripts/test_purchase_safety.js
       - name: Validate stock expiry and open purchase flows
         run: node scripts/test_stock_guards.js
+      - name: Validate stable group QR expiry and loading safeguards
+        run: node scripts/test_group.js
       - name: Validate scoped browsing and price messages
         run: node scripts/test_catalog_messages.js
       - name: Install Chromium for changed-code browser regression
@@ -71,6 +73,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_cost_preview_ui.py
+      - name: Validate stable group entrance on desktop and mobile
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_group_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
       - name: Check policy changes once daily

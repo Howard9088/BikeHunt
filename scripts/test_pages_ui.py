@@ -300,11 +300,16 @@ def exercise(base: str, data: dict, results: dict) -> None:
                     results["wechat_notice"] = page.locator("#sheetBody").inner_text()
                     close_panel(page)
                     page.locator("#wechatCommunity").click()
-                    if not data["community"].get("available"):
-                        expect(page.locator("#sheetBody")).to_contain_text("等待")
-                        assert not page.locator(".binding-qr").count()
+                    expect(page).to_have_url(base + "group/")
+                    expect(page.locator("#groupTitle")).to_have_text("骑游海淘交流群")
+                    if data["community"].get("available"):
+                        expect(page.locator("#groupQr")).to_be_visible()
+                    else:
+                        expect(page.locator("#groupQr")).to_be_hidden()
+                        expect(page.locator("#groupStatus")).to_contain_text("更新")
                     capture(page, "mobile_wechat_community", results)
-                    close_panel(page)
+                    page.go_back(wait_until="networkidle")
+                    expect(page).to_have_url(base)
                     results["checks"].append("wechat_unconfigured_honest_without_local_admin_links")
 
                     page.locator("#priceMessages").click()
@@ -390,3 +395,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

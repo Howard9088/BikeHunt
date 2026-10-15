@@ -26,9 +26,11 @@ class PagesTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         web = self.root/'web'; web.mkdir()
-        for name in ('gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js'):
+        for name in ('gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css'):
             (web/name).write_text('/* Mock public asset */',encoding='utf-8')
         (web/'index.html').write_text('<a href="/web/">Home</a><script src="/web/profile.js" defer></script>',encoding='utf-8')
+        (web/'group').mkdir()
+        (web/'group/index.html').write_text(Path(__file__).resolve().parents[1].joinpath('web/group/index.html').read_text(), encoding='utf-8')
         atomic_json(self.root/'data/sources.json',[{'code':'a','name':'Mock'}])
         atomic_json(self.root/'data/directories.json',{'brands':[],'teams':[]})
         OfferRepository(self.root/'data').save('a',[make_offer()],NOW,[])

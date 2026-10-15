@@ -10,7 +10,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 from playwright.sync_api import expect, sync_playwright
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/acceptance'
@@ -154,6 +154,34 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
     checks.append(mode+': Amazon four official sites/eight category searches; accurate disclosure; exact allowlist rejects tampering; full disclaimer Cancel/Continue; click/modifier/middle/keyboard same-tab; Back/reload retains source/category/query/read state; Close/Escape restores focus')
 
 
+def exercise_group_entry(page, context, base, mode, return_label, checks):
+    read_state=page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")
+    expect(page.locator('#wechatCommunity')).to_have_text('加入骑游海淘交流群')
+    page.locator('#wechatCommunity').click()
+    expect(page).to_have_url(base+'group/')
+    expect(page.locator('#groupTitle')).to_have_text('骑游海淘交流群')
+    expect(page.locator('#groupQr')).to_be_visible()
+    expect(page.locator('#groupStatus')).to_have_text('微信标注10月22日前有效')
+    assert page.locator('#communityReminder, #wechatReminder').count()==0
+    assert len(context.pages)==1
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+    page.screenshot(path=str(OUT/f'group_entry_{mode}.png'))
+    page.locator('#groupBack').click()
+    expect(page).to_have_url(base)
+    expect(page.locator('#q')).to_have_value('Stamp Hoodie')
+    expect(page.locator('#browseLabel')).to_have_text(return_label)
+    expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true')
+    expect(page.locator('.card')).to_have_count(1)
+    expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
+    assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")==read_state
+    page.go_forward(wait_until='networkidle')
+    expect(page.locator('#groupQr')).to_be_visible()
+    page.go_back(wait_until='networkidle')
+    expect(page.locator('#q')).to_have_value('Stamp Hoodie')
+    expect(page.locator('.card')).to_have_count(1)
+    checks.append(mode+': exact group name, real QR only, same-tab stable group entrance, Back/Forward preserves source/category/search/read state')
+
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=str(ROOT)))
@@ -194,6 +222,7 @@ def main():
                             result['identity'].update(size=product['size'],color=product['color'],mpn=product['model']);result['variants']=[{'variant_id':variant_id,'size':product['size'],'in_stock':False,'stock_state':product['current_stock'],'source_count':1,'product_cny_from':None}]
                             result['offers'][0]['offer'].update(offer_id=matching['offer_id'],url=matching['url'],stock=product['current_stock'],fetched_at='2000-01-01T00:00:00Z')
                         else:result=state['detail']
+                    elif u.path=='/api/community':result={'schema_version':1,'configured':True,'available':True,'title':'骑游海淘交流群','image_url':'/web/assets/community/group-20261015.png','revision':'test','expires_at':(datetime.now(timezone.utc)+timedelta(days=1)).isoformat(),'expiry_label':'微信标注10月22日前有效'}
                     elif u.path=='/api/updates':result={'items':state['events'],'cursor':max(e['id'] for e in state['events']),'fx':state['catalog']['fx']}
                     elif u.path=='/api/directories':result={'brands':[{'code':'maap','name':'MAAP','name_zh':'MAAP 品牌','offer_count':2,'product_count':2,'rule_count':0}], 'teams':[{'code':'other','name':'Other','name_zh':'测试车队','offer_count':1,'product_count':1,'rule_count':0}]}
                     elif u.path.startswith('/api/rules/'):result={'version':1,'documents':[]}
@@ -264,6 +293,7 @@ def main():
                 page.reload(wait_until='networkidle');expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
                 expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品');expect(page.locator('#clear')).to_be_visible();expect(page.locator('#clear')).to_be_enabled()
                 exercise_amazon_searches(page, context, base, mode, return_label, checks)
+                exercise_group_entry(page, context, base, mode, return_label, checks)
                 page.locator('#clear').click();expect(page.locator('#q')).to_have_value('');expect(page.locator('.card')).to_have_count(2)
                 checks.append(mode+': search Stamp Hoodie narrows two scoped results to one; final guide Step4 Cancel/Continue uses exact same-tab URL; Back/reload restores query/results, scope/read state and working clear control without reopening guide')
                 page.locator('[data-tab=products]').click();page.locator('[data-category=all]').click()
