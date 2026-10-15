@@ -24,7 +24,7 @@ The directory contains ten brand entries. Before this change, only Rapha had `lo
 | pns | 0 0 106 40 | 8125 | `3a20c9e3c7d26c555cbd471e4c9ad11844070454a20333cd8e688fcd888d529c` |
 | kask | 0 0 95 26 | 559 | `832a6b61621f8e81a8f4b3d4be338007a9a511fdccf4c4a707ea5e73d1b74c11` |
 | fizik | 0 0 71.67 20 | 1953 | `60f92f36477e738bd6bf30037b8687c6c3993e5fda7f1f09604b900cf3bcab79` |
-| rapha | 0 0 465 208 | 4897 | `bd168607ffc195bbfb7935615bc849dd4968e256890180960710802bfa255dc8` |
+| rapha | 0 0 465 208 | 4896 | `e6f845e483ba4b92e865ccb80967a4f95a01c5421202e9df68821f49d97512d7` |
 
 ## maap
 

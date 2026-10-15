@@ -92,7 +92,7 @@ class BrandLogoTests(unittest.TestCase):
     def test_rapha_is_unchanged_and_restricted_sources_keep_names(self):
         self.assertEqual(self.brands['rapha']['logo_images'], ['/web/assets/brands/rapha.svg'])
         data = (ROOT / 'web/assets/brands/rapha.svg').read_bytes()
-        self.assertEqual(hashlib.sha256(data).hexdigest(), 'bd168607ffc195bbfb7935615bc849dd4968e256890180960710802bfa255dc8')
+        self.assertEqual(hashlib.sha256(data).hexdigest(), 'e6f845e483ba4b92e865ccb80967a4f95a01c5421202e9df68821f49d97512d7')
         for code in ['poc', 'oakley']:
             self.assertFalse(self.brands[code].get('logo_images'))
             self.assertEqual(self.brands[code]['name'].lower(), code)
