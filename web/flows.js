@@ -200,8 +200,70 @@ const AMAZON_SEARCH_MARKETS=Object.freeze([
 ].map(([code,name,host,jerseys,bibs])=>Object.freeze({code,name,host,searches:Object.freeze([
   ['jerseys','骑行上衣',jerseys],['bibs','背带裤',bibs]
 ].map(([category,label,query])=>Object.freeze({key:code+'_'+category,label,query,url:'https://'+host+'/s?'+new URLSearchParams({k:query}).toString()})))})));
+// Educational checklist only: never creates an offer, asks for personal data,
+// signs in or contacts Amazon. Official references were read on 2026-10-15.
+const AMAZON_IMPORT_STEPS=Object.freeze([
+  ['market','选站点，认清币种',[
+    '从上方选择美国、英国、德国或日本站，再搜索骑行上衣或背带裤。美国站常见 USD 美元、英国站 GBP 英镑、德国站 EUR 欧元、日本站 JPY 日元；最终扣款币种以结账页为准。',
+    '切换站点后，重新核对商品、销售方、配送与费用。站点所在地不等于实际发货地，也不代表能直邮中国。'
+  ]],
+  ['address','先把配送目的地设为中国',[
+    '在 Amazon 原站找到 Deliver to / Ship to（配送至），选择 China（中国）。需要登录时，在确认域名无误的 Amazon 页面自行登录。',
+    '按原站表单填写真实收件人、完整中国大陆地址、邮编和联系电话；核对国家与城市没有被默认成站点所在地。本教程不收集地址、账号或付款信息。'
+  ]],
+  ['size','核对型号、男女款和尺码表',[
+    '打开具体商品，核对品牌、型号、年份或版本、男女款、颜色、尺码和数量；切换规格后再看价格与卖家。图片相似不代表同一款。',
+    '打开该商品的 Size chart（尺码表），用胸围、腰围、臀围等实测数据对照，并确认 cm / inch 单位。不同品牌、男女款和站点的 S / M / L 不能直接等同；不确定时先询问实际卖家。'
+  ]],
+  ['seller','分清销售方与配送方',[
+    '在具体商品页找 Sold by（销售方）与 Ships from / Dispatches from（发货或配送方）；德国站常见 Verkauf durch / Versand，日文常见 販売元 / 出荷元。界面文案可能不同。',
+    'Amazon 自营与第三方卖家都可能出现在搜索结果中。点开销售方资料，核对卖家身份、评价及退货条件；品牌旗舰店页面也不能代替销售方核对。',
+    'Fulfilled by Amazon（FBA / Amazon 配送）只说明配送履约方式，不等于 Amazon 自营；第三方卖家也可使用 Amazon 配送。售后入口须按本单销售方和履约方式确认。'
+  ]],
+  ['delivery','确认这一件能寄到你的地址',[
+    '选定具体款式、颜色、尺码与销售方后，查看能否配送到你填写的中国大陆地址，以及配送方式、预计送达日期和运费；加入购物车后到结账页再核对一次。',
+    '出现无法配送、地址不支持或没有可用配送方式时，先停止该商品下单，可返回比较其他站点或卖家。能搜索到、能加入购物车、Prime 或 FBA 标识，都不保证这件商品能直邮中国。'
+  ]],
+  ['fees','看清运费、进口税费和币种',[
+    '在提交订单前展开费用明细，逐项看商品小计、Shipping（运费）、税费、Import Fees Deposit（进口费用预估押金）或 Import Charges（进口费用），以及 Order total（订单合计）。',
+    '预估押金与固定进口费用的规则可能不同，按该站本单说明核对退款、补缴及清关责任。没有列出进口费用，不代表免税或全部税费已预付；不清楚就先向 Amazon 或实际卖家确认。',
+    '核对最终扣款币种与汇率；若可选人民币转换或原币付款，对照页面给出的转换费用及发卡行可能收取的费用。本站人民币参考价不是 Amazon 最终到手价。'
+  ]],
+  ['payment','付款前，最后检查一次',[
+    '在最终确认页复核：型号与男女款、颜色尺码、数量、销售方与配送方、中国地址、预计送达日期、运费税费、总额与扣款币种。也要看清退货期限、退货地址、跨境退货运费由谁承担。',
+    '确认全部条件后，再由你自行决定是否点击 Place your order（提交订单）等最终按钮。不要仅凭搜索价、免费配送字样或本教程下单；只通过 Amazon 正规结账流程付款。',
+    '保留订单确认与费用明细。付款结果不明确时，先查订单和银行扣款记录，避免重复提交。'
+  ]],
+  ['aftercare','到订单页查物流、办退换货',[
+    '下单后在购买的同一站点进入 Your Orders（我的订单），打开该订单查看承运商、追踪号码和物流更新；遇到清关要求，先从订单或承运商官方渠道核实。',
+    '到货后及时核对商品和尺码。需要退换货时，从该订单的退货或客服入口联系实际卖家或负责履约的 Amazon 客服，按本单批准的地址、标签和流程办理，保留照片与寄件凭证。',
+    '跨境退货期限、运费承担、可否换码及税费退款并不统一，下单前后都应核对本单规则。购买、配送与售后由实际商家处理。'
+  ]]
+].map(([id,title,paragraphs])=>Object.freeze({id,title,paragraphs:Object.freeze(paragraphs)})));
+// UK help is verified as a terminology example, not a policy for US/DE/JP or China.
+const AMAZON_IMPORT_HELP=Object.freeze([
+  ['seller','英国站：销售方与配送方','https://digprjsurvey.amazon.co.uk/csad/help/node/GEF528GN65XSJ7V8'],
+  ['charges','英国站：Import Charges 说明','https://digprjsurvey.amazon.co.uk/csad/help/node/G8VRJ7Y8Z3T5WPV3'],
+  ['deposit','英国 Global Store：预估押金与费用条款','https://digprjsurvey.amazon.co.uk/csad/help/node/G9UHGT37MYD2EJPL'],
+  ['tracking','英国站：从订单查承运商与追踪号码','https://digprjsurvey.amazon.co.uk/csad/help/node/GBPEXEXYULHB5WCH']
+].map(([key,label,url])=>Object.freeze({key,label,url})));
+function amazonImportGuideMarkup(){
+  return '<section class="amazon-import-guide" aria-labelledby="amazonImportTitle"><h4 id="amazonImportTitle">第一次 Amazon 海淘，照这 8 步核对</h4><p class="amazon-guide-intro">点击步骤展开。这是操作核对清单，不是代购服务；是否直邮中国与实际费用，须按具体商品、销售方、收货地址及结账页确认。</p><ol class="amazon-guide-steps">'+AMAZON_IMPORT_STEPS.map((step,index)=>'<li><details class="amazon-guide-step" name="amazon-import-steps" data-amazon-step="'+e(step.id)+'"'+(index===0?' open':'')+'><summary><span class="amazon-step-number" aria-hidden="true">'+(index+1)+'</span><span>'+e(step.title)+'</span></summary><div class="amazon-step-body">'+step.paragraphs.map(paragraph=>'<p>'+e(paragraph)+'</p>').join('')+'</div></details></li>').join('')+'</ol><details class="amazon-help-sources"><summary>官方帮助与适用范围</summary><p>核对日期：2026-10-15。以下为已核对的英国站官方说明，其中 Global Store 条款仅作费用术语示例，不代表美国、德国、日本站或寄往中国的统一政策。美国、德国、日本站具体帮助本次未能完成核验，请在所选站点查看本单最新说明。</p><ul>'+AMAZON_IMPORT_HELP.map(source=>'<li><a data-amazon-help-link="'+e(source.key)+'" href="'+e(source.url)+'" target="_self" rel="noopener noreferrer">'+e(source.label)+' →</a></li>').join('')+'</ul></details></section>';
+}
 function showAmazonChannels(){
-  openPanel('Amazon购买途径','<div class="summary-box amazon-summary"><h4>搜索入口，非商品实时报价</h4><p>以下链接打开 Amazon 官方站点的公路骑行服搜索。本页未接入 Amazon 商品数据，未核实搜索结果中的卖家、价格或库存。</p></div><div class="amazon-market-grid">'+AMAZON_SEARCH_MARKETS.map(market=>'<section class="amazon-market"><h4>Amazon '+e(market.name)+'</h4><p class="amazon-domain">'+e(market.host)+'</p><div class="amazon-search-links">'+market.searches.map(search=>'<a data-amazon-search-link="'+e(search.key)+'" href="'+e(search.url)+'" target="_self" rel="noopener noreferrer" aria-label="Amazon '+e(market.name)+'：搜索'+e(search.label)+'">'+e(search.label)+' →</a>').join('')+'</div></section>').join('')+'</div><section class="rule-section amazon-shopping-note"><h4>先核对销售方，再看配送方式</h4><p>Amazon 自营与第三方卖家都可能出现在搜索结果中。请在商品页查看“销售方 / Sold by”是否为 Amazon，并核对卖家身份、评价和退货条件。</p><p>“Amazon 配送 / Fulfilled by Amazon”只说明配送履约方式，不等于 Amazon 自营；第三方卖家也可使用 Amazon 配送。</p><p>是否可配送中国大陆、运费、进口税费和订单总额，须按具体商品、销售方、收货地址及结账页核实。这些搜索入口不保证直邮中国。</p></section>');
+  openPanel('Amazon购买途径','<div class="summary-box amazon-summary"><h4>搜索入口，非商品实时报价</h4><p>以下链接打开 Amazon 官方站点的公路骑行服搜索。本页未接入 Amazon 商品数据，未核实搜索结果中的卖家、价格或库存。</p></div><div class="amazon-market-grid">'+AMAZON_SEARCH_MARKETS.map(market=>'<section class="amazon-market"><h4>Amazon '+e(market.name)+'</h4><p class="amazon-domain">'+e(market.host)+'</p><div class="amazon-search-links">'+market.searches.map(search=>'<a data-amazon-search-link="'+e(search.key)+'" href="'+e(search.url)+'" target="_self" rel="noopener noreferrer" aria-label="Amazon '+e(market.name)+'：搜索'+e(search.label)+'">'+e(search.label)+' →</a>').join('')+'</div></section>').join('')+'</div>'+amazonImportGuideMarkup());
+}
+function allowedAmazonHelp(link){
+  return AMAZON_IMPORT_HELP.find(source=>source.key===link.dataset?.amazonHelpLink&&source.url===link.getAttribute('href'))||null;
+}
+function guardAmazonHelpExit(event){
+  const link=event.target.closest?.('a[data-amazon-help-link]');
+  if(!link||(event.type==='auxclick'&&event.button!==1))return;
+  event.preventDefault();
+  const source=allowedAmazonHelp(link);if(!source)return;
+  if(!window.confirm(PURCHASE_DISCLAIMER+'\n\n即将查看 Amazon 英国站官方帮助，仅供核对说明，不是商品报价或中国配送保证。\n确定：继续查看；取消：留在本站。'))return;
+  if(allowedAmazonHelp(link)!==source)return;
+  saveBrowseState();window.location.assign(source.url);
 }
 function allowedAmazonSearch(link){
   const key=link.dataset?.amazonSearchLink;
@@ -221,6 +283,8 @@ function guardAmazonSearchExit(event){
 document.getElementById('amazonChannels').onclick=showAmazonChannels;
 document.addEventListener('click',guardAmazonSearchExit);
 document.addEventListener('auxclick',guardAmazonSearchExit);
+document.addEventListener('click',guardAmazonHelpExit);
+document.addEventListener('auxclick',guardAmazonHelpExit);
 
 function invalidateReferenceLinks(events=[]){
   for(const quote of referenceOffers.values()){

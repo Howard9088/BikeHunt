@@ -21,6 +21,13 @@ AMAZON_SEARCHES = [
     ('amazon_jp', 'www.amazon.co.jp', ['ロードバイク サイクルジャージ', 'ロードバイク ビブショーツ']),
 ]
 
+AMAZON_HELP = {
+    'seller': 'https://digprjsurvey.amazon.co.uk/csad/help/node/GEF528GN65XSJ7V8',
+    'charges': 'https://digprjsurvey.amazon.co.uk/csad/help/node/G8VRJ7Y8Z3T5WPV3',
+    'deposit': 'https://digprjsurvey.amazon.co.uk/csad/help/node/G9UHGT37MYD2EJPL',
+    'tracking': 'https://digprjsurvey.amazon.co.uk/csad/help/node/GBPEXEXYULHB5WCH',
+}
+
 
 
 DISCLAIMER = '本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。'
@@ -88,6 +95,42 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
         expect(page.locator('#sheetBody')).to_contain_text(text)
     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
     page.screenshot(path=str(OUT/f'amazon_searches_{mode}.png'))
+    # Native accordion remains usable with keyboard and touch; it never collects data.
+    expect(page.locator('.amazon-guide-step')).to_have_count(8)
+    expect(page.locator('.amazon-guide-step[open]')).to_have_count(1)
+    expect(page.locator('.amazon-import-guide form, .amazon-import-guide input, .amazon-import-guide select, .amazon-import-guide iframe')).to_have_count(0)
+    for step, text in [('market', '最终扣款币种'), ('address', 'China（中国）'), ('size', 'Size chart'), ('seller', '不等于 Amazon 自营'), ('delivery', '都不保证这件商品能直邮中国'), ('fees', '没有列出进口费用，不代表免税或全部税费已预付'), ('payment', '跨境退货运费由谁承担'), ('aftercare', 'Your Orders')]:
+        detail = page.locator(f'[data-amazon-step="{step}"]')
+        if detail.get_attribute('open') is None:
+            summary = detail.locator('summary')
+            summary.focus(); page.keyboard.press('Enter')
+        expect(detail).to_have_attribute('open', '')
+        expect(detail.locator('.amazon-step-body')).to_be_visible()
+        expect(detail.locator('.amazon-step-body')).to_contain_text(text)
+        expect(page.locator('.amazon-guide-step[open]')).to_have_count(1)
+        assert page.locator('#sheetBody').evaluate('(el) => el.scrollWidth <= el.clientWidth')
+        if step == 'fees':
+            detail.scroll_into_view_if_needed()
+            page.screenshot(path=str(OUT/f'amazon_import_fees_{mode}.png'))
+    page.locator('.amazon-help-sources summary').click()
+    expect(page.locator('.amazon-help-sources')).to_contain_text('美国、德国、日本站具体帮助本次未能完成核验')
+    expect(page.locator('[data-amazon-help-link]')).to_have_count(4)
+    for key, href in AMAZON_HELP.items():
+        help_link = page.locator(f'[data-amazon-help-link="{key}"]')
+        expect(help_link).to_have_attribute('href', href)
+        expect(help_link).to_have_attribute('target', '_self')
+    help_link = page.locator('[data-amazon-help-link="seller"]')
+    page.once('dialog', lambda d: (assert_disclaimer(d), d.dismiss()))
+    help_link.click(); expect(page).to_have_url(base)
+    page.once('dialog', lambda d: (assert_disclaimer(d), d.accept()))
+    with page.expect_navigation(wait_until='domcontentloaded'):
+        help_link.click(button='middle')
+    expect(page).to_have_url(AMAZON_HELP['seller']); assert len(context.pages) == 1
+    page.go_back(wait_until='networkidle')
+    expect(page.locator('#q')).to_have_value('Stamp Hoodie')
+    assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
+    page.locator('#amazonChannels').click()
+    checks.append(mode+': eight-step Amazon import accordion supports keyboard and touch, narrow layouts, specific item/address checks, FBA distinction, unprepaid tax warning, payment and returns checklist; verified UK source scope and same-tab help Cancel/Continue; no personal-data form')
     page.keyboard.press('Escape')
     expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
     expect(page.locator('#amazonChannels')).to_be_focused()
@@ -202,6 +245,8 @@ def main():
                 context.add_init_script('window.BIKEHUNT_PAGES=true;')
                 def intercept(route):
                     u=urlparse(route.request.url)
+                    if route.request.url in AMAZON_HELP.values():
+                        return route.fulfill(content_type='text/html', body='<title>Mock official help</title><p>Help navigation test only</p>')
                     if u.netloc in {market[1] for market in AMAZON_SEARCHES}:
                         assert u.path == '/s' and set(parse_qs(u.query)) == {'k'}
                         return route.fulfill(content_type='text/html', body='<title>Mock Amazon search</title><p>Search navigation test only</p>')

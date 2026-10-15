@@ -58,7 +58,42 @@ for(let i=0;i<expectedAmazon.length;i++){
   }
 }
 assert.equal(amazonSaved,40);assert.equal(amazonPromptCount,8);assert.ok(amazonPrevented>40);
-amazonContext.showAmazonChannels();assert.equal((amazonPanel.match(/data-amazon-search-link=/g)||[]).length,8);assert.equal((amazonPanel.match(/target="_self"/g)||[]).length,8);assert.ok(!amazonPanel.includes('data-purchase-link')&&!amazonPanel.includes('data-reference-link'));
+amazonContext.showAmazonChannels();assert.equal((amazonPanel.match(/data-amazon-search-link=/g)||[]).length,8);assert.equal((amazonPanel.match(/data-amazon-search-link="[^"]+"[^>]+target="_self"/g)||[]).length,8);assert.ok(!amazonPanel.includes('data-purchase-link')&&!amazonPanel.includes('data-reference-link'));
 for(const note of ['搜索入口，非商品实时报价','Amazon 自营','第三方卖家','Fulfilled by Amazon','不等于 Amazon 自营','中国大陆','运费','进口税费','结账页'])assert.ok(amazonPanel.includes(note),note);
 assert.ok(index.includes('id="amazonChannels">Amazon购买途径</button>'));
 console.log('Amazon safety: eight fixed official category searches, honest labels, exact allowlist, URL/key tampering, cancel/continue and forced same-tab modifier/middle clicks passed');
+
+// The guide is educational content only. References have a separate exact allowlist.
+const importSteps=vm.runInContext('AMAZON_IMPORT_STEPS',amazonContext);
+assert.deepEqual(Array.from(importSteps,step=>step.id),['market','address','size','seller','delivery','fees','payment','aftercare']);
+assert.ok(Object.isFrozen(importSteps));
+for(const step of importSteps)assert.ok(Object.isFrozen(step)&&Object.isFrozen(step.paragraphs));
+assert.equal((amazonPanel.match(/data-amazon-step=/g)||[]).length,8);
+assert.equal((amazonPanel.match(/name="amazon-import-steps"/g)||[]).length,8);
+assert.equal((amazonPanel.match(/ open>/g)||[]).length,1);
+assert.ok(!/<(?:form|input|select|iframe)\b/.test(amazonPanel));
+for(const note of ['USD','GBP','EUR','JPY','Deliver to / Ship to','China（中国）','真实收件人','男女款','Size chart','cm / inch','Sold by','Ships from / Dispatches from','Verkauf durch / Versand','販売元 / 出荷元','不等于 Amazon 自营','没有列出进口费用，不代表免税或全部税费已预付','Import Fees Deposit','Import Charges','最终扣款币种','退货期限','跨境退货运费由谁承担','避免重复提交','Your Orders','追踪号码','美国、德国、日本站具体帮助本次未能完成核验'])assert.ok(amazonPanel.includes(note),note);
+const expectedHelp=[['seller','GEF528GN65XSJ7V8'],['charges','G8VRJ7Y8Z3T5WPV3'],['deposit','G9UHGT37MYD2EJPL'],['tracking','GBPEXEXYULHB5WCH']];
+const importHelp=vm.runInContext('AMAZON_IMPORT_HELP',amazonContext);
+assert.ok(Object.isFrozen(importHelp));assert.equal(importHelp.length,4);
+assert.equal((amazonPanel.match(/data-amazon-help-link=/g)||[]).length,4);
+for(let i=0;i<expectedHelp.length;i++){
+  const [key,node]=expectedHelp[i],source=importHelp[i];
+  assert.ok(Object.isFrozen(source));assert.equal(source.key,key);
+  assert.equal(source.url,'https://digprjsurvey.amazon.co.uk/csad/help/node/'+node);
+  let href=source.url;const link={dataset:{amazonHelpLink:key},getAttribute:()=>href};
+  const click={target:{closest:()=>link},type:'click',button:0,preventDefault:()=>amazonPrevented++};
+  const before=amazonNavigated.length;
+  amazonContext.window.confirm=message=>{assert.ok(message.startsWith('full disclaimer sentinel'));assert.ok(message.includes('官方帮助'));return false;};
+  amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before);
+  amazonContext.window.confirm=()=>true;
+  for(const options of [{},{ctrlKey:true},{metaKey:true},{shiftKey:true},{type:'auxclick',button:1}])amazonContext.guardAmazonHelpExit({...click,...options});
+  assert.equal(amazonNavigated.length,before+5);assert.ok(amazonNavigated.slice(before).every(url=>url===source.url));
+  for(const bad of [source.url+'?tag=affiliate-20',source.url+'#changed',source.url.replace('amazon.co.uk','amazon.co.uk.evil.example'),'https://www.amazon.com/s?k=road','javascript:alert(1)','']){
+    href=bad;assert.equal(amazonContext.allowedAmazonHelp(link),null);amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);
+  }
+  href=source.url;link.dataset.amazonHelpLink='unknown';amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);
+  link.dataset.amazonHelpLink=key;amazonContext.window.confirm=()=>{href+='?changed';return true;};amazonContext.guardAmazonHelpExit(click);assert.equal(amazonNavigated.length,before+5);
+  href=source.url;amazonContext.window.confirm=()=>{throw new Error('Right click must be ignored');};amazonContext.guardAmazonHelpExit({...click,type:'auxclick',button:2});
+}
+console.log('Amazon import guide: eight ordered educational steps, no data collection or checkout, scoped official sources, exact help allowlist, disclaimer Cancel/Continue and forced same-tab links passed');
