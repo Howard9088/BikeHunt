@@ -27,10 +27,22 @@ console.log('Safety regression: fresh/expired/soldout/unknown/retained guards, c
 // Amazon entrances must be exact fixed searches, not catalogue offers.
 const amazonSource=flows.slice(flows.indexOf('const AMAZON_SEARCH_MARKETS='),flows.indexOf("document.getElementById('amazonChannels').onclick"));
 let amazonPromptCount=0,amazonSaved=0,amazonPrevented=0,amazonPanel='',amazonNavigated=[];
-const amazonContext={URLSearchParams,PURCHASE_DISCLAIMER:'full disclaimer sentinel',e:value=>String(value),
+const amazonContext={URL,URLSearchParams,document:{currentScript:{src:'https://bikehunt.example/BikeHunt/web/flows.js?v=release'},getElementById:()=>({querySelectorAll:()=>[]})},PURCHASE_DISCLAIMER:'full disclaimer sentinel',e:value=>String(value),
   openPanel:(title,html)=>{assert.equal(title,'Amazon购买途径');amazonPanel=html;},
   saveBrowseState:()=>amazonSaved++,window:{confirm:message=>{amazonPromptCount++;assert.ok(message.includes('full disclaimer sentinel'));return false;},location:{assign:url=>amazonNavigated.push(url)}}};
 vm.createContext(amazonContext);vm.runInContext(amazonSource,amazonContext);
+const amazonLogo=vm.runInContext('AMAZON_CHANNEL_LOGO_URL',amazonContext);
+assert.equal(amazonLogo,'https://bikehunt.example/BikeHunt/web/assets/brands/amazon-official.png');
+const logoDeclaration=amazonSource.slice(amazonSource.indexOf('const AMAZON_CHANNEL_LOGO_URL='),amazonSource.indexOf('function syncAmazonChannelLogo('));
+for(const base of ['https://bikehunt.example/web/flows.js','https://bikehunt.example/BikeHunt/web/flows.js?v=release']){
+  const logoContext={URL,document:{currentScript:{src:base}}};vm.createContext(logoContext);vm.runInContext(logoDeclaration,logoContext);
+  assert.equal(vm.runInContext('AMAZON_CHANNEL_LOGO_URL',logoContext),new URL('assets/brands/amazon-official.png',base).href);
+}
+const logoState={complete:false,naturalWidth:0,hidden:true,nextElementSibling:{hidden:false}};
+amazonContext.syncAmazonChannelLogo(logoState);assert.equal(logoState.hidden,true);assert.equal(logoState.nextElementSibling.hidden,false);
+logoState.complete=true;logoState.naturalWidth=6110;amazonContext.syncAmazonChannelLogo(logoState);assert.equal(logoState.hidden,false);assert.equal(logoState.nextElementSibling.hidden,true);
+logoState.naturalWidth=0;amazonContext.syncAmazonChannelLogo(logoState);assert.equal(logoState.hidden,true);assert.equal(logoState.nextElementSibling.hidden,false);
+assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync('web/assets/brands/amazon-official.png')).digest('hex'),'5d26b516f9cf43e65c114ea65369c6fb209e4528678ad7c1d7d67623cbd3efab');
 const amazonMarkets=vm.runInContext('AMAZON_SEARCH_MARKETS',amazonContext);
 assert.equal(amazonMarkets.length,4);
 assert.ok(Object.isFrozen(amazonMarkets));
@@ -60,6 +72,12 @@ for(let i=0;i<expectedAmazon.length;i++){
 assert.equal(amazonSaved,40);assert.equal(amazonPromptCount,8);assert.ok(amazonPrevented>40);
 amazonContext.showAmazonChannels();assert.equal((amazonPanel.match(/data-amazon-search-link=/g)||[]).length,8);assert.equal((amazonPanel.match(/data-amazon-search-link="[^"]+"[^>]+target="_self"/g)||[]).length,8);assert.ok(!amazonPanel.includes('data-purchase-link')&&!amazonPanel.includes('data-reference-link'));
 for(const note of ['搜索入口，非商品实时报价','Amazon 自营','第三方卖家','Fulfilled by Amazon','不等于 Amazon 自营','中国大陆','运费','进口税费','结账页'])assert.ok(amazonPanel.includes(note),note);
+assert.equal((amazonPanel.match(/class="amazon-channel-logo"/g)||[]).length,4);
+assert.equal((amazonPanel.match(/alt="Amazon"/g)||[]).length,4);
+for(const country of ['美国站','英国站','德国站','日本站'])assert.ok(amazonPanel.includes('class="amazon-country">'+country+'</span>'));
+assert.equal((amazonPanel.match(/class="amazon-channel-fallback">Amazon/g)||[]).length,4);
+assert.ok(amazonPanel.includes('BikeHunt 与 Amazon 无合作或隶属关系'));
+assert.ok(!/<a[^>]*>\s*(?:<span[^>]*>\s*)?<img[^>]*amazon-channel-logo/.test(amazonPanel));
 assert.ok(index.includes('id="amazonChannels">Amazon购买途径</button>'));
 console.log('Amazon safety: eight fixed official category searches, honest labels, exact allowlist, URL/key tampering, cancel/continue and forced same-tab modifier/middle clicks passed');
 

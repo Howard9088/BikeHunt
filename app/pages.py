@@ -90,6 +90,8 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     community = Community(root).get()
     atomic_json(output/"data/community.json", community)
     assets = {image for entry in directory["brands"] + directory["teams"] for image in entry.get("logo_images", [])}
+    # Explicitly include the single local retailer-identification asset.
+    assets.add("/web/assets/brands/amazon-official.png")
     if community.get("available"):
         assets.add(community["image_url"])
     if (web/"assets/community/group-entry.png").is_file():

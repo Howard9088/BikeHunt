@@ -191,6 +191,19 @@ const AMAZON_SEARCH_MARKETS=Object.freeze([
 ].map(([code,name,host,jerseys,bibs])=>Object.freeze({code,name,host,searches:Object.freeze([
   ['jerseys','骑行上衣',jerseys],['bibs','背带裤',bibs]
 ].map(([category,label,query])=>Object.freeze({key:code+'_'+category,label,query,url:'https://'+host+'/s?'+new URLSearchParams({k:query}).toString()})))})));
+// Unmodified official artwork, used only to identify the destination retailer.
+// Resolve against this script so both /web/ and project-subdirectory Pages work.
+const AMAZON_CHANNEL_LOGO_URL=new URL('assets/brands/amazon-official.png',document.currentScript.src).href;
+function syncAmazonChannelLogo(img){
+  const loaded=img.complete&&img.naturalWidth>0;
+  img.hidden=!loaded;img.nextElementSibling.hidden=loaded;
+}
+function bindAmazonChannelLogos(){
+  document.getElementById('sheetBody').querySelectorAll('.amazon-channel-logo').forEach(img=>{
+    img.onload=()=>syncAmazonChannelLogo(img);img.onerror=()=>syncAmazonChannelLogo(img);
+    syncAmazonChannelLogo(img);
+  });
+}
 // Educational checklist only: never creates an offer, asks for personal data,
 // signs in or contacts Amazon. Official references were read on 2026-10-15.
 const AMAZON_IMPORT_STEPS=Object.freeze([
@@ -242,7 +255,8 @@ function amazonImportGuideMarkup(){
   return '<section class="amazon-import-guide" aria-labelledby="amazonImportTitle"><h4 id="amazonImportTitle">第一次 Amazon 海淘，照这 8 步核对</h4><p class="amazon-guide-intro">点击步骤展开。这是操作核对清单，不是代购服务；是否直邮中国与实际费用，须按具体商品、销售方、收货地址及结账页确认。</p><ol class="amazon-guide-steps">'+AMAZON_IMPORT_STEPS.map((step,index)=>'<li><details class="amazon-guide-step" name="amazon-import-steps" data-amazon-step="'+e(step.id)+'"'+(index===0?' open':'')+'><summary><span class="amazon-step-number" aria-hidden="true">'+(index+1)+'</span><span>'+e(step.title)+'</span></summary><div class="amazon-step-body">'+step.paragraphs.map(paragraph=>'<p>'+e(paragraph)+'</p>').join('')+'</div></details></li>').join('')+'</ol><details class="amazon-help-sources"><summary>官方帮助与适用范围</summary><p>核对日期：2026-10-15。以下为已核对的英国站官方说明，其中 Global Store 条款仅作费用术语示例，不代表美国、德国、日本站或寄往中国的统一政策。美国、德国、日本站具体帮助本次未能完成核验，请在所选站点查看本单最新说明。</p><ul>'+AMAZON_IMPORT_HELP.map(source=>'<li><a data-amazon-help-link="'+e(source.key)+'" href="'+e(source.url)+'" target="_self" rel="noopener noreferrer">'+e(source.label)+' →</a></li>').join('')+'</ul></details></section>';
 }
 function showAmazonChannels(){
-  openPanel('Amazon购买途径','<div class="summary-box amazon-summary"><h4>搜索入口，非商品实时报价</h4><p>以下链接打开 Amazon 官方站点的公路骑行服搜索。本页未接入 Amazon 商品数据，未核实搜索结果中的卖家、价格或库存。</p></div><div class="amazon-market-grid">'+AMAZON_SEARCH_MARKETS.map(market=>'<section class="amazon-market"><h4>Amazon '+e(market.name)+'</h4><p class="amazon-domain">'+e(market.host)+'</p><div class="amazon-search-links">'+market.searches.map(search=>'<a data-amazon-search-link="'+e(search.key)+'" href="'+e(search.url)+'" target="_self" rel="noopener noreferrer" aria-label="Amazon '+e(market.name)+'：搜索'+e(search.label)+'">'+e(search.label)+' →</a>').join('')+'</div></section>').join('')+'</div>'+amazonImportGuideMarkup());
+  openPanel('Amazon购买途径','<div class="summary-box amazon-summary"><h4>搜索入口，非商品实时报价</h4><p>以下链接打开 Amazon 官方站点的公路骑行服搜索。本页未接入 Amazon 商品数据，未核实搜索结果中的卖家、价格或库存。</p></div><div class="amazon-market-grid">'+AMAZON_SEARCH_MARKETS.map(market=>'<section class="amazon-market"><h4 class="amazon-market-title"><span class="amazon-channel-mark"><img class="amazon-channel-logo" src="'+e(AMAZON_CHANNEL_LOGO_URL)+'" alt="Amazon" width="6110" height="2047" decoding="async" hidden><span class="amazon-channel-fallback">Amazon</span></span><span class="amazon-country">'+e(market.name)+'</span></h4><p class="amazon-domain">'+e(market.host)+'</p><div class="amazon-search-links">'+market.searches.map(search=>'<a data-amazon-search-link="'+e(search.key)+'" href="'+e(search.url)+'" target="_self" rel="noopener noreferrer" aria-label="Amazon '+e(market.name)+'：搜索'+e(search.label)+'">'+e(search.label)+' →</a>').join('')+'</div></section>').join('')+'</div><p class="amazon-brand-note">Amazon 及相关标志归其权利人所有；仅用于识别第三方购买渠道。BikeHunt 与 Amazon 无合作或隶属关系。</p>'+amazonImportGuideMarkup());
+  bindAmazonChannelLogos();
 }
 function allowedAmazonHelp(link){
   return AMAZON_IMPORT_HELP.find(source=>source.key===link.dataset?.amazonHelpLink&&source.url===link.getAttribute('href'))||null;

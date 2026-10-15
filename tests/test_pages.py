@@ -31,6 +31,8 @@ class PagesTests(unittest.TestCase):
         (web/'index.html').write_text('<a href="/web/">Home</a><script src="/web/profile.js" defer></script>',encoding='utf-8')
         (web/'group').mkdir()
         (web/'group/index.html').write_text(Path(__file__).resolve().parents[1].joinpath('web/group/index.html').read_text(), encoding='utf-8')
+        (web/'assets/brands').mkdir(parents=True)
+        (web/'assets/brands/amazon-official.png').write_bytes(b'Mock retailer image')
         atomic_json(self.root/'data/sources.json',[{'code':'a','name':'Mock'}])
         atomic_json(self.root/'data/directories.json',{'brands':[],'teams':[]})
         OfferRepository(self.root/'data').save('a',[make_offer()],NOW,[])
@@ -49,6 +51,11 @@ class PagesTests(unittest.TestCase):
             self.assertIn(f'./web/{asset}?v={commit}', html)
         self.assertIn(f'data-release="{commit}"', html)
         self.assertEqual(index.read_text(encoding="utf-8"), original)
+
+    def test_official_amazon_channel_logo_is_copied_unchanged(self):
+        build_public_site(self.root, make_fx())
+        asset = 'web/assets/brands/amazon-official.png'
+        self.assertEqual((self.root/'_site'/asset).read_bytes(), (self.root/asset).read_bytes())
 
     def test_published_cursor_keeps_reserved_history_floor(self):
         from app.updates import UpdateStore
