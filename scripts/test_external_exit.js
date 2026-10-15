@@ -26,7 +26,7 @@ function testStrictUrls(){
 }
 function testIdentityAndLayout(){
  const h=harness();assert.equal(h.c.showExternalExit(h.options()),true);
- assert.equal((h.html.match(/<li>/g)||[]).length,4);for(let i=1;i<=4;i++)assert.ok(h.html.includes('aria-label="第'+i+'点">'+i+'</span>'));
+ assert.equal((h.html.match(/<li(?: class="external-exit-important")?>/g)||[]).length,4);for(let i=1;i<=4;i++)assert.ok(h.html.includes('aria-label="第'+i+'点">'+i+'</span>'));
  for(const text of ['本站仅提供商品与优惠信息及链接，不参与交易。','地址栏','仿冒','重定向','访问环境','库存','退换','法律规定本站应承担的责任除外。','完整免责声明','known.example','确认并前往官网'])assert.ok(h.html.includes(text),text);
  assert.equal(h.nodes.get('externalExitImage').src,'https://images.example/current-product.jpg');
  const img=h.nodes.get('externalExitImage'),fallback=h.nodes.get('externalExitImageFallback');img.complete=true;img.naturalWidth=800;img.onload();assert.equal(img.hidden,false);assert.equal(fallback.hidden,true);img.onerror();assert.equal(img.hidden,true);assert.equal(fallback.hidden,false);
@@ -37,6 +37,8 @@ function testIdentityAndLayout(){
  h.c.closeExternalExit();h.c.showExternalExit(h.options({kind:'reference',label:'<img src=x onerror=alert(1)>'}));assert.ok(h.html.includes('确认并前往目标网站'));assert.ok(h.html.includes('&lt;img'));assert.ok(!h.html.includes('<img src=x'));
  h.c.closeExternalExit();h.c.showExternalExit(h.options({kind:'amazon',url:'https://www.amazon.com/s?k=jersey',image:'',sourceCode:undefined}));assert.ok(h.html.includes('确认并前往官网'));assert.ok(h.nodes.get('externalExitImage').src.endsWith('/amazon-official.png'));
 }
+function testWarningEmphasis(){const h=harness();h.c.showExternalExit(h.options());assert.equal((h.html.match(/class="external-exit-important"/g)||[]).length,1);assert.ok(h.html.includes('核对来源与域名 · 重点提醒'));assert.ok(h.html.includes('<strong>请始终核对浏览器地址栏中的域名，警惕仿冒网站。</strong>'));}
+testWarningEmphasis();
 function testCancelFocusAndSinglePrompt(){
  const h=harness();let cancelled=0;h.c.showExternalExit(h.options({onCancel:()=>cancelled++}));const original=h.html;
  assert.equal(h.c.showExternalExit(h.options({url:'https://replacement.example/'})),false);assert.equal(h.html,original);

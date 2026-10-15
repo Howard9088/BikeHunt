@@ -8,3 +8,11 @@
 .external-exit-actions{flex:none;padding:15px 26px max(15px,env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1.8fr;gap:12px;border-top:1px solid #e1e8f0;background:#fff}.external-exit-actions button{min-height:46px;border-radius:11px;font-size:14px;font-weight:650;border:1px solid #ccd6e2;background:#fff;color:#354c65;padding:9px 10px}.external-exit-actions #externalExitConfirm{background:#0069e0;color:#fff;border-color:#0069e0}.external-exit-actions button:focus-visible,.external-exit-disclaimer summary:focus-visible{outline:3px solid #79b5ff;outline-offset:3px}
 @media(max-width:450px){.external-exit-dialog{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);border-radius:20px}.external-exit-hero{padding:18px 18px 20px}.external-exit-identity{gap:13px;margin-top:18px}.external-exit-picture{width:74px;height:74px;flex-basis:74px;border-radius:14px}.external-exit-heading h2{font-size:20px}.external-exit-content{padding:0 18px 17px}.external-exit-destination strong{font-size:17px}#externalExitPoints{gap:15px}#externalExitPoints p{font-size:13px}.external-exit-actions{padding:12px 16px max(12px,env(safe-area-inset-bottom));gap:9px;grid-template-columns:1fr 2fr}.external-exit-actions button{font-size:13px}.external-exit-brand{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.external-exit-dialog::backdrop{backdrop-filter:none}}
+
+/* The user highlighted point 2: retain all four points, emphasize this warning only. */
+#externalExitPoints .external-exit-important{padding:14px 12px;border:1px solid #efb4ad;border-left:4px solid #b42318;border-radius:12px;background:#fff1f0}
+#externalExitPoints .external-exit-important>div{min-width:0}
+#externalExitPoints .external-exit-important h3,#externalExitPoints .external-exit-important h3>span,#externalExitPoints .external-exit-important p{color:#912018}
+#externalExitPoints .external-exit-important p{font-weight:600}
+#externalExitPoints .external-exit-important strong{font-weight:800}
+#externalExitPoints .external-exit-important .external-exit-number{background:#f9d6d2;color:#912018}

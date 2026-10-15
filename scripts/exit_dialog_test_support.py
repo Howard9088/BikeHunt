@@ -41,6 +41,12 @@ def assert_exit_dialog(page, target, *, official=False, image=None):
         expect(point).to_be_visible()
         expect(point).to_contain_text(required)
     expect(points.nth(1)).to_contain_text('警惕仿冒网站')
+    expect(page.locator('#externalExitPoints > .external-exit-important')).to_have_count(1)
+    expect(points.nth(1)).to_have_class('external-exit-important')
+    expect(points.nth(1)).to_contain_text('重点提醒')
+    expect(points.nth(1).locator('strong')).to_have_text('请始终核对浏览器地址栏中的域名，警惕仿冒网站。')
+    assert points.nth(1).locator('p').evaluate('(node) => getComputedStyle(node).color') == 'rgb(145, 32, 24)'
+    assert int(points.nth(1).locator('strong').evaluate('(node) => getComputedStyle(node).fontWeight')) >= 700
     expect(points.nth(2)).to_contain_text('发现异常请停止访问或操作')
     expect(page.locator('#externalExitCancel')).to_have_text('取消')
     expect(page.locator('#externalExitConfirm')).to_have_text('确认并前往官网' if official else '确认并前往目标网站')
