@@ -36,6 +36,31 @@ function testLocalExpiryAndPriceDate(){
  const h=harness();h.c.items=[card()];h.c.render();h.setNow(NOW+3600001);h.c.expireLocalInventory();assert.equal(h.c.visibleItems().length,0);assert.ok(h.c.gallery.innerHTML.includes('暂无符合条件'));
  const date=Date.parse('2026-10-16T00:00:00Z');h.setNow(date-1);h.c.items=[card({fetched_at:new Date(date-1000).toISOString(),reference_price_valid_until:'2026-10-15'})];h.c.render();assert.equal(h.c.visibleItems().length,1);h.setNow(date);h.c.expireLocalInventory();assert.equal(h.c.visibleItems().length,0);assert.equal(h.c.items[0].reference_stock,'unknown');
 }
+function testHistoricalDiscountFallbackEligibility(){
+ const h=harness(),stale=card({product_id:'stale',category_group:'clothing',fetched_at:new Date(NOW-3600001).toISOString()});
+ assert.equal(h.c.recordedDiscount(stale),true);assert.equal(h.c.featuredDeal(stale),false);
+ for(const changes of [{reference_original_price:null},{reference_price:{amount:'90',currency:'USD'},reference_original_price:{amount:'90',currency:'USD'}},{reference_original_price:{amount:'120',currency:'EUR'}},{reference_price:{amount:'NaN',currency:'USD'}},{reference_original_price:{amount:'Infinity',currency:'USD'}},{reference_price:{amount:'0',currency:'USD'}},{reference_offer_id:null},{reference_variant_id:null},{stock_state:'out_of_stock'},{reference_stock:'out_of_stock'},{reference_data_kind:'research_reference'},{reference_price_valid_until:'2026-10-14'},{reference_price_valid_until:'2026-02-30'}])assert.equal(h.c.recordedDiscount({...stale,...changes}),false,JSON.stringify(changes));
+ for(const changes of [{reference_stock:'unknown',stock_state:'unknown'},{reference_collection_state:'retained'},{reference_data_kind:'legacy_cache'},{fetched_at:null}])assert.equal(h.c.recordedDiscount({...stale,...changes}),true);
+ const ordinary=card({product_id:'ordinary',reference_original_price:null}),sold=card({product_id:'sold',stock_state:'out_of_stock'}),expired=card({...stale,product_id:'expired',reference_price_valid_until:'2026-10-14'});
+ h.c.items=[card(),stale,ordinary,sold,expired];assert.deepEqual(Array.from(h.c.historicalDiscountItems(),p=>p.product_id),['stale']);
+ h.c.activeCategoryGroup='road_equipment';assert.equal(h.c.historicalDiscountItems().length,0);h.c.activeCategoryGroup='clothing';assert.equal(h.c.historicalDiscountItems().length,1);
+ h.c.activeCategory='helmets';assert.equal(h.c.historicalDiscountItems().length,0);h.c.activeCategory='all';h.c.activeSource='other';assert.equal(h.c.historicalDiscountItems().length,0);h.c.activeSource='brand';h.elements.get('q').value='missing';assert.equal(h.c.historicalDiscountItems().length,0);
+ h.elements.get('q').value='';h.c.profileMatches=()=>false;assert.equal(h.c.historicalDiscountItems().length,0,'Personal filters are retained');
+}
+function testHistoricalEmptyRenderAndExactDetail(){
+ const h=harness(),classes=()=>({values:new Set(),add(v){this.values.add(v)},remove(v){this.values.delete(v)},contains(v){return this.values.has(v)}});
+ h.c.gallery.classList=classes();h.c.document.body={classList:classes()};h.c.cancelAnimationFrame=()=>{};h.c.animationFrame=0;
+ const stale=card({product_id:'stale',fetched_at:new Date(NOW-3600001).toISOString()});
+ const button={isConnected:true,dataset:{historyOpen:stale.product_id,historyVariant:stale.reference_variant_id}};
+ h.c.gallery.querySelectorAll=selector=>selector==='[data-history-open]'?[button]:[];
+ let opened=[];h.c.openProduct=(...args)=>opened.push(args);
+ vm.runInContext(section(flows,'function resetReferenceFeed(','function openRoadReferences('),h.c);
+ h.c.items=[stale,card({product_id:'ordinary',reference_original_price:null}),card({product_id:'sold',stock_state:'out_of_stock'})];h.c.render();
+ assert.equal(h.elements.get('count').textContent,'0 件商品');assert.equal(h.c.visibleItems().length,0);const html=h.c.gallery.innerHTML;
+ assert.ok(html.includes('历史折扣参考 · 1 件'));assert.ok(html.includes('同规格记录原价 US$120.00'));assert.ok(html.includes('记录现价 US$90.00'));assert.ok(html.includes('库存与价格待重新核实'));assert.ok(!html.includes('class="discount"'));assert.ok(!html.includes('data-id="ordinary"'));
+ button.onclick();assert.deepEqual(opened,[['stale','v-L']]);stale.reference_stock='out_of_stock';button.onclick();assert.equal(opened.length,1,'A previously rendered history button revalidates stock');
+ h.c.render();assert.ok(!h.c.gallery.classList.contains('reference-feed'));assert.ok(h.c.gallery.innerHTML.includes('暂无符合条件的已核实折扣'));
+}
 function testPublishedFactsCannotCrossOffers(){
  const h=harness();Object.assign(h.c,{isRecord:x=>!!x&&typeof x==='object',validDigest:x=>/^[a-f0-9]{64}$/.test(x),validTimestamp:x=>Number.isFinite(Date.parse(x)),publicationMismatch:message=>Error(message)});
  vm.runInContext(section(adapter,'function publishedOfferIndex(','async function readPublishedSnapshot('),h.c);
@@ -44,4 +69,4 @@ function testPublishedFactsCannotCrossOffers(){
  h.c.validateCatalogIdentities(payload);
  for(const [key,value] of [['reference_original_price',{amount:'150',currency:'USD'}],['reference_price',{amount:'50',currency:'USD'}],['reference_cny','350'],['reference_size','M'],['reference_color','Blue'],['reference_variant_id','v-M'],['reference_price_valid_until','2026-10-18'],['reference_data_kind','legacy_cache'],['reference_source','Cheaper merchant'],['fetched_at',new Date(NOW+1000).toISOString()]]){const bad=structuredClone(payload);bad.catalog.items[0][key]=value;assert.throws(()=>h.c.validateCatalogIdentities(bad),/折扣与参考规格/,key)}
 }
-for(const test of [testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testPublishedFactsCannotCrossOffers]){test();console.log('PASS '+test.name)}
+for(const test of [testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers]){test();console.log('PASS '+test.name)}

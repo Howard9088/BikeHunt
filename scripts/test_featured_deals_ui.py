@@ -45,6 +45,7 @@ def fixture():
     cards = catalog.search()
     return {'catalog': {'items':[card.model_dump(mode='json') for card in cards], 'fx':fx.model_dump(mode='json'),
                         'categories':CATEGORIES, 'source_count':2},
+            'details': {card.product_id:catalog.compare(card.product_id,card.reference_variant_id).model_dump(mode='json') for card in cards},
             'directories': {'brands':[{'code':'brand','name':'Test Brand','name_zh':'测试品牌','offer_count':3,'product_count':2,'rule_count':0}],
                             'teams':[{'code':'team','name':'Test Team','name_zh':'测试车队','offer_count':3,'product_count':3,'rule_count':0}]}}
 
@@ -76,6 +77,7 @@ def main():
                     if not url.path.startswith('/api/'):return route.continue_()
                     if url.path=='/api/catalog':result=state['catalog']
                     elif url.path=='/api/directories':result=state['directories']
+                    elif url.path.startswith('/api/catalog/'):result=state['details'].get(url.path.rsplit('/',1)[-1],{})
                     elif url.path.startswith('/api/rules/'):result={'version':1,'documents':[]}
                     elif url.path=='/api/updates':result={'items':[],'cursor':0,'fx':state['catalog']['fx']}
                     elif url.path=='/api/community':result={'schema_version':1,'configured':False,'available':False,'title':'骑游海淘交流群'}
@@ -112,9 +114,29 @@ def main():
                 expect(page.locator('#browseLabel')).to_have_text('测试车队');expect(page.locator('.card')).to_have_count(2);expect(page.locator('.discount')).to_have_count(0)
                 page.locator('[data-tab=products]').click();expect(page.locator('.card')).to_have_count(1)
                 page.evaluate("for(const card of items)card.fetched_at='2000-01-01T00:00:00Z';expireLocalInventory()")
-                expect(page.locator('.card')).to_have_count(0);expect(page.locator('.empty')).to_contain_text('暂无符合条件的已核实折扣')
+                expect(page.locator('.card')).to_have_count(0)
+                expect(page.locator('#count')).to_have_text('0 件商品')
+                history=page.locator('#historicalDiscountReferences')
+                expect(history).to_contain_text('历史折扣参考 · 3 件')
+                expect(history).to_contain_text('库存与价格待重新核实')
+                expect(history).to_contain_text('同规格记录原价')
+                expect(history).not_to_contain_text('Stamp Hoodie')
+                expect(history).not_to_contain_text('Sold Jersey')
+                expect(page.locator('.discount')).to_have_count(0)
+                stale=next(c for c in state['catalog']['items'] if c['name']=='Stale Jersey')
+                opener=history.locator('[data-history-open="'+stale['product_id']+'"]')
+                opener.click()
+                expect(page.locator('#sheetBody')).to_contain_text('库存待核实')
+                expect(page.locator('#sheetBody [data-reference-link]')).to_have_count(1)
+                page.locator('#close').click();expect(opener).to_be_focused()
+                page.evaluate("items.find(p=>p.name==='Stale Jersey').reference_stock='out_of_stock';render()")
+                expect(history.locator('.historical-reference-card')).to_have_count(2)
+                page.evaluate("items.find(p=>p.name==='Retained Jersey').reference_price_valid_until='2000-01-01';render()")
+                expect(history.locator('.historical-reference-card')).to_have_count(1)
+                expect(page.locator('#count')).to_have_text('0 件商品')
+                assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=str(OUT/f'featured_empty_{mode}.png'))
-                checks.append(mode+': exact fresh discount price/spec; no fake deadline; ordinary global search with Back/reload; clear and featured reset; brand/team reference scope; soldout exclusion; live expiry and honest empty state')
+                checks.append(mode+': exact fresh discount price/spec; no fake deadline; ordinary global search with Back/reload; clear and featured reset; brand/team reference scope; soldout exclusion; live expiry and separate historical discounts; exact stale detail and focus restoration; no full-price/sold-out/ended-promotion fillers')
                 context.close()
             browser.close()
     finally:
