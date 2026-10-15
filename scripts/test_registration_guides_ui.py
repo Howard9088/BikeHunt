@@ -82,6 +82,7 @@ def main():
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
                 page.locator('.card .compare-button').first.click()
+                expect(page.locator('#variant')).to_be_visible()
                 expect(page.locator('#sheetBody .registration-help,#sheetBody .purchase-readiness,[data-merchant-guide]')).to_have_count(0)
                 page.locator('[data-variant=S]').click()
                 page.locator('.guide-start[data-offer=offer-visma]').click()

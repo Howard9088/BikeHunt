@@ -58,11 +58,19 @@ def assert_no_overflow(page):
 def open_guide(page, code, selected=False):
     if page.locator('#sheet').get_attribute('aria-hidden') == 'false':
         page.locator('#close').click()
-    page.locator('.card .compare-button').click()
+    card = page.locator('.card')
+    product_id = card.get_attribute('data-id')
+    card.locator('.compare-button').click()
+    # A zero-count assertion also passes on the loading placeholder. Wait for
+    # positive detail UI plus its bound object before calling the retained helper.
+    expect(page.locator('#variant')).to_be_visible()
+    page.wait_for_function('(id) => currentProduct !== null && currentProduct.product_id === id && Array.isArray(currentProduct.offers)', arg=product_id)
     expect(page.locator('[data-merchant-guide],.registration-help,.purchase-readiness')).to_have_count(0)
     if selected:
         page.locator('[data-variant=S]').click()
+        expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed', 'true')
         expect(page.locator('.guide-start')).to_have_count(4)
+        page.wait_for_function("currentProduct !== null && currentProduct.variant_id === 'S'")
     page.evaluate('(options) => openMerchantGuide(currentProduct, options.code, options.variant)', {'code': code, 'variant': 'S' if selected else None})
     expect(page.locator('#merchantGuideTitle')).to_be_focused()
     expect(page.locator('#merchantLanguageGuide')).to_be_visible()
@@ -83,7 +91,19 @@ def main():
                 context = browser.new_context(viewport=viewport, is_mobile=mode == 'mobile', has_touch=mode == 'mobile')
                 context.set_default_timeout(7000)
                 context.set_default_navigation_timeout(10000)
-                context.add_init_script('window.BIKEHUNT_PAGES=true;')
+                context.add_init_script('''
+                    window.BIKEHUNT_PAGES=true;
+                    // Deterministic loading interval: absence-only waits must
+                    // not let a retained read-only helper consume a null detail.
+                    const realFetch=window.fetch.bind(window);
+                    window.fetch=async (...args)=>{
+                        const response=await realFetch(...args);
+                        const input=args[0];
+                        const path=new URL(input instanceof Request?input.url:String(input),location.href).pathname;
+                        if(path.startsWith('/api/catalog/'))await new Promise(resolve=>setTimeout(resolve,150));
+                        return response;
+                    };
+                ''')
 
                 def intercept(route):
                     url = urlparse(route.request.url)

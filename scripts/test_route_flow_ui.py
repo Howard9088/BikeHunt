@@ -93,6 +93,7 @@ def main():
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
                 page.locator('.card .compare-button').first.click()
+                expect(page.locator('#variant')).to_be_visible()
                 assert_no_early_registration(page)
                 page.locator('[data-variant="S"]').click()
                 expect(page.locator('.offer .payment-feasibility')).to_have_count(4)

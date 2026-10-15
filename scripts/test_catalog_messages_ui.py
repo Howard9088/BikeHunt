@@ -125,6 +125,9 @@ def cancel_purchase_to_detail(page):
         page.locator('#registrationCancel').click()
     expect(page.locator('#routeComparison')).to_be_visible()
     page.locator('#routeBack').click()
+    # Both stages disappear before the asynchronous detail request completes.
+    expect(page.locator('#variant')).to_be_visible()
+    page.wait_for_function('currentProduct !== null && Array.isArray(currentProduct.offers)')
     expect(page.locator('#routeComparison,#registrationInterstitial')).to_have_count(0)
 
 
@@ -465,6 +468,8 @@ def main():
                 page.screenshot(path=str(OUT/f'catalog_stale_reference_{mode}.png'))
                 state['detail']['offers'][0]['offer']['stock']='out_of_stock'
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[],freshnessChanged:true}}))")
+                expect(page.locator('#variant')).to_be_visible()
+                expect(page.locator('#sheetBody')).to_contain_text('已售罄')
                 expect(page.locator('[data-reference-link][href]')).to_have_count(0)
                 checks.append(mode+': stale inventory reference-only path remains usable; no stale size claims; newly sold-out snapshot removes link')
                 page.locator('#close').click()

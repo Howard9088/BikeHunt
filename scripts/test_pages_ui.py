@@ -92,9 +92,8 @@ def capture(page: Page, name: str, results: dict) -> None:
     page.locator("#sheet").evaluate(
         "el => Promise.all(el.getAnimations().map(animation => animation.finished.catch(() => {})))"
     )
-    if name.endswith("_feed") or name.endswith("guide_step1"):
-        selector = ".card img" if name.endswith("_feed") else ".guide-product"
-        photo = page.locator(selector).first
+    if name.endswith("_feed"):
+        photo = page.locator(".card img").first
         state = photo.evaluate("""async image => {
             await Promise.race([
                 image.decode().catch(() => {}),
@@ -276,20 +275,29 @@ def exercise(base: str, data: dict, results: dict) -> None:
                     capture(page, "mobile_visma_fit_M", results)
                     results["checks"].append("female_male_height_weight_persist_and_visma_chest99_reference_M")
                     page.locator("[data-variant]").first.click()
-                    expect(page.locator(".checks")).to_contain_text("Visa / Mastercard")
+                    expect(page.locator(".offer .payment-feasibility").first).to_contain_text("中国发行卡")
+                    expect(page.locator(".offer .payment-feasibility").first).to_contain_text("不保证")
+                    expect(page.locator(".registration-help,.purchase-readiness,[data-merchant-guide]")).to_have_count(0)
                     page.locator(".guide-start").first.click()
-                    expect(page.locator(".guide-map li")).to_have_count(4)
-                    for step in range(1, 5):
-                        expect(page.locator(".guide-progress")).to_contain_text(f"第 {step} 步 / 4")
-                        assert page.locator(".guide-title").inner_text()
-                        capture(page, f"mobile_chinese_guide_step{step}", results)
-                        if step < 4:
-                            page.locator("#guideNext").click()
-                    expect(page.locator(".guide-content")).to_contain_text("招商银行")
-                    assert page.locator(".guide-content .compare-button").get_attribute("href").startswith(
-                        "https://www.teamvismaleaseabike.com/"
-                    )
-                    results["checks"].append("four_chinese_steps_and_official_product_checkout_link")
+                    expect(page.locator("#routeComparison")).to_be_visible()
+                    expect(page.locator("#routeComparison [data-route]")).to_have_count(3)
+                    expect(page.locator("#routeContinue")).to_be_disabled()
+                    expect(page.locator(".registration-help")).to_have_count(0)
+                    capture(page, "mobile_route_comparison", results)
+                    page.locator("[data-route-select=direct]").click()
+                    expect(page.locator("[data-route-select=direct]")).to_have_attribute("aria-pressed", "true")
+                    expect(page.locator("#routeContinue")).to_be_enabled()
+                    page.locator("#routeContinue").click()
+                    expect(page.locator("#registrationInterstitial")).to_be_visible()
+                    expect(page.locator("#registrationInterstitial .registration-help")).to_have_count(1)
+                    expect(page.locator("#registrationInterstitial [data-registration-source=visma][data-registration-scope=market]")).to_have_count(1)
+                    assert page.evaluate("history.state.bikehuntPurchase.url").startswith("https://www.teamvismaleaseabike.com/")
+                    capture(page, "mobile_registration_interstitial", results)
+                    page.locator("#registrationCancel").click()
+                    expect(page.locator("#routeComparison")).to_be_visible()
+                    expect(page.locator("[data-route-select=direct]")).to_have_attribute("aria-pressed", "true")
+                    expect(page.locator(".registration-help")).to_have_count(0)
+                    results["checks"].append("real_route_controls_then_scoped_registration_and_cancel_preserves_route")
                     close_panel(page)
 
                     expect(page.locator("#wechatReminder")).to_have_count(0)

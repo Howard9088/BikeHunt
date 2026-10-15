@@ -125,6 +125,12 @@ def main():
                 expect(page.locator('#routeComparison [data-route=forwarding]')).to_have_attribute('data-route-status', 'prohibited')
                 expect(page.locator('#routeComparison [data-route-select=forwarding]')).to_be_disabled()
                 page.locator('#routeBack').click()
+                # Wait for the returned, exact detail before the programmatic
+                # read-only helper; its absence on a loading page proves nothing.
+                expect(page.locator('#variant')).to_be_visible()
+                expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed', 'true')
+                expect(page.locator('.offer')).to_have_count(4)
+                page.wait_for_function("currentProduct !== null && currentProduct.variant_id === 'S'")
                 # The retained language helper is read-only and carries no purchase setup.
                 page.evaluate("openMerchantGuide(currentProduct, 'maap', 'S')")
                 guide = page.locator('#merchantLanguageGuide')
