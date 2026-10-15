@@ -132,6 +132,11 @@ def main():
                 expect(page).to_have_url(target)
                 assert len(context.pages) == 1 and external == [target]
                 page.go_back(wait_until='networkidle')
+                # Back intentionally restores the exact product sheet; close it before switching directories.
+                expect(page.locator('#sheet')).to_be_visible()
+                expect(page.locator('.offer .payment-matrix')).to_be_visible()
+                page.locator('#close').click()
+                expect(page.locator('#overlay')).not_to_have_class('overlay open')
                 page.locator('[data-tab=brands]').click()
                 page.locator('.directory-card[data-source=oakley]').click()
                 expect(page.locator('.source-payment-overview')).to_be_visible()
