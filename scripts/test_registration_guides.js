@@ -2,7 +2,7 @@
 // Offline production-JS checks. No merchant requests or browser-rendering claims.
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync('web/registration-guides.js','utf8');new vm.Script(source);
-const core=source.slice(0,source.indexOf("document.addEventListener('error'"));
+const core=source.slice(0,source.indexOf("document.addEventListener('keydown'"));
 const data=JSON.parse(fs.readFileSync('tests/fixtures/registration-guides.json','utf8'));
 const current=JSON.parse(fs.readFileSync('web/registration-guides.json','utf8'));
 const now=Date.parse('2026-10-16T00:00:00Z');
@@ -16,10 +16,15 @@ for(const market of ['',undefined,'US','US 市场报价（USD）','欧洲站 EUR
   assert.equal(context.registrationEntry('visma',market),null,'Public account page cannot satisfy any exact-market lookup');
   const html=context.registrationGuideMarkup('visma',market);assert.ok(html.includes('注册页面图解待核实'));assert.ok(!html.includes('<img'));
 }
-const html=context.registrationPublicAccountMarkup('visma');assert.equal((html.match(/<img/g)||[]).length,3);assert.ok(html.includes('公开账户页，销售市场未核实'));
+const html=context.registrationPublicAccountMarkup('visma');assert.equal((html.match(/<img/g)||[]).length,6);assert.ok(html.includes('公开账户页，销售市场未核实'));
 assert.ok(html.includes('未提交注册或登录'));assert.ok(html.includes('页面可能变化'));assert.ok(html.includes('2026-10-15'));assert.ok(html.includes('visma-public-account-20261015-v1'));
 assert.ok(html.includes('https://bikehunt.example/BikeHunt/web/assets/registration/visma-login-register-entry-20261015.jpg'));
 assert.equal((html.match(/class="registration-annotation-list"/g)||[]).length,3);
+assert.equal((html.match(/class="registration-zoom"/g)||[]).length,3);
+assert.ok(html.includes('查看大图（原始分辨率）'));assert.ok(html.includes('收起大图'));assert.ok(html.includes('tabindex="0" role="region"'));
+let zoomFocus=false,zoomPrevented=false,zoomStopped=false;const zoom={open:true,querySelector:()=>({focus:()=>zoomFocus=true})};context.closeRegistrationZoom({key:'Escape',target:{closest:()=>zoom},preventDefault:()=>zoomPrevented=true,stopImmediatePropagation:()=>zoomStopped=true});assert.equal(zoom.open,false);assert.ok(zoomFocus&&zoomPrevented&&zoomStopped);
+const css=fs.readFileSync('web/flows.css','utf8');assert.ok(css.includes('.registration-zoom .registration-image-wrap>img{width:auto;max-width:none}'));assert.ok(css.includes('pan-x pan-y pinch-zoom'));
+
 assert.ok(!/<(?:form|input|select|textarea|iframe|a)\b|data-purchase-link|data-reference-link/.test(html));
 assert.ok(!html.includes(' open>'),'Help is optional and initially collapsed');
 for(const [code,market] of [['amazon_us','美国站'],['amazon_uk','英国站'],['amazon_de','德国站'],['amazon_jp','日本站']]){

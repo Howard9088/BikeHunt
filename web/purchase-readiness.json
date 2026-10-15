@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "revision": "2026-10-15-purchase-readiness-1",
+  "checkedAt": "2026-10-15",
+  "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
+  "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
+  "entries": [
+    {
+      "sourceCode": "amazon_us",
+      "scope": "market",
+      "salesRegion": "美国站",
+      "label": "Amazon 美国站",
+      "policyScope": "美国站",
+      "merchantHosts": [
+        "amazon.com",
+        "www.amazon.com"
+      ],
+      "payment": {
+        "status": "confirmed",
+        "methods": [
+          "Visa",
+          "Mastercard/EuroCard",
+          "American Express",
+          "Discover",
+          "JCB",
+          "UnionPay信用卡"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "Amazon官方员工2025-11-18回复列出上述方式；银联仅信用卡，不泛化到借记卡。中国发行卡逐卡授权未验证。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "本次未读取到现行完整出口目的地规则，不能将所有商品标为可直邮；需逐ASIN、卖家、规格及中国收货地址查看checkout。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "美国站有专门转运责任帮助页，但本次页面503；不要套用到英德日站。仅将转运列为需复核商家/卖家政策的备选，不保证售后覆盖转运段。"
+      },
+      "sources": [
+        "https://www.amazonforum.com/s/question/0D5at00000XNA5jCAH/gift-cards"
+      ],
+      "sourceLimitations": "支付方式依据官方员工 2025-11-18 回复；中国直邮及转运规则未完成核验。"
+    },
+    {
+      "sourceCode": "amazon_uk",
+      "scope": "market",
+      "salesRegion": "英国站",
+      "label": "Amazon 英国站",
+      "policyScope": "英国站",
+      "merchantHosts": [
+        "amazon.co.uk",
+        "www.amazon.co.uk"
+      ],
+      "payment": {
+        "status": "confirmed",
+        "methods": [
+          "Visa信用/借记卡",
+          "Mastercard信用/借记卡",
+          "American Express",
+          "英国发行Maestro"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "以Amazon英国官方支付指南为证；本地Pay by Bank或分期不应向中国用户默认推荐。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官方FBA Export卖家帮助列中国为可出口目的地；仅证明符合条件商品存在出口路径，具体商品、卖家、地址及费用需checkout。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未核实英站转运条款；可先看forward2me英国仓报价，须确认商品/卖家允许及售后责任后才采用。"
+      },
+      "sources": [
+        "https://www.aboutamazon.co.uk/how-to-pay-on-amazon-in-the-uk",
+        "https://sellercentral-europe.amazon.com/help/hub/reference/external/G200149570",
+        "https://digprjsurvey.amazon.co.uk/csad/help/node/GX2FNXL3AFRDGFU9"
+      ],
+      "sourceLimitations": ""
+    },
+    {
+      "sourceCode": "amazon_de",
+      "scope": "market",
+      "salesRegion": "德国站",
+      "label": "Amazon 德国站",
+      "policyScope": "德国站",
+      "merchantHosts": [
+        "amazon.de",
+        "www.amazon.de"
+      ],
+      "payment": {
+        "status": "historical_official_only",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "官方旧文章列出这些卡；当前零售帮助页503，需checkout重核，不能把Amazon Pay支持卡列表当Amazon.de零售支付证据。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "需逐商品、卖家、中国地址核实配送及税费；本次未确认完整德站目的地规则。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "forward2me有德国仓和条件性中国线路，但Amazon.de/具体卖家是否接受转运仍需核实。"
+      },
+      "sources": [
+        "https://www.aboutamazon.de/news/amazon-prime-und-shopping/einfach-einkaufen-fuer-jeden-die-richtige-bezahlmethode"
+      ],
+      "sourceLimitations": ""
+    },
+    {
+      "sourceCode": "amazon_jp",
+      "scope": "market",
+      "salesRegion": "日本站",
+      "label": "Amazon 日本站",
+      "policyScope": "日本站",
+      "merchantHosts": [
+        "amazon.co.jp",
+        "www.amazon.co.jp"
+      ],
+      "payment": {
+        "status": "historical_official_only",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "Diners Club",
+          "JCB",
+          "UnionPay信用卡"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "Amazon2019官方新闻列卡组织；银联国际2017公告说明接受全球发行62开头银联信用卡。均为历史官方证据，当前交易仍需checkout核实；不外推银联借记卡。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "本次未验证日站现行中国直邮资格；需具体ASIN、卖家及地址检查。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "Tenso为有中国说明的日本转运备选，但不等于Amazon.jp或具体卖家承诺接受。"
+      },
+      "sources": [
+        "https://press.aboutamazon.com/jp/news/%E5%B0%8F%E5%A3%B2/2019/11/amazon%E3%81%A7paidy%E7%BF%8C%E6%9C%88%E6%89%95%E3%81%84%E3%81%8C%E5%88%A9%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AB",
+        "https://www.unionpayintl.com/wap/en/mediaCenter/newsCenter/companyNews/1909.shtml"
+      ],
+      "sourceLimitations": ""
+    },
+    {
+      "sourceCode": "visma",
+      "scope": "merchant",
+      "salesRegion": null,
+      "label": "Visma 车队官方商城",
+      "policyScope": "Visma 车队商城通用配送与支付规则；运费币种独立于商品报价币种",
+      "merchantHosts": [
+        "teamvismaleaseabike.com",
+        "www.teamvismaleaseabike.com"
+      ],
+      "payment": {
+        "status": "confirmed",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "PayPal",
+          "iDeal（指定荷兰银行）",
+          "商城礼卡"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "支付由Adyen验证。官网特别提示异国发行卡和多次失败尝试可能触发反欺诈拒付，因此不能标中国卡必过。"
+      },
+      "directChina": {
+        "status": "confirmed",
+        "shippingAmount": 47.95,
+        "shippingCurrency": "EUR",
+        "eta": "4–7工作日，官网预估",
+        "carrier": "亚洲UPS",
+        "note": "仅为公布运费及时间；中国进口税和实际checkout总额未确认，预售混单会待全部商品就绪后发货。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未找到明确许可，已有直邮，优先直邮；不要承诺转运更便宜。"
+      },
+      "sources": [
+        "https://www.teamvismaleaseabike.com/shop-payment/",
+        "https://www.teamvismaleaseabike.com/shop-delivery/",
+        "https://www.teamvismaleaseabike.com/frequently-asked-questions---webshop/"
+      ],
+      "sourceLimitations": ""
+    },
+    {
+      "sourceCode": "maap",
+      "scope": "merchant",
+      "salesRegion": null,
+      "label": "MAAP 官网",
+      "policyScope": "maap.cc 官网公布规则，不适用于销售 MAAP 商品的其他商店",
+      "merchantHosts": [
+        "maap.cc",
+        "www.maap.cc"
+      ],
+      "payment": {
+        "status": "confirmed",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "Apple Pay",
+          "Google Pay",
+          "MAAP礼卡"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "官方支付列表未列PayPal。Shop Pay异常风控可要求身份核实，不能验证会取消退款。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "官方配送帮助明确：中国与韩国由本地伙伴独家服务，maap.cc不向这两个国家配送。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未核实许可；不因不直邮就推荐绕道第三地。应优先寻找经官网验证的本地授权渠道。"
+      },
+      "sources": [
+        "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-USA-UK-and-Europe",
+        "https://support.maap.cc/hc/en-us/articles/32246167138189-Why-did-MAAP-request-my-ID-and-payment-verification-details"
+      ],
+      "sourceLimitations": ""
+    },
+    {
+      "sourceCode": "poc",
+      "scope": "market",
+      "salesRegion": "Global EN",
+      "label": "POC 官网",
+      "policyScope": "poc.com Global EN 条款；其他市场须另核对",
+      "merchantHosts": [
+        "poc.com",
+        "www.poc.com"
+      ],
+      "payment": {
+        "status": "confirmed",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "UnionPay",
+          "Maestro",
+          "American Express",
+          "PayPal（部分地区）",
+          "Klarna（部分地区）"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "Adyen处理，卡支付会验证，疑似风险可延迟。日本条款子段卡列表不同，选择市场后仍需checkout重核。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "Global EN条款配送范围为指定欧洲地区、北美、大洋洲和日本，未含中国大陆。"
+      },
+      "forwarding": {
+        "status": "prohibited",
+        "note": "明确不寄re-shippers或package forwarding services；不合规地址订单可被取消。不要推荐转运绕过。"
+      },
+      "sources": [
+        "https://poc.com/en/terms-and-conditions"
+      ],
+      "sourceLimitations": ""
+    }
+  ],
+  "forwardingExplainer": "转运像海外代收点：先取得自己名下的仓库收件编号，商家把货寄到仓库；仓库称重、可按要求合箱，再收国际运费寄中国。你仍需自行向商家付款；转运不解决中国银行卡拒付，也不自动提供商家售后。只在商家允许、承运商允许商品且进口手续满足时使用。",
+  "costChecklist": [
+    "商品价及当地税",
+    "商家到仓库的国内运费",
+    "实际重与体积重（通常取较大值，具体除数按线路）",
+    "仓库服务/合箱/重包装费",
+    "国际运费及燃油、旺季、偏远、超长超重附加费",
+    "保险或赔付保障及除外责任",
+    "仓储和退件费",
+    "按真实成交价、品名、数量申报的进口税与清关费",
+    "银行卡换汇及外币交易费"
+  ],
+  "forwarders": [
+    {
+      "id": "myus",
+      "name": "MyUS",
+      "calculator": "https://www.myus.com/pricing/calculate-shipping/",
+      "note": "美国仓费用参考。部分美国线路按实重，超大箱等有例外；先问商家包裹重量与长宽高。税、保险、特殊处理及退件费用可能另计。",
+      "warning": "Premium 页面列 30 天试用后自动续费 US$9.99/月，注册前核对所选会员档位和取消条件。",
+      "sources": [
+        "https://www.myus.com/pricing/",
+        "https://www.myus.com/where-we-ship/china/"
+      ]
+    },
+    {
+      "id": "forward2me",
+      "name": "forward2me",
+      "calculator": "https://www.forward2me.com/pricing/",
+      "note": "选择出发仓、中国目的地、包裹实重及长宽高；轻而大的头盔箱可能按体积重计费。合箱、仓储和特殊处理可能另收。最终以出库实测为准。",
+      "warning": "DDP（税费预付）只适用于支持的仓库与线路；未显示税费已包含时，税与清关费仍待确认。退回原商家的条件不等于中国跨境退货免费。",
+      "sources": [
+        "https://www.forward2me.com/combine-and-repack/",
+        "https://forward2me.zendesk.com/hc/en-gb/articles/360014012079-Does-forward2me-offer-Delivered-Duty-Paid-DDP-shipping",
+        "https://www.forward2me.com/free-return-to-sender/"
+      ]
+    },
+    {
+      "id": "tenso",
+      "name": "tenso.com",
+      "calculator": "https://www.tenso.com/en/estimate",
+      "note": "日本转运参考。费用由转送手续费与国际运费组成；合箱、所选线路的体积重或附加费、税和清关、保险及退件另核对。",
+      "warning": "计算器估算不是含税到手总价。先确认当前中国承运方式、商品与自用数量限制，再考虑使用。",
+      "sources": [
+        "https://faq.tenso.com/articles/zh_CN/FAQ/q77chs",
+        "https://faq.tenso.com/articles/en_US/FAQ/q130en",
+        "https://faq.tenso.com/articles/en_US/FAQ/q147en/?fs=Search&l=en_US&pn=1"
+      ]
+    }
+  ]
+}

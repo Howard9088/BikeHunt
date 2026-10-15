@@ -61,6 +61,18 @@ function registrationEntry(sourceCode,salesRegion,scope='market'){
   return registrationData.entries.find(entry=>registrationKey(entry.sourceCode,entry.salesRegion,entry.scope)===key)||null;
 }
 function registrationScopeLabel(salesRegion,scope){return scope==='public_account'?'公开账户页，销售市场未核实':registrationText(salesRegion)?salesRegion:'报价销售市场未核实'}
+function registrationImageMarkup(frame){
+  const escape=registrationEscape;
+  return '<div class="registration-image-wrap"><img data-registration-image src="'+escape(new URL(frame.asset,REGISTRATION_BASE).href)+'" alt="'+escape(frame.alt)+'" loading="lazy" decoding="async">'+frame.annotations.map((note,index)=>'<span class="registration-annotation" aria-hidden="true" style="left:'+note.x+'%;top:'+note.y+'%;width:'+note.width+'%;height:'+note.height+'%"><span>'+(index+1)+'</span></span>').join('')+'</div><p class="registration-image-error" role="status" hidden>截图暂时无法载入，请稍后重新展开图解。未用示意图代替真实页面。</p>';
+}
+function registrationFrameMarkup(frame){
+  return '<div class="registration-preview">'+registrationImageMarkup(frame)+'</div><details class="registration-zoom"><summary><span class="registration-zoom-open">查看大图（原始分辨率）</span><span class="registration-zoom-close">收起大图</span></summary><p>左右、上下滑动查看，中文编号标注保留。可用浏览器双指缩放；键盘 Tab 进入图片区域后，用方向键滚动，Escape 收起并返回此按钮。</p><div class="registration-zoom-viewport" tabindex="0" role="region" aria-label="原始分辨率注册截图，可用方向键横向及纵向滚动">'+registrationImageMarkup(frame)+'</div></details>';
+}
+function closeRegistrationZoom(event){
+  if(event.key!=='Escape')return;
+  const zoom=event.target.closest?.('.registration-zoom[open]');if(!zoom)return;
+  event.preventDefault();event.stopImmediatePropagation();zoom.open=false;zoom.querySelector('summary')?.focus();
+}
 function registrationContent(sourceCode,salesRegion,scope='market'){
   const escape=registrationEscape,scopeLabel=registrationScopeLabel(salesRegion,scope),entry=registrationEntry(sourceCode,salesRegion,scope);
   if(!entry||entry.status!=='verified'){
@@ -69,7 +81,7 @@ function registrationContent(sourceCode,salesRegion,scope='market'){
   }
   return '<p class="registration-scope">'+escape(scopeLabel)+' · '+escape(entry.marketLabel)+'</p>'+
     '<p>以下为公开页面真实截图及中文标注。'+(scope==='public_account'?'仅说明所示公开账户页面，不代表已核实当前报价市场、地区专用账户或结账流程。':'仅适用于所示商店与销售市场。')+'未提交注册或登录；页面可能变化，请对照原站。查看图解不会改变商品购买资格。</p>'+
-    '<p class="registration-meta">图解版本：'+escape(entry.revision)+'</p>'+entry.frames.map(frame=>'<figure class="registration-figure"><figcaption>'+escape(frame.caption)+'</figcaption><div class="registration-image-wrap"><img data-registration-image src="'+escape(new URL(frame.asset,REGISTRATION_BASE).href)+'" alt="'+escape(frame.alt)+'" loading="lazy" decoding="async">'+frame.annotations.map((note,index)=>'<span class="registration-annotation" aria-hidden="true" style="left:'+note.x+'%;top:'+note.y+'%;width:'+note.width+'%;height:'+note.height+'%"><span>'+(index+1)+'</span></span>').join('')+'</div><p class="registration-image-error" role="status" hidden>截图暂时无法载入，请稍后重新展开图解。未用示意图代替真实页面。</p><ol class="registration-annotation-list">'+frame.annotations.map(note=>'<li><strong>'+escape(note.label)+'</strong>：'+escape(note.description)+'</li>').join('')+'</ol><p class="registration-meta">页面核对：'+escape(frame.verifiedAt)+' · 截图视口：'+frame.viewport.width+' × '+frame.viewport.height+'。核对日期只记录观察时间，不保证页面至今未变化。</p><p class="registration-source">截图来源：'+escape(frame.sourceUrl)+'</p></figure>').join('');
+    '<p class="registration-meta">图解版本：'+escape(entry.revision)+'</p>'+entry.frames.map(frame=>'<figure class="registration-figure"><figcaption>'+escape(frame.caption)+'</figcaption>'+registrationFrameMarkup(frame)+'<ol class="registration-annotation-list">'+frame.annotations.map(note=>'<li><strong>'+escape(note.label)+'</strong>：'+escape(note.description)+'</li>').join('')+'</ol><p class="registration-meta">页面核对：'+escape(frame.verifiedAt)+' · 截图视口：'+frame.viewport.width+' × '+frame.viewport.height+'。核对日期只记录观察时间，不保证页面至今未变化。</p><p class="registration-source">截图来源：'+escape(frame.sourceUrl)+'</p></figure>').join('');
 }
 function registrationGuideMarkup(sourceCode,salesRegion,scope='market'){
   const escape=registrationEscape,market=typeof salesRegion==='string'?salesRegion:'';
@@ -110,6 +122,7 @@ async function loadRegistrationGuides(){
     }finally{registrationRequest=null;}
   })();return registrationRequest;
 }
+document.addEventListener('keydown',closeRegistrationZoom);
 document.addEventListener('error',event=>{
   const img=event.target;if(!img?.matches?.('[data-registration-image]'))return;
   const wrap=img.closest('.registration-image-wrap'),error=wrap?.nextElementSibling;

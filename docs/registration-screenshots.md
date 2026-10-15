@@ -63,3 +63,7 @@ python scripts/verify_registration_guides.py --root _site
 只有此次“首次真实截图上线”验收额外运行 `python scripts/verify_registration_guides.py --require-screenshots`。该参数不在持续部署门槛中，避免以后安全撤图被阻挡。
 
 有可用浏览器环境时再运行 `python scripts/test_registration_guides_ui.py` 与既有 `scripts/test_merchant_guides_ui.py`。新 UI 回归使用明确的测试数据与本地测试图片，覆盖桌面、390px 手机、320px 小屏、键盘展开／收起、原地帮助、Back/Close、停用／加载失败撤图和 Amazon 四站隔离；它不声称访问过真实商家或完成注册。真实图片仍需另行人工像素核对。
+
+## 原始分辨率查看
+
+每张真实截图下方有本地“查看大图 / 收起大图”开关。大图使用同一份未修改的图片与同样的中文编号覆盖层，按图片原始像素宽度展示；在有界区域内横向、纵向滚动，不打开外站或新窗口。手机保留浏览器双指缩放；键盘可用 Enter/Space 开关、Tab 进入滚动区域、方向键滚动、Escape 收起并将焦点返回开关。再次 Escape 可关闭原有详情面板。
