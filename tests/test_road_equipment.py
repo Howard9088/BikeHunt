@@ -41,7 +41,9 @@ class RoadEquipmentTests(unittest.TestCase):
         sources=json.loads((ROOT/'data/crawl_sources.json').read_text())
         # These identities have directory references only, no added collection request.
         self.assertTrue(codes.isdisjoint(row.get('code', row.get('source_code')) for row in sources))
-        catalog = ComparisonCatalog(offers, FxSnapshot.model_validate_json((ROOT/'data/fx_latest.json').read_text()))
+        # Fixed FX fixture: the repository may contain the older provider-cache format.
+        fixed = json.loads((ROOT/'tests/fixtures/browse-catalog-2026-10-15.json').read_text())
+        catalog = ComparisonCatalog(offers, FxSnapshot.model_validate(fixed['fx']))
         reference_ids={p['id'] for p in read_road_references(ROOT)['products']}
         self.assertTrue(reference_ids.isdisjoint(c.product_id for c in catalog.search()))
 
