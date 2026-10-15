@@ -118,7 +118,7 @@
     "priority": 1,
     "market": "US",
     "currency": "USD",
-    "collection_strategy": "official_affiliate_api_preferred",
+    "collection_strategy": "official_creators_api_required",
     "enabled": true,
     "china_shipping": {
       "status": "per_item",
@@ -129,7 +129,9 @@
       "status": "per_item",
       "scope": "checkout",
       "note": "支付与风控需逐商品结账路径验证。"
-    }
+    },
+    "catalog_integration_status": "search_links_only",
+    "catalog_integration_note": "提供官方站内搜索入口，未接入商品实时报价。正式商品数据需通过 Amazon Creators API 及相应站点联盟资格。"
   },
   {
     "code": "amazon_uk",
@@ -139,7 +141,7 @@
     "priority": 1,
     "market": "GB",
     "currency": "GBP",
-    "collection_strategy": "official_affiliate_api_preferred",
+    "collection_strategy": "official_creators_api_required",
     "enabled": true,
     "china_shipping": {
       "status": "per_item",
@@ -150,7 +152,9 @@
       "status": "per_item",
       "scope": "checkout",
       "note": "支付与风控需逐商品结账路径验证。"
-    }
+    },
+    "catalog_integration_status": "search_links_only",
+    "catalog_integration_note": "提供官方站内搜索入口，未接入商品实时报价。正式商品数据需通过 Amazon Creators API 及相应站点联盟资格。"
   },
   {
     "code": "amazon_de",
@@ -160,7 +164,7 @@
     "priority": 1,
     "market": "DE",
     "currency": "EUR",
-    "collection_strategy": "official_affiliate_api_preferred",
+    "collection_strategy": "official_creators_api_required",
     "enabled": true,
     "china_shipping": {
       "status": "per_item",
@@ -171,7 +175,9 @@
       "status": "per_item",
       "scope": "checkout",
       "note": "支付与风控需逐商品结账路径验证。"
-    }
+    },
+    "catalog_integration_status": "search_links_only",
+    "catalog_integration_note": "提供官方站内搜索入口，未接入商品实时报价。正式商品数据需通过 Amazon Creators API 及相应站点联盟资格。"
   },
   {
     "code": "amazon_jp",
@@ -181,7 +187,7 @@
     "priority": 1,
     "market": "JP",
     "currency": "JPY",
-    "collection_strategy": "official_affiliate_api_preferred",
+    "collection_strategy": "official_creators_api_required",
     "enabled": true,
     "china_shipping": {
       "status": "per_item",
@@ -192,7 +198,9 @@
       "status": "per_item",
       "scope": "checkout",
       "note": "支付与风控需逐商品结账路径验证。"
-    }
+    },
+    "catalog_integration_status": "search_links_only",
+    "catalog_integration_note": "提供官方站内搜索入口，未接入商品实时报价。正式商品数据需通过 Amazon Creators API 及相应站点联盟资格。"
   },
   {
     "code": "poc",

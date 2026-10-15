@@ -191,6 +191,37 @@ startFlows();
 
 const PURCHASE_DISCLAIMER="本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。";
 document.getElementById('purchaseDisclaimerInfo').onclick=()=>window.alert(PURCHASE_DISCLAIMER);
+// Fixed official search entrances only. These are not offers or verified sellers.
+const AMAZON_SEARCH_MARKETS=Object.freeze([
+  ['amazon_us','美国站','www.amazon.com','road cycling jersey','road cycling bib shorts'],
+  ['amazon_uk','英国站','www.amazon.co.uk','road cycling jersey','road cycling bib shorts'],
+  ['amazon_de','德国站','www.amazon.de','Rennrad Trikot','Rennrad Trägerhose'],
+  ['amazon_jp','日本站','www.amazon.co.jp','ロードバイク サイクルジャージ','ロードバイク ビブショーツ']
+].map(([code,name,host,jerseys,bibs])=>Object.freeze({code,name,host,searches:Object.freeze([
+  ['jerseys','骑行上衣',jerseys],['bibs','背带裤',bibs]
+].map(([category,label,query])=>Object.freeze({key:code+'_'+category,label,query,url:'https://'+host+'/s?'+new URLSearchParams({k:query}).toString()})))})));
+function showAmazonChannels(){
+  openPanel('Amazon购买途径','<div class="summary-box amazon-summary"><h4>搜索入口，非商品实时报价</h4><p>以下链接打开 Amazon 官方站点的公路骑行服搜索。本页未接入 Amazon 商品数据，未核实搜索结果中的卖家、价格或库存。</p></div><div class="amazon-market-grid">'+AMAZON_SEARCH_MARKETS.map(market=>'<section class="amazon-market"><h4>Amazon '+e(market.name)+'</h4><p class="amazon-domain">'+e(market.host)+'</p><div class="amazon-search-links">'+market.searches.map(search=>'<a data-amazon-search-link="'+e(search.key)+'" href="'+e(search.url)+'" target="_self" rel="noopener noreferrer" aria-label="Amazon '+e(market.name)+'：搜索'+e(search.label)+'">'+e(search.label)+' →</a>').join('')+'</div></section>').join('')+'</div><section class="rule-section amazon-shopping-note"><h4>先核对销售方，再看配送方式</h4><p>Amazon 自营与第三方卖家都可能出现在搜索结果中。请在商品页查看“销售方 / Sold by”是否为 Amazon，并核对卖家身份、评价和退货条件。</p><p>“Amazon 配送 / Fulfilled by Amazon”只说明配送履约方式，不等于 Amazon 自营；第三方卖家也可使用 Amazon 配送。</p><p>是否可配送中国大陆、运费、进口税费和订单总额，须按具体商品、销售方、收货地址及结账页核实。这些搜索入口不保证直邮中国。</p></section>');
+}
+function allowedAmazonSearch(link){
+  const key=link.dataset?.amazonSearchLink;
+  return AMAZON_SEARCH_MARKETS.flatMap(market=>market.searches).find(search=>search.key===key&&search.url===link.getAttribute('href'))||null;
+}
+function guardAmazonSearchExit(event){
+  const link=event.target.closest?.('a[data-amazon-search-link]');
+  if(!link||(event.type==='auxclick'&&event.button!==1))return;
+  // Prevent modifier/middle clicks from opening another tab or bypassing the prompt.
+  event.preventDefault();
+  const search=allowedAmazonSearch(link);if(!search)return;
+  if(!window.confirm(PURCHASE_DISCLAIMER+'\n\nAmazon 官方站点搜索入口，非商品实时报价。\n确定：继续前往搜索；取消：留在本站。'))return;
+  // Revalidate after the dialog; never accept a substituted URL, query or affiliate tag.
+  if(allowedAmazonSearch(link)!==search)return;
+  saveBrowseState();window.location.assign(search.url);
+}
+document.getElementById('amazonChannels').onclick=showAmazonChannels;
+document.addEventListener('click',guardAmazonSearchExit);
+document.addEventListener('auxclick',guardAmazonSearchExit);
+
 function invalidateReferenceLinks(events=[]){
   for(const quote of referenceOffers.values()){
     const event=events.find(row=>row.recovered_history!==true&&row.offer_id===quote.offer.offer_id);

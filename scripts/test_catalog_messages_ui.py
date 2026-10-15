@@ -14,6 +14,13 @@ from datetime import datetime, timezone
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/acceptance'
+AMAZON_SEARCHES = [
+    ('amazon_us', 'www.amazon.com', ['road cycling jersey', 'road cycling bib shorts']),
+    ('amazon_uk', 'www.amazon.co.uk', ['road cycling jersey', 'road cycling bib shorts']),
+    ('amazon_de', 'www.amazon.de', ['Rennrad Trikot', 'Rennrad Trägerhose']),
+    ('amazon_jp', 'www.amazon.co.jp', ['ロードバイク サイクルジャージ', 'ロードバイク ビブショーツ']),
+]
+
 
 
 DISCLAIMER = '本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。'
@@ -69,6 +76,84 @@ def event(n, family='173', size='M', sold=False, image=True):
             'product_id':family,'variant_id':size,'current_stock':'out_of_stock' if sold else 'in_stock'}}
 
 
+def exercise_amazon_searches(page, context, base, mode, return_label, checks):
+    """No Amazon traffic: intercept every official search and validate each exit."""
+    saved_read = page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")
+    initial_badge = page.locator('#messageBadge').inner_text()
+    page.locator('#amazonChannels').click()
+    expect(page.locator('#sheetName')).to_have_text('Amazon购买途径')
+    expect(page.locator('[data-amazon-search-link]')).to_have_count(8)
+    expect(page.locator('[data-purchase-link],[data-reference-link]')).to_have_count(0)
+    for text in ['搜索入口，非商品实时报价', '未核实搜索结果中的卖家、价格或库存', '第三方卖家', '不等于 Amazon 自营', '中国大陆', '进口税费', '结账页']:
+        expect(page.locator('#sheetBody')).to_contain_text(text)
+    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+    page.screenshot(path=str(OUT/f'amazon_searches_{mode}.png'))
+    page.keyboard.press('Escape')
+    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+    expect(page.locator('#amazonChannels')).to_be_focused()
+    page.locator('#amazonChannels').click()
+    # Wrong domains, credentials, affiliate parameters and altered search queries never prompt or navigate.
+    link = page.locator('[data-amazon-search-link]').first
+    original_url = link.get_attribute('href')
+    dialogs = []
+    def reject_unexpected(dialog):
+        dialogs.append(dialog.message)
+        dialog.dismiss()
+    page.on('dialog', reject_unexpected)
+    for bad in ['https://www.amazon.com.evil.example/s?k=road', 'https://www.amazon.com@evil.example/s?k=road', original_url+'&tag=affiliate-20', original_url+'&k=other', 'javascript:alert(1)']:
+        link.evaluate('(el, href) => el.setAttribute("href", href)', bad)
+        link.click()
+        expect(page).to_have_url(base)
+    link.evaluate('(el, href) => el.setAttribute("href", href)', original_url)
+    page.remove_listener('dialog', reject_unexpected)
+    assert not dialogs, dialogs
+    for market_index, (code, host, queries) in enumerate(AMAZON_SEARCHES):
+        for category_index, (category, query) in enumerate(zip(['jerseys', 'bibs'], queries)):
+            link = page.locator(f'[data-amazon-search-link="{code}_{category}"]')
+            href = link.get_attribute('href')
+            parsed = urlparse(href)
+            assert parsed.scheme == 'https' and parsed.netloc == host and parsed.path == '/s'
+            assert parse_qs(parsed.query) == {'k': [query]} and not parsed.fragment
+            expect(link).to_have_attribute('target', '_self')
+            page.once('dialog', lambda d: (assert_disclaimer(d), d.dismiss()))
+            link.click()
+            expect(page).to_have_url(base)
+            expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+            assert len(context.pages) == 1
+            page.once('dialog', lambda d: (assert_disclaimer(d), d.accept()))
+            with page.expect_navigation(wait_until='domcontentloaded'):
+                if market_index == 0 and category_index == 0:
+                    link.click(modifiers=['Control'])
+                elif market_index == 0 and category_index == 1:
+                    link.click(button='middle')
+                elif market_index == 1 and category_index == 0:
+                    link.focus(); page.keyboard.press('Enter')
+                else:
+                    link.click()
+            expect(page).to_have_url(href)
+            assert len(context.pages) == 1
+            page.go_back(wait_until='networkidle')
+            expect(page).to_have_url(base)
+            expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+            expect(page.locator('#q')).to_have_value('Stamp Hoodie')
+            expect(page.locator('#browseLabel')).to_have_text(return_label)
+            expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed', 'true')
+            expect(page.locator('.card')).to_have_count(1)
+            expect(page.locator('#messageBadge')).to_have_text(initial_badge)
+            assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
+            page.locator('#amazonChannels').click()
+    page.locator('#close').click()
+    expect(page.locator('#amazonChannels')).to_be_focused()
+    page.reload(wait_until='networkidle')
+    expect(page.locator('#q')).to_have_value('Stamp Hoodie')
+    expect(page.locator('#browseLabel')).to_have_text(return_label)
+    expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('.card')).to_have_count(1)
+    expect(page.locator('#messageBadge')).to_have_text(initial_badge)
+    assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
+    checks.append(mode+': Amazon four official sites/eight category searches; accurate disclosure; exact allowlist rejects tampering; full disclaimer Cancel/Continue; click/modifier/middle/keyboard same-tab; Back/reload retains source/category/query/read state; Close/Escape restores focus')
+
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=str(ROOT)))
@@ -89,6 +174,9 @@ def main():
                 context.add_init_script('window.BIKEHUNT_PAGES=true;')
                 def intercept(route):
                     u=urlparse(route.request.url)
+                    if u.netloc in {market[1] for market in AMAZON_SEARCHES}:
+                        assert u.path == '/s' and set(parse_qs(u.query)) == {'k'}
+                        return route.fulfill(content_type='text/html', body='<title>Mock Amazon search</title><p>Search navigation test only</p>')
                     if u.netloc=='merchant.example':
                         if u.path.endswith('.svg'):
                             color='#d65b5b' if '173' in u.path else '#f6f7f8'
@@ -175,6 +263,7 @@ def main():
                 expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
                 page.reload(wait_until='networkidle');expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
                 expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品');expect(page.locator('#clear')).to_be_visible();expect(page.locator('#clear')).to_be_enabled()
+                exercise_amazon_searches(page, context, base, mode, return_label, checks)
                 page.locator('#clear').click();expect(page.locator('#q')).to_have_value('');expect(page.locator('.card')).to_have_count(2)
                 checks.append(mode+': search Stamp Hoodie narrows two scoped results to one; final guide Step4 Cancel/Continue uses exact same-tab URL; Back/reload restores query/results, scope/read state and working clear control without reopening guide')
                 page.locator('[data-tab=products]').click();page.locator('[data-category=all]').click()
