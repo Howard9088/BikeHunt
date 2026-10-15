@@ -64,13 +64,20 @@ async function testDismissedMessagesDoNotReopenOrReadUnseenRows(){
  const pending=h.c.showMessages();h.c.messagesOpen=false;h.c.detailSequence++;resolve({items:[row()],cursor:1,fx:{}});await pending;assert.equal(h.badge.hidden,false);assert.equal(h.badge.textContent,'1');assert.equal(h.storage.has('bikehuntMessagesReadCursor'),false);
 }
 function testHistoryScopeValidationAndBackPollingRestart(){
- const h=harness(),buttons=['all','jerseys'].map(category=>({dataset:{category},setAttribute(){}}));
+ const h=harness(),buttons=['all','jerseys'].map(category=>({dataset:{category},setAttribute(){}})),input={value:'Stamp Hoodie'},clear={focus(){}};
  Object.assign(h.c,{activeTab:'products',activeSource:'bahrain',activeCategory:'jerseys',categories:[{code:'all'},{code:'jerseys'}],directoryData:{brands:[],teams:[{code:'bahrain',name_zh:'巴林车队'}]},history:{state:{other:'preserved'},replaceState(state){this.state=state}},navigate(tab){h.c.activeTab=tab},updateBrowseLabel(){},});
- h.c.document.querySelectorAll=()=>buttons;
+ h.c.document.querySelectorAll=()=>buttons;h.c.document.getElementById=id=>id==='q'?input:clear;
  vm.runInContext(section(flows,'function saveBrowseState(','function navigate('),h.c);
- h.c.saveBrowseState();assert.equal(h.c.history.state.other,'preserved');assert.equal(h.c.history.state.bikehuntBrowse.source,'bahrain');
- h.c.activeSource=null;h.c.activeCategory='all';h.c.restoreBrowseState();assert.equal(h.c.activeSource,'bahrain');assert.equal(h.c.activeCategory,'jerseys');
- h.c.history.state.bikehuntBrowse={tab:'invalid',source:'removed-source',category:'removed-category'};h.c.restoreBrowseState();assert.equal(h.c.activeSource,null);assert.equal(h.c.activeCategory,'all');assert.equal(h.c.activeTab,'products');
+ h.c.saveBrowseState();assert.equal(h.c.history.state.other,'preserved');assert.equal(h.c.history.state.bikehuntBrowse.source,'bahrain');assert.equal(h.c.history.state.bikehuntBrowse.query,'Stamp Hoodie');
+ h.c.activeSource=null;h.c.activeCategory='all';input.value='';h.c.restoreBrowseState();assert.equal(h.c.activeSource,'bahrain');assert.equal(h.c.activeCategory,'jerseys');assert.equal(input.value,'Stamp Hoodie');
+ Object.assign(h.c,{profileMatches:()=>true,items:[{brand:'Test',name:'Stamp Hoodie',category:'jerseys',source_codes:['bahrain']},{brand:'Test',name:'Other jersey',category:'jerseys',source_codes:['bahrain']}]});
+ vm.runInContext(section(gallery,'function visibleItems(','function render('),h.c);assert.equal(h.c.visibleItems().length,1,'Restoring text restores the actual filter, not only the input appearance');
+ for(const query of [undefined,null,42,{},[],['Stamp Hoodie'],'x'.repeat(201)]){
+  h.c.history.state.bikehuntBrowse.query=query;input.value='old';h.c.restoreBrowseState();assert.equal(input.value,'','Invalid or oversized history query is discarded');assert.equal(h.c.visibleItems().length,2);
+  input.value=query;h.c.saveBrowseState();assert.equal(h.c.history.state.bikehuntBrowse.query,'','Invalid or oversized input is never saved');
+ }
+ for(const query of ['x'.repeat(200),'  Stamp Hoodie  ','<img src=x onerror=alert(1)>']){input.value=query;h.c.saveBrowseState();input.value='';h.c.restoreBrowseState();assert.equal(input.value,query,'Bounded text is restored literally');}
+ h.c.history.state.bikehuntBrowse={tab:'invalid',source:'removed-source',category:'removed-category'};h.c.restoreBrowseState();assert.equal(h.c.activeSource,null);assert.equal(h.c.activeCategory,'all');assert.equal(h.c.activeTab,'products');assert.equal(input.value,'');
  let handler,reloads=0;h.c.window={addEventListener(name,fn){assert.equal(name,'pageshow');handler=fn},location:{reload(){reloads++}}};vm.runInContext(flows.slice(flows.lastIndexOf("window.addEventListener('pageshow'")),h.c);handler({persisted:false});assert.equal(reloads,0);handler({persisted:true});assert.equal(reloads,1);
 }
 function testMessagesOpenOnlyExactInternalProducts(){
@@ -131,4 +138,23 @@ function testGuideExitSameTabExactHrefAndSavedState(){
  assert.ok(flows.includes('data-purchase-link target="_self"'));assert.ok(!flows.includes('data-purchase-link target="_blank"'));
  const reference={offer:{offer_id:'reference',url:'https://shop.example/products/reference',stock:'unknown'}};h.c.referenceLinkMarkup(reference);const ref={dataset:{referenceLink:'reference|'+reference.offer.url},getAttribute:()=>reference.offer.url};h.c.window.confirm=()=>true;e=click(ref);h.c.guardPurchaseExit(e);assert.equal(e.prevented,false);assert.equal(saved,2,'Both authorized purchase and reference exits save browse state');
 }
-(async()=>{for(const t of [testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows,testHistoryScopeValidationAndBackPollingRestart,testMessagesOpenOnlyExactInternalProducts,testStableReadKeysSurviveIdReuseAndTimestampRepeats,testLegacyIdReadsMigrateExactlyOnce,testRecoveredHistoryDoesNotNotifyOrBecomeUnread,testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows,testGuideExitSameTabExactHrefAndSavedState]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 13 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});
+function testCurrencyMarketUpdateLabelWithoutPriceComparison(){
+ const h=harness(),event=row(1700,{source_code:'visma',source_name:'Visma',old_price:null,new_price:'63.36',currency:'GBP'});
+ const html=h.c.messageCardMarkup(event,{rates:{GBP:9.2}});
+ assert.ok(html.includes('报价币种/市场更新：GBP63.36'));
+ assert.ok(html.includes('商家响应的报价币种/市场发生变化，并非你切换了市场'));
+ assert.ok(html.includes('不同币种报价不直接比较涨跌'));
+ assert.ok(!html.includes('价格更新：'));assert.ok(!/涨价|降价|折扣/.test(html));
+ assert.ok(!html.match(/<p>报价币种\/市场更新：[^<]* → /),'A changed market has no old/new comparison');
+ for(const old_price of ['60','70']){
+  const sameCurrency=h.c.messageCardMarkup({...event,old_price},{});
+  assert.ok(sameCurrency.includes('价格更新：GBP'+old_price+' → GBP63.36'));
+  assert.ok(!sameCurrency.includes('报价币种/市场更新：'));
+ }
+ for(const overrides of [{kind:'new_offer'},{kind:'inventory_changed'},{old_price:undefined},{recovered_history:true}]){
+  const other=h.c.messageCardMarkup({...event,...overrides},{});
+  assert.ok(!other.includes('报价币种/市场更新：'));assert.ok(!other.includes('商家响应'));
+ }
+ assert.ok(h.c.messageCardMarkup({...event,recovered_history:true},{}).includes('历史记录：GBP63.36'));
+}
+(async()=>{for(const t of [testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows,testHistoryScopeValidationAndBackPollingRestart,testMessagesOpenOnlyExactInternalProducts,testStableReadKeysSurviveIdReuseAndTimestampRepeats,testLegacyIdReadsMigrateExactlyOnce,testRecoveredHistoryDoesNotNotifyOrBecomeUnread,testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows,testGuideExitSameTabExactHrefAndSavedState,testCurrencyMarketUpdateLabelWithoutPriceComparison]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 14 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});
