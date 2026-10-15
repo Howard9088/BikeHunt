@@ -79,15 +79,21 @@ def baseline_writes(root: Path, offers: list[Offer], collection: dict) -> tuple[
         if original.get("source_code", code) != code or not isinstance(original.get("offers"), list):
             raise ValueError("Invalid local source snapshot: " + code)
         local = {}
+        changed = False
         for raw in original["offers"]:
             offer = Offer.model_validate(raw)
             if offer.source_code != code:
                 raise ValueError("Local offer source differs from snapshot")
             observation_time(raw.get("fetched_at"))
-            if offer.offer_id in local and local[offer.offer_id] != raw:
-                raise ValueError("Conflicting local offer identity")
+            previous = local.get(offer.offer_id)
+            if previous is not None:
+                # Raw collector snapshots may repeat an ID. Keep the newest
+                # genuine observation; ties/unknown times retain the repository's
+                # deterministic last-occurrence rule, not a fabricated conflict.
+                changed = True
+                if _newer(previous.get("fetched_at"), raw.get("fetched_at")):
+                    continue
             local[offer.offer_id] = raw
-        changed = False
         for identifier, raw in published.items():
             if identifier not in local or _newer(raw.get("fetched_at"), local[identifier].get("fetched_at")):
                 local[identifier] = raw

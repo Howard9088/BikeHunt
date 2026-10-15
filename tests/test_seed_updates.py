@@ -144,6 +144,43 @@ class SeedUpdatesTests(unittest.TestCase):
         self.assertEqual(restored.fetched_at,local.fetched_at);self.assertEqual(restored.stock,'out_of_stock');self.assertEqual(restored.collection_state,'retained')
         self.assertIn(error,json.loads((self.root/'data/collection_status/mock.json').read_text())['errors'])
 
+    def test_warm_duplicate_offer_ids_keep_newest_observation_in_any_order(self):
+        original = offer()
+        newer = original.model_copy(update={'fetched_at':NOW+timedelta(hours=2),
+            'price':Money(amount='90',currency='USD'),'stock':'out_of_stock'})
+        unknown = original.model_copy(update={'fetched_at':None})
+        for duplicates in ([original,newer],[newer,original],[newer,unknown]):
+            with self.subTest(order=[row.fetched_at for row in duplicates]):
+                atomic_json(self.root/'data/offers/mock.json',{'source_code':'mock',
+                    'offers':[row.model_dump(mode='json') for row in duplicates]})
+                result = self.restore(payload([],100,[original]))
+                raw = json.loads((self.root/'data/offers/mock.json').read_text())['offers']
+                self.assertEqual(len(raw),1)
+                selected = Offer.model_validate(raw[0])
+                self.assertEqual(selected.fetched_at,newer.fetched_at)
+                self.assertEqual(selected.price,newer.price)
+                self.assertEqual(selected.stock,newer.stock)
+                self.assertEqual(result['restored_offers'],0)
+                # Canonicalization itself emits no change; a repeated same-state
+                # collection must also remain quiet against this exact baseline.
+                self.assertEqual(UpdateStore(self.root).capture([selected],
+                    [selected.model_copy(update={'fetched_at':NOW+timedelta(hours=3)})]),[])
+
+    def test_duplicate_equal_or_unknown_observations_use_repository_last_row(self):
+        original = offer()
+        changed = original.model_copy(update={'price':Money(amount='90',currency='USD'),
+            'stock':'out_of_stock','collection_state':'retained'})
+        for observed in (NOW,None):
+            with self.subTest(observed=observed):
+                first = original.model_copy(update={'fetched_at':observed})
+                last = changed.model_copy(update={'fetched_at':observed})
+                atomic_json(self.root/'data/offers/mock.json',{'source_code':'mock',
+                    'offers':[first.model_dump(mode='json'),last.model_dump(mode='json')]})
+                self.restore(payload([],100,[first]))
+                raw = json.loads((self.root/'data/offers/mock.json').read_text())['offers']
+                self.assertEqual(len(raw),1)
+                self.assertEqual(Offer.model_validate(raw[0]),last)
+
     def test_retained_or_unknown_time_is_never_refreshed_to_now(self):
         o=offer().model_copy(update={'fetched_at':None,'collection_state':'retained'})
         self.restore(payload([],100,[o]));restored=OfferRepository(self.root/'data').load()[0]
