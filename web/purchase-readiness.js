@@ -53,28 +53,22 @@ function readinessPolicy(offer){
 }
 function readinessLink(url,code,label){return readinessUrl(url,code)?'<a data-readiness-link="'+readinessEscape(code)+'" href="'+readinessEscape(url)+'" target="_self" rel="noopener noreferrer">'+readinessEscape(label)+' →</a>':''}
 function readinessEvidenceMarkup(offer){
-  // Existing offer evidence remains explicit; absent dates are never invented.
-  return ['china_issued_card','card_networks_evidence','shipping_to_china'].map(key=>{
-    const check=offer[key];if(!check||!check.note)return '';
-    return '<p>'+readinessEscape({china_issued_card:'中国发卡证据',card_networks_evidence:'卡种证据',shipping_to_china:'配送证据'}[key])+'：'+readinessEscape(check.note)+'（核对日期：'+readinessEscape(check.checked_at||'未记录')+'）</p>';
-  }).join('');
+  // Card-only legacy fields never override the dedicated payment matrix.
+  const check=offer.shipping_to_china;
+  return check?.note?'<p>配送证据：'+readinessEscape(check.note)+'（核对日期：'+readinessEscape(check.checked_at||'未记录')+'）</p>':'';
 }
 function readinessContent(offer){
-  const esc=readinessEscape,row=readinessPolicy(offer),china=offer.china_issued_card||{},shipping=offer.shipping_to_china||{};
-  const changed=[china,shipping,offer.card_networks_evidence||{}].some(check=>/原文已变化|正在复核/.test(check.note||''));
-  // A model yes is only a dated evidence claim, never a guarantee of authorization.
-  const verified=readinessState==='ready'&&!!row&&!changed&&china.status==='yes'&&china.scope==='offer'&&readinessUrl(china.url,offer.source_code)&&readinessObservation(china.checked_at);
-  const issuer=china.status==='no'?'不支持：报价证据列明限制':verified?'已有接受中国发卡的证据，仍需本卡授权':row&&!changed?'有条件，未确认：中国发行卡仍需商家与银行逐卡授权':'待核实：没有已确认的中国发行卡依据';
-  const methods=row&&!changed?row.payment.methods.join(' / '):offer.accepted_card_networks?.length?'未经本商店／市场验证的卡组织记录：'+offer.accepted_card_networks.join(' / ')+'；完整适用范围待核实':'尚未取得本商店、本市场的完整支付方式';
+  const esc=readinessEscape,row=readinessPolicy(offer),shipping=offer.shipping_to_china||{};
+  const changed=/原文已变化|正在复核/.test(shipping.note||'');
   let delivery=shipping.status==='no'?'报价证据：不直邮中国大陆':row?.directChina.status==='prohibited'?'官网规则：不直邮中国大陆':row?.directChina.status==='confirmed'?'官网列中国配送；本件商品、地址及最终费用仍须结账核对':row?.directChina.status==='conditional_checkout'?'部分合格商品可出口中国；逐商品、卖家和地址核对':'中国直邮待核实；先确认商品与地址，再决定注册';
   if(changed)delivery='报价规则待复核，暂不确认中国配送';
   const freight=changed?'运费规则待复核':row?.directChina.shippingAmount!==undefined?row.directChina.shippingCurrency+' '+row.directChina.shippingAmount.toFixed(2)+'（官网公布运费，独立于商品币种；非含税总价）':offer.shipping&&offer.shipping.amount!==null&&offer.shipping.amount!==undefined?String(offer.shipping.currency)+' '+String(offer.shipping.amount)+'（报价记录，结账再确认）':'运费待确认';
-  let historical=row?.payment.status==='historical_official_only';
   const reference=readinessData?.entries.find(item=>item.sourceCode===offer.source_code&&item.scope==='market'&&item.salesRegion!==offer.sales_region&&!item.sourceCode.startsWith('amazon_'));
-  return '<h4>注册前，先确认能不能买</h4><p class="readiness-scope">'+esc(offer.source_name||row?.label||offer.source_code||'当前商店')+' · '+esc(offer.sales_region||'报价市场未记录')+'</p><dl class="readiness-checks"><div><dt>中国发行卡</dt><dd data-china-card-status="'+(china.status==='no'?'no':verified?'evidence':row&&!changed?'conditional':'unknown')+'">'+esc(issuer)+'</dd></div><div><dt>支付方式</dt><dd>'+esc(methods)+(historical?'。仅有历史官方资料，当前方式待重新核实':'')+'</dd></div><div><dt>寄往中国</dt><dd>'+esc(delivery)+'</dd></div><div><dt>运费与税</dt><dd>'+esc(freight)+'；进口税、清关和银行卡费用未齐全不等于 0，不作为最终到手价。</dd></div></dl><p class="readiness-warning">卡组织支持不等于中国发行卡获批。Apple Pay / Google Pay / PayPal 也不能保证底层卡成功。先确认境外线上支付权限、真实账单地址及可能的 3DS 验证；扣款不明时先查订单和账单，别重复试付。</p>'+
-    (row?'<p class="readiness-meta">官方资料核对：'+esc(readinessData.checkedAt)+' · '+esc(row.policyScope)+(historical?' · 历史官方资料，非现行确认':'')+'</p><details class="readiness-evidence"><summary>支付、配送与转运依据</summary><p>'+esc(row.payment.note)+'</p><p>'+esc(row.directChina.note)+'</p><p>转运：'+esc(row.forwarding.note)+'</p>'+(row.sourceLimitations?'<p>'+esc(row.sourceLimitations)+'</p>':'')+'<p>这是上述范围的网页记录，未实测注册、绑卡或付款；不适用于销售同品牌的其他商店。未知条件不计作 0，也不改变商品推荐或购买资格。</p>'+readinessEvidenceMarkup(offer)+'<ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.sourceCode,'官方来源 '+(i+1))+'</li>').join('')+'</ul></details>':'<p class="readiness-meta">'+(readinessState==='loading'?'正在读取本地政策摘要；尚未确认购买条件。':'尚无匹配本商店和报价市场的完整政策摘要；不套用品牌官网或其他国家站点的规则。')+'</p>'+
+  const payment=typeof paymentMethodsMarkup==='function'?paymentMethodsMarkup(offer,false):'<p data-china-card-status="unknown">中国发行卡与其他支付方式：完整支付资料暂不可用；不使用旧卡种字段推断支持。</p>';
+  return '<h4>注册前，先确认能不能买</h4><p class="readiness-scope">'+esc(offer.source_name||row?.label||offer.source_code||'当前商店')+' · '+esc(offer.sales_region||'报价市场未记录')+'</p>'+payment+'<dl class="readiness-checks"><div><dt>寄往中国</dt><dd>'+esc(delivery)+'</dd></div><div><dt>运费与税</dt><dd>'+esc(freight)+'；进口税、清关和银行卡费用未齐全不等于 0，不作为最终到手价。</dd></div></dl>'+
+    (row?'<p class="readiness-meta">配送资料核对：'+esc(readinessData.checkedAt)+' · '+esc(row.policyScope)+'</p><details class="readiness-evidence"><summary>配送与转运依据</summary><p>'+esc(row.directChina.note)+'</p><p>转运：'+esc(row.forwarding.note)+'</p>'+(row.sourceLimitations?'<p>'+esc(row.sourceLimitations)+'</p>':'')+'<p>这是上述范围的网页记录，未实测注册、绑卡或付款；不适用于销售同品牌的其他商店。未知条件不计作 0，也不改变商品推荐或购买资格。</p>'+readinessEvidenceMarkup(offer)+'<ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.sourceCode,'官方来源 '+(i+1))+'</li>').join('')+'</ul></details>':'<p class="readiness-meta">'+(readinessState==='loading'?'正在读取本地配送摘要；尚未确认购买条件。':'尚无匹配本商店和报价市场的完整配送摘要；不套用品牌官网或其他国家站点的规则。')+'</p>'+
       (reference?'<p class="readiness-warning">其他范围的官方参考（'+esc(reference.policyScope)+'，核对 '+esc(readinessData.checkedAt)+'）：'+esc(reference.directChina.note)+' 转运：'+esc(reference.forwarding.note)+' 这些条款不作为当前报价市场已核实的支付依据。</p>':'')+
-      '<details class="readiness-evidence"><summary>查看现有报价证据</summary>'+ (readinessEvidenceMarkup(offer)||'<p>来源与核对日期待补齐。</p>')+(reference?reference.sources.map((url,i)=>readinessLink(url,reference.sourceCode,'范围参考来源 '+(i+1))).join(''):'')+'</details>');
+      '<details class="readiness-evidence"><summary>查看现有配送证据</summary>'+ (readinessEvidenceMarkup(offer)||'<p>配送来源与核对日期待补齐。</p>')+(reference?reference.sources.map((url,i)=>readinessLink(url,reference.sourceCode,'范围参考来源 '+(i+1))).join(''):'')+'</details>');
 }
 function purchaseReadinessMarkup(offer){
   const key=String(++readinessSequence);readinessContexts.set(key,offer||{});
@@ -116,15 +110,13 @@ loadPurchaseReadiness();
 // One short, visible payment warning before route selection. Detailed evidence
 // stays optional; card networks and wallets never imply issuer approval.
 function paymentFeasibilityContent(offer={}){
-  const row=readinessPolicy(offer),card=offer.china_issued_card||{};
-  const changed=[card,offer.shipping_to_china||{},offer.card_networks_evidence||{}].some(check=>/原文已变化|正在复核/.test(check.note||''));
-  const verified=readinessState==='ready'&&!!row&&!changed&&card.status==='yes'&&card.scope==='offer'&&readinessUrl(card.url,offer.source_code)&&readinessObservation(card.checked_at);
-  const status=card.status==='no'?'no':verified?'evidence':row&&!changed?'conditional':'unknown';
-  const label=card.status==='no'?'中国发行卡：已知限制，先核对其他支付方式':verified?'中国发行卡：有接受依据，仍需本卡授权':row&&!changed?'中国发行卡：有条件，未确认本卡获批':'中国发行卡：待核实';
-  const methods=row&&!changed?row.payment.methods.join(' / '):offer.accepted_card_networks?.join(' / ')||'支付方式待核实';
-  return '<strong data-china-card-status="'+status+'">'+readinessEscape(label)+'</strong><span>'+readinessEscape(methods)+(row?.payment.status==='historical_official_only'?'（历史官方资料，当前方式待核实）':'')+'。卡组织和钱包支持不保证中国发卡获批；扣款不明先查订单，勿重复试付。</span>';
+  if(typeof paymentSummary==='function'){
+    const s=paymentSummary(offer);return '<strong data-china-card-status="'+s.status+'">'+readinessEscape(s.label)+'</strong><span>'+readinessEscape(s.methodsLabel)+' 卡组织和钱包支持不保证中国发卡获批；扣款不明先查订单，勿重复试付。</span>';
+  }
+  return '<strong data-china-card-status="unknown">中国发行卡：待核实</strong><span>完整支付资料暂不可用；旧卡种记录不保证中国发卡或账户适用。扣款不明先查订单，勿重复试付。</span>';
 }
 function paymentFeasibilityMarkup(offer={}){
+  if(typeof paymentMethodsMarkup==='function')return paymentMethodsMarkup(offer);
   const key=String(++readinessSequence);readinessContexts.set(key,offer);
   return '<div class="payment-feasibility" data-feasibility-context="'+key+'">'+paymentFeasibilityContent(offer)+'</div>';
 }

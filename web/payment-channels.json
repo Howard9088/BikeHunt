@@ -1,0 +1,753 @@
+{
+  "schema_version": 1,
+  "revision": "2026-10-15-source-market-audit",
+  "channels": [
+    {
+      "source_code": "maap",
+      "merchant_name": "MAAP 官网",
+      "sales_regions": [
+        "未记录市场"
+      ],
+      "merchant_hosts": [
+        "maap.cc",
+        "www.maap.cc"
+      ],
+      "reference_hosts": [
+        "maap.cc",
+        "www.maap.cc",
+        "support.maap.cc"
+      ],
+      "directory_codes": [
+        "maap"
+      ],
+      "base_url": "https://maap.cc/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "teamcycles",
+      "merchant_name": "Team Cycles",
+      "sales_regions": [
+        "未记录市场"
+      ],
+      "merchant_hosts": [
+        "teamcycles.com",
+        "www.teamcycles.com"
+      ],
+      "reference_hosts": [
+        "teamcycles.com",
+        "www.teamcycles.com"
+      ],
+      "directory_codes": [],
+      "base_url": "https://www.teamcycles.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "sigmasports",
+      "merchant_name": "Sigma Sports",
+      "sales_regions": [
+        "未记录市场"
+      ],
+      "merchant_hosts": [
+        "sigmasports.com",
+        "www.sigmasports.com"
+      ],
+      "reference_hosts": [
+        "sigmasports.com",
+        "www.sigmasports.com"
+      ],
+      "directory_codes": [],
+      "base_url": "https://www.sigmasports.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "rapha",
+      "merchant_name": "Rapha 日本站",
+      "sales_regions": [
+        "日本站报价"
+      ],
+      "merchant_hosts": [
+        "rapha.cc",
+        "www.rapha.cc"
+      ],
+      "reference_hosts": [
+        "rapha.cc",
+        "www.rapha.cc",
+        "support.rapha.cc"
+      ],
+      "directory_codes": [
+        "rapha"
+      ],
+      "base_url": "https://www.rapha.cc/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "amazon_us",
+      "merchant_name": "Amazon 美国",
+      "sales_regions": [
+        "美国站"
+      ],
+      "merchant_hosts": [
+        "amazon.com",
+        "www.amazon.com"
+      ],
+      "reference_hosts": [
+        "amazon.com",
+        "www.amazon.com",
+        "www.amazonforum.com",
+        "www.aboutamazon.com",
+        "sellercentral.amazon.com",
+        "press.aboutamazon.com",
+        "m.unionpayintl.com",
+        "helpcenter.affirm.com"
+      ],
+      "directory_codes": [],
+      "base_url": "https://www.amazon.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "amazon_uk",
+      "merchant_name": "Amazon 英国",
+      "sales_regions": [
+        "英国站"
+      ],
+      "merchant_hosts": [
+        "amazon.co.uk",
+        "www.amazon.co.uk"
+      ],
+      "reference_hosts": [
+        "amazon.co.uk",
+        "www.amazon.co.uk",
+        "www.aboutamazon.co.uk",
+        "sellercentral-europe.amazon.com",
+        "digprjsurvey.amazon.co.uk",
+        "press.aboutamazon.com",
+        "cdn-assets.affirm.com"
+      ],
+      "directory_codes": [],
+      "base_url": "https://www.amazon.co.uk/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "amazon_de",
+      "merchant_name": "Amazon 德国",
+      "sales_regions": [
+        "德国站"
+      ],
+      "merchant_hosts": [
+        "amazon.de",
+        "www.amazon.de"
+      ],
+      "reference_hosts": [
+        "amazon.de",
+        "www.amazon.de",
+        "www.aboutamazon.de",
+        "sellercentral.amazon.de",
+        "digprjsurvey.amazon.de",
+        "de.amazonforum.com",
+        "www.paypal.com"
+      ],
+      "directory_codes": [],
+      "base_url": "https://www.amazon.de/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "amazon_jp",
+      "merchant_name": "Amazon 日本",
+      "sales_regions": [
+        "日本站"
+      ],
+      "merchant_hosts": [
+        "amazon.co.jp",
+        "www.amazon.co.jp"
+      ],
+      "reference_hosts": [
+        "amazon.co.jp",
+        "www.amazon.co.jp",
+        "press.aboutamazon.com",
+        "www.unionpayintl.com",
+        "pay.amazon.co.jp",
+        "cs-support.paidy.com",
+        "www.smbc-card.com",
+        "www.aboutamazon.jp",
+        "sellercentral.amazon.co.jp",
+        "m.unionpayintl.com",
+        "www.americanexpress.com",
+        "www.diners.co.jp",
+        "corp.paidy.com",
+        "paypay.ne.jp",
+        "www.jcb.co.jp"
+      ],
+      "directory_codes": [],
+      "base_url": "https://www.amazon.co.jp/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "poc",
+      "merchant_name": "POC 美国站",
+      "sales_regions": [
+        "美国站报价"
+      ],
+      "merchant_hosts": [
+        "poc.com",
+        "www.poc.com"
+      ],
+      "reference_hosts": [
+        "poc.com",
+        "www.poc.com"
+      ],
+      "directory_codes": [
+        "poc"
+      ],
+      "base_url": "https://poc.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "visma",
+      "merchant_name": "维斯玛车队官方商城",
+      "sales_regions": [
+        "US 市场报价（USD）"
+      ],
+      "merchant_hosts": [
+        "teamvismaleaseabike.com",
+        "www.teamvismaleaseabike.com"
+      ],
+      "reference_hosts": [
+        "teamvismaleaseabike.com",
+        "www.teamvismaleaseabike.com"
+      ],
+      "directory_codes": [
+        "visma"
+      ],
+      "base_url": "https://www.teamvismaleaseabike.com/shop/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "rapha_kr",
+      "merchant_name": "Rapha 韩国站",
+      "sales_regions": [
+        "韩国站报价"
+      ],
+      "merchant_hosts": [
+        "rapha.cc",
+        "www.rapha.cc"
+      ],
+      "reference_hosts": [
+        "rapha.cc",
+        "www.rapha.cc",
+        "support.rapha.cc"
+      ],
+      "directory_codes": [
+        "rapha"
+      ],
+      "base_url": "https://www.rapha.cc/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "fizik",
+      "merchant_name": "Fizik 美国官网",
+      "sales_regions": [
+        "US 市场 · USD 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "fizik.com",
+        "www.fizik.com"
+      ],
+      "reference_hosts": [
+        "fizik.com",
+        "www.fizik.com"
+      ],
+      "directory_codes": [
+        "fizik"
+      ],
+      "base_url": "https://www.fizik.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "santini",
+      "merchant_name": "Santini 官方商城",
+      "sales_regions": [
+        "IT 市场 · EUR 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "santinicycling.com",
+        "www.santinicycling.com"
+      ],
+      "reference_hosts": [
+        "santinicycling.com",
+        "www.santinicycling.com"
+      ],
+      "directory_codes": [
+        "santini"
+      ],
+      "base_url": "https://www.santinicycling.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "soudal",
+      "merchant_name": "Soudal Quick-Step 官方商城",
+      "sales_regions": [
+        "BE 市场 · EUR 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "thewolfpack.shop",
+        "www.thewolfpack.shop"
+      ],
+      "reference_hosts": [
+        "thewolfpack.shop",
+        "www.thewolfpack.shop",
+        "www.bancontact.com"
+      ],
+      "directory_codes": [
+        "soudal"
+      ],
+      "base_url": "https://thewolfpack.shop/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "ineos",
+      "merchant_name": "Netcompany INEOS 官方商城",
+      "sales_regions": [
+        "US 市场 · USD 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "store.netcompanyineos.com"
+      ],
+      "reference_hosts": [
+        "store.netcompanyineos.com",
+        "www.klarna.com",
+        "www.ideal.nl",
+        "www.bancontact.com"
+      ],
+      "directory_codes": [
+        "ineos"
+      ],
+      "base_url": "https://store.netcompanyineos.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "bahrain",
+      "merchant_name": "Bahrain Victorious 官方队服系列",
+      "sales_regions": [
+        "US 市场 · USD 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "alecycling.com",
+        "www.alecycling.com"
+      ],
+      "reference_hosts": [
+        "alecycling.com",
+        "www.alecycling.com",
+        "www.bancontact.com",
+        "www.ideal.nl"
+      ],
+      "directory_codes": [
+        "bahrain"
+      ],
+      "base_url": "https://alecycling.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "decathlon",
+      "merchant_name": "Decathlon CMA CGM 官方商城",
+      "sales_regions": [
+        "US 市场 · USD 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "shop.decathloncmacgmteam.com"
+      ],
+      "reference_hosts": [
+        "shop.decathloncmacgmteam.com"
+      ],
+      "directory_codes": [
+        "decathlon"
+      ],
+      "base_url": "https://shop.decathloncmacgmteam.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "picnic",
+      "merchant_name": "Team Picnic PostNL 官方商城",
+      "sales_regions": [
+        "US 市场 · EUR 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "teampicnicpostnl.store",
+        "www.teampicnicpostnl.store"
+      ],
+      "reference_hosts": [
+        "teampicnicpostnl.store",
+        "www.teampicnicpostnl.store",
+        "www.klarna.com",
+        "www.ideal.nl",
+        "www.bancontact.com"
+      ],
+      "directory_codes": [
+        "picnic"
+      ],
+      "base_url": "https://teampicnicpostnl.store/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "castelli",
+      "merchant_name": "Castelli 官方商城",
+      "sales_regions": [
+        "AF 市场 · EUR 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "castelli-cycling.com",
+        "www.castelli-cycling.com"
+      ],
+      "reference_hosts": [
+        "castelli-cycling.com",
+        "www.castelli-cycling.com"
+      ],
+      "directory_codes": [
+        "castelli"
+      ],
+      "base_url": "https://www.castelli-cycling.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "assos",
+      "merchant_name": "ASSOS 国际官网",
+      "sales_regions": [
+        "国际站 USD 报价"
+      ],
+      "merchant_hosts": [
+        "assos.com",
+        "www.assos.com"
+      ],
+      "reference_hosts": [
+        "assos.com",
+        "www.assos.com"
+      ],
+      "directory_codes": [
+        "assos"
+      ],
+      "base_url": "https://www.assos.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "pns",
+      "merchant_name": "Pas Normal Studios 欧洲官网",
+      "sales_regions": [
+        "欧洲站 EUR 报价"
+      ],
+      "merchant_hosts": [
+        "pasnormalstudios.com",
+        "www.pasnormalstudios.com"
+      ],
+      "reference_hosts": [
+        "pasnormalstudios.com",
+        "www.pasnormalstudios.com"
+      ],
+      "directory_codes": [
+        "pns"
+      ],
+      "base_url": "https://pasnormalstudios.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "kask",
+      "merchant_name": "KASK 意大利英文官网",
+      "sales_regions": [
+        "意大利站 EUR 报价"
+      ],
+      "merchant_hosts": [
+        "kask.com",
+        "www.kask.com"
+      ],
+      "reference_hosts": [
+        "kask.com",
+        "www.kask.com"
+      ],
+      "directory_codes": [
+        "kask"
+      ],
+      "base_url": "https://www.kask.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "groupama",
+      "merchant_name": "Groupama–FDJ UNITED / Bioracer 官方队服",
+      "sales_regions": [
+        "US 市场 · USD 报价；未验证其他市场库存"
+      ],
+      "merchant_hosts": [
+        "shop.bioracer.com"
+      ],
+      "reference_hosts": [
+        "shop.bioracer.com"
+      ],
+      "directory_codes": [
+        "groupama"
+      ],
+      "base_url": "https://shop.bioracer.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "ef_team_shop",
+      "merchant_name": "EF 车队官方商城美国站",
+      "sales_regions": [
+        "美国"
+      ],
+      "merchant_hosts": [
+        "efprocycling.shop",
+        "www.efprocycling.shop"
+      ],
+      "reference_hosts": [
+        "efprocycling.shop",
+        "www.efprocycling.shop"
+      ],
+      "directory_codes": [
+        "ef"
+      ],
+      "base_url": "https://efprocycling.shop/us",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。",
+      "reference_assets": [
+        {
+          "url": "https://i0.wp.com/efprocycling.shop/us/wp-content/uploads/sites/2/sites/2/2025/02/payment-methods.png?fit=800%2C92&ssl=1",
+          "owner_page": "https://efprocycling.shop/us/"
+        }
+      ]
+    },
+    {
+      "source_code": "uae",
+      "merchant_name": "UAE / PISSEI 官方商城",
+      "sales_regions": [
+        "美国市场 USD 报价"
+      ],
+      "merchant_hosts": [
+        "pissei.com",
+        "www.pissei.com"
+      ],
+      "reference_hosts": [
+        "pissei.com",
+        "www.pissei.com",
+        "www.klarna.com",
+        "help.afterpay.com",
+        "www.ideal.nl"
+      ],
+      "directory_codes": [
+        "uae"
+      ],
+      "base_url": "https://www.pissei.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "nsn",
+      "merchant_name": "NSN / Ekoï 官方商城",
+      "sales_regions": [
+        "阿联酋站 USD 报价"
+      ],
+      "merchant_hosts": [
+        "ekoi.com",
+        "www.ekoi.com"
+      ],
+      "reference_hosts": [
+        "ekoi.com",
+        "www.ekoi.com",
+        "support.ekoi.com"
+      ],
+      "directory_codes": [
+        "nsn"
+      ],
+      "base_url": "https://www.ekoi.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "lotto",
+      "merchant_name": "Lotto-Intermarché 官方商城",
+      "sales_regions": [
+        "比利时站 EUR 报价"
+      ],
+      "merchant_hosts": [
+        "lotto-intermarche.be",
+        "www.lotto-intermarche.be"
+      ],
+      "reference_hosts": [
+        "lotto-intermarche.be",
+        "www.lotto-intermarche.be",
+        "www.bancontact.com",
+        "www.ideal.nl"
+      ],
+      "directory_codes": [
+        "lotto"
+      ],
+      "base_url": "https://www.lotto-intermarche.be/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "redbull",
+      "merchant_name": "Red Bull – BORA – hansgrohe 官方商城",
+      "sales_regions": [
+        "日本市场 JPY 报价"
+      ],
+      "merchant_hosts": [
+        "redbullshop.com",
+        "www.redbullshop.com"
+      ],
+      "reference_hosts": [
+        "redbullshop.com",
+        "www.redbullshop.com",
+        "customerservice.redbullshop.com",
+        "policies.redbull.com"
+      ],
+      "directory_codes": [
+        "redbull"
+      ],
+      "base_url": "https://www.redbullshop.com/",
+      "identity_note": "已登记的实际商店；支付证据仅适用于对应商店及所列市场。"
+    },
+    {
+      "source_code": "oakley",
+      "merchant_name": "Oakley",
+      "sales_regions": [
+        "未核实"
+      ],
+      "merchant_hosts": [
+        "oakley.com",
+        "www.oakley.com"
+      ],
+      "reference_hosts": [
+        "oakley.com",
+        "www.oakley.com"
+      ],
+      "directory_codes": [
+        "oakley"
+      ],
+      "base_url": "https://www.oakley.com/",
+      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+    },
+    {
+      "source_code": "alpecin",
+      "merchant_name": "Alpecin – Premier Tech",
+      "sales_regions": [
+        "未核实"
+      ],
+      "merchant_hosts": [
+        "alpecin-premiertech.com",
+        "www.alpecin-premiertech.com",
+        "www.kalas.cc",
+        "kalas.cc",
+        "shops.topfanz.com"
+      ],
+      "reference_hosts": [
+        "alpecin-premiertech.com",
+        "www.alpecin-premiertech.com",
+        "www.kalas.cc",
+        "kalas.cc",
+        "shops.topfanz.com",
+        "www.bancontact.com"
+      ],
+      "directory_codes": [
+        "alpecin"
+      ],
+      "base_url": "https://www.alpecin-premiertech.com/webshops/",
+      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+    },
+    {
+      "source_code": "lidl_trek",
+      "merchant_name": "Lidl – Trek",
+      "sales_regions": [
+        "未核实"
+      ],
+      "merchant_hosts": [
+        "santinicycling.com",
+        "www.santinicycling.com"
+      ],
+      "reference_hosts": [
+        "santinicycling.com",
+        "www.santinicycling.com"
+      ],
+      "directory_codes": [
+        "lidl_trek"
+      ],
+      "base_url": "https://www.santinicycling.com/collections/lidl-trek",
+      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+    },
+    {
+      "source_code": "movistar",
+      "merchant_name": "Movistar Team",
+      "sales_regions": [
+        "未核实"
+      ],
+      "merchant_hosts": [
+        "tradeinn.com",
+        "www.tradeinn.com"
+      ],
+      "reference_hosts": [
+        "tradeinn.com",
+        "www.tradeinn.com",
+        "www.bikeinn.com",
+        "bikeinn.com",
+        "bizum.com"
+      ],
+      "directory_codes": [
+        "movistar"
+      ],
+      "base_url": "https://www.tradeinn.com/bikeinn/es/movistar_team",
+      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+    },
+    {
+      "source_code": "jayco",
+      "merchant_name": "Team Jayco AlUla",
+      "sales_regions": [
+        "未核实"
+      ],
+      "merchant_hosts": [
+        "shop.greenedgecycling.com"
+      ],
+      "reference_hosts": [
+        "shop.greenedgecycling.com",
+        "greenedgecycling.com"
+      ],
+      "directory_codes": [
+        "jayco"
+      ],
+      "base_url": "https://shop.greenedgecycling.com/",
+      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+    },
+    {
+      "source_code": "unox",
+      "merchant_name": "Uno-X Mobility",
+      "sales_regions": [
+        "未核实"
+      ],
+      "merchant_hosts": [
+        "internshop.no",
+        "www.internshop.no"
+      ],
+      "reference_hosts": [
+        "internshop.no",
+        "www.internshop.no",
+        "www.unoxteam.com"
+      ],
+      "directory_codes": [
+        "unox"
+      ],
+      "base_url": "https://internshop.no/?klubb=109",
+      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+    },
+    {
+      "source_code": "astana",
+      "merchant_name": "XDS Astana Team",
+      "sales_regions": [
+        "未核实"
+      ],
+      "merchant_hosts": [
+        "xds-astana.com",
+        "www.xds-astana.com"
+      ],
+      "reference_hosts": [
+        "xds-astana.com",
+        "www.xds-astana.com"
+      ],
+      "directory_codes": [
+        "astana"
+      ],
+      "base_url": "https://xds-astana.com/en/",
+      "identity_note": "尚未发现可核实购买商城。官网入口尚非已核实交易商家。"
+    }
+  ]
+}

@@ -71,6 +71,8 @@ jobs:
         run: node scripts/test_featured_deals.js
       - name: Validate read-only merchant language guides
         run: node scripts/test_merchant_guides.js
+      - name: Validate complete merchant and market payment matrices
+        run: node scripts/test_payment_methods.js
       - name: Validate purchase readiness and forwarding references
         run: node scripts/test_purchase_readiness.js
       - name: Validate real registration screenshot scope and trusted assets
@@ -105,6 +107,10 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_registration_guides_ui.py
+      - name: Validate scoped payment matrices on desktop and mobile
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_payment_methods_ui.py
       - name: Validate purchase readiness on desktop and mobile
         if: github.event_name == 'push'
         timeout-minutes: 3
@@ -133,6 +139,8 @@ jobs:
           PY
       - name: Build public interactive website
         run: python scripts/build_pages.py
+      - name: Validate exact payment assets before deployment
+        run: python scripts/verify_payment_methods.py --local-dir _site
       - name: Validate built manifest and market labels before deployment
         run: python scripts/verify_public_release.py --local-dir _site
       - uses: actions/cache/save@v6

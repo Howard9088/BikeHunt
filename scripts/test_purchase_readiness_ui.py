@@ -45,6 +45,8 @@ def main():
                             external.append(route.request.url)
                             return route.fulfill(content_type='text/html', body='<title>Official calculator fixture</title><p>Read-only test destination.</p>')
                         return route.abort()
+                    if url.path.endswith('/payment-methods.json'):
+                        return route.fulfill(content_type='application/json', body=(ROOT / 'tests/fixtures/payment-methods.json').read_text())
                     if not url.path.startswith('/api/'):
                         return route.continue_()
                     if url.path == '/api/catalog':
@@ -74,12 +76,12 @@ def main():
                 assert_exit_closed(page)
                 expect(page.locator('.amazon-market .payment-feasibility')).to_have_count(4)
                 expect(page.locator('.amazon-market .purchase-readiness,.amazon-market .registration-help')).to_have_count(0)
-                expect(page.locator('.amazon-market [data-china-card-status=conditional]')).to_have_count(4)
+                expect(page.locator('.amazon-market [data-china-card-status=unknown]')).to_have_count(4)
                 for card in page.locator('.amazon-market').all():
                     expect(card.locator('.payment-feasibility')).to_contain_text('中国发行卡')
                     expect(card.locator('.payment-feasibility')).to_contain_text('不保证')
                 for country in ['德国站', '日本站']:
-                    expect(page.locator('.amazon-market').filter(has=page.locator('.amazon-country', has_text=country)).locator('.payment-feasibility')).to_contain_text('历史官方资料')
+                    expect(page.locator('.amazon-market').filter(has=page.locator('.amazon-country', has_text=country)).locator('.payment-feasibility')).to_contain_text('历史资料，当前待核实')
                 assert external == []
                 explain = page.locator('.forwarding-explainer')
                 explain.locator('>summary').focus()

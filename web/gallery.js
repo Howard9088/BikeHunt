@@ -197,7 +197,7 @@ function offerMarkup(compared){
     '<button class="go guide-start" type="button" data-offer="'+e(o.offer_id)+'" '+(!offerAvailable(compared)?'disabled':'')+'>比较运输路线 <span>→</span></button>'+
     (!available?referenceLinkMarkup(compared):'')+
     '<details><summary>来源与核实依据</summary><p>'+e(o.identity_evidence)+'</p>'+
-    [o.shipping_to_china,o.china_issued_card].map(check=>'<p>'+e(check.note)+(safeUrl(check.url)?' <a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(check.url))+'">查看依据</a>':'')+'</p>').join('')+'</details></div>';
+    [o.shipping_to_china].filter(Boolean).map(check=>'<p>'+e(check.note)+(safeUrl(check.url)?' <a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(check.url))+'">查看依据</a>':'')+'</p>').join('')+(o.china_issued_card?.note?'<details class="legacy-payment-evidence"><summary>旧报价支付记录（不作为当前支持结论）</summary><p>以下为旧采集字段，未必适用当前商家市场；当前支付方式和限制以上方完整矩阵为准。</p><p>'+e(o.china_issued_card.note)+'</p></details>':'')+'</details></div>';
 }
 // Status-only updates preserve existing DOM nodes and selected specifications.
 // An exact bound content identity is required before advancing any copied clock.

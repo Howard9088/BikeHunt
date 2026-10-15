@@ -19,12 +19,14 @@ from app.policies import PolicyRepository
 from app.publication import build_publication
 from app.updates import UpdateStore
 from app.update_views import enrich_events
+from app.payment_methods import read_payment_methods
 from app.registration_guides import read_registration_guides, registration_assets, publish_registration_guides
 
 
 def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     """将已核实快照与交互网页导出到固定的 root/_site，返回发布元数据。"""
     root = root.resolve()
+    read_payment_methods(root)  # Fail before replacing output when matrix coverage is incomplete.
     registration = read_registration_guides(root)
     registration_assets(root, registration)
     output = (root/"_site").resolve()
@@ -35,7 +37,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     output.mkdir()
     web = root/"web"
     (output/"web").mkdir()
-    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
+    for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "payment-methods.js", "payment-methods.json", "payment-channels.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
         shutil.copy2(web/name, output/"web"/name)
     if (web/"icons").is_dir():
         shutil.copytree(web/"icons", output/"web/icons")
@@ -45,7 +47,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
                           '<script src="./web/pages-adapter.js?v=BIKEHUNT_RELEASE_COMMIT" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
     # Tie every copied interactive asset to this exact deployed release.
     # Keep source HTML and pending icon work untouched.
-    index = re.sub(r'(\./web/(?:gallery|flows|external-exit)\.css|\./web/(?:profile|gallery|flows|pages-adapter|registration-guides|purchase-readiness|purchase-flow|bundle-variants|external-exit)\.js)(?:\?[^" ]*)?',
+    index = re.sub(r'(\./web/(?:gallery|flows|external-exit)\.css|\./web/(?:profile|gallery|flows|pages-adapter|registration-guides|purchase-readiness|payment-methods|purchase-flow|bundle-variants|external-exit)\.js)(?:\?[^" ]*)?',
                    r'\1?v=BIKEHUNT_RELEASE_COMMIT', index)
     index = index.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))
     index = index.replace('>核对最新价格</button>', '>检查最新发布</button>')
