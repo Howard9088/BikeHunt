@@ -4,7 +4,7 @@ const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('we
 function section(source,start,end){return source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)))}
 function harness(saved=null){
  const storage=new Map(saved?[['bikehuntMessagesReadCursor',saved]]:[]),badge={setAttribute(k,v){this[k]=v}},refs=new Map(),links=[];
- const c=vm.createContext({Date,URL,Number,Map,Set,JSON,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,window:{confirm:()=>true},guideContext:null,PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
+ const c=vm.createContext({Date,URL,Number,Map,Set,JSON,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,window:{confirm:()=>true},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
  vm.runInContext(section(gallery,'const e=value','function money('),c);
  vm.runInContext(section(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(section(flows,'const messageEvents=','const directoryPage='),c);
@@ -14,13 +14,13 @@ function harness(saved=null){
 }
 function row(id=1,overrides={}){
  const url='https://shop.example/products/26-173-bah?variant='+id;
- return {id,event_key:'event-'+id,source_code:'bahrain',source_name:'Bahrain',kind:'price_changed',category:'jerseys',offer_id:'o'+id,name_zh:'Short Sleeve Jersey Man Bahrain Victorious',old_price:'148',new_price:'149',currency:'USD',stock:'in_stock',observed_at:'2026-10-14T12:00:00Z',url,product:{offer_id:'o'+id,url,name:'Generic jersey',brand:'Ale',model:'Jersey',color:'red',size:id===1?'M':'L',image:'https://shop.example/red.jpg',product_id:'family-a',variant_id:'v'+id,current_stock:'in_stock'},...overrides};
+ return {id,event_key:id.toString(16).padStart(64,'0'),source_code:'bahrain',source_name:'Bahrain',kind:'price_changed',category:'jerseys',offer_id:'o'+id,name_zh:'Short Sleeve Jersey Man Bahrain Victorious',old_price:'148',new_price:'149',currency:'USD',stock:'in_stock',observed_at:'2026-10-14T12:00:00Z',url,product:{offer_id:'o'+id,url,name:'Generic jersey',brand:'Ale',model:'Jersey',color:'red',size:id===1?'M':'L',image:'https://shop.example/red.jpg',product_id:'family-a',variant_id:'v'+id,current_stock:'in_stock'},...overrides};
 }
 function click(link,type='click',button=0){return {type,button,target:{closest:()=>link},prevented:false,preventDefault(){this.prevented=true}}}
 function testGroupingAndExactPictures(){
  const h=harness(),a=row(),b=row(2),different=row(3);different.url=different.product.url='https://shop.example/products/26-175-bah?variant=3';different.product.product_id='family-b';different.product.image='https://shop.example/white.jpg';different.old_price='107';different.new_price='108';
  const groups=h.c.groupMessages([a,b,different]);assert.equal(groups.length,2);assert.equal(groups[0].members.length,2);
- const html=h.c.messageCardMarkup(groups[0],{rates:{USD:7}});assert.ok(html.includes('red.jpg'));assert.ok(html.includes('M / L'));assert.ok(html.includes('variant=1'));assert.ok(html.includes('variant=2'));
+ const html=h.c.messageCardMarkup(groups[0],{rates:{USD:7}});assert.ok(html.includes('red.jpg'));assert.ok(html.includes('M / L'));assert.ok(html.includes('data-message-variant="v1"'));assert.ok(html.includes('data-message-variant="v2"'));assert.ok(!html.includes('href='));assert.ok(html.includes('data-message-product="family-a"'));
  for(const [field,value] of [['stock','out_of_stock'],['currency','EUR'],['old_price','147'],['new_price','150'],['kind','inventory_changed'],['observed_at','2026-10-14T13:00:00Z']])assert.equal(h.c.groupMessages([a,{...b,[field]:value}]).length,2,field);
  for(const [field,value] of [['model','other'],['color','white'],['image','https://shop.example/other.jpg']])assert.equal(h.c.groupMessages([a,{...b,product:{...b.product,[field]:value}}]).length,2,field);
  const missing={...a,product:null};assert.ok(h.c.messageCardMarkup(missing,{}).includes('暂无该商品图片'));assert.ok(!h.c.messageCardMarkup(missing,{}).includes('<img'));
@@ -36,7 +36,7 @@ function testReadIdsReloadIncrementFilteredAndCap(){
 }
 async function testReferenceExitCancelContinueSoldoutAndLatestRecheck(){
  const h=harness(),q={reference_product_id:'p',reference_variant_id:'v',offer:{offer_id:'o',url:'https://shop.example/products/stale?variant=m',stock:'in_stock',fetched_at:'2000-01-01T00:00:00Z'}};
- const markup=h.c.referenceLinkMarkup(q);assert.ok(markup.includes('去官网查看'));const key='o|'+q.offer.url;
+ const markup=h.c.referenceLinkMarkup(q);assert.ok(markup.includes('去官网查看'));assert.ok(markup.includes('target="_self"'));assert.ok(!markup.includes('target="_blank"'));const key='o|'+q.offer.url;
  const link={dataset:{referenceLink:key},href:q.offer.url,getAttribute(){return this.href},removeAttribute(){this.href=null},setAttribute(){}};h.links.push(link);
  h.c.window.confirm=()=>false;let e=click(link);h.c.guardPurchaseExit(e);assert.equal(e.prevented,true);
  h.c.window.confirm=()=>true;for(const [type,button] of [['click',0],['auxclick',1]]){e=click(link,type,button);h.c.guardPurchaseExit(e);assert.equal(e.prevented,false,'Timestamp alone does not block reference navigation')}
@@ -63,4 +63,60 @@ async function testDismissedMessagesDoNotReopenOrReadUnseenRows(){
  const h=harness();let resolve;Object.assign(h.c,{messagesOpen:false,detailSequence:0,sheet:{classList:{contains:()=>true}},openPanel(){h.c.detailSequence++},getJson:()=>new Promise(done=>{resolve=done})});
  const pending=h.c.showMessages();h.c.messagesOpen=false;h.c.detailSequence++;resolve({items:[row()],cursor:1,fx:{}});await pending;assert.equal(h.badge.hidden,false);assert.equal(h.badge.textContent,'1');assert.equal(h.storage.has('bikehuntMessagesReadCursor'),false);
 }
-(async()=>{for(const t of [testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 6 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});
+function testHistoryScopeValidationAndBackPollingRestart(){
+ const h=harness(),buttons=['all','jerseys'].map(category=>({dataset:{category},setAttribute(){}}));
+ Object.assign(h.c,{activeTab:'products',activeSource:'bahrain',activeCategory:'jerseys',categories:[{code:'all'},{code:'jerseys'}],directoryData:{brands:[],teams:[{code:'bahrain',name_zh:'巴林车队'}]},history:{state:{other:'preserved'},replaceState(state){this.state=state}},navigate(tab){h.c.activeTab=tab},updateBrowseLabel(){},});
+ h.c.document.querySelectorAll=()=>buttons;
+ vm.runInContext(section(flows,'function saveBrowseState(','function navigate('),h.c);
+ h.c.saveBrowseState();assert.equal(h.c.history.state.other,'preserved');assert.equal(h.c.history.state.bikehuntBrowse.source,'bahrain');
+ h.c.activeSource=null;h.c.activeCategory='all';h.c.restoreBrowseState();assert.equal(h.c.activeSource,'bahrain');assert.equal(h.c.activeCategory,'jerseys');
+ h.c.history.state.bikehuntBrowse={tab:'invalid',source:'removed-source',category:'removed-category'};h.c.restoreBrowseState();assert.equal(h.c.activeSource,null);assert.equal(h.c.activeCategory,'all');assert.equal(h.c.activeTab,'products');
+ let handler,reloads=0;h.c.window={addEventListener(name,fn){assert.equal(name,'pageshow');handler=fn},location:{reload(){reloads++}}};vm.runInContext(flows.slice(flows.lastIndexOf("window.addEventListener('pageshow'")),h.c);handler({persisted:false});assert.equal(reloads,0);handler({persisted:true});assert.equal(reloads,1);
+}
+function testMessagesOpenOnlyExactInternalProducts(){
+ const h=harness();let opened;Object.assign(h.c,{messagesOpen:true,guideContext:{},openProduct(...args){opened=args}});
+ const event=row(),route=h.c.messageProductRoute(event);h.c.openMessageProduct(route.productId,route.variantId);assert.deepEqual(opened,['family-a','v1',true]);assert.equal(h.c.messagesOpen,false);assert.equal(h.c.guideContext,null);
+ const sold={...event,stock:'out_of_stock'};assert.ok(h.c.messageCardMarkup(sold,{}).includes('data-message-product="family-a"'));assert.ok(!h.c.messageCardMarkup(sold,{}).includes('href='));
+ const missing={...event,product:{...event.product,product_id:null,variant_id:null}};assert.equal(h.c.messageProductRoute(missing),null);const html=h.c.messageCardMarkup(missing,{});assert.ok(html.includes('该商品详情暂不可用'));assert.ok(!html.includes('data-message-product='));assert.ok(!html.includes('href='));
+}
+function testStableReadKeysSurviveIdReuseAndTimestampRepeats(){
+ const h=harness(),original=row(50),key=original.event_key;
+ h.c.rememberMessageEvents({items:[original]});h.c.markMessagesRead([original]);assert.equal(h.badge.hidden,true);
+ const renumbered={...original,id:500};h.c.rememberMessageEvents({items:[renumbered]});assert.equal(h.badge.hidden,true,'Same event key stays read after ID changes');
+ const collision={...original,event_key:'f'.repeat(64)};h.c.rememberMessageEvents({items:[collision]});assert.equal(h.badge.textContent,'1');assert.equal(h.badge.hidden,false,'Reused numeric ID with a different event key is unread');
+ h.c.markMessagesRead([collision]);assert.equal(h.badge.hidden,true);
+ h.c.rememberMessageEvents({items:[{...original,id:700},{...collision,id:701}]});assert.equal(h.badge.hidden,true,'Repeated timestamps and rows do not reset read state');
+ const reload=harness(h.storage.get('bikehuntMessagesReadCursor'));reload.c.rememberMessageEvents({items:[renumbered,collision]});assert.equal(reload.badge.hidden,true);
+ reload.c.rememberMessageEvents({items:[{...original,id:702,event_key:'e'.repeat(64)}]});assert.equal(reload.badge.textContent,'1');assert.equal(reload.badge.hidden,false,'New key is unread even with an unchanged observation timestamp');
+ const saved=JSON.parse(reload.storage.get('bikehuntMessagesReadCursor'));assert.equal(saved.version,2);assert.ok(saved.seenKeys.includes(key));assert.equal(saved.seen,undefined);
+}
+function testLegacyIdReadsMigrateExactlyOnce(){
+ const first=row(7),unseen=row(8,{observed_at:'different-batch'}),h=harness(JSON.stringify({seen:[7]}));
+ h.c.rememberMessageEvents({items:[first,unseen]});assert.equal(h.badge.textContent,'1');const saved=JSON.parse(h.storage.get('bikehuntMessagesReadCursor'));assert.deepEqual(saved.seenKeys,[first.event_key]);
+ h.c.rememberMessageEvents({items:[{...first,event_key:'b'.repeat(64)},unseen]});assert.equal(h.badge.textContent,'2','Legacy ID is not reused after the one-time migration');
+ const reload=harness(h.storage.get('bikehuntMessagesReadCursor'));reload.c.rememberMessageEvents({items:[first]});assert.equal(reload.badge.hidden,true);
+ const mixed=harness(JSON.stringify({version:2,seenKeys:[first.event_key],seen:[8]}));mixed.c.rememberMessageEvents({items:[first,unseen]});assert.equal(mixed.badge.textContent,'1','Version 2 ignores any leftover numeric IDs');
+ const missing=harness(JSON.stringify({seen:[999]}));missing.c.rememberMessageEvents({items:[first]});missing.c.rememberMessageEvents({items:[row(999,{observed_at:'later-batch'}),first]});assert.equal(missing.badge.textContent,'2','An unresolved old ID does not mark a later event read');
+}
+function testRecoveredHistoryDoesNotNotifyOrBecomeUnread(){
+ const seen=row(1),recovered=row(1500,{event_key:'c'.repeat(64),kind:'new_offer',recovered_history:true}),fresh=row(1501,{event_key:'d'.repeat(64)}),h=harness(JSON.stringify({version:2,seenKeys:[seen.event_key]}));h.c.activeCategory='all';
+ h.c.rememberMessageEvents({items:[seen,recovered]});assert.equal(h.badge.hidden,true,'Unseen recovered keys do not create unread messages');assert.equal(h.c.hasNewPriceMessages([recovered]),false,'Historical recovery does not show a new-message toast');
+ const html=h.c.messageCardMarkup(recovered,{});assert.ok(html.includes('恢复的历史记录'));assert.ok(html.includes('历史记录：'));assert.ok(!html.includes('新发现报价：'));
+ h.c.rememberMessageEvents({items:[fresh]});assert.equal(h.badge.textContent,'1');assert.equal(h.badge.hidden,false);assert.equal(h.c.hasNewPriceMessages([recovered,fresh]),true);
+ h.c.markMessagesRead([fresh]);assert.equal(h.badge.hidden,true);const saved=JSON.parse(h.storage.get('bikehuntMessagesReadCursor'));assert.ok(saved.seenKeys.includes(seen.event_key));assert.ok(saved.seenKeys.includes(fresh.event_key));assert.ok(!saved.seenKeys.includes(recovered.event_key),'Suppressing recovered history does not invent read receipts');
+ assert.equal(h.c.groupMessages([fresh,{...fresh,id:1600,event_key:'e'.repeat(64),recovered_history:true}]).length,2,'Historical recovery remains distinct from a genuine new group');
+ const current={offer:{offer_id:'currently-restocked',url:'https://shop.example/products/current',stock:'in_stock'}};h.c.referenceLinkMarkup(current);
+ h.c.invalidateReferenceLinks([{offer_id:current.offer.offer_id,stock:'out_of_stock',recovered_history:true}]);assert.equal(current.offer.stock,'in_stock');assert.equal(h.c.referenceAvailable(current),true,'Recovered old sold-out status cannot invalidate a currently available reference');
+ h.c.invalidateReferenceLinks([{offer_id:current.offer.offer_id,stock:'out_of_stock',recovered_history:true},{offer_id:current.offer.offer_id,stock:'out_of_stock'}]);assert.equal(current.offer.stock,'out_of_stock','A genuine current sold-out event still invalidates the reference');
+ h.c.activeCategory='bibs';assert.equal(h.c.hasNewPriceMessages([fresh]),false);
+}
+function testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows(){
+ const h=harness(),suppressed=row(1,{product:null}),seen=row(2,{product:null}),fresh=row(3,{product:null});
+ h.c.rememberMessageEvents({items:[suppressed,seen]});h.c.markMessagesRead([seen]);assert.equal(h.badge.textContent,'1');
+ h.c.rememberMessageEvents({items:[fresh,seen]});assert.equal(h.badge.textContent,'1','A suppressed missing key disappears rather than inflating new unread counts');assert.equal(vm.runInContext('messageEvents.has("'+suppressed.event_key+'")',h.c),false);assert.equal(vm.runInContext('messageEvents.size',h.c),2);
+ h.c.rememberMessageEvents({items:Array.from({length:100},(_,i)=>row(200+i,{product:null}))});assert.equal(vm.runInContext('messageEvents.size',h.c),100);
+ h.c.rememberMessageEvents({items:Array.from({length:100},(_,i)=>row(300+i,{product:null}))});assert.equal(vm.runInContext('messageEvents.size',h.c),100,'Latest-100 snapshots never accumulate an old 500-row window');assert.equal(vm.runInContext('messageEvents.has("'+row(200).event_key+'")',h.c),false);
+ h.c.rememberMessageEvents({items:[seen]});assert.equal(h.badge.hidden,true,'Reconciliation does not discard independent seen keys');
+ assert.throws(()=>h.c.rememberMessageEvents({items:null}));assert.throws(()=>h.c.rememberMessageEvents({items:[fresh,null]}));assert.equal(vm.runInContext('messageEvents.size',h.c),1,'Malformed responses cannot erase the last valid snapshot');
+}
+(async()=>{for(const t of [testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows,testHistoryScopeValidationAndBackPollingRestart,testMessagesOpenOnlyExactInternalProducts,testStableReadKeysSurviveIdReuseAndTimestampRepeats,testLegacyIdReadsMigrateExactlyOnce,testRecoveredHistoryDoesNotNotifyOrBecomeUnread,testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 12 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});

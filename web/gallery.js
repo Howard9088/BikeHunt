@@ -120,7 +120,7 @@ function referenceAvailable(quote){return !!quote?.offer&&!quote.reference_verif
 function referenceLinkMarkup(quote,label='去官网查看',className='go reference-exit'){
   if(!referenceAvailable(quote))return '';
   const o=quote.offer,key=o.offer_id+'|'+o.url;referenceOffers.set(key,quote);
-  return '<a class="'+e(className)+'" data-reference-link="'+e(key)+'" target="_blank" rel="noopener noreferrer" href="'+e(merchantUrl(o.url))+'">'+label+'</a>';
+  return '<a class="'+e(className)+'" data-reference-link="'+e(key)+'" target="_self" rel="noopener noreferrer" href="'+e(merchantUrl(o.url))+'">'+label+'</a>';
 }
 function referenceOffersMarkup(detail){
   const quotes=detail.offers.filter(referenceAvailable);
@@ -201,6 +201,7 @@ async function loadDetail(id,variantId=null){
     document.getElementById('sheetImg').style.display='';document.getElementById('sheetImg').src=safeUrl(detail.image);document.getElementById('sheetBrand').textContent=detail.identity.brand;
     document.getElementById('sheetName').textContent=detail.name_zh||detail.name;
     const best=detail.offers.find(o=>o.offer.offer_id===detail.recommended_offer_id&&offerAvailable(o));
+    const confirmedSoldOut=detail.offers.length>0&&detail.offers.every(q=>q.offer.stock==='out_of_stock');
     const inventoryExpired=detail.offers.some(q=>q.offer.stock==='in_stock'&&!inventoryVerified(q.offer));
     const summary=best?'<div class="summary-box verified"><h4>公开条件与费用已齐的最低预计成本</h4><div class="summary-price">'+e(cny(best.total_cny))+'</div><p>'+e(best.offer.source_name)+' · 商品、运费与税费已计入，银行卡仍需实际授权</p></div>':'<div class="summary-box"><h4>已找到报价，购买条件仍需核实</h4><p>运费、税费或直邮及支付条件未齐，暂时无法确认最低到手价。各渠道提供已保存的中文规则和分步指引。</p></div>';
     const available=detail.variants.filter(v=>v.in_stock&&v.size&&(v.variant_id!==detail.variant_id||detail.offers.some(q=>offerAvailable(q))));
@@ -209,7 +210,7 @@ async function loadDetail(id,variantId=null){
     const variants=(colors.length>1?'<div class="variant-bar"><label for="colorChoice">现货颜色</label><select id="colorChoice">'+colors.map(c=>'<option value="'+e(c.product_id)+'" '+(c.product_id===id?'selected':'')+'>'+e(c.color)+'</option>').join('')+'</select></div>':'')+'<div class="variant-bar"><label for="variant">先选现货尺码</label><select id="variant"><option value="">请选择剩余现货规格</option>'+available.map(v=>'<option value="'+e(v.variant_id)+'" '+(selected&&v.variant_id===detail.variant_id?'selected':'')+'>'+e(v.size)+' · '+v.source_count+' 个渠道 · 商品参考 '+e(cny(v.product_cny_from))+'</option>').join('')+'</select></div><div class="size-choices">'+available.map(v=>'<button type="button" data-variant="'+e(v.variant_id)+'" aria-pressed="'+Boolean(selected&&v.variant_id===detail.variant_id)+'">'+e(v.size)+'</button>').join('')+'</div><p class="spec-note">颜色：'+e(detail.identity.color||'参照当前商品图，原站核对颜色')+'。只列最近一小时内核实有库存的尺码；售罄、核实过期和未知库存不作为现货尺码展示；可从下方官网链接核对当前情况。</p>';
     body.innerHTML=variants+'<div id="fitReference"></div>'+
       (detail.identity.mpn?'<div class="model-code">制造商型号 '+e(detail.identity.mpn)+(detail.identity.color?' · '+e(detail.identity.color):'')+'</div>':'')+
-      (selected?summary+'<div class="offers"><h4>已选 '+e(detail.identity.size)+' · '+e(detail.identity.color||'当前款')+' · '+detail.offers.length+' 条同规格报价</h4>'+detail.offers.map(offerMarkup).join('')+'</div>':'<div class="summary-box"><h4>'+(available.length?'选择上方尺码后，显示对应价格':inventoryExpired?'库存待核实':'尚未取得可选的现货规格')+'</h4><p>'+(available.length?'不同尺码的库存与价格可能不同，先选规格再比较。':inventoryExpired?'历史价格仍可参考；上次库存核实已超过一小时，尺码待核实。可前往官网商品页查看当前情况。':'当前报价可供参考；未知库存不会作为现货尺码显示。可前往官网商品页自行核对。')+'</p></div>')+
+      (selected?summary+'<div class="offers"><h4>已选 '+e(detail.identity.size)+' · '+e(detail.identity.color||'当前款')+' · '+detail.offers.length+' 条同规格报价</h4>'+detail.offers.map(offerMarkup).join('')+'</div>':'<div class="summary-box"><h4>'+(confirmedSoldOut?'所示规格 '+e(detail.identity.size||'')+' 已售罄':available.length?'选择上方尺码后，显示对应价格':inventoryExpired?'库存待核实':'尚未取得可选的现货规格')+'</h4><p>'+(confirmedSoldOut?'该规格已确认售罄，目前没有购买链接。其他尺码请分别核对。':available.length?'不同尺码的库存与价格可能不同，先选规格再比较。':inventoryExpired?'历史价格仍可参考；上次库存核实已超过一小时，尺码待核实。可前往官网商品页查看当前情况。':'当前报价可供参考；未知库存不会作为现货尺码显示。可前往官网商品页自行核对。')+'</p></div>')+
       (!selected?referenceOffersMarkup(detail):'')+
       '<div class="service-note">汇率日期 '+e(detail.fx.rate_date||'待获取')+(detail.fx.stale?' · 使用过期缓存':'')+'。人民币金额为参考，信用卡入账及手续费以发卡行为准。<br>BikeHunt 只提供信息与外链，付款、订单及售后由第三方网站负责。</div>';
     document.getElementById('variant').onchange=event=>loadDetail(id,event.target.value||null);
@@ -219,12 +220,12 @@ async function loadDetail(id,variantId=null){
     refreshFitReference(detail,sequence);
   }catch(error){if(sequence!==detailSequence)return;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>'+e(error.message)+'<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId)}
 }
-function openProduct(id){
-  if(items.find(p=>p.product_id===id)?.stock_state==='out_of_stock')return;
+function openProduct(id,variantId=null,allowSoldOut=false){
+  if(!allowSoldOut&&items.find(p=>p.product_id===id)?.stock_state==='out_of_stock')return;
   lastFocus=document.activeElement;gallery.inert=true;sheet.inert=false;
   document.getElementById('sheetImg').style.display='';
   const item=items.find(p=>p.product_id===id);if(item){document.getElementById('sheetName').textContent=item.name;document.getElementById('sheetBrand').textContent=item.brand;document.getElementById('sheetImg').src=safeUrl(item.image)}
-  document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus();loadDetail(id);
+  document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus();loadDetail(id,variantId);
 }
 function closeSheet(){referenceOffers.clear();if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
 async function init(){

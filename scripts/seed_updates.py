@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import ssl
 import sys
 import time
@@ -21,9 +22,14 @@ from loguru import logger
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.updates import UpdateStore
+from app.catalog.storage import atomic_json
+from app.public_recovery import baseline_writes, validate_baseline
+from scripts.verify_public_release import validate_manifest, validate_snapshot, verify_status
 
 SQLITE_MAX_CURSOR = 2**63 - 2
-MAX_RESPONSE_BYTES = 10 * 1024 * 1024
+MAX_RESPONSE_BYTES = 32 * 1024 * 1024
+MAX_MANIFEST_BYTES = 64 * 1024
+MAX_STATUS_BYTES = 8 * 1024 * 1024
 EVENT_FIELDS = (
     "id", "event_key", "kind", "source_code", "source_name", "offer_id",
     "name_zh", "category", "old_price", "new_price", "currency", "stock",
@@ -68,6 +74,9 @@ class PublicEvent(BaseModel):
     observed_at: str
     url: str = Field(max_length=5000)
     product: PublicEventProduct | None = None
+    recovered_history: bool = False
+    original_id: int | None = Field(default=None, ge=1, le=SQLITE_MAX_CURSOR)
+    recovery_snapshot_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
 
     @field_validator("source_name", "offer_id", "name_zh")
     @classmethod
@@ -114,6 +123,9 @@ def validate_events(items: object, cursor: object) -> tuple[list[dict], int]:
     events = [PublicEvent.model_validate(item).model_dump() for item in items]
     if any(event.get("product") and (event["product"]["offer_id"] != event["offer_id"] or event["product"]["url"] != event["url"]) for event in events):
         raise ValueError("Product metadata must bind to the exact event offer and URL")
+    if any((event["recovered_history"] and not (event["original_id"] and event["recovery_snapshot_sha256"]))
+           or (not event["recovered_history"] and (event["original_id"] is not None or event["recovery_snapshot_sha256"] is not None)) for event in events):
+        raise ValueError("Recovered historical events require their original identity and evidence")
     if len({event["id"] for event in events}) != len(events):
         raise ValueError("Public event IDs must be unique")
     if len({event["event_key"] for event in events}) != len(events):
@@ -123,37 +135,202 @@ def validate_events(items: object, cursor: object) -> tuple[list[dict], int]:
     return events, cursor
 
 
-def download_public_events(public_url: str) -> tuple[list[dict], int]:
-    """通过 HTTPS 获取并验证网站事件，网络及解析错误最多退避重试三次。"""
+def download_public_snapshot(public_url: str) -> tuple[dict, dict | None]:
+    """Read only bounded, fixed own-site paths; bind every file to one release."""
     parsed = urlsplit(public_url)
     if (parsed.scheme != "https" or not parsed.hostname or parsed.username
             or parsed.password or parsed.query or parsed.fragment):
         raise ValueError("BIKEHUNT_PUBLIC_URL requires an HTTPS base URL")
-    endpoint = urljoin(public_url.rstrip("/") + "/", "data/site-data.json")
-    request = urllib.request.Request(
-        endpoint, headers={"User-Agent": "BikeHunt/0.3"},
-    )
+    base = public_url.rstrip("/") + "/"
     context = ssl.create_default_context(cafile=certifi.where())
+
+    def read(path: str, limit: int) -> bytes:
+        request = urllib.request.Request(urljoin(base, path),
+            headers={"User-Agent": "BikeHunt/0.3", "Cache-Control": "no-cache"})
+        with urllib.request.urlopen(request, timeout=12, context=context) as response:
+            final_url = response.geturl() if hasattr(response, "geturl") else None
+            if final_url and (urlsplit(final_url).scheme != "https" or urlsplit(final_url).netloc != parsed.netloc):
+                raise ValueError("Public recovery redirected outside its own site")
+            body = response.read(limit + 1)
+        if len(body) > limit:
+            raise ValueError("Public recovery file exceeds the size limit")
+        return body
+
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(
-                request, timeout=12, context=context,
-            ) as response:
-                body = response.read(MAX_RESPONSE_BYTES + 1)
-            if len(body) > MAX_RESPONSE_BYTES:
+            manifest = json.loads(read("data/publication.json", MAX_MANIFEST_BYTES))
+            commit = manifest.get("commit")
+            if not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40}", commit):
+                raise ValueError("Invalid public release commit")
+            validate_manifest(manifest, commit)
+            if manifest["snapshot"]["bytes"] > MAX_RESPONSE_BYTES:
                 raise ValueError("Public snapshot exceeds the size limit")
-            payload = json.loads(body)
-            updates = payload["updates"]
-            return validate_events(updates["items"], updates["cursor"])
+            data = validate_snapshot(manifest,
+                read("data/site-data.json", MAX_RESPONSE_BYTES), commit)
+            status = None
+            if manifest["schema_version"] == 2:
+                if manifest["status"]["bytes"] > MAX_STATUS_BYTES:
+                    raise ValueError("Public status exceeds the size limit")
+                status = verify_status(manifest,
+                    read("data/verification.json", MAX_STATUS_BYTES), data, commit)
+            validate_events(data["updates"]["items"], data["updates"]["cursor"])
+            validate_baseline(data, status)
+            return data, status
         except Exception as exc:
-            logger.warning(
-                "公开游标恢复失败 attempt={}/3 {}",
-                attempt + 1, type(exc).__name__,
-            )
+            logger.warning("公开基线恢复失败 attempt={}/3 {}", attempt + 1, type(exc).__name__)
             if attempt == 2:
                 raise
             time.sleep(2**attempt)
-    raise RuntimeError("Public cursor retry attempts exhausted")
+    raise RuntimeError("Public recovery retry attempts exhausted")
+
+
+def download_public_events(public_url: str) -> tuple[list[dict], int]:
+    """Compatibility entry point; events are always release-bound."""
+    data, _ = download_public_snapshot(public_url)
+    return validate_events(data["updates"]["items"], data["updates"]["cursor"])
+
+
+def checkpoint_cursor(root: Path) -> int:
+    """An explicit, audited historic publication floor reserves IDs, not events."""
+    path = root / "data/event_cursor_checkpoint.json"
+    if not path.exists():
+        return 0
+    if path.stat().st_size > MAX_MANIFEST_BYTES:
+        raise ValueError("Event cursor checkpoint exceeds the size limit")
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict) or set(value) != {"schema_version", "cursor", "commit", "generated_at", "snapshot_sha256"}:
+        raise ValueError("Invalid event cursor checkpoint schema")
+    if type(value["schema_version"]) is not int or value["schema_version"] != 1:
+        raise ValueError("Unsupported event cursor checkpoint")
+    validate_events([], value["cursor"])
+    if value["cursor"] < 1 or not isinstance(value["commit"], str) or not re.fullmatch(r"[0-9a-f]{40}", value["commit"]):
+        raise ValueError("Invalid event cursor checkpoint identity")
+    if not isinstance(value["snapshot_sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", value["snapshot_sha256"]):
+        raise ValueError("Invalid event cursor checkpoint digest")
+    from scripts.verify_public_release import validate_timestamp
+    validate_timestamp(value["generated_at"], "Checkpoint publication")
+    return value["cursor"]
+
+
+def history_recovery(root: Path, floor: int) -> dict | None:
+    """A bounded audit artifact contains both exact windows and the known IDs."""
+    path = root / "data/event_history_recovery.json"
+    if not path.exists():
+        return None
+    if path.stat().st_size > 2 * 1024 * 1024:
+        raise ValueError("Event recovery artifact exceeds size limit")
+    artifact = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(artifact, dict) or set(artifact) != {"schema_version", "prior_publication", "affected_publication", "prior_offer_ids", "prior_offer_baseline", "restored_events", "replayed_events"}:
+        raise ValueError("Invalid event recovery artifact")
+    if type(artifact["schema_version"]) is not int or artifact["schema_version"] != 1:
+        raise ValueError("Unsupported event history recovery")
+    checkpoint = json.loads((root / "data/event_cursor_checkpoint.json").read_text(encoding="utf-8"))
+    prior, affected = artifact["prior_publication"], artifact["affected_publication"]
+    if prior != {key: checkpoint[key] for key in ("commit", "generated_at", "cursor", "snapshot_sha256")} or floor != prior["cursor"]:
+        raise ValueError("Historical recovery does not match the audited checkpoint")
+    from scripts.verify_public_release import validate_timestamp
+    prior_at = validate_timestamp(prior["generated_at"], "Prior recovery publication")
+    affected_at = validate_timestamp(affected["generated_at"], "Affected recovery publication")
+    if affected_at <= prior_at or not re.fullmatch(r"[0-9a-f]{40}", affected.get("commit", "")) or not re.fullmatch(r"[0-9a-f]{64}", affected.get("snapshot_sha256", "")):
+        raise ValueError("Invalid affected recovery publication")
+    known = artifact["prior_offer_ids"]
+    if not isinstance(known, list) or len(known) > 100000 or any(not isinstance(key, str) or not key or len(key) > 200 for key in known) or len(set(known)) != len(known):
+        raise ValueError("Invalid recovery offer identities")
+    baseline = artifact["prior_offer_baseline"]
+    if not isinstance(baseline, dict) or set(baseline) != set(known):
+        raise ValueError("Recovery offer baseline must match the exact prior identities")
+    from app.catalog.models import Money
+    for offer in baseline.values():
+        if not isinstance(offer, dict) or set(offer) != {"url", "price", "stock"}:
+            raise ValueError("Invalid recovery offer baseline")
+        Money.model_validate(offer["price"])
+    restored, _ = validate_events(artifact["restored_events"], prior["cursor"])
+    replayed, _ = validate_events(artifact["replayed_events"], affected["cursor"])
+    for row in restored:
+        if row["offer_id"] not in known or datetime.fromisoformat(row["observed_at"]) > prior_at or row["recovered_history"]:
+            raise ValueError("Historical event is not supported by the prior snapshot")
+    for row in replayed:
+        previous = baseline.get(row["offer_id"], {})
+        if (previous.get("url") != row["url"] or previous.get("stock") != row["stock"]
+                or previous.get("price", {}).get("currency") != row["currency"]
+                or Decimal(previous.get("price", {}).get("amount", "NaN")) != Decimal(row["new_price"])):
+            raise ValueError("Replay differs from the prior offer state; preserve this event")
+        if (row["kind"] != "new_offer" or row["offer_id"] not in known or row["recovered_history"]
+                or not prior_at < datetime.fromisoformat(row["observed_at"]) <= affected_at):
+            raise ValueError("Replay suppression lacks prior-offer evidence")
+    return {**artifact, "restored_events": restored, "replayed_events": replayed}
+
+
+def validate_recovery_markers(value: object, cursor: int) -> dict:
+    if not isinstance(value, dict) or len(value) > 10:
+        raise ValueError("Invalid published history recovery markers")
+    for key, record in value.items():
+        if not isinstance(key, str) or not re.fullmatch(r"[0-9a-f]{64}", key) or not isinstance(record, dict) or set(record) != {"affected_snapshot_sha256", "completed_cursor"}:
+            raise ValueError("Invalid published history recovery identity")
+        if not isinstance(record["affected_snapshot_sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", record["affected_snapshot_sha256"]):
+            raise ValueError("Invalid published recovery affected snapshot")
+        validate_events([], record["completed_cursor"])
+        if not 0 < record["completed_cursor"] <= cursor:
+            raise ValueError("Published recovery completion exceeds event cursor")
+    return value
+
+
+def proven_incident_replay(row, artifact: dict) -> bool:
+    """Additional warm-cache rows need the same exact state and incident scope."""
+    if row["kind"] != "new_offer" or not 0 < row["id"] <= artifact["affected_publication"]["cursor"]:
+        return False
+    previous = artifact["prior_offer_baseline"].get(row["offer_id"])
+    if not previous:
+        return False
+    try:
+        observed = datetime.fromisoformat(row["observed_at"])
+        prior = datetime.fromisoformat(artifact["prior_publication"]["generated_at"])
+        affected = datetime.fromisoformat(artifact["affected_publication"]["generated_at"])
+        return (prior < observed <= affected and row["url"] == previous["url"]
+                and row["stock"] == previous["stock"]
+                and row["currency"] == previous["price"]["currency"]
+                and Decimal(row["new_price"]) == Decimal(previous["price"]["amount"]))
+    except (ValueError, TypeError, InvalidOperation):
+        return False
+
+
+def apply_history_recovery(db, artifact: dict | None) -> tuple[int, int]:
+    if artifact is None:
+        return 0, 0
+    suppressed, recovered = 0, 0
+    for row in artifact["replayed_events"]:
+        existing = db.execute("SELECT * FROM events WHERE event_key=?", (row["event_key"],)).fetchone()
+        if existing:
+            # No fuzzy name/price matching, and never suppress unknown current events.
+            if any(existing[field] != row[field] for field in EVENT_FIELDS):
+                raise ValueError("Replay evidence conflicts with the stored event")
+    for row in db.execute("SELECT * FROM events WHERE kind='new_offer' AND recovered_history=0 AND id<=?",
+                          (artifact["affected_publication"]["cursor"],)).fetchall():
+        if proven_incident_replay(row, artifact):
+            suppressed += db.execute("INSERT OR IGNORE INTO suppressed_events VALUES (?,?,?,?)",
+                (row["event_key"], "Exact prior offer state in the cold-cache incident ID/time window",
+                 artifact["prior_publication"]["snapshot_sha256"],
+                 artifact["affected_publication"]["snapshot_sha256"])).rowcount
+    prior_sha = artifact["prior_publication"]["snapshot_sha256"]
+    affected_sha = artifact["affected_publication"]["snapshot_sha256"]
+    completed = db.execute("SELECT * FROM event_recovery_runs WHERE snapshot_sha256=?", (prior_sha,)).fetchone()
+    if completed:
+        if completed["affected_snapshot_sha256"] != affected_sha:
+            raise ValueError("Conflicting history recovery completion identity")
+        return 0, suppressed
+    for row in sorted(artifact["restored_events"], key=lambda item: item["id"]):
+        if db.execute("SELECT 1 FROM events WHERE event_key=?", (row["event_key"],)).fetchone():
+            continue
+        columns = EVENT_FIELDS[1:]
+        inserted = db.execute("INSERT INTO events (" + ",".join(columns) + ") VALUES ("
+            + ",".join("?" for _ in columns) + ")", tuple(row[field] for field in columns))
+        db.execute("UPDATE events SET recovered_history=1,original_id=?,recovery_snapshot_sha256=?,product_json=? WHERE id=?",
+            (row["id"], artifact["prior_publication"]["snapshot_sha256"],
+             json.dumps(row["product"], ensure_ascii=False) if row.get("product") else None, inserted.lastrowid))
+        recovered += 1
+    final_cursor = db.execute("SELECT seq FROM sqlite_sequence WHERE name='events'").fetchone()[0]
+    db.execute("INSERT INTO event_recovery_runs VALUES (?,?,?)", (prior_sha, affected_sha, final_cursor))
+    return recovered, suppressed
 
 
 def repository_events(root: Path) -> tuple[list[dict], int]:
@@ -172,62 +349,73 @@ def repository_events(root: Path) -> tuple[list[dict], int]:
 
 
 def restore_public_cursor(root: Path, public_url: str = "") -> dict:
-    """只向空事件库导入公开记录，并保留 SQLite 自增序列的已发布上界。"""
+    """Reconcile published events and offer baselines before any collection.
+
+    A configured existing site must verify successfully. An old repository seed
+    is not a substitute for its cursor or offer history during an outage.
+    """
     store = UpdateStore(root)
     existing = store.cursor()
-    if existing:
-        return {"source": "existing", "restored": 0, "cursor": existing}
-    try:
-        if public_url:
-            try:
-                rows, cursor = download_public_events(public_url)
-                source = "published"
-            except Exception as exc:
-                logger.warning("使用仓库公开种子回退 {}", type(exc).__name__)
-                rows, cursor = repository_events(root)
-                source = "repository"
+    floor = checkpoint_cursor(root)
+    recovery = history_recovery(root, floor)
+    writes, restored_offers = {}, 0
+    markers = {}
+    if public_url:
+        data, status = download_public_snapshot(public_url)
+        rows, cursor = validate_events(data["updates"]["items"], data["updates"]["cursor"])
+        markers = validate_recovery_markers(data["updates"].get("history_recovery", {}), cursor)
+        offers, collection = validate_baseline(data, status)
+        writes, restored_offers = baseline_writes(root, offers, collection)
+        source = "published"
+    elif existing:
+        rows, cursor, source = [], existing, "existing"
+    else:
+        rows, cursor = repository_events(root)
+        source = "repository"
+    restored = 0
+    with store.connect() as db:
+        db.execute("BEGIN IMMEDIATE")
+        for row in rows:
+            by_id = db.execute("SELECT event_key FROM events WHERE id=?", (row["id"],)).fetchone()
+            by_key = db.execute("SELECT id FROM events WHERE event_key=?", (row["event_key"],)).fetchone()
+            if by_id and by_id[0] != row["event_key"] or by_key and by_key[0] != row["id"]:
+                raise ValueError("Published event ID conflicts with local history; explicit migration required")
+            if not by_id:
+                db.execute("INSERT INTO events (" + ",".join(EVENT_FIELDS) + ") VALUES ("
+                    + ",".join("?" for _ in EVENT_FIELDS) + ")", tuple(row[field] for field in EVENT_FIELDS))
+                restored += 1
+            if row["recovered_history"]:
+                db.execute("UPDATE events SET recovered_history=1,original_id=?,recovery_snapshot_sha256=? WHERE id=?",
+                    (row["original_id"], row["recovery_snapshot_sha256"], row["id"]))
+            if row.get("product"):
+                db.execute("UPDATE events SET product_json=COALESCE(product_json,?) WHERE id=?",
+                    (json.dumps(row["product"], ensure_ascii=False), row["id"]))
+        sequence = db.execute("SELECT seq FROM sqlite_sequence WHERE name='events'").fetchone()
+        cursor = max(cursor, existing, floor, sequence[0] if sequence else 0)
+        if sequence:
+            db.execute("UPDATE sqlite_sequence SET seq=? WHERE name='events'", (cursor,))
         else:
-            rows, cursor = repository_events(root)
-            source = "repository"
-        with store.connect() as db:
-            db.execute("BEGIN IMMEDIATE")
-            existing = db.execute(
-                "SELECT COALESCE(MAX(id),0) FROM events",
-            ).fetchone()[0]
-            if existing:
-                return {
-                    "source": "existing", "restored": 0, "cursor": existing,
-                }
-            db.executemany(
-                "INSERT INTO events (" + ",".join(EVENT_FIELDS) + ") VALUES ("
-                + ",".join("?" for _ in EVENT_FIELDS) + ")",
-                [tuple(row[field] for field in EVENT_FIELDS) for row in rows],
-            )
-            db.executemany("UPDATE events SET product_json=? WHERE id=?",
-                [(json.dumps(row["product"],ensure_ascii=False),row["id"]) for row in rows if row.get("product")])
-            sequence = db.execute(
-                "SELECT seq FROM sqlite_sequence WHERE name='events'",
-            ).fetchone()
-            cursor = max(cursor, sequence[0] if sequence else 0)
-            if sequence:
-                db.execute(
-                    "UPDATE sqlite_sequence SET seq=? WHERE name='events'",
-                    (cursor,),
-                )
-            else:
-                db.execute(
-                    "INSERT INTO sqlite_sequence (name,seq) "
-                    "VALUES ('events',?)",
-                    (cursor,),
-                )
-        logger.info(
-            "恢复公开事件 source={} rows={} cursor={}",
-            source, len(rows), cursor,
-        )
-        return {"source": source, "restored": len(rows), "cursor": cursor}
-    except Exception as exc:
-        logger.error("公开事件种子不可恢复 {}", type(exc).__name__)
-        raise
+            db.execute("INSERT INTO sqlite_sequence (name,seq) VALUES ('events',?)", (cursor,))
+        for key, marker in markers.items():
+            known = db.execute("SELECT * FROM event_recovery_runs WHERE snapshot_sha256=?", (key,)).fetchone()
+            if known and known["affected_snapshot_sha256"] != marker["affected_snapshot_sha256"]:
+                raise ValueError("Conflicting local and published recovery markers")
+            db.execute("INSERT INTO event_recovery_runs VALUES (?,?,?) ON CONFLICT(snapshot_sha256) "
+                "DO UPDATE SET completed_cursor=MAX(completed_cursor,excluded.completed_cursor)",
+                (key, marker["affected_snapshot_sha256"], marker["completed_cursor"]))
+        recovered, suppressed = apply_history_recovery(db, recovery)
+        cursor = db.execute("SELECT seq FROM sqlite_sequence WHERE name='events'").fetchone()[0]
+        # All remote/local records were validated before any write; retries are
+        # idempotent. A file failure rolls back event changes and stops collection.
+        for path, value in writes.items():
+            atomic_json(path, value)
+    result = {"source": source, "restored": restored, "cursor": cursor}
+    if recovery:
+        result.update(recovered_history=recovered, suppressed_replays=suppressed)
+    if public_url:
+        result["restored_offers"] = restored_offers
+    logger.info("恢复公开基线 {}", result)
+    return result
 
 
 if __name__ == "__main__":

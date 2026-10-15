@@ -34,6 +34,8 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     (output/"web").mkdir()
     for name in ("gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js"):
         shutil.copy2(web/name, output/"web"/name)
+    if (web/"icons").is_dir():
+        shutil.copytree(web/"icons", output/"web/icons")
     index = (web/"index.html").read_text(encoding="utf-8")
     index = index.replace('href="/web/"', 'href="./"').replace('="/web/', '="./web/')
     index = index.replace('<script src="./web/profile.js',
@@ -67,7 +69,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     for entry in directory["brands"] + directory["teams"]:
         rules.setdefault(entry["code"], policies.get(entry["code"]).model_dump(mode="json"))
     events = UpdateStore(root).latest(limit=100)
-    if not events:
+    if not events and UpdateStore(root).cursor() == 0:
         try:
             events = json.loads((root/"data/public_updates.json").read_text(encoding="utf-8"))
         except (OSError, ValueError):
@@ -93,8 +95,8 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
                "publication":{"commit":os.environ.get("GITHUB_SHA"), "run_id":os.environ.get("GITHUB_RUN_ID"), "trigger":os.environ.get("GITHUB_EVENT_NAME")},
                "collection_status":{p.stem:json.loads(p.read_text(encoding="utf-8")) for p in (root/"data/collection_status").glob("*.json")},
                "catalog":catalog, "details":details, "directories":directory, "rules":rules,
-               "updates":{"items":events, "cursor":max((row["id"] for row in events), default=0),
-                          "fx":snapshot.model_dump(mode="json")}, "fit_charts":charts,
+               "updates":{"items":events, "cursor":max(UpdateStore(root).cursor(), max((row["id"] for row in events), default=0)),
+                          "fx":snapshot.model_dump(mode="json"), "history_recovery":UpdateStore(root).history_recovery()}, "fit_charts":charts,
                "community":community}
     publication = build_publication(payload, output, root/"data/publication_cache")
     return {"output":str(output), "generated_at":payload["generated_at"],

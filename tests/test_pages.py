@@ -48,6 +48,15 @@ class PagesTests(unittest.TestCase):
         self.assertIn(f'data-release="{commit}"', html)
         self.assertEqual(index.read_text(encoding="utf-8"), original)
 
+    def test_published_cursor_keeps_reserved_history_floor(self):
+        from app.updates import UpdateStore
+        with UpdateStore(self.root).connect() as db:
+            db.execute("UPDATE sqlite_sequence SET seq=1257 WHERE name='events'")
+        build_public_site(self.root, make_fx())
+        data = json.loads((self.root/'_site/data/site-data.json').read_bytes())
+        self.assertEqual(data['updates']['cursor'], 1257)
+        self.assertLess(max(row['id'] for row in data['updates']['items']), 1257)
+
     def test_public_output_keeps_prices_and_all_exact_variants(self) -> None:
         result=build_public_site(self.root,make_fx())
         self.assertEqual(result['products'],1)

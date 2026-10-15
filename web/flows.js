@@ -2,14 +2,31 @@
 let directoryData={brands:[],teams:[]},categories=[],bindingTimer=0,guideContext=null,guideStep=0,messagesOpen=false;
 const messageEvents=new Map();
 const MESSAGE_READ_KEY='bikehuntMessagesReadCursor';
-let messageReadCursor=0;
-const messageSeenIds=new Set();
-try{const saved=JSON.parse(localStorage.getItem(MESSAGE_READ_KEY)||'null');if(Number.isSafeInteger(saved)&&saved>=0)messageReadCursor=saved;else if(saved&&Array.isArray(saved.seen))for(const id of saved.seen)if(Number.isSafeInteger(id)&&id>0)messageSeenIds.add(id)}catch{}
+const messageSeenKeys=new Set(),messageLegacySeenIds=new Set();
+let messageLegacyCursor=0,messageReadMigrated=true;
+function validMessageKey(value){return typeof value==='string'&&/^[0-9a-f]{64}$/.test(value)?value:null}
+try{
+  const saved=JSON.parse(localStorage.getItem(MESSAGE_READ_KEY)||'null');
+  if(saved?.version===2){if(Array.isArray(saved.seenKeys))for(const key of saved.seenKeys)if(validMessageKey(key))messageSeenKeys.add(key)}
+  else if(saved&&Array.isArray(saved.seen)){for(const id of saved.seen)if(Number.isSafeInteger(id)&&id>0)messageLegacySeenIds.add(id);messageReadMigrated=false}
+  else if(Number.isSafeInteger(saved)&&saved>=0){messageLegacyCursor=saved;messageReadMigrated=false}
+}catch{}
 const directoryPage=document.getElementById('directoryPage');
 function directoryLogo(item){return item.logo_images?.length?'<span class="team-logo '+(item.logo_theme==='dark'?'team-logo-monochrome':item.logo_theme==='outline'?'team-logo-outline':'')+'">'+item.logo_images.filter(url=>url.startsWith('/web/assets/')||(window.BIKEHUNT_PAGES&&url.startsWith('/')&&url.includes('/web/assets/')&&!url.includes('..'))).slice(0,1).map(url=>'<img src="'+e(url)+'" alt="'+e(item.name)+' 标志" decoding="async">').join('')+'</span>':'<span class="directory-mark">'+e(item.name.split(' ')[0])+'</span>'}
 function openPanel(title,content,preserveGuide=false){if(!preserveGuide)guideContext=null;messagesOpen=false;++detailSequence;clearTimeout(bindingTimer);if(!sheet.classList.contains('open'))lastFocus=document.activeElement;gallery.inert=true;directoryPage.inert=true;sheet.inert=false;document.getElementById('sheetName').textContent=title;document.getElementById('sheetBrand').textContent='BikeHunt 中文海淘助手';document.getElementById('sheetImg').src='';document.getElementById('sheetImg').style.display='none';document.getElementById('sheetBody').innerHTML=content;document.getElementById('sheetBody').scrollTop=0;document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus()}
 async function postJson(url,data={}){const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw new Error(body.detail||'请求失败');return body}
-function navigate(tab){activeTab=tab;document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryNav').hidden=tab!=='products';document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}}
+function saveBrowseState(){
+  try{const state=history.state&&typeof history.state==='object'?history.state:{};history.replaceState({...state,bikehuntBrowse:{tab:activeTab,source:activeSource,category:activeCategory}},'')}catch{}
+}
+function restoreBrowseState(){
+  let saved;try{saved=history.state?.bikehuntBrowse}catch{return}
+  if(!saved||typeof saved!=='object')return;
+  activeCategory=categories.some(c=>c.code===saved.category)?saved.category:'all';
+  activeSource=[...directoryData.brands,...directoryData.teams].some(entry=>entry.code===saved.source)?saved.source:null;
+  document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===activeCategory)));
+  updateBrowseLabel();navigate(['products','brands','teams'].includes(saved.tab)?saved.tab:'products');
+}
+function navigate(tab){activeTab=tab;saveBrowseState();document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryNav').hidden=tab!=='products';document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}}
 function chooseCategory(code){activeCategory=code;document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===code)));updateBrowseLabel();navigate('products')}
 function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);document.getElementById('browseLabel').textContent=activeSource?(entry?.name_zh||entry?.name||activeSource):'精选好价'}
 function renderDirectory(section){
@@ -68,37 +85,58 @@ function messageGroupKey(event){
   const productUrl=new URL(url);
   // Only proven catalog families may fold the Shopify size selector. Keep all other URL fields.
   if(p.product_id&&productUrl.pathname.includes('/products/'))productUrl.searchParams.delete('variant');
-  return JSON.stringify([event.source_code,p.product_id||null,productUrl.href,p.brand,p.model,p.color||null,p.image||null,event.currency,event.old_price,event.new_price,event.kind,event.stock,event.observed_at]);
+  return JSON.stringify([event.source_code,p.product_id||null,productUrl.href,p.brand,p.model,p.color||null,p.image||null,event.currency,event.old_price,event.new_price,event.kind,event.stock,event.observed_at,event.recovered_history===true]);
 }
 function groupMessages(events){
   const grouped=new Map();for(const event of events){const key=messageGroupKey(event);if(!grouped.has(key))grouped.set(key,{...event,members:[]});grouped.get(key).members.push(event)}return [...grouped.values()];
 }
+function hasNewPriceMessages(events){return events.some(event=>event.recovered_history!==true&&(activeCategory==='all'||event.category===activeCategory))}
 function updateMessageBadge(){
-  const count=groupMessages([...messageEvents.values()].filter(row=>Number(row.id)>messageReadCursor&&!messageSeenIds.has(row.id))).length,badge=document.getElementById('messageBadge');
+  const count=groupMessages([...messageEvents.values()].filter(row=>row.recovered_history!==true&&!messageSeenKeys.has(validMessageKey(row.event_key)))).length,badge=document.getElementById('messageBadge');
   badge.hidden=!count;badge.textContent=count>99?'99+':String(count);badge.setAttribute('aria-label',count+' 条未读价格消息');
 }
+function persistMessageReadState(){try{localStorage.setItem(MESSAGE_READ_KEY,JSON.stringify({version:2,seenKeys:[...messageSeenKeys]}))}catch{}}
+function migrateMessageReadState(events){
+  if(messageReadMigrated)return;
+  // The old release stored only IDs. Resolve known rows once, then never use IDs as read identities again.
+  for(const event of events){const key=validMessageKey(event.event_key);if(key&&(messageLegacySeenIds.has(event.id)||event.id<=messageLegacyCursor))messageSeenKeys.add(key)}
+  messageReadMigrated=true;messageLegacySeenIds.clear();messageLegacyCursor=0;persistMessageReadState();
+}
 function rememberMessageEvents(data){
-  for(const event of data.items||[])if(Number.isSafeInteger(event.id)&&event.id>0)messageEvents.set(event.id,event);
-  if(messageEvents.size>500)for(const id of [...messageEvents.keys()].sort((a,b)=>a-b).slice(0,messageEvents.size-500))messageEvents.delete(id);
+  if(!data||!Array.isArray(data.items))throw new Error('价格消息数据无效');
+  const rows=data.items.slice(0,100);
+  if(rows.some(event=>!event||!validMessageKey(event.event_key)||!Number.isSafeInteger(event.id)||event.id<=0))throw new Error('价格消息标识无效');
+  migrateMessageReadState(rows);
+  // /api/updates is the authoritative global latest-100 snapshot, not an append-only stream.
+  // Reconcile removals/suppression while keeping the independent read-key history intact.
+  messageEvents.clear();
+  for(const event of rows){const key=validMessageKey(event.event_key);if(key&&Number.isSafeInteger(event.id)&&event.id>0)messageEvents.set(key,event)}
   updateMessageBadge();
 }
 function markMessagesRead(events){
-  for(const event of events)if(Number.isSafeInteger(event.id)&&event.id>0)messageSeenIds.add(event.id);
-  const seen=[...messageSeenIds].sort((a,b)=>b-a).slice(0,1000);messageSeenIds.clear();seen.forEach(id=>messageSeenIds.add(id));
-  try{localStorage.setItem(MESSAGE_READ_KEY,JSON.stringify({seen}))}catch{}updateMessageBadge();
+  for(const event of events){const key=validMessageKey(event.event_key);if(key){messageSeenKeys.delete(key);messageSeenKeys.add(key)}}
+  const keys=[...messageSeenKeys].slice(-1000);messageSeenKeys.clear();keys.forEach(key=>messageSeenKeys.add(key));
+  persistMessageReadState();updateMessageBadge();
 }
 function messageQuote(event){
   const p=eventProduct(event),stock=event.stock==='out_of_stock'||p?.current_stock==='out_of_stock'?'out_of_stock':'unknown';
   return {reference_product_id:p?.product_id,reference_variant_id:p?.variant_id,offer:{offer_id:event.offer_id,url:event.url,stock,source_name:event.source_name}};
 }
+function messageProductRoute(event){
+  const p=eventProduct(event);return p&&typeof p.product_id==='string'&&p.product_id&&typeof p.variant_id==='string'&&p.variant_id?{productId:p.product_id,variantId:p.variant_id}:null;
+}
+function messageProductAttributes(event){const route=messageProductRoute(event);return route?' data-message-product="'+e(route.productId)+'" data-message-variant="'+e(route.variantId)+'"':''}
+function messageProductButton(event,label,className){return '<button type="button" class="'+e(className)+'"'+messageProductAttributes(event)+'>'+label+'</button>'}
+function openMessageProduct(productId,variantId){messagesOpen=false;guideContext=null;openProduct(productId,variantId,true)}
 function messageCardMarkup(event,fx){
   const p=eventProduct(event),rate=fx?.rates?.[event.currency],converted=rate?Number(event.new_price)*Number(rate):null;
-  const image=p&&safeUrl(p.image),quote=messageQuote(event),canVisit=referenceAvailable(quote);
+  const image=p&&safeUrl(p.image),sold=messageQuote(event).offer.stock==='out_of_stock',route=messageProductRoute(event);
   const photo=image?'<img class="message-image" loading="lazy" src="'+e(image)+'" alt="'+e([p.name,p.model,p.color].filter(Boolean).join(' · '))+'"><span class="message-no-image" hidden>暂无该商品图片</span>':'<span class="message-no-image">暂无该商品图片</span>';
-  const thumb=canVisit?referenceLinkMarkup(quote,photo,'message-thumbnail'):'<div class="message-thumbnail">'+photo+'</div>';
+  const thumb=route?messageProductButton(event,photo,'message-thumbnail'):'<div class="message-thumbnail">'+photo+'</div>';
   const members=event.members||[event],sizes=[...new Set(members.map(row=>eventProduct(row)?.size).filter(Boolean))];
-  const variantLinks=members.length>1?'<div class="message-variants">'+members.map(row=>{const label=e(eventProduct(row)?.size||'规格待核实');return referenceAvailable(messageQuote(row))?referenceLinkMarkup(messageQuote(row),label,'message-variant'):'<span>'+label+'</span>'}).join('')+'</div>':'';
-  return '<article class="message-card"><div class="message-layout">'+thumb+'<div class="message-copy"><div class="brand">'+e(event.source_name)+' · '+e(timeText(event.observed_at))+'</div><h4>'+e(event.name_zh)+'</h4><p class="message-spec">型号：'+e(p?.model||'待核实')+'<br>颜色：'+e(p?.color||'未标注，请核对商品图片')+'<br>尺码：'+e(sizes.length?sizes.join(' / '):'未记录')+'</p><p>'+(event.kind==='price_changed'?'价格更新：':event.kind==='inventory_changed'?'库存更新：':'新发现报价：')+e(event.old_price!=null&&event.kind==='price_changed'?money(event.old_price,event.currency)+' → ':'')+e(money(event.new_price,event.currency))+' · '+e(converted==null?'人民币待换算':cny(converted))+'</p>'+(canVisit?referenceLinkMarkup(quote,'去官网查看 ↗','message-product-link'):quote.offer.stock==='out_of_stock'?'<span class="tag no">所示报价已售罄，无购买链接</span>':'<span class="tag wait">商品链接待核实</span>')+variantLinks+'<p class="message-stock-note">'+(quote.offer.stock==='out_of_stock'?'该规格已售罄。':'历史变动记录；库存、尺码和当前价格以官网为准。')+'</p></div></div></article>';
+  const variantLinks=members.length>1?'<div class="message-variants">'+members.map(row=>{const label=e(eventProduct(row)?.size||'规格待核实');return messageProductRoute(row)?messageProductButton(row,label,'message-variant'):'<span>'+label+'</span>'}).join('')+'</div>':'';
+  const title=route?messageProductButton(event,e(event.name_zh),'message-title'):e(event.name_zh);
+  return '<article class="message-card"'+messageProductAttributes(event)+'><div class="message-layout">'+thumb+'<div class="message-copy"><div class="brand">'+e(event.source_name)+' · '+e(timeText(event.observed_at))+'</div>'+(event.recovered_history===true?'<div class="message-stock-note">恢复的历史记录</div>':'')+'<h4>'+title+'</h4><p class="message-spec">型号：'+e(p?.model||'待核实')+'<br>颜色：'+e(p?.color||'未标注，请核对商品图片')+'<br>尺码：'+e(sizes.length?sizes.join(' / '):'未记录')+'</p><p>'+(event.recovered_history===true?'历史记录：':event.kind==='price_changed'?'价格更新：':event.kind==='inventory_changed'?'库存更新：':'新发现报价：')+e(event.old_price!=null&&event.kind==='price_changed'?money(event.old_price,event.currency)+' → ':'')+e(money(event.new_price,event.currency))+' · '+e(converted==null?'人民币待换算':cny(converted))+'</p>'+(sold?'<span class="tag no">所示报价已售罄，无购买链接</span>':'')+(route?messageProductButton(event,'查看本站商品详情 →','message-product-link'):'<span class="tag wait">该商品详情暂不可用</span>')+variantLinks+'<p class="message-stock-note">'+(sold?'该规格已售罄，可查看本站记录。':'历史变动记录；点击查看本站商品详情与渠道报价。')+'</p></div></div></article>';
 }
 async function refreshMessageState(){const data=await getJson('/api/updates');rememberMessageEvents(data);return data}
 async function showMessages(){
@@ -107,6 +145,7 @@ async function showMessages(){
   const rows=[...messageEvents.values()].sort((a,b)=>b.id-a.id);
   document.getElementById('sheetBody').innerHTML=rows.length?groupMessages(rows).map(event=>messageCardMarkup(event,data.fx)).join(''):'<div class="summary-box"><h4>暂时没有新的价格变动</h4><p>同价重复采集不会制造降价提醒。新报价或价格变化会出现在这里。</p></div>';
   document.getElementById('sheetBody').querySelectorAll('.message-image').forEach(img=>img.onerror=()=>{img.hidden=true;img.nextElementSibling.hidden=false});
+  document.getElementById('sheetBody').querySelectorAll('.message-card[data-message-product]').forEach(card=>card.onclick=event=>{const target=event.target.closest('[data-message-product]');if(target)openMessageProduct(target.dataset.messageProduct,target.dataset.messageVariant)});
   markMessagesRead(rows);
 }
 async function showWechat(){
@@ -123,9 +162,10 @@ async function bootFlows(){
   const data=await getJson('/api/catalog');categories=data.categories||[];
   document.getElementById('categoryNav').innerHTML=categories.map(c=>'<button data-category="'+c.code+'" aria-pressed="'+(c.code==='all')+'">'+e(c.name)+'</button>').join('');document.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>chooseCategory(b.dataset.category));
   directoryData=await getJson('/api/directories');
+  restoreBrowseState();
   refreshMessageState().catch(()=>{});
     if(activeTab!=='products')renderDirectory(activeTab);
-  const onPrices=(events,freshnessChanged=false)=>{const wasMessages=messagesOpen;invalidateReferenceLinks(events);refreshReferenceLinks().catch(()=>{});if(guideContext){guideContext=null;closeSheet();}if(events.some(x=>activeCategory==='all'||x.category===activeCategory)){document.getElementById('updateToast').hidden=false;setTimeout(()=>document.getElementById('updateToast').hidden=true,5000)}if(wasMessages)showMessages().catch(panelError);else refreshMessageState().catch(()=>{});refreshCatalogSilently();if(currentProduct&&document.getElementById('variant')&&(freshnessChanged||events.some(x=>currentProduct.offers.some(q=>q.offer.offer_id===x.offer_id)))){loadDetail(currentProduct.product_id,document.getElementById('variant').value||null)}};
+  const onPrices=(events,freshnessChanged=false)=>{const wasMessages=messagesOpen;invalidateReferenceLinks(events);refreshReferenceLinks().catch(()=>{});if(guideContext){guideContext=null;closeSheet();}if(hasNewPriceMessages(events)){document.getElementById('updateToast').hidden=false;setTimeout(()=>document.getElementById('updateToast').hidden=true,5000)}if(wasMessages)showMessages().catch(panelError);else refreshMessageState().catch(()=>{});refreshCatalogSilently();if(currentProduct&&document.getElementById('variant')&&(freshnessChanged||events.some(x=>currentProduct.offers.some(q=>q.offer.offer_id===x.offer_id)))){loadDetail(currentProduct.product_id,document.getElementById('variant').value||null)}};
   if(window.BIKEHUNT_PAGES){window.addEventListener('bikehunt-published',event=>onPrices(event.detail.events,event.detail.freshnessChanged));return}
   const eventSource=new EventSource('/api/updates/stream');eventSource.addEventListener('prices',event=>onPrices(JSON.parse(event.data)));window.addEventListener('pagehide',()=>{eventSource.close();clearTimeout(bindingTimer)},{once:true});
 }
@@ -150,7 +190,7 @@ const PURCHASE_DISCLAIMER="本站仅提供商品与优惠信息，不参与交�
 document.getElementById('purchaseDisclaimerInfo').onclick=()=>window.alert(PURCHASE_DISCLAIMER);
 function invalidateReferenceLinks(events=[]){
   for(const quote of referenceOffers.values()){
-    const event=events.find(row=>row.offer_id===quote.offer.offer_id);
+    const event=events.find(row=>row.recovered_history!==true&&row.offer_id===quote.offer.offer_id);
     if(event?.stock==='out_of_stock')quote.offer.stock='out_of_stock';
   }
   for(const link of document.querySelectorAll('a[data-reference-link]')){
@@ -180,7 +220,8 @@ function guardPurchaseExit(event){
   const valid=()=>referenceKey?referenceAvailable(referenceOffers.get(referenceKey))&&merchantUrl(link.getAttribute('href'))===merchantUrl(referenceOffers.get(referenceKey).offer.url):!!guideContext&&offerAvailable(guideContext.quote)&&!!merchantUrl(guideContext.quote.offer.url);
   if(!valid()){event.preventDefault();if(!referenceKey&&guideContext)showInventoryInvalidated(guideContext.quote);return}
   if(!window.confirm(PURCHASE_DISCLAIMER+'\n\n确定：继续前往商家；取消：留在本站。')){event.preventDefault();return}
-  if(!valid()){event.preventDefault();if(!referenceKey&&guideContext)showInventoryInvalidated(guideContext.quote);}
+  if(!valid()){event.preventDefault();if(!referenceKey&&guideContext)showInventoryInvalidated(guideContext.quote);return}
+  if(referenceKey)saveBrowseState();
 }
 document.addEventListener('click',guardPurchaseExit);
 document.addEventListener('auxclick',guardPurchaseExit);
@@ -201,3 +242,6 @@ function expireLocalInventory(now=Date.now()){
 const inventoryTimer=setInterval(()=>{expireLocalInventory();if(!window.BIKEHUNT_PAGES){refreshCatalogSilently(false);if(!guideContext&&currentProduct&&document.getElementById('variant'))loadDetail(currentProduct.product_id,document.getElementById('variant').value||null)}},60000);
 window.addEventListener('focus',()=>expireLocalInventory());
 window.addEventListener('pagehide',()=>clearInterval(inventoryTimer),{once:true});
+
+// Returning from a same-tab merchant visit must restart timers cleared on pagehide.
+window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload()});

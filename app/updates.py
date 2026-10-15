@@ -26,6 +26,17 @@ class UpdateStore:
                 stock TEXT NOT NULL, observed_at TEXT NOT NULL, url TEXT NOT NULL, product_json TEXT)""")
             if "product_json" not in {row[1] for row in db.execute("PRAGMA table_info(events)")}:
                 db.execute("ALTER TABLE events ADD COLUMN product_json TEXT")
+            columns = {row[1] for row in db.execute("PRAGMA table_info(events)")}
+            for name, definition in (("recovered_history", "INTEGER NOT NULL DEFAULT 0"),
+                                     ("original_id", "INTEGER"), ("recovery_snapshot_sha256", "TEXT")):
+                if name not in columns:
+                    db.execute("ALTER TABLE events ADD COLUMN " + name + " " + definition)
+            db.execute("""CREATE TABLE IF NOT EXISTS suppressed_events (
+                event_key TEXT PRIMARY KEY, reason TEXT NOT NULL,
+                prior_snapshot_sha256 TEXT NOT NULL, affected_snapshot_sha256 TEXT NOT NULL)""")
+            db.execute("""CREATE TABLE IF NOT EXISTS event_recovery_runs (
+                snapshot_sha256 TEXT PRIMARY KEY, affected_snapshot_sha256 TEXT NOT NULL,
+                completed_cursor INTEGER NOT NULL)""")
 
     @contextmanager
     def connect(self) -> Iterator[sqlite3.Connection]:
@@ -64,7 +75,7 @@ class UpdateStore:
 
     def latest(self, after: int = 0, limit: int = 30, category: str = "all") -> list[dict]:
         with self.connect() as db:
-            query = "SELECT * FROM events WHERE id>?"
+            query = "SELECT * FROM events WHERE id>? AND event_key NOT IN (SELECT event_key FROM suppressed_events)"
             params: list = [after]
             if category != "all":
                 query += " AND category=?"
@@ -76,6 +87,11 @@ class UpdateStore:
     @staticmethod
     def decode(row) -> dict:
         event = dict(row)
+        if event.get("recovered_history"):
+            event["recovered_history"] = True
+        else:
+            for name in ("recovered_history", "original_id", "recovery_snapshot_sha256"):
+                event.pop(name, None)
         raw = event.pop("product_json", None)
         try:
             product = json.loads(raw) if raw else None
@@ -87,11 +103,20 @@ class UpdateStore:
 
     def cursor(self) -> int:
         with self.connect() as db:
-            return db.execute("SELECT COALESCE(MAX(id),0) FROM events").fetchone()[0]
+            return db.execute("SELECT MAX(COALESCE((SELECT MAX(id) FROM events),0), "
+                              "COALESCE((SELECT seq FROM sqlite_sequence WHERE name='events'),0))").fetchone()[0]
+
+    def history_recovery(self) -> dict:
+        """Published completion identities prevent replay after history ages out."""
+        with self.connect() as db:
+            return {row["snapshot_sha256"]: {"affected_snapshot_sha256": row["affected_snapshot_sha256"],
+                    "completed_cursor": row["completed_cursor"]}
+                    for row in db.execute("SELECT * FROM event_recovery_runs ORDER BY snapshot_sha256")}
 
     def pending(self, after: int, limit: int = 100) -> list[dict]:
         """从最早未处理事件开始读取，避免批量刷新漏掉 100 条之后的更新。"""
         with self.connect() as db:
             return [self.decode(row) for row in db.execute(
-                "SELECT * FROM events WHERE id>? ORDER BY id ASC LIMIT ?", (after, limit)).fetchall()]
+                "SELECT * FROM events WHERE id>? AND recovered_history=0 "
+                "AND event_key NOT IN (SELECT event_key FROM suppressed_events) ORDER BY id ASC LIMIT ?", (after, limit)).fetchall()]
 

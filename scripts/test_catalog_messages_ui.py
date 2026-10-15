@@ -8,7 +8,7 @@ import threading
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 from playwright.sync_api import expect, sync_playwright
 from datetime import datetime, timezone
 
@@ -60,7 +60,7 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 def event(n, family='173', size='M', sold=False, image=True):
     url=f'https://merchant.example/products/26-{family}-bah?variant={n}'
-    return {'id':n,'event_key':f'event-{n}','source_code':'maap','source_name':'Bahrain test fixture',
+    return {'id':n,'event_key':f'{n:064x}','source_code':'maap','source_name':'Bahrain test fixture',
         'offer_id':f'o{n}','name_zh':'同名 Bahrain 车队短袖测试','category':'jerseys','kind':'price_changed',
         'old_price':'148' if family=='173' else '107','new_price':'149' if family=='173' else '108',
         'currency':'AUD','stock':'out_of_stock' if sold else 'in_stock','observed_at':'2026-10-14T23:00:00Z','url':url,
@@ -80,6 +80,7 @@ def main():
             browser=p.chromium.launch(executable_path=os.environ.get('CHROME_EXECUTABLE') or shutil.which('chromium'),headless=True)
             for mode,viewport in [('desktop',{'width':1440,'height':900}),('mobile',{'width':390,'height':844})]:
                 state=fixture();state['events']=[event(5,'missing',image=False),event(4,'sold',sold=True),event(3,'175'),event(2,size='L'),event(1)]
+                state['events'][0]['product'].update(product_id=None,variant_id=None)
                 basecard=state['catalog']['items'][0]
                 state['catalog']['items'] += [{**basecard,'product_id':'maap-jersey','category':'jerseys'}, {**basecard,'product_id':'other-jersey','category':'jerseys','source_codes':['other']}]
                 state['catalog']['categories'].append({'code':'jerseys','name':'骑行上衣'})
@@ -96,7 +97,15 @@ def main():
                     if u.netloc!=urlparse(base).netloc:return route.abort()
                     if not u.path.startswith('/api/'):return route.continue_()
                     if u.path=='/api/catalog':result=state['catalog']
-                    elif u.path.startswith('/api/catalog/'):result=state['detail']
+                    elif u.path.startswith('/api/catalog/'):
+                        product_id=u.path.rsplit('/',1)[-1];variant_id=parse_qs(u.query).get('variant_id',[''])[0]
+                        state['last_detail_request']=(product_id,variant_id)
+                        matching=next((e for e in state['events'] if e['product'].get('product_id')==product_id and e['product'].get('variant_id')==variant_id),None)
+                        if matching:
+                            product=matching['product'];result=copy.deepcopy(state['detail']);result.update(product_id=product_id,variant_id=variant_id,name=product['name'],name_zh=matching['name_zh'],image=product['image'])
+                            result['identity'].update(size=product['size'],color=product['color'],mpn=product['model']);result['variants']=[{'variant_id':variant_id,'size':product['size'],'in_stock':False,'stock_state':product['current_stock'],'source_count':1,'product_cny_from':None}]
+                            result['offers'][0]['offer'].update(offer_id=matching['offer_id'],url=matching['url'],stock=product['current_stock'],fetched_at='2000-01-01T00:00:00Z')
+                        else:result=state['detail']
                     elif u.path=='/api/updates':result={'items':state['events'],'cursor':max(e['id'] for e in state['events']),'fx':state['catalog']['fx']}
                     elif u.path=='/api/directories':result={'brands':[{'code':'maap','name':'MAAP','name_zh':'MAAP 品牌','offer_count':2,'product_count':2,'rule_count':0}], 'teams':[{'code':'other','name':'Other','name_zh':'测试车队','offer_count':1,'product_count':1,'rule_count':0}]}
                     elif u.path.startswith('/api/rules/'):result={'version':1,'documents':[]}
@@ -112,6 +121,9 @@ def main():
                 page.locator('[data-category=all]').click();expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌')
                 page.locator('[data-tab=products]').click();page.locator('[data-category=jerseys]').click();expect(page.locator('.card')).to_have_count(2);expect(page.locator('#browseLabel')).to_have_text('精选好价')
                 checks.append(mode+': brand category retains scope; all-category retains scope; explicit精选好价 clears scope')
+                return_tab,return_source,return_label=('brands','maap','MAAP 品牌') if mode=='desktop' else ('teams','other','测试车队')
+                page.locator(f'[data-tab={return_tab}]').click();page.locator(f'[data-source={return_source}]').click();page.locator('#sourceProducts').click();page.locator('[data-category=jerseys]').click()
+                expect(page.locator('.card')).to_have_count(1);expect(page.locator('#browseLabel')).to_have_text(return_label)
                 page.locator('#priceMessages').click();expect(page.locator('.message-card')).to_have_count(4);expect(page.locator('#messageBadge')).to_be_hidden()
                 red=page.locator('.message-card').filter(has=page.locator('img[src$="173.svg"]'))
                 expect(red).to_contain_text('M');expect(red).to_contain_text('L');expect(red.locator('.message-variant')).to_have_count(2)
@@ -119,16 +131,32 @@ def main():
                 expect(page.locator('.message-no-image:visible')).to_have_count(1)
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
                 page.screenshot(path=str(OUT/f'catalog_messages_{mode}.png'))
+                # Image, title, card and variant actions stay inside BikeHunt and bind exact IDs.
+                red.locator('.message-thumbnail').click();expect(page).to_have_url(base);assert len(context.pages)==1
+                expect(page.locator('#sheetBody')).to_contain_text('制造商型号 R26173');assert state['last_detail_request']==('173','L')
+                page.locator('#close').click();page.locator('#priceMessages').click()
+                page.locator('.message-card').filter(has_text='R26173').locator('.message-title').click();expect(page.locator('#sheetBody')).to_contain_text('制造商型号 R26173');expect(page).to_have_url(base)
+                page.locator('#close').click();page.locator('#priceMessages').click()
+                page.locator('.message-card').filter(has_text='R26sold').locator('.message-thumbnail').click();expect(page.locator('#sheetBody')).to_contain_text('已售罄');expect(page.locator('[data-reference-link][href]')).to_have_count(0);expect(page).to_have_url(base)
+                page.locator('#close').click();page.locator('#priceMessages').click()
+                missing=page.locator('.message-card').filter(has_text='R26missing');expect(missing.locator('[data-message-product]')).to_have_count(0);expect(missing).to_contain_text('该商品详情暂不可用')
+                page.locator('.message-card').filter(has_text='R26173').locator('.message-spec').click();expect(page.locator('#sheetBody')).to_contain_text('制造商型号 R26173');assert state['last_detail_request']==('173','L');expect(page).to_have_url(base)
+                # The separately labelled merchant action is offered only inside product details.
+                reference=page.locator('.reference-exit');expect(reference).to_be_visible()
                 page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()))
-                red.locator('.message-thumbnail').click();assert len(context.pages)==1
+                reference.click();assert len(context.pages)==1;expect(page).to_have_url(base)
                 page.once('dialog',lambda d:(assert_disclaimer(d),d.accept()))
-                with context.expect_page() as popup:red.locator('.message-thumbnail').click()
-                popup.value.wait_for_load_state();assert popup.value.url=='https://merchant.example/products/26-173-bah?variant=2';popup.value.close()
-                page.locator('#close').click();page.reload(wait_until='networkidle');expect(page.locator('#messageBadge')).to_be_hidden()
+                with page.expect_navigation(wait_until='domcontentloaded'):reference.click()
+                expect(page).to_have_url('https://merchant.example/products/26-173-bah?variant=2');assert len(context.pages)==1
+                page.go_back(wait_until='networkidle')
+                expect(page).to_have_url(base);expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('.card')).to_have_count(1)
+                expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true');expect(page.locator('#messageBadge')).to_be_hidden()
+                page.reload(wait_until='networkidle')
+                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#messageBadge')).to_be_hidden()
                 state['events'].insert(0,event(6,'new'))
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[{id:6,category:'jerseys'}],freshnessChanged:false}}))")
                 expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#messageBadge')).to_be_visible()
-                checks.append(mode+': exact thumbnails/PDP variants; generic-name products separate; soldout has no links; Cancel/Continue; read persisted; new increment')
+                checks.append(mode+': exact thumbnails and internal product/variant actions; generic-name products separate; soldout opens status without purchase link; same-tab Cancel/Continue; brand/team category restored after Back and reload; no guide reopened; read persisted; new increment')
                 page.locator('[data-tab=products]').click();page.locator('[data-category=all]').click()
                 old='2000-01-01T00:00:00Z';state['detail']['offers'][0]['offer']['fetched_at']=old
                 for v in state['detail']['variants']:v['in_stock']=False
@@ -136,13 +164,22 @@ def main():
                 reference=page.locator('.reference-exit');expect(reference).to_be_visible()
                 page.once('dialog',lambda d:d.dismiss());reference.click();expect(reference).to_be_visible();assert len(context.pages)==1
                 page.once('dialog',lambda d:d.accept())
-                with context.expect_page() as popup:reference.click()
-                popup.value.wait_for_load_state();assert popup.value.url=='https://merchant.example/bib?variant=S';popup.value.close()
+                with page.expect_navigation(wait_until='domcontentloaded'):reference.click()
+                expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
+                page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
+                page.reload(wait_until='networkidle');expect(page.locator('#messageBadge')).to_have_text('1')
+                page.evaluate("openProduct('partial')");expect(page.locator('.reference-exit')).to_be_visible()
                 page.screenshot(path=str(OUT/f'catalog_stale_reference_{mode}.png'))
                 state['detail']['offers'][0]['offer']['stock']='out_of_stock'
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[],freshnessChanged:true}}))")
                 expect(page.locator('[data-reference-link][href]')).to_have_count(0)
                 checks.append(mode+': stale inventory reference-only path remains usable; no stale size claims; newly sold-out snapshot removes link')
+                page.locator('#close').click()
+                restored={**event(1500,'recovered'),'recovered_history':True};state['events'].insert(0,restored)
+                page.evaluate("document.getElementById('updateToast').hidden=true;window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[{id:1500,category:'jerseys',recovered_history:true}],freshnessChanged:false}}))")
+                expect(page.locator('#messageBadge')).to_have_text('1');expect(page.locator('#updateToast')).to_be_hidden()
+                page.locator('#priceMessages').click();expect(page.locator('#sheetBody')).to_contain_text('恢复的历史记录');expect(page.locator('#messageBadge')).to_be_hidden()
+                checks.append(mode+': recovered history stays visible without unread or toast inflation; genuine unread remains independent')
                 context.close()
             browser.close()
     finally:
