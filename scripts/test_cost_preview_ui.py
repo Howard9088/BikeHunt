@@ -127,7 +127,7 @@ def main():
                     elif url.path.startswith('/api/catalog/'): result = state['detail']
                     elif url.path == '/api/directories': result = {'brands': [], 'teams': []}
                     elif url.path.startswith('/api/rules/'): result = {'version': 1, 'documents': []}
-                    elif url.path.startswith('/api/fit/'): result = {'state': 'no_chart', 'note_zh': '测试数据', 'candidate_sizes': [], 'chart_rows': []}
+                    elif url.path.startswith('/api/fit/'): result = {'state': 'no_chart', 'note_zh': '测试数据', 'candidate_sizes': [], 'required_measurements': [], 'source_url': None, 'checked_at': None, 'chart_rows': []}
                     else: result = {}
                     route.fulfill(content_type='application/json', body=json.dumps(result))
                 context.route('**/*', intercept)

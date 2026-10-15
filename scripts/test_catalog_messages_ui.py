@@ -109,7 +109,7 @@ def main():
                     elif u.path=='/api/updates':result={'items':state['events'],'cursor':max(e['id'] for e in state['events']),'fx':state['catalog']['fx']}
                     elif u.path=='/api/directories':result={'brands':[{'code':'maap','name':'MAAP','name_zh':'MAAP 品牌','offer_count':2,'product_count':2,'rule_count':0}], 'teams':[{'code':'other','name':'Other','name_zh':'测试车队','offer_count':1,'product_count':1,'rule_count':0}]}
                     elif u.path.startswith('/api/rules/'):result={'version':1,'documents':[]}
-                    elif u.path.startswith('/api/fit/'):result={'state':'no_chart','note_zh':'测试数据','candidate_sizes':[],'chart_rows':[]}
+                    elif u.path.startswith('/api/fit/'):result={'state':'no_chart','note_zh':'测试数据','candidate_sizes':[],'required_measurements':[],'source_url':None,'checked_at':None,'chart_rows':[]}
                     else:result={}
                     route.fulfill(content_type='application/json',body=json.dumps(result))
                 context.route('**/*',intercept)
@@ -163,7 +163,8 @@ def main():
                 state['catalog']['items'].append({**scoped,'product_id':'search-other','name':'Other jersey','name_zh':'其他测试商品'})
                 page.evaluate('refreshCatalogSilently(false)');expect(page.locator('.card')).to_have_count(2)
                 page.locator('#q').fill('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品');expect(page.locator('#clear')).to_be_enabled()
-                page.locator('.card .compare-button').click();expect(page.locator('.guide-start')).to_be_enabled();page.locator('.guide-start').click()
+                page.locator('.card .compare-button').click();expect(page.locator('[data-variant="S"]')).to_be_visible();expect(page.locator('.guide-start')).to_have_count(0)
+                expect(page.locator('#fitReference')).to_contain_text('测试数据');page.locator('[data-variant="S"]').click();expect(page.locator('.guide-start')).to_be_enabled();page.locator('.guide-start').click()
                 for _ in range(3):page.locator('#guideNext').click()
                 purchase=page.locator('[data-purchase-link]');expect(purchase).to_have_attribute('target','_self');expect(purchase).to_have_attribute('href','https://merchant.example/bib?variant=S')
                 page.once('dialog',lambda d:(assert_disclaimer(d),d.dismiss()));purchase.click();expect(page).to_have_url(base);expect(purchase).to_be_visible();assert len(context.pages)==1
