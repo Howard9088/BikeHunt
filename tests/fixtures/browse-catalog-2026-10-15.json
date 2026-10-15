@@ -5,11 +5,11 @@
   "audit_snapshot_sha256": "74034bf09967fd6ed3fea11bcd077dab6cee3aad87c9e61379a2979e91450fb7",
   "expected_product_count": 232,
   "expected_group_counts": {
-    "road_equipment": 14,
+    "road_equipment": 0,
     "clothing": 150,
     "helmets": 24,
     "cleat_shoes": 1,
-    "other": 43
+    "other": 57
   },
   "fx": {
     "snapshot_id": "34265b99ff64c59e52aa",

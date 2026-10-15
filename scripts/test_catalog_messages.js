@@ -74,7 +74,7 @@ function testHistoryScopeValidationAndBackPollingRestart(){
  h.c.document.querySelectorAll=()=>buttons;h.c.document.getElementById=id=>id==='q'?input:clear;
  vm.runInContext(section(flows,'function saveBrowseState(','function navigate('),h.c);
  h.c.saveBrowseState();assert.equal(h.c.history.state.other,'preserved');assert.equal(h.c.history.state.bikehuntBrowse.source,'bahrain');assert.equal(h.c.history.state.bikehuntBrowse.query,'Stamp Hoodie');
- h.c.activeSource=null;h.c.activeCategory='all';input.value='';h.c.restoreBrowseState();assert.equal(h.c.activeSource,'bahrain');assert.equal(h.c.activeCategory,'jerseys');assert.equal(input.value,'Stamp Hoodie');
+ h.c.activeSource=null;h.c.activeCategory='all';input.value='';h.c.restoreBrowseState();assert.equal(h.c.activeSource,'bahrain');assert.equal(h.c.activeCategory,'all');assert.equal(input.value,'Stamp Hoodie');
  Object.assign(h.c,{profileMatches:()=>true,items:[{brand:'Test',name:'Stamp Hoodie',category:'jerseys',source_codes:['bahrain']},{brand:'Test',name:'Other jersey',category:'jerseys',source_codes:['bahrain']}]});
  vm.runInContext(section(gallery,'function featuredBrowse(','function render('),h.c);assert.equal(h.c.visibleItems().length,1,'Restoring text restores the actual filter, not only the input appearance');
  for(const query of [undefined,null,42,{},[],['Stamp Hoodie'],'x'.repeat(201)]){
@@ -120,7 +120,7 @@ function testRecoveredHistoryDoesNotNotifyOrBecomeUnread(){
  const current={offer:{offer_id:'currently-restocked',url:'https://shop.example/products/current',stock:'in_stock'}};h.c.referenceLinkMarkup(current);
  h.c.invalidateReferenceLinks([{offer_id:current.offer.offer_id,stock:'out_of_stock',recovered_history:true}]);assert.equal(current.offer.stock,'in_stock');assert.equal(h.c.referenceAvailable(current),true,'Recovered old sold-out status cannot invalidate a currently available reference');
  h.c.invalidateReferenceLinks([{offer_id:current.offer.offer_id,stock:'out_of_stock',recovered_history:true},{offer_id:current.offer.offer_id,stock:'out_of_stock'}]);assert.equal(current.offer.stock,'out_of_stock','A genuine current sold-out event still invalidates the reference');
- h.c.activeCategory='bibs';assert.equal(h.c.hasNewPriceMessages([fresh]),false);
+ h.c.activeCategory='bibs';assert.equal(h.c.hasNewPriceMessages([fresh]),true,'Retired leaf state cannot hide new messages');
 }
 function testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows(){
  const h=harness(),suppressed=row(1,{product:null}),seen=row(2,{product:null}),fresh=row(3,{product:null});

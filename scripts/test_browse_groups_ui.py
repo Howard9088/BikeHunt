@@ -29,7 +29,7 @@ def fixture():
     state['catalog']['categories'] = BROWSE_CATEGORIES
     state['catalog']['road_equipment_references'] = references
     state['directories']['brands'] += [
-        dict(code=b['code'], name=b['name'], name_zh=b['name'] + ' 公路车装备',
+        dict(code=b['code'], name=b['name'], name_zh=b['name'],
              offer_count=0, product_count=0, rule_count=0, road_reference=True,
              reference_note=b['note'], official_url=b['url'], shop_url=b['url'])
         for b in references['brands']
@@ -53,7 +53,7 @@ def product_link(page, identifier=MIDLOADER):
 
 
 def assert_inline_layout(page, viewport):
-    inline = inline_cards(page, 4)
+    inline = inline_cards(page, 3)
     gallery = page.locator('#grid')
     gallery.evaluate('(element) => { element.scrollTop = 0; }')
     first = inline.locator('[data-road-reference-card]').first
@@ -151,8 +151,9 @@ def check_exit_mutations(page, base, expected_url):
 
 def check_browse_state(page):
     expect(page.locator('#q')).to_have_value('Midloader')
-    expect(page.locator('[data-category-group=road_equipment]')).to_have_attribute('aria-pressed', 'true')
-    expect(page.locator('[data-category=accessories]')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('[data-category-group=other]')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('[data-category]')).to_have_count(0)
+    assert page.evaluate("activeCategory === 'all'")
     expect(page.locator('#browseLabel')).to_contain_text('Canyon')
     inline_cards(page, 1)
     assert page.evaluate("activeSource === 'canyon' && activeTab === 'products'")
@@ -176,6 +177,7 @@ def main():
                 state = fixture()
                 references = state['catalog']['road_equipment_references']['products']
                 expected_urls = {row['url'] for row in references}
+                image_urls = {row['image'] for row in references if row.get('image')}
                 for card in state['catalog']['items']:
                     card['image'] = base + 'icons/icon-512.png'
                 context = browser.new_context(viewport=viewport, is_mobile=mode != 'desktop', has_touch=mode != 'desktop')
@@ -184,6 +186,8 @@ def main():
 
                 def intercept(route):
                     url = urlparse(route.request.url)
+                    if route.request.url in image_urls:
+                        return route.fulfill(content_type='image/png', body=(ROOT / 'web/icons/icon-512.png').read_bytes())
                     if route.request.url in expected_urls:
                         return route.fulfill(content_type='text/html', body='<h1>Mock official reference page</h1>')
                     if url.netloc != urlparse(base).netloc:
@@ -208,14 +212,16 @@ def main():
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
                 expect(page.locator('[data-category-group]')).to_have_count(5)
-                assert page.locator('[data-category-group]').all_text_contents() == ['公路车装备', '骑行服', '头盔', '锁鞋', '其他']
+                assert page.locator('[data-category-group]').all_text_contents() == ['自行车', '骑行服饰', '锁鞋', '头盔', '配件与周边']
+                expect(page.locator('#categoryNav')).to_have_count(0)
+                expect(page.locator('[data-category]')).to_have_count(0)
                 expect(page.locator('#grid .card')).to_have_count(1)
                 expect(page.locator('#roadReferenceInline')).to_have_count(0)
                 page.locator('[data-category-group=road_equipment]').click()
-                inline = inline_cards(page, 4)
+                inline = inline_cards(page, 3)
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
                 expect(inline).to_contain_text('库存待核实')
-                for row in references:
+                for row in [r for r in references if r['category_group'] == 'road_equipment']:
                     record = inline.locator(f'[data-road-reference-card="{row["id"]}"]')
                     expect(record).to_contain_text(row['name'])
                     expect(record).to_contain_text('库存待核实')
@@ -230,14 +236,14 @@ def main():
                 page.locator('#roadReferencesButton').click()
                 panel = page.locator('#roadReferencePanel')
                 expect(panel).to_be_visible()
-                expect(panel.locator('[data-road-reference-card]')).to_have_count(4)
-                expect(inline.locator('[data-road-reference-card]')).to_have_count(4)
+                expect(panel.locator('[data-road-reference-card]')).to_have_count(3)
+                expect(inline.locator('[data-road-reference-card]')).to_have_count(3)
                 expect(panel).to_contain_text('不接受转运地址')
                 expect(page.locator('#count')).to_have_text('0 件商品')
                 page.locator('#close').click()
 
-                # Leaf/query filtering and query reset preserve the selected group.
-                page.locator('[data-category=frames]').click()
+                # One visible category row; search and group reset never create a second layer.
+                page.locator('#q').fill('Frameset')
                 expect(inline_cards(page, 1)).to_contain_text('Ultimate CF SL Frameset')
                 page.locator('#roadReferencesButton').click()
                 expect(panel.locator('[data-road-reference-card]')).to_have_count(1)
@@ -245,23 +251,29 @@ def main():
                 page.locator('#q').fill('no matching reference')
                 inline_cards(page, 0)
                 page.locator('#clear').click()
-                inline_cards(page, 1)
-                expect(page.locator('[data-category=frames]')).to_have_attribute('aria-pressed', 'true')
-                page.locator('[data-category=all]').click()
-                inline_cards(page, 4)
+                inline_cards(page, 3)
+                page.locator('[data-category-group=other]').click()
+                expect(inline_cards(page, 1)).to_contain_text('Canyon Midloader')
+                expect(page.locator('[data-category]')).to_have_count(0)
 
-                # A brand source should return directly to its inline product records.
+                # A brand source returns directly to its bike records; accessories remain discoverable.
                 page.locator('[data-tab=brands]').click()
                 page.locator('[data-source=canyon]').click()
                 page.locator('#sourceProducts').click()
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-                inline_cards(page, 3)
+                inline_cards(page, 2)
                 page.locator('#q').fill('Midloader')
-                inline_cards(page, 1)
-                page.locator('[data-category=frames]').click()
                 inline_cards(page, 0)
-                page.locator('[data-category=accessories]').click()
+                page.locator('[data-category-group=other]').click()
                 inline_cards(page, 1)
+                image = page.locator('#roadReferenceInline img[data-reference-image]')
+                expect(image).to_have_count(1)
+                expect(image).to_have_attribute('src', next(r['image'] for r in references if r['id'] == MIDLOADER))
+                image.evaluate("img => img.dispatchEvent(new Event('error'))")
+                expect(image).to_be_hidden()
+                expect(page.locator('#roadReferenceInline .reference-image-fallback')).to_be_visible()
+                # A pre-upgrade leaf entry must not silently filter the new single-layer view.
+                page.evaluate("history.replaceState({...history.state, bikehuntBrowse:{...history.state.bikehuntBrowse, category:'frames'}}, '')")
                 page.reload(wait_until='networkidle')
                 check_browse_state(page)
 
@@ -289,8 +301,10 @@ def main():
                 check_browse_state(page)
                 page.locator('#clear').click()
                 inline_cards(page, 1)
-                page.locator('[data-category=all]').click()
-                inline_cards(page, 3)
+                page.locator('[data-category-group=road_equipment]').click()
+                inline_cards(page, 2)
+                page.locator('[data-category-group=other]').click()
+                inline_cards(page, 1)
 
                 # Unrelated brand/team scopes must never expose the global references.
                 for tab, source in [('brands', 'brand'), ('teams', 'team')]:
@@ -303,13 +317,14 @@ def main():
                 page.locator('[data-tab=products]').click()
                 expect(page.locator('#q')).to_have_value('')
                 expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
-                expect(page.locator('[data-category=all]')).to_have_attribute('aria-pressed', 'true')
+                expect(page.locator('[data-category]')).to_have_count(0)
+                assert page.evaluate("activeCategory === 'all'")
                 expect(page.locator('#roadReferenceInline')).to_have_count(0)
                 expect(page.locator('#grid .card')).to_have_count(1)
                 assert page.evaluate('activeSource === null')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path=str(OUT / f'groups_{mode}.png'))
-                checks.append(mode + ': inline references before brand directory; honest zero verified count; first-screen price and native scroll; exact links; leaf/source/query filters; sold-out and stale-link guards; exact cancel focus; same-tab Back/reload scope; global reset')
+                checks.append(mode + ': inline references before brand directory; honest zero verified count; first-screen price and native scroll; exact links; single-layer group/source/query filters and old-leaf migration; sold-out and stale-link guards; exact cancel focus; same-tab Back/reload scope; global reset')
                 context.close()
             browser.close()
     finally:

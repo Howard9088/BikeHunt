@@ -20,13 +20,13 @@ if TYPE_CHECKING:
 
 CategoryGroup = Literal["road_equipment", "clothing", "helmets", "cleat_shoes", "other"]
 
-# The all/reset state belongs to the inner filters, never this five-group row.
+# The all/reset state is internal compatibility data, never a sixth visible group.
 CATEGORY_GROUPS = [
-    {"code": "road_equipment", "name": "公路车装备"},
-    {"code": "clothing", "name": "骑行服"},
-    {"code": "helmets", "name": "头盔"},
+    {"code": "road_equipment", "name": "自行车"},
+    {"code": "clothing", "name": "骑行服饰"},
     {"code": "cleat_shoes", "name": "锁鞋"},
-    {"code": "other", "name": "其他"},
+    {"code": "helmets", "name": "头盔"},
+    {"code": "other", "name": "配件与周边"},
 ]
 
 _TAXONOMY_PATH = Path(__file__).resolve().parents[1] / "data/browse-taxonomy.json"

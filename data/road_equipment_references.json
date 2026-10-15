@@ -98,7 +98,10 @@
       "discount_deadline": null,
       "shipping_to_china": null,
       "recommended_total_cny": null,
-      "eligible": false
+      "eligible": false,
+      "image": "https://dma.canyon.com/image/upload/w_543%2Cc_fit/b_rgb%3AF2F2F2/f_auto/q_auto/v1778070414/2025_FULL_ultimate_cf-sl-frs_4563_R101_P02_qnunfs",
+      "image_source_page": "https://www.canyon.com/en-us/outlet-bikes/road-bikes/ultimate-cf-sl-frameset/4563.html?dwvar_4563_pv_rahmenfarbe=R101_P02",
+      "image_checked_at": "2026-10-15T10:29:39.093018+00:00"
     },
     {
       "id": "canyon-4066-R100_P08",
@@ -127,7 +130,10 @@
       "discount_deadline": null,
       "shipping_to_china": null,
       "recommended_total_cny": null,
-      "eligible": false
+      "eligible": false,
+      "image": "https://dma.canyon.com/image/upload/w_543%2Cc_fit/b_rgb%3AF2F2F2/f_auto/q_auto/v1738924685/2026_FULL_ultimate_cf-slx-8-di2_4066_R100_P08_altcgg",
+      "image_source_page": "https://www.canyon.com/en-us/outlet-bikes/road-bikes/ultimate-cf-slx-8-di2/4066.html?dwvar_4066_pv_rahmenfarbe=R100_P08",
+      "image_checked_at": "2026-10-15T10:29:43.075883+00:00"
     },
     {
       "id": "canyon-9102039",
@@ -135,7 +141,7 @@
       "source_code": "canyon",
       "name": "Canyon Midloader",
       "category": "accessories",
-      "category_group": "road_equipment",
+      "category_group": "other",
       "category_name": "配件",
       "market": "US",
       "currency": "USD",
@@ -158,7 +164,10 @@
       "discount_deadline": null,
       "shipping_to_china": null,
       "recommended_total_cny": null,
-      "eligible": false
+      "eligible": false,
+      "image": "https://dma.canyon.com/image/upload/w_543%2Cc_fit/b_rgb%3AF2F2F2/f_auto/q_auto/v1725370534/6FD3E608-200F-4242-AB9C320637F7C703",
+      "image_source_page": "https://www.canyon.com/en-us/gear/accessories/bags/bikepacking-bikebags-and-panniers/canyon-midloader/9102039.html",
+      "image_checked_at": "2026-10-15T10:29:47.185172+00:00"
     }
   ]
 }

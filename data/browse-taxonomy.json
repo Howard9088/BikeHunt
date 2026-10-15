@@ -5,11 +5,11 @@
   "snapshot_sha256": "74034bf09967fd6ed3fea11bcd077dab6cee3aad87c9e61379a2979e91450fb7",
   "description": "Reviewed navigation-only partition of 232 existing products. Match stable product ID plus exact source and canonical product URL. This is not evidence for fit, customs, prices, stock, payment, or shipping. Unresolved footwear stays Other until product-specific cleat compatibility is reviewed.",
   "expected_group_counts": {
-    "road_equipment": 14,
+    "road_equipment": 0,
     "clothing": 150,
     "helmets": 24,
     "cleat_shoes": 1,
-    "other": 43
+    "other": 57
   },
   "products": [
     {
@@ -44,8 +44,8 @@
       ],
       "source_url": "https://www.redbullshop.com/en-jp/p/France-Bottle/M-RBB26044/?preselectedVariant=M-RBB26044001",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -104,8 +104,8 @@
       ],
       "source_url": "https://www.redbullshop.com/en-jp/p/Italy-Drinking-Bottle-550ml/M-RBB264012/?preselectedVariant=M-RBB264012001",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -116,8 +116,8 @@
       ],
       "source_url": "https://www.redbullshop.com/en-jp/p/Italy-Seat-Bag/M-RBB26033/?preselectedVariant=M-RBB26033001",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -272,8 +272,8 @@
       ],
       "source_url": "https://www.redbullshop.com/en-jp/p/Spain-Bottle/M-RBB26047/?preselectedVariant=M-RBB26047001",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -824,8 +824,8 @@
       ],
       "source_url": "https://teampicnicpostnl.store/products/fly-team-bottle-team-picnic-postnl-550ml-2026?variant=53360087073107",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -980,8 +980,8 @@
       ],
       "source_url": "https://shop.decathloncmacgmteam.com/en/products/musette-decathlon-cma-cgm-2026?variant=52892825878870",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -1376,8 +1376,8 @@
       ],
       "source_url": "https://thewolfpack.shop/products/soudal-quick-step-bidon-2026?variant=52075860951381",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -1460,8 +1460,8 @@
       ],
       "source_url": "https://thewolfpack.shop/products/diamond-protech-bike-coating-kit?variant=54445406945621",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -1544,8 +1544,8 @@
       ],
       "source_url": "https://thewolfpack.shop/products/soudal-quick-step-musette-2026?variant=52596044169557",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -1989,8 +1989,8 @@
       ],
       "source_url": "https://www.fizik.com/en-us/products/saddles-aeris-ld-r1-light-black-aerldr1ea0?variant=52285970547030",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -2001,8 +2001,8 @@
       ],
       "source_url": "https://www.fizik.com/en-us/products/saddles-aeris-sd-r1-light-black-aersdr1ea0?variant=52285971824982",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -2193,8 +2193,8 @@
       ],
       "source_url": "https://www.fizik.com/en-us/products/saddles-vento-argo-x1-black-vargox1fa5?variant=53589469364566",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -2205,8 +2205,8 @@
       ],
       "source_url": "https://www.fizik.com/en-us/products/saddles-vento-argo-x3-black-vargox3fa4?variant=53589469462870",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {
@@ -2217,8 +2217,8 @@
       ],
       "source_url": "https://www.fizik.com/en-us/products/saddles-vento-argo-x5-black-vargox5fa3?variant=53589469823318",
       "category": "accessories",
-      "category_group": "road_equipment",
-      "reason": "Bottle, bicycle bag/musette, bike care or saddle identified in name/official URL",
+      "category_group": "other",
+      "reason": "Bicycle accessory or part, not a complete bicycle or frame; identified in name/official URL",
       "needs_type_review": false
     },
     {

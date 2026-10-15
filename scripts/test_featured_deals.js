@@ -44,7 +44,7 @@ function testHistoricalDiscountFallbackEligibility(){
  const ordinary=card({product_id:'ordinary',reference_original_price:null}),sold=card({product_id:'sold',stock_state:'out_of_stock'}),expired=card({...stale,product_id:'expired',reference_price_valid_until:'2026-10-14'});
  h.c.items=[card(),stale,ordinary,sold,expired];assert.deepEqual(Array.from(h.c.historicalDiscountItems(),p=>p.product_id),['stale']);
  h.c.activeCategoryGroup='road_equipment';assert.equal(h.c.historicalDiscountItems().length,0);h.c.activeCategoryGroup='clothing';assert.equal(h.c.historicalDiscountItems().length,1);
- h.c.activeCategory='helmets';assert.equal(h.c.historicalDiscountItems().length,0);h.c.activeCategory='all';h.c.activeSource='other';assert.equal(h.c.historicalDiscountItems().length,0);h.c.activeSource='brand';h.elements.get('q').value='missing';assert.equal(h.c.historicalDiscountItems().length,0);
+ h.c.activeCategory='helmets';assert.equal(h.c.historicalDiscountItems().length,1,'Retired leaf state never hides products');h.c.activeCategory='all';h.c.activeSource='other';assert.equal(h.c.historicalDiscountItems().length,0);h.c.activeSource='brand';h.elements.get('q').value='missing';assert.equal(h.c.historicalDiscountItems().length,0);
  h.elements.get('q').value='';h.c.profileMatches=()=>false;assert.equal(h.c.historicalDiscountItems().length,0,'Personal filters are retained');
 }
 function testHistoricalEmptyRenderAndExactDetail(){
@@ -54,6 +54,7 @@ function testHistoricalEmptyRenderAndExactDetail(){
  const button={isConnected:true,dataset:{historyOpen:stale.product_id,historyVariant:stale.reference_variant_id}};
  h.c.gallery.querySelectorAll=selector=>selector==='[data-history-open]'?[button]:[];
  let opened=[];h.c.openProduct=(...args)=>opened.push(args);
+ vm.runInContext(section(flows,'function referenceImageMarkup(','document.addEventListener(\'error\''),h.c);
  vm.runInContext(section(flows,'function resetReferenceFeed(','function openRoadReferences('),h.c);
  h.c.items=[stale,card({product_id:'ordinary',reference_original_price:null}),card({product_id:'sold',stock_state:'out_of_stock'})];h.c.render();
  assert.equal(h.elements.get('count').textContent,'0 件商品');assert.equal(h.c.visibleItems().length,0);const html=h.c.gallery.innerHTML;

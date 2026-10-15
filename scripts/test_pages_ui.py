@@ -16,6 +16,7 @@ from urllib.parse import unquote, urljoin, urlparse
 
 from loguru import logger
 from playwright.sync_api import Page, expect, sync_playwright
+from test_catalog_messages_ui import assert_single_category_layer
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -183,7 +184,7 @@ def exercise(base: str, data: dict, results: dict) -> None:
                     page.goto(base, wait_until="domcontentloaded")
                     expect(page.locator(".card")).to_have_count(len(catalog))
                     expect(page.locator(".card").first).to_be_visible()
-                    expect(page.locator("#categoryNav button")).to_have_count(7)
+                    assert_single_category_layer(page)
                     assert page.evaluate("window.BIKEHUNT_PAGES === true")
                     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
                     label = "mobile" if mobile else "desktop"

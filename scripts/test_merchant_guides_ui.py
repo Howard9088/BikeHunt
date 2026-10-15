@@ -12,7 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import expect, sync_playwright
 
-from test_catalog_messages_ui import OUT, ROOT, QuietHandler, fixture
+from test_catalog_messages_ui import OUT, ROOT, QuietHandler, assert_single_category_layer, fixture
 from exit_dialog_test_support import assert_exit_closed, assert_exit_dialog, cancel_exit_dialog, confirm_exit_dialog
 
 MERCHANTS = {
@@ -56,8 +56,8 @@ def guide_fixture():
 def assert_scope(page, base, read_state):
     expect(page).to_have_url(base)
     expect(page.locator('#q')).to_have_value('Guide Bib')
-    expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌')
-    expect(page.locator('[data-category=bibs]')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌 · 骑行服饰')
+    expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
     expect(page.locator('.card')).to_have_count(1)
     assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == read_state
 
@@ -222,12 +222,13 @@ def main():
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
+                assert_single_category_layer(page)
                 exercise_directory_logos(page, context, base, external_reads, mode, checks)
                 page.locator('[data-tab=brands]').click()
                 page.locator('[data-source=maap]').click()
                 page.locator('#sourceProducts').click()
                 assert_exit_closed(page)
-                page.locator('[data-category=bibs]').click()
+                page.locator('[data-category-group=clothing]').click()
                 page.locator('#q').fill('Guide Bib')
                 expect(page.locator('.card')).to_have_count(1)
                 read_state = page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")

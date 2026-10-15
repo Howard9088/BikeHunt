@@ -18,14 +18,14 @@ from app.localization import CATEGORIES, category_of
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_GROUPS = [
-    {"code": "road_equipment", "name": "公路车装备"},
-    {"code": "clothing", "name": "骑行服"},
-    {"code": "helmets", "name": "头盔"},
+    {"code": "road_equipment", "name": "自行车"},
+    {"code": "clothing", "name": "骑行服饰"},
     {"code": "cleat_shoes", "name": "锁鞋"},
-    {"code": "other", "name": "其他"},
+    {"code": "helmets", "name": "头盔"},
+    {"code": "other", "name": "配件与周边"},
 ]
-EXPECTED_COUNTS = {"road_equipment": 14, "clothing": 150, "helmets": 24,
-                   "cleat_shoes": 1, "other": 43}
+EXPECTED_COUNTS = {"road_equipment": 0, "clothing": 150, "helmets": 24,
+                   "cleat_shoes": 1, "other": 57}
 FLAT_IDS = {"4d2ca7ada71ec8f59f8e", "9a07bf563ca56d45df39", "e15de842c81699d8f2ba",
             "605372f654b93c9fd105", "d184f4dc651ca9dcd9c1", "a2c3d6e5806b099fe272",
             "d16dab0e7fd9c64d5a34"}
@@ -79,12 +79,16 @@ class BrowseTaxonomyTests(unittest.TestCase):
         self.assertEqual(self.fixture["expected_product_count"], 232)
         self.assertEqual(self.fixture["expected_group_counts"], EXPECTED_COUNTS)
         self.assertEqual(len(self.review["products"]), 232)
+        self.assertTrue(all(row["category_group"] == "other" for row in self.rows.values()
+                            if "Bicycle accessory or part" in row["reason"]))
+        self.assertEqual(sum("Bicycle accessory or part" in row["reason"]
+                             for row in self.rows.values()), 14)
         self.assertEqual(len(self.rows), 232, "No duplicate reviewed IDs")
         self.assertEqual(len(self.cards), 232)
         self.assertEqual(set(self.by_id), set(self.rows), "No product added, lost, or rekeyed")
         self.assertEqual(set(self.fixture["expected_product_groups"]), set(self.rows))
-        self.assertEqual(Counter(card.category_group for card in self.cards), EXPECTED_COUNTS)
-        self.assertEqual(Counter(row["category_group"] for row in self.rows.values()), EXPECTED_COUNTS)
+        self.assertEqual(Counter(card.category_group for card in self.cards), Counter(EXPECTED_COUNTS))
+        self.assertEqual(Counter(row["category_group"] for row in self.rows.values()), Counter(EXPECTED_COUNTS))
         self.assertEqual(self.review["expected_group_counts"], EXPECTED_COUNTS)
         for product_id, row in self.rows.items():
             with self.subTest(product_id=product_id):
@@ -174,7 +178,8 @@ class BrowseTaxonomyTests(unittest.TestCase):
     def test_unknown_fallback_never_infers_gear_or_cleats_from_brand_or_url(self):
         for name in ["Future Fizik", "ERGOLACE 2", "Fizik Cycling Shoes", "New FLAT shoes",
                      "Future QUOC accessory", "KASK Nirvana", "Trek team merchandise",
-                     "Specialized Team Bundle", "Canyon bike", "Colnago gift"]:
+                     "Specialized Team Bundle", "Canyon bike", "Colnago gift", "Bicycle Wheelset",
+                     "Chainring", "Frame Bag", "Cycling Bottle", "Saddle"]:
             with self.subTest(name=name):
                 result = browse_classification("unreviewed", [unknown_offer(name)])
                 self.assertEqual(result, BrowseClassification("accessories", "other"))

@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import shutil
+import sys
 import threading
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -14,6 +15,9 @@ from datetime import datetime, timedelta, timezone
 from exit_dialog_test_support import (DISCLAIMER, assert_exit_closed, assert_exit_dialog, cancel_exit_dialog, confirm_exit_dialog, open_final_exit)
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from app.browse_taxonomy import CATEGORY_GROUPS
+
 OUT=ROOT/'artifacts/acceptance'
 AMAZON_SEARCHES = [
     ('amazon_us', 'www.amazon.com', ['road cycling jersey', 'road cycling bib shorts']),
@@ -37,7 +41,7 @@ def fixture():
     now = datetime.now(timezone.utc).isoformat()
     fx = {'rate_date': now[:10], 'stale': False, 'rates': {'AUD': '4.8'}}
     base = {'product_id': 'partial', 'brand': 'MAAP', 'name': 'UI regression fixture · Partial stock',
-            'name_zh': '界面回归测试 · 部分现货', 'category': 'bibs', 'gender': 'male',
+            'name_zh': '界面回归测试 · 部分现货', 'category': 'bibs', 'category_group': 'clothing', 'gender': 'male',
             'color': '白色', 'image': 'https://merchant.example/product.svg', 'source_count': 1,
             'source_codes': ['maap'], 'variant_count': 3, 'available_sizes': ['S'],
             'reference_price': {'amount': '225', 'currency': 'AUD'}, 'reference_cny': '1080',
@@ -62,13 +66,30 @@ def fixture():
              'shipping_to_china': check, 'china_issued_card': check, 'accepted_card_networks': ['Visa'],
              'purchase_requirements': [], 'identity_evidence': '回归测试数据'}
     detail = {'product_id': 'partial', 'variant_id': 'S', 'name': base['name'], 'name_zh': base['name_zh'],
-              'category': 'bibs', 'image': base['image'], 'identity': {'brand': 'MAAP', 'size': 'S', 'color': '白色'},
+              'category': 'bibs', 'category_group': 'clothing', 'image': base['image'], 'identity': {'brand': 'MAAP', 'size': 'S', 'color': '白色'},
               'variants': variants, 'colors': [], 'fx': fx, 'recommended_offer_id': None,
               'offers': [{'offer': offer, 'eligible': False, 'reasons': [], 'product_cny': '1080',
                           'shipping_cny': None, 'tax_cny': None, 'total_cny': None}]}
     return {'catalog': {'items': [base, sold, unknown], 'fx': fx, 'source_count': 1,
+                        'category_groups': copy.deepcopy(CATEGORY_GROUPS),
                         'categories': [{'code': 'all', 'name': '全部'}, {'code': 'bibs', 'name': '骑行裤'}]},
             'detail': detail}
+
+
+def assert_single_category_layer(page):
+    """The only category controls are the five exact public groups, in order."""
+    groups = page.locator('#categoryGroupNav [data-category-group]')
+    expect(groups).to_have_text(['自行车', '骑行服饰', '锁鞋', '头盔', '配件与周边'])
+    assert groups.evaluate_all('buttons => buttons.map(button => button.dataset.categoryGroup)') == [
+        'road_equipment', 'clothing', 'cleat_shoes', 'helmets', 'other']
+    expect(page.locator('#categoryNav,[data-category]')).to_have_count(0)
+    assert page.evaluate("activeCategory === 'all'")
+
+
+def assert_card_ids(page, identifiers):
+    """Check the whole scope, including exclusions, rather than only its size."""
+    expect(page.locator('.card')).to_have_count(len(identifiers))
+    assert set(page.locator('.card').evaluate_all('cards => cards.map(card => card.dataset.id)')) == set(identifiers)
 
 
 def detail_for_request(state, product_id, variant_id=''):
@@ -85,7 +106,8 @@ def detail_for_request(state, product_id, variant_id=''):
     if matching:
         product = matching['product']
         result.update(product_id=product_id, variant_id=variant_id,
-                      name=product['name'], name_zh=matching['name_zh'], image=product['image'])
+                      name=product['name'], name_zh=matching['name_zh'], image=product['image'],
+                      category=matching['category'], category_group='clothing')
         result['identity'].update(size=product['size'], color=product['color'], mpn=product['model'])
         result['variants'] = [{'variant_id': variant_id, 'size': product['size'], 'in_stock': False,
                                'stock_state': product['current_stock'], 'source_count': 1,
@@ -96,7 +118,8 @@ def detail_for_request(state, product_id, variant_id=''):
     card = next((card for card in state['catalog']['items'] if card['product_id'] == product_id), None)
     if card is None or variant_id and variant_id != result['variant_id']:
         raise KeyError((product_id, variant_id))
-    result.update(product_id=card['product_id'], name=card['name'], name_zh=card['name_zh'], image=card['image'])
+    result.update(product_id=card['product_id'], name=card['name'], name_zh=card['name_zh'], image=card['image'],
+                  category=card['category'], category_group=card['category_group'])
     return result
 
 
@@ -302,7 +325,7 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
             expect(page.locator('#q')).to_have_value('Stamp Hoodie')
             expect(page.locator('#browseLabel')).to_have_text(return_label)
-            expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed', 'true')
+            expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
             expect(page.locator('.card')).to_have_count(1)
             expect(page.locator('#messageBadge')).to_have_text(initial_badge)
             assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
@@ -313,7 +336,7 @@ def exercise_amazon_searches(page, context, base, mode, return_label, checks):
     page.reload(wait_until='networkidle')
     expect(page.locator('#q')).to_have_value('Stamp Hoodie')
     expect(page.locator('#browseLabel')).to_have_text(return_label)
-    expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
     expect(page.locator('.card')).to_have_count(1)
     expect(page.locator('#messageBadge')).to_have_text(initial_badge)
     assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
@@ -338,7 +361,7 @@ def exercise_group_entry(page, context, base, mode, return_label, checks):
     expect(page).to_have_url(base)
     expect(page.locator('#q')).to_have_value('Stamp Hoodie')
     expect(page.locator('#browseLabel')).to_have_text(return_label)
-    expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true')
+    expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed','true')
     expect(page.locator('.card')).to_have_count(1)
     expect(page.locator('#sheet')).to_have_attribute('aria-hidden','true')
     assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")==read_state
@@ -363,7 +386,12 @@ def main():
                 state=fixture();state['events']=[event(5,'missing',image=False),event(4,'sold',sold=True),event(3,'175'),event(2,size='L'),event(1)]
                 state['events'][0]['product'].update(product_id=None,variant_id=None)
                 basecard=state['catalog']['items'][0]
-                state['catalog']['items'] += [{**basecard,'product_id':'maap-jersey','category':'jerseys'}, {**basecard,'product_id':'other-jersey','category':'jerseys','source_codes':['other']}]
+                state['catalog']['items'] += [
+                    {**basecard, 'product_id': 'maap-jersey', 'category': 'jerseys'},
+                    {**basecard, 'product_id': 'other-jersey', 'category': 'jerseys', 'source_codes': ['other']},
+                    {**basecard, 'product_id': 'maap-helmet', 'category': 'helmets', 'category_group': 'helmets', 'name': 'Scope Helmet'},
+                    {**basecard, 'product_id': 'other-helmet', 'category': 'helmets', 'category_group': 'helmets', 'name': 'Scope Helmet', 'source_codes': ['other']},
+                ]
                 state['catalog']['categories'].append({'code':'jerseys','name':'骑行上衣'})
                 context=browser.new_context(viewport=viewport,is_mobile=mode=='mobile',has_touch=mode=='mobile')
                 context.set_default_timeout(7000);context.set_default_navigation_timeout(10000)
@@ -403,13 +431,27 @@ def main():
                 expect(page.locator('#wechatCommunity')).to_have_text('加入骑游海淘交流群')
                 expect(page.locator('#messageBadge')).to_have_text('4')
                 page.locator('[data-tab=brands]').click();page.locator('[data-source=maap]').click();page.locator('#sourceProducts').click()
-                page.locator('[data-category=jerseys]').click();expect(page.locator('.card')).to_have_count(1);expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌')
-                page.locator('[data-category=all]').click();expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌')
-                page.locator('[data-tab=products]').click();page.locator('[data-category=jerseys]').click();expect(page.locator('.card')).to_have_count(2);expect(page.locator('#browseLabel')).to_have_text('精选好价')
-                checks.append(mode+': brand category retains scope; all-category retains scope; explicit精选好价 clears scope')
-                return_tab,return_source,return_label=('brands','maap','MAAP 品牌') if mode=='desktop' else ('teams','other','测试车队')
-                page.locator(f'[data-tab={return_tab}]').click();page.locator(f'[data-source={return_source}]').click();page.locator('#sourceProducts').click();page.locator('[data-category=jerseys]').click()
-                expect(page.locator('.card')).to_have_count(1);expect(page.locator('#browseLabel')).to_have_text(return_label)
+                assert_single_category_layer(page)
+                assert_card_ids(page, ['partial', 'unknown', 'maap-jersey', 'maap-helmet'])
+                page.locator('[data-category-group=clothing]').click()
+                assert_card_ids(page, ['partial', 'unknown', 'maap-jersey'])
+                expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌 · 骑行服饰')
+                # Clicking the selected group clears only that group, keeping the source.
+                page.locator('[data-category-group=clothing]').click()
+                expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
+                assert_card_ids(page, ['partial', 'unknown', 'maap-jersey', 'maap-helmet'])
+                expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌')
+                page.locator('[data-tab=products]').click()
+                page.locator('[data-category-group=clothing]').click()
+                assert_card_ids(page, ['partial', 'maap-jersey', 'other-jersey'])
+                expect(page.locator('#browseLabel')).to_have_text('精选好价 · 骑行服饰')
+                checks.append(mode+': exact single five-category layer; brand group/toggle retains source; explicit精选好价 clears source; clothing includes both bibs and jerseys and excludes helmets')
+                return_tab,return_source,return_label=('brands','maap','MAAP 品牌 · 骑行服饰') if mode=='desktop' else ('teams','other','测试车队 · 骑行服饰')
+                page.locator(f'[data-tab={return_tab}]').click();page.locator(f'[data-source={return_source}]').click();page.locator('#sourceProducts').click()
+                # A source opened from the directory retains the selected clothing group.
+                expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
+                scoped_ids = ['partial', 'unknown', 'maap-jersey'] if mode == 'desktop' else ['other-jersey']
+                assert_card_ids(page, scoped_ids);expect(page.locator('#browseLabel')).to_have_text(return_label)
                 page.locator('#priceMessages').click();expect(page.locator('.message-card')).to_have_count(4);expect(page.locator('#messageBadge')).to_be_hidden()
                 red=page.locator('.message-card').filter(has=page.locator('img[src$="173.svg"]'))
                 expect(red).to_contain_text('M');expect(red).to_contain_text('L');expect(red.locator('.message-variant')).to_have_count(2)
@@ -443,10 +485,10 @@ def main():
                 expect(page).to_have_url('https://merchant.example/products/26-173-bah?variant=2');assert len(context.pages)==1
                 page.go_back(wait_until='networkidle')
                 expect(page).to_have_url(base);expect_purchase_restored(page)
-                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('.card')).to_have_count(1)
+                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed','true');assert_card_ids(page, scoped_ids)
                 expect(page.locator('#messageBadge')).to_be_hidden()
                 page.reload(wait_until='networkidle');expect_purchase_restored(page)
-                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#messageBadge')).to_be_hidden()
+                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed','true');assert_card_ids(page, scoped_ids);expect(page.locator('#messageBadge')).to_be_hidden()
                 cancel_purchase_to_detail(page)
                 expect(page.locator('#sheetBody')).to_contain_text('制造商型号 R26173')
                 page.locator('#close').click()
@@ -457,8 +499,13 @@ def main():
                 # Search is part of the history entry; Back must restore actual results, not just scope.
                 scoped=next(card for card in state['catalog']['items'] if card['category']=='jerseys' and return_source in card['source_codes'])
                 scoped['name']='Stamp Hoodie';scoped['name_zh']='Stamp Hoodie 测试商品'
-                state['catalog']['items'].append({**scoped,'product_id':'search-other','name':'Other jersey','name_zh':'其他测试商品'})
-                page.evaluate('refreshCatalogSilently(false)');expect(page.locator('.card')).to_have_count(2)
+                state['catalog']['items'] += [
+                    {**scoped, 'product_id': 'search-other', 'name': 'Other jersey', 'name_zh': '其他测试商品'},
+                    # Matching text must not leak a different source or category into the scope.
+                    {**scoped, 'product_id': 'query-wrong-source', 'source_codes': ['other' if return_source == 'maap' else 'maap']},
+                    {**scoped, 'product_id': 'query-wrong-group', 'category': 'helmets', 'category_group': 'helmets'},
+                ]
+                page.evaluate('refreshCatalogSilently(false)');assert_card_ids(page, scoped_ids + ['search-other'])
                 page.locator('#q').fill('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品');expect(page.locator('#clear')).to_be_enabled()
                 page.locator('.card .compare-button').click();expect(page.locator('[data-variant="S"]')).to_be_visible();expect(page.locator('.guide-start')).to_have_count(0)
                 expect(page.locator('#fitReference')).to_contain_text('测试数据');page.locator('[data-variant="S"]').click();expect(page.locator('.guide-start')).to_be_enabled();page.locator('.guide-start').click()
@@ -470,17 +517,17 @@ def main():
                 confirm_exit_dialog(page, 'https://merchant.example/bib?variant=S')
                 expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
                 page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect_purchase_restored(page);expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品')
-                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
-                page.reload(wait_until='networkidle');expect_purchase_restored(page);expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category=jerseys]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
+                expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
+                page.reload(wait_until='networkidle');expect_purchase_restored(page);expect(page.locator('#browseLabel')).to_have_text(return_label);expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed','true');expect(page.locator('#messageBadge')).to_have_text('1')
                 expect(page.locator('#q')).to_have_value('Stamp Hoodie');expect(page.locator('.card')).to_have_count(1);expect(page.locator('#count')).to_have_text('1 件商品');expect(page.locator('#clear')).to_be_visible();expect(page.locator('#clear')).to_be_enabled()
                 cancel_purchase_to_detail(page)
                 expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed','true')
                 page.locator('#close').click()
                 exercise_amazon_searches(page, context, base, mode, return_label, checks)
                 exercise_group_entry(page, context, base, mode, return_label, checks)
-                page.locator('#clear').click();expect(page.locator('#q')).to_have_value('');expect(page.locator('.card')).to_have_count(2)
-                checks.append(mode+': search Stamp Hoodie narrows two scoped results to one; explicit route and registration Cancel/Continue use exact same-tab URL; Back/reload restores selected route, query/results, source/size/read state and working clear control')
-                page.locator('[data-tab=products]').click();page.locator('[data-category=all]').click()
+                page.locator('#clear').click();expect(page.locator('#q')).to_have_value('');assert_card_ids(page, scoped_ids + ['search-other'])
+                checks.append(mode+': search Stamp Hoodie narrows the clothing/source scope to one exact product; explicit route and registration Cancel/Continue use exact same-tab URL; Back/reload restores selected route, query/results, source/size/read state and working clear control')
+                page.locator('[data-tab=products]').click();expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
                 old='2000-01-01T00:00:00Z';state['detail']['offers'][0]['offer']['fetched_at']=old
                 for v in state['detail']['variants']:v['in_stock']=False
                 page.evaluate("openProduct('partial')");expect(page.locator('#sheetBody')).to_contain_text('库存待核实');expect(page.locator('[data-variant]')).to_have_count(0)

@@ -19,6 +19,9 @@ class RoadEquipmentTests(unittest.TestCase):
         data = read_road_references(ROOT)
         self.assertEqual([b['code'] for b in data['brands']], ['trek','specialized','canyon','colnago'])
         self.assertEqual(len(data['products']), 4)
+        self.assertEqual([row['category_group'] for row in data['products']],
+                         ['road_equipment', 'road_equipment', 'road_equipment', 'other'])
+        self.assertEqual(data['products'][-1]['id'], 'canyon-9102039')
         for row in data['products']:
             self.assertEqual(row['stock'], 'unknown')
             self.assertEqual(row['available_sizes'], [])
@@ -28,6 +31,11 @@ class RoadEquipmentTests(unittest.TestCase):
             self.assertFalse(row['eligible'])
             self.assertGreater(row['reference_price'], row['price'])
             self.assertNotIn('fetched_at', row)
+        self.assertEqual(sum(bool(p.get('image')) for p in data['products']), 3)
+        for row in data['products'][1:]:
+            self.assertTrue(row['image'].startswith('https://dma.canyon.com/'))
+            self.assertEqual(row['image_source_page'], row['url'])
+            self.assertTrue(row['image_checked_at'].startswith('2026-10-15T'))
         self.assertNotIn('trek', {p['source_code'] for p in data['products']})
         self.assertNotIn('colnago', {p['source_code'] for p in data['products']})
         self.assertIn('不接受转运地址', data['brands'][0]['note'])
@@ -57,7 +65,7 @@ class RoadEquipmentTests(unittest.TestCase):
         original = read_road_references(ROOT)
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder); (root/'data').mkdir()
-            for field, value in [('stock','in_stock'),('observed_at',original['research_checked_at']),('available_sizes',['M']),('discount_deadline','2027-01-01'),('eligible',True),('url','https://www.canyon.com.evil/en-us/')]:
+            for field, value in [('category_group','other'),('stock','in_stock'),('observed_at',original['research_checked_at']),('available_sizes',['M']),('discount_deadline','2027-01-01'),('eligible',True),('url','https://www.canyon.com.evil/en-us/')]:
                 data=copy.deepcopy(original);data['products'][0][field]=value
                 (root/'data/road_equipment_references.json').write_text(json.dumps(data))
                 with self.assertRaises(ValueError, msg=field):read_road_references(root)

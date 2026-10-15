@@ -34,6 +34,9 @@ def read_road_references(root: Path) -> dict:
         if not expected or url.scheme != "https" or url.netloc != expected[0] or not url.path.startswith(expected[1]):
             raise ValueError("Unreviewed official road-reference destination")
     for row in data["products"]:
+        expected_group = "road_equipment" if row.get("category") in {"road_bikes", "frames"} else "other"
+        if row.get("category_group") != expected_group:
+            raise ValueError("Bicycle references contain only complete bikes or frames")
         if (row.get("stock") != "unknown" or row.get("data_kind") != "research_reference"
                 or row.get("observed_at") is not None or row.get("available_sizes") != []
                 or row.get("eligible") is not False or row.get("recommended_total_cny") is not None

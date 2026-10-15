@@ -7,6 +7,7 @@ import urllib.request
 from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
+from test_catalog_messages_ui import assert_single_category_layer
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "artifacts" / "acceptance"
@@ -41,7 +42,7 @@ def main() -> None:
         page.goto(BASE + "/web/", wait_until="domcontentloaded")
         expect(page.locator(".card").first).to_be_visible(timeout=15000)
         assert not page.locator("body").evaluate("el=>el.classList.contains('grid-mode')")
-        expect(page.locator("#categoryNav button")).to_have_count(7)
+        assert_single_category_layer(page)
         assert page.locator("#grid").evaluate("el=>getComputedStyle(el).scrollSnapType") == "y mandatory"
         page.locator(".card img").first.evaluate("img=>img.decode().catch(()=>{})")
         page.screenshot(path=str(OUTPUT / "desktop_feed.png"))
@@ -128,10 +129,13 @@ def main() -> None:
         page.locator('#browseSettings').click()
         page.locator('button[data-choice="grid"]').click()
         page.screenshot(path=str(OUTPUT / "mobile_grid.png"))
-        page.locator('[data-category="helmets"]').click()
+        page.locator('[data-category-group="helmets"]').click()
+        expect(page.locator('[data-category-group="helmets"]')).to_have_attribute('aria-pressed', 'true')
         expect(page.locator('.card').first).to_contain_text('骑行头盔')
         assert all(c['category']=='helmets' for c in read_json('/api/catalog?category=helmets')['items'])
         results['checks'].append('product_type_helmet_chinese')
+        page.locator('[data-category-group="helmets"]').click()
+        expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
         page.locator('[data-tab="teams"]').click()
         expect(page.locator('.directory-card')).to_have_count(18)
         page.screenshot(path=str(OUTPUT/'mobile_teams_ranked.png'))
@@ -177,11 +181,17 @@ def main() -> None:
         page.locator('[data-tab="products"]').click()
         page.locator('[data-gender="female"]').click()
         assert page.locator('.card').count()==sum(row['gender'] in ('female','unisex') for row in data['items'])
-        page.locator('[data-category="bibs"]').click()
-        expect(page.locator('.card')).to_have_count(1)
-        expect(page.locator('.card').first).to_contain_text('女款')
+        page.locator('[data-category-group="clothing"]').click()
+        female_clothing = [row for row in data['items']
+                           if row['category_group'] == 'clothing' and row['gender'] in ('female', 'unisex')]
+        expect(page.locator('.card')).to_have_count(len(female_clothing))
+        assert set(page.locator('.card').evaluate_all('cards => cards.map(card => card.dataset.id)')) == {
+            row['product_id'] for row in female_clothing}
+        female_product = next(row for row in female_clothing if row['gender'] == 'female')
+        expect(page.locator(f'.card[data-id="{female_product["product_id"]}"]')).to_contain_text('女款')
         page.locator('[data-gender="male"]').click()
-        page.locator('[data-category="all"]').click()
+        page.locator('[data-category-group="clothing"]').click()
+        expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
         page.locator('#bodyProfile').click()
         page.locator('#heightCm').fill('175')
         page.locator('#weightKg').fill('68')
