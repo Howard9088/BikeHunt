@@ -291,6 +291,124 @@ document.addEventListener('auxclick',guardAmazonSearchExit);
 document.addEventListener('click',guardAmazonHelpExit);
 document.addEventListener('auxclick',guardAmazonHelpExit);
 
+// Merchant-language guide: read-only educational content, separate from stock eligibility.
+// Sources are public pages checked on 2026-10-15; no account or checkout was exercised.
+const MERCHANT_GUIDE_CHECKED_AT='2026-10-15';
+const MERCHANT_LANGUAGE_STEPS=Object.freeze([
+  {id:'country',title:'先选收货国家',paragraphs:[
+    '分别检查 Country / Region（国家或地区）、Language（语言）和 Currency（币种）。选择中文或英文不会改变收货国家；能选国家也不等于所有商品都能配送。'
+  ],diagram:[['Country / Pays','收货国家'],['Language / Langue','网页语言'],['Currency / Devise','付款币种']]},
+  {id:'account',title:'登录或注册账户',paragraphs:[
+    '从 Account / Mon compte（我的账户）进入。已有账号找 Sign in / Se connecter（登录）；新账号找 Create account / Créer un compte（创建账户）。如果商家提供 Guest checkout（游客结账），可按页面选择。',
+    'First name / Prénom 是名字，Last name / Nom 是姓氏；Password / Mot de passe 是密码，Confirm password / Confirmer le mot de passe 是再次输入密码。实际字段与验证方式以商家页面为准。',
+    'Newsletter / S’abonner 是营销邮件订阅，不等于注册账户。请自己阅读条款并决定是否接受、是否订阅；在确认域名的商家原站完成操作。'
+  ],diagram:[['Account / Mon compte','账户入口'],['Sign in / Create account','登录／创建账户'],['Newsletter','独立判断是否订阅']]},
+  {id:'size',title:'看尺码，再选规格',paragraphs:[
+    '打开 Size guide / Guide des tailles（尺码表），先核对 cm / in（厘米／英寸），再选 Size / Taille（尺码）、Colour / Couleur（颜色）与男女款。不同品牌的同一码不一定相同。',
+    'In stock / En stock 是有货；Sold out / Épuisé 是售罄；Pre-order / Précommande 是预订。原站规格与库存需要重新核对。'
+  ],diagram:[['Size guide','先看 cm / in'],['Size · Colour','再选尺码／颜色'],['Stock','确认库存或预订']]},
+  {id:'cart',title:'加入购物车，复查规格',paragraphs:[
+    '选择 Add to cart / Ajouter au panier（加入购物车）后，打开 Cart / Panier（购物车），复查款式、颜色、尺码和 Quantity / Quantité（数量）。',
+    '加入购物车不代表已购买，也不保证库存被保留。Checkout / Passer à la caisse 是前往结账，请继续核对订单，别把它当作付款成功。'
+  ],diagram:[['Add to cart','加入购物车'],['Cart / Panier','检查规格和数量'],['Checkout','前往结账']]},
+  {id:'address',title:'填写地址，核对付款总额',paragraphs:[
+    'Shipping address / Adresse de livraison 是收货地址；Billing address / Adresse de facturation 是账单地址，按支付机构记录填写。先确认商家支持目的地，再在原站按要求填写国家、姓名、街道门牌、城市、省州、邮编和电话。',
+    'Country / Pays 是国家，City / Ville 是城市，Postcode / Code postal 是邮编。地址栏示意只解释用途，不提供或代填个人资料。',
+    '付款前核对实际币种、Shipping / Livraison（配送或运费）、Tax / Duties（税费）、Discount code / Code de réduction（优惠码）、退货费用和 Total（总额）。Pay now / Payer 是付款；Place order / Commander 可能产生付款义务，请由你自行确认。'
+  ],diagram:[['Shipping address','你的收货地址（占位）'],['Billing address','支付机构记录地址（占位）'],['Total','商品＋运费＋税费－优惠']]},
+  {id:'returns',title:'保存订单，找到退货入口',paragraphs:[
+    '付款完成后保存 Order number / Numéro de commande（订单号）和确认邮件。支付状态不清楚时，先查订单或联系商家，避免重复付款。',
+    'Returns / Retours 是退货，Refund / Remboursement 是退款，Exchange / Échange 是换货；单数 Retour 也可能是返回上一页。保留包装、吊牌和退货寄件凭证，期限与费用以对应商店政策为准。'
+  ],diagram:[['Order number','付款后保存订单号'],['Confirmation email','保留确认邮件'],['Returns / Retours','核对期限和费用']]}
+].map(step=>Object.freeze({...step,paragraphs:Object.freeze(step.paragraphs),diagram:Object.freeze(step.diagram.map(pair=>Object.freeze(pair)))})));
+const MERCHANT_GUIDE_HELP=Object.freeze([
+  ['maap-login','maap','MAAP：官方免密码登录图解','https://support.maap.cc/hc/en-us/articles/7519428331149-I-can-t-remember-my-password'],
+  ['maap-size','maap','MAAP：官方尺码说明','https://support.maap.cc/hc/en-us/articles/360037082112-MAAP-Size-Guide'],
+  ['visma-register','visma','Visma：公开注册页（仅供查看字段）','https://www.teamvismaleaseabike.com/register/'],
+  ['visma-shop','visma','Visma：官方商店地区说明','https://www.teamvismaleaseabike.com/shop/'],
+  ['visma-returns','visma','Visma：官方退货说明','https://www.teamvismaleaseabike.com/shop-returns/'],
+  ['decathlon-refunds','decathlon','Decathlon CMA CGM：当前退款政策','https://shop.decathloncmacgmteam.com/en/policies/refund-policy'],
+  ['decathlon-shop','decathlon','Decathlon CMA CGM：英文商店账户入口','https://shop.decathloncmacgmteam.com/en'],
+  ['decathlon-terms','decathlon','Decathlon CMA CGM：销售条款对照','https://shop.decathloncmacgmteam.com/policies/terms-of-sale'],
+  ['safari-iphone','browser','Apple：iPhone Safari 中文翻译帮助','https://support.apple.com/zh-cn/guide/iphone/iph1fbef4daa/ios'],
+  ['chrome-android','browser','Google：Android Chrome 中文翻译帮助','https://support.google.com/chrome/answer/173424?co=GENIE.Platform%3DAndroid&hl=zh-Hans'],
+  ['chrome-ios','browser','Google：iPhone / iPad Chrome 中文翻译帮助','https://support.google.com/chrome/answer/173424?co=GENIE.Platform%3DiOS&hl=zh-Hans']
+].map(([key,scope,label,url])=>Object.freeze({key,scope,label,url})));
+const MERCHANT_GUIDE_SPECIAL=Object.freeze({
+  maap:Object.freeze({scope:'MAAP 官方账户帮助与尺码说明；不代表某收货国家已成功下单。',evidence:'官方帮助已核对；未实测账户与结账。',paragraphs:Object.freeze([
+    '已有 MAAP 账户但忘记密码：官方帮助说明，从官网账户图标进入，填写注册邮箱，选 Get Started（开始），再选邮件免密码登录入口；收到邮件后点 Access your account（进入账户）。收不到时先查垃圾邮件。可在下方查看官方图解。',
+    '这是已有账户的找回说明，不能推断新用户注册也一定无需密码。新用户完整注册字段、验证过程、账户内地址管理与实际结账均未核实。',
+    '商品页的 Size Guide 是尺码表；Which size fits me? 是尺码建议工具。是否向该工具提供个人资料由你决定。此处不重新判断 MAAP 的中国配送规则。'
+  ])}),
+  visma:Object.freeze({scope:'仅 teamvismaleaseabike.com 英文公开账户与商店页面。',evidence:'公开登录／注册字段及官方商店、退货说明已核对；未提交表单。',paragraphs:Object.freeze([
+    '已有账户填写邮箱与密码后选择 Login（登录）；新用户选择 Register（注册）。公开注册页要求 First name（名字）、Last name（姓氏）、邮箱、Password（密码）、Confirm password（确认密码）及 Country（国家），然后是 Create account（创建账户）。',
+    '阅读条款后自行决定是否接受。车队邮件与合作伙伴促销是独立订阅选项，应分别判断。未验证注册成功、登录后地址界面或账号与结账的衔接。',
+    '商店说明：选择不同国家会影响可见商品、活动与售价；语言与收货国家要分别核对。',
+    '退货页写明发票日期起 30 天；不能直接换码，需要退回再购买，个性化商品有例外。非欧盟退货额外费用由客户承担。店铺延长期限与条款中的法定撤回期限不是同一个概念。'
+  ])}),
+  decathlon:Object.freeze({scope:'仅 shop.decathloncmacgmteam.com 的 /en 车队商城及所列政策；不是迪卡侬中国商店。',evidence:'公开账户入口与官方政策已核对；身份验证页面未成功读取。',paragraphs:Object.freeze([
+    '公开入口为 Account（账户）→ Sign in（登录）；Orders（订单）是订单入口，Profile（个人资料）是账户资料入口。后续按商家实际显示的验证方式操作。',
+    '未核实注册和身份验证方式，不能推断需要创建密码、输入六位验证码、可使用迪卡侬中国账户，或必须注册才能结账。',
+    '官方页面对退货天数和费用有不同表述：主页宣传区为 14 天，主页 FAQ 与退款政策为收货后 30 天；退款政策称退货标签费用从退款中扣除，销售条款另有不同费用说明。购买前确认适用规则，不能承诺免费退货。'
+  ])})
+});
+let merchantGuideSource=null;
+function merchantGuideEntries(detail){
+  const entries=new Map();
+  for(const quote of detail.offers||[]){const o=quote.offer;if(o&&typeof o.source_code==='string'&&!entries.has(o.source_code))entries.set(o.source_code,{code:o.source_code,name:o.source_name||o.source_code})}
+  return [...entries.values()];
+}
+function merchantGuidesMarkup(detail){
+  const entries=merchantGuideEntries(detail);if(!entries.length)return '';
+  return '<section class="merchant-guide-entrances" aria-labelledby="merchantGuidesTitle"><h4 id="merchantGuidesTitle">商家中文操作图解</h4><p>从注册、地址到退货，保留英法原文对照。只读帮助不代表当前商品可购买，售罄时也能查看。</p><div class="merchant-guide-buttons">'+entries.map(entry=>'<button type="button" data-merchant-guide="'+e(entry.code)+'" aria-label="'+e(entry.name)+'：查看中文操作图解">'+e(entry.name)+' · 查看图解 →</button>').join('')+'</div></section>';
+}
+function bindMerchantGuides(detail,variantId){
+  document.getElementById('sheetBody').querySelectorAll('[data-merchant-guide]').forEach(button=>button.onclick=()=>openMerchantGuide(detail,button.dataset.merchantGuide,variantId));
+}
+function merchantHelpLink(source){return '<a data-merchant-help-link="'+e(source.key)+'" href="'+e(source.url)+'" target="_self" rel="noopener noreferrer">'+e(source.label)+' →</a>'}
+function merchantDiagram(pairs,label){
+  return '<figure class="merchant-diagram" aria-label="'+e(label)+'示意图"><figcaption>示意 · 非商家截图</figcaption><div class="merchant-diagram-cells">'+pairs.map(([original,chinese])=>'<div><b>'+e(original)+'</b><span>'+e(chinese)+'</span></div>').join('')+'</div></figure>';
+}
+function merchantTranslationMarkup(){
+  return '<details class="merchant-translation"><summary>先用手机翻译外文网页</summary><div class="merchant-step-body"><p>iPhone Safari：打开商家网页，轻点地址栏附近的“页面菜单”；如果出现翻译选项，选择翻译为中文。功能并非在所有语言和地区可用。</p><p>Android Chrome：在顶部翻译提示中选中文；没有提示时，点地址栏右侧“更多”→“翻译”。目标语言可在翻译设置中调整。</p><p>iPhone / iPad Chrome：在顶部翻译栏选中文；没有翻译栏时，点“更多”→“翻译”。无法翻译可先刷新；仍不可用时，保留原文并参考下面的词语对照。</p>'+merchantDiagram([['页面菜单 / 更多','打开浏览器菜单'],['翻译 → 中文','若提供该选项'],['显示原文','核对金额与按钮']],'手机翻译')+'<p>翻译只帮助理解。金额、币种、尺码单位、国家、邮箱和地址请对照原文检查。不要把密码、银行卡资料或含个人资料的结账截图上传到翻译服务。菜单可能随版本、系统和地区变化。</p><p>Apple / Google 官方帮助核对日期：'+MERCHANT_GUIDE_CHECKED_AT+'；未操作你的手机或更改设置。</p><ul>'+MERCHANT_GUIDE_HELP.filter(source=>source.scope==='browser').map(source=>'<li>'+merchantHelpLink(source)+'</li>').join('')+'</ul></div></details>';
+}
+function merchantSpecialMarkup(code){
+  const special=Object.prototype.hasOwnProperty.call(MERCHANT_GUIDE_SPECIAL,code)?MERCHANT_GUIDE_SPECIAL[code]:null;
+  if(!special)return '<section class="merchant-evidence"><h3>通用清单 · 该商家流程未逐步核实</h3><p>以下六步为通用语言与操作提示，不代表该商家使用全部字段或按钮。注册、地址、结账、配送和退货须按当前原站核对；未套用其他商家的账户或退货规则。</p><p>内容整理日期：'+MERCHANT_GUIDE_CHECKED_AT+'。未提交注册、登录或订单。</p></section>';
+  return '<section class="merchant-evidence"><h3>这家商店已核对的提示</h3><p class="merchant-scope">适用范围：'+e(special.scope)+'</p><p>核对日期：'+MERCHANT_GUIDE_CHECKED_AT+'。'+e(special.evidence)+'</p><details class="merchant-specific-notes"><summary>展开账户与退货提醒</summary>'+special.paragraphs.map(paragraph=>'<p>'+e(paragraph)+'</p>').join('')+'</details><details class="merchant-sources"><summary>查看官方来源与图解（可选）</summary><p>这些是公开说明或账户入口。打开页面不代表代你注册、登录、填地址或付款。</p><ul>'+MERCHANT_GUIDE_HELP.filter(source=>source.scope===code).map(source=>'<li>'+merchantHelpLink(source)+'</li>').join('')+'</ul></details></section>';
+}
+function merchantLanguageMarkup(entry){
+  return '<article id="merchantLanguageGuide"><button class="merchant-guide-back" id="merchantGuideBack" type="button">← 返回商品详情</button><h2 id="merchantGuideTitle" tabindex="-1">'+e(entry.name)+' · 中文操作图解</h2><p class="merchant-guide-intro">请在商家原站自行完成账户、地址、购物车与付款操作。BikeHunt 不收集本指南中的账号、密码、地址或付款资料。所有图形都是示意，未实测注册或结账成功。</p>'+merchantTranslationMarkup()+merchantSpecialMarkup(entry.code)+'<h3 class="merchant-steps-title">六步通用核对清单</h3><p class="merchant-guide-intro">点击展开。原文标签用于寻找对应含义，不代表每家商店使用相同界面。</p><ol class="merchant-guide-steps">'+MERCHANT_LANGUAGE_STEPS.map((step,index)=>'<li><details class="merchant-guide-step" name="merchant-language-steps" data-merchant-step="'+e(step.id)+'"'+(index===0?' open':'')+'><summary><span class="merchant-step-number" aria-hidden="true">'+(index+1)+'</span><span>'+e(step.title)+'</span></summary><div class="merchant-step-body">'+merchantDiagram(step.diagram,step.title)+step.paragraphs.map(paragraph=>'<p>'+e(paragraph)+'</p>').join('')+'</div></details></li>').join('')+'</ol><p class="merchant-guide-intro">查看帮助不会改变所选商品的库存、购买资格或中国配送核实结果。返回详情后，按当前可用规格继续。</p></article>';
+}
+function openMerchantGuide(detail,code,variantId=null){
+  const entry=merchantGuideEntries(detail).find(item=>item.code===code);if(!entry)return;
+  merchantGuideSource=entry.code;
+  openPanel('商家中文操作图解',merchantLanguageMarkup(entry));
+  document.getElementById('merchantGuideTitle').focus();
+  document.getElementById('merchantGuideBack').onclick=async()=>{
+    merchantGuideSource=null;
+    const sequence=detailSequence+1;
+    await loadDetail(detail.product_id,variantId);
+    if(sequence!==detailSequence||!sheet.classList.contains('open'))return;
+    const button=[...document.getElementById('sheetBody').querySelectorAll('[data-merchant-guide]')].find(item=>item.dataset.merchantGuide===code);
+    button?.focus();
+  };
+}
+function allowedMerchantHelp(link){
+  if(!sheet.classList.contains('open')||!link?.isConnected||!document.getElementById('merchantLanguageGuide')?.contains(link)||merchantGuideSource===null)return null;
+  return MERCHANT_GUIDE_HELP.find(source=>source.key===link.dataset?.merchantHelpLink&&source.url===link.getAttribute('href')&&(source.scope==='browser'||source.scope===merchantGuideSource))||null;
+}
+function guardMerchantHelpExit(event){
+  const link=event.target.closest?.('a[data-merchant-help-link]');if(!link||(event.type==='auxclick'&&event.button!==1))return;
+  event.preventDefault();
+  const source=allowedMerchantHelp(link);if(!source)return;
+  if(!window.confirm(PURCHASE_DISCLAIMER+'\n\n即将查看官方帮助或公开账户入口，仅供阅读核对。此操作不会代你注册、登录或下单，也不表示商品有货或支持中国配送。\n确定：继续查看；取消：留在本站。'))return;
+  if(allowedMerchantHelp(link)!==source)return;
+  saveBrowseState();window.location.assign(source.url);
+}
+document.addEventListener('click',guardMerchantHelpExit);
+document.addEventListener('auxclick',guardMerchantHelpExit);
+
 function invalidateReferenceLinks(events=[]){
   for(const quote of referenceOffers.values()){
     const event=events.find(row=>row.recovered_history!==true&&row.offer_id===quote.offer.offer_id);

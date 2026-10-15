@@ -267,11 +267,13 @@ async function loadDetail(id,variantId=null){
       (detail.identity.mpn?'<div class="model-code">制造商型号 '+e(detail.identity.mpn)+(detail.identity.color?' · '+e(detail.identity.color):'')+'</div>':'')+
       (selected?summary+'<div class="offers"><h4>已选 '+e(detail.identity.size)+' · '+e(detail.identity.color||'当前款')+' · '+detail.offers.length+' 条同规格报价</h4>'+detail.offers.map(offerMarkup).join('')+'</div>':'<div class="summary-box"><h4>'+(confirmedSoldOut?'所示规格 '+e(detail.identity.size||'')+' 已售罄':available.length?'选择上方尺码后，显示对应价格':inventoryExpired?'库存待核实':'尚未取得可选的现货规格')+'</h4><p>'+(confirmedSoldOut?'该规格已确认售罄，目前没有购买链接。其他尺码请分别核对。':available.length?'不同尺码的库存与价格可能不同，先选规格再比较。':inventoryExpired?'历史价格仍可参考；上次库存核实已超过一小时，尺码待核实。可前往官网商品页查看当前情况。':'当前报价可供参考；未知库存不会作为现货尺码显示。可前往官网商品页自行核对。')+'</p></div>')+
       (!selected?referenceOffersMarkup(detail):'')+
+      merchantGuidesMarkup(detail)+
       '<div class="service-note">汇率日期 '+e(detail.fx.rate_date||'待获取')+(detail.fx.stale?' · 使用过期缓存':'')+'。人民币金额为参考，信用卡入账及手续费以发卡行为准。<br>BikeHunt 只提供信息与外链，付款、订单及售后由第三方网站负责。</div>';
     document.getElementById('variant').onchange=event=>loadDetail(id,event.target.value||null);
     const colorSelect=document.getElementById('colorChoice');if(colorSelect)colorSelect.onchange=event=>loadDetail(event.target.value,null);
     body.querySelectorAll('[data-variant]').forEach(button=>button.onclick=()=>loadDetail(id,button.dataset.variant));
     body.querySelectorAll('.guide-start').forEach(button=>button.onclick=()=>startGuide(detail,button.dataset.offer));
+    bindMerchantGuides(detail,selected?detail.variant_id:null);
     refreshFitReference(detail,sequence);
   }catch(error){if(sequence!==detailSequence)return;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>'+e(error.message)+'<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId)}
 }
@@ -282,7 +284,7 @@ function openProduct(id,variantId=null,allowSoldOut=false){
   const item=items.find(p=>p.product_id===id);if(item){document.getElementById('sheetName').textContent=item.name;document.getElementById('sheetBrand').textContent=item.brand;document.getElementById('sheetImg').src=safeUrl(item.image)}
   document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus();loadDetail(id,variantId);
 }
-function closeSheet(){referenceOffers.clear();if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
+function closeSheet(){referenceOffers.clear();if(typeof merchantGuideSource!=='undefined')merchantGuideSource=null;if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
 async function init(){
   gallery.innerHTML='<div class="empty loading" role="status"><strong>正在整理骑行好价</strong>读取商品与人民币参考价…</div>';
   try{
