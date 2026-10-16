@@ -333,6 +333,12 @@ class DynamicTests(unittest.TestCase):
             repository = OfferRepository(Path(folder))
             atomic_json(Path(folder) / "sources.json", [source])
             repository.save("uae", [first, second, other], NOW, [])
+            # Migration from an older exact-SKU snapshot with no parent metadata.
+            legacy = first.model_copy(update={"collection_url": None})
+            repository.save("uae", [legacy], NOW, [])
+            repository.save("uae", [first], NOW, [])
+            saved = json.loads((Path(folder) / "offers/uae.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(saved["offers"]), len({r["offer_id"] for r in saved["offers"]}))
             repository.save("uae", [first], NOW + timedelta(seconds=1), [])
             self.assertEqual({r.offer_id for r in repository.load()}, {"first", "other"})
             repository.save(

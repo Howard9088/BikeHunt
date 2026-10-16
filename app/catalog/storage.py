@@ -112,6 +112,9 @@ class OfferRepository:
         merged = [row for row in existing
                   if (row.collection_url or row.url).split("?", 1)[0] not in success_urls]
         merged.extend(offers)
+        # Legacy snapshots do not yet carry their collection parent. Replacing
+        # an identical SKU must still persist only its newest observation.
+        merged = list({row.offer_id: row for row in merged}.values())
         if offers:
             atomic_json(self.data_dir / "offers" / f"{code}.json", {
                 "source_code": code, "collected_at": fetched_at.isoformat(),
