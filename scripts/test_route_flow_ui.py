@@ -100,7 +100,7 @@ def main():
                         value = state['detail']
                         state['last_variant'] = parse_qs(parsed.query).get('variant_id', [None])[0]
                     elif parsed.path == '/api/directories':
-                        value = {'brands': [{'code': 'decathlon_cn', 'name': 'Decathlon China', 'name_zh': '迪卡侬中国官网', 'official_url': 'https://www.decathlon.com.cn/', 'shop_url': 'https://www.decathlon.com.cn/', 'status': 'official_link_found', 'shop_evidence_url': 'https://www.decathlon.com.cn/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}], 'teams': [{'code': 'visma', 'name': 'Visma', 'name_zh': 'Visma', 'official_url': 'https://www.teamvismaleaseabike.com/', 'shop_url': 'https://www.teamvismaleaseabike.com/shop/', 'status': 'verified_shop', 'shop_evidence_url': 'https://www.teamvismaleaseabike.com/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}]}
+                        value = {'brands': [{'code': 'decathlon_cn', 'source_codes': ['decathlon_cn'], 'name': 'Decathlon China', 'name_zh': '迪卡侬中国官网', 'official_url': 'https://www.decathlon.com.cn/', 'shop_url': 'https://www.decathlon.com.cn/', 'status': 'official_link_found', 'shop_evidence_url': 'https://www.decathlon.com.cn/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}], 'teams': [{'code': 'visma', 'name': 'Visma', 'name_zh': 'Visma', 'official_url': 'https://www.teamvismaleaseabike.com/', 'shop_url': 'https://www.teamvismaleaseabike.com/shop/', 'status': 'verified_shop', 'shop_evidence_url': 'https://www.teamvismaleaseabike.com/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}]}
                     elif parsed.path == '/api/updates':
                         value = {'items': [], 'cursor': 0, 'fx': state['catalog']['fx']}
                     elif parsed.path.startswith('/api/rules/'):
@@ -298,6 +298,26 @@ def main():
                 page.reload(wait_until='networkidle')
                 expect(page.locator('.card')).to_have_count(1)
                 assert page.evaluate("items.length === 1 && items[0].product_id === 'domestic-m' && items[0].reference_variant_id === 'M' && items[0].reference_offer_id === 'offer-domestic-m'")
+                page.locator('[data-tab="brands"]').click()
+                page.locator('.directory-card[data-source="decathlon_cn"]').click()
+                channel = page.locator('#channelInfo')
+                expect(channel).to_be_visible()
+                channel.locator(':scope > summary').click()
+                expect(channel.locator('.domestic-shopping-help')).to_have_count(1)
+                expect(channel).not_to_contain_text('购买条件暂未确认')
+                expect(channel.locator('.official-entrances')).to_have_count(1)
+                assert channel.locator('.domestic-shopping-help').get_attribute('open') is None
+                assert page.evaluate("""() => {
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = domesticPaymentMarkup();
+                    return document.querySelector('#channelInfo .domestic-payment').outerHTML === wrapper.firstElementChild.outerHTML;
+                }""")
+                channel.locator('.domestic-shopping-help > summary').click()
+                expect(channel.locator('.domestic-shopping-help')).to_contain_text('自行车除外')
+                expect(channel.locator('.domestic-shopping-help')).to_contain_text('有效购买凭证')
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                assert outbound == [target]
+                channel.locator(':scope > summary').click()
                 page.locator('.card[data-id="domestic-m"] .compare-button').click()
                 page.locator('[data-variant="M"]').click()
                 assert state['last_variant'] == 'M'

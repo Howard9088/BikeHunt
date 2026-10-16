@@ -66,9 +66,12 @@ function ruleMarkup(book){
   if(!book.documents.length)return '<div class="summary-box"><h4>购买条件暂未确认</h4><p>请在商店结账前确认配送范围、付款方式和税费。</p></div>';
   return '<div class="rule-meta">购买条件更新 '+e(timeText(book.checked_at))+'</div>'+book.documents.map(doc=>'<section class="rule-section"><h4>'+e(doc.title_zh)+'</h4>'+(doc.state==='translated'?'<ul>'+doc.summary_zh.map(t=>'<li>'+e(t)+'</li>').join('')+'</ul>':'<p class="offer-note">'+(doc.state==='changed'?'官方原文已有变化，最新中文规则正在复核。':'请查看商店最新配送、付款与退换货说明。')+'</p>')+'<details><summary>核对来源</summary><a class="source-original" target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(doc.url))+'">查看官方原文（核对用） ↗</a></details></section>').join('');
 }
+function domesticChannelInfo(entry){
+  return entry?.code==='decathlon_cn'&&Array.isArray(entry.source_codes)&&entry.source_codes.length===1&&entry.source_codes[0]==='decathlon_cn'&&entry.official_url==='https://www.decathlon.com.cn/'&&entry.shop_url==='https://www.decathlon.com.cn/';
+}
 function channelInfoMarkup(entry,book){
   return '<div class="source-overview">'+(entry.logo_images?.length?directoryLogo(entry):'')+'<strong>'+e(entry.name_zh)+'</strong></div>'+
-    (entry.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+ruleMarkup(book)+
+    (entry.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+(domesticChannelInfo(entry)&&typeof domesticPaymentMarkup==='function'?domesticPaymentMarkup():ruleMarkup(book))+
     (entry.official_url?'<details class="official-entrances"><summary>官网与官方商城入口</summary><p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.official_url))+'">品牌或车队官网 ↗</a></p>'+
       (entry.shop_url?'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.shop_url))+'">官方公布的商城入口 ↗</a></p>':'')+
       '<p>购买前请核对商品规格、配送地区和最终结账金额。</p></details>':'');

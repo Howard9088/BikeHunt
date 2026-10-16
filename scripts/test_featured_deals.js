@@ -99,4 +99,29 @@ function testLowPriceSafetyAndComparability(){
  assert.notEqual(h.c.lowPriceBucket(clothing('Bib Shorts','bibs')).key,h.c.lowPriceBucket(clothing('Bib Tight','bibs')).key);
  assert.equal(h.c.lowPriceBucket(clothing('Jersey')),null);assert.equal(h.c.lowPriceBucket(clothing('Rain Jacket','jackets')),null);assert.ok(h.c.lowPriceBucket(clothing('Wind Vest','jackets')));
 }
-for(const test of [testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers,testBrandDiversityAndLowPrices,testLowPriceSafetyAndComparability]){test();console.log('PASS '+test.name)}
+
+function testVerifiedStockWithoutSizeMetadata(){
+ const h=harness(),fresh=card({product_id:'no-size',name:'No Size Jersey',reference_original_price:null,discount_pct:null,reference_size:null,available_sizes:[],recommended_total_cny:null,variant_count:1,source_count:1});
+ h.c.activeSource='brand';h.c.items=[{...fresh,channel_quotes:{brand:fresh}}];h.c.render();
+ assert.equal(h.c.visibleItems().length,1);assert.ok(h.c.gallery.innerHTML.includes('已核实有货 · 规格请到官网核对'));
+ assert.ok(h.c.gallery.innerHTML.includes('已核实有货 · 所示商品价，规格请到官网核对'));
+ assert.ok(!h.c.gallery.innerHTML.includes('1 个规格 · 库存待确认'));assert.ok(!h.c.gallery.innerHTML.includes('参考起价 · 库存待核实'));
+ assert.equal(h.c.visibleItems()[0].reference_offer_id,fresh.reference_offer_id);
+ const sized={...fresh,reference_size:'M',available_sizes:['M']};
+ h.c.items=[{...sized,channel_quotes:{brand:sized}}];h.c.render();
+ assert.ok(!h.c.gallery.innerHTML.includes('已核实有货 · 规格请到官网核对'));
+ assert.ok(h.c.gallery.innerHTML.includes('现货商品参考起价 · 先选规格'));
+ for(const changes of [{stock_state:'unknown',reference_stock:'unknown'},{stock_state:'out_of_stock',reference_stock:'out_of_stock'},{fetched_at:new Date(NOW-3600001).toISOString()}]){
+  const unavailable={...fresh,...changes};h.c.items=[{...unavailable,channel_quotes:{brand:unavailable}}];h.c.render();
+  assert.equal(h.c.visibleItems().length,0);assert.ok(!h.c.gallery.innerHTML.includes('已核实有货 · 规格请到官网核对'));
+  assert.ok(h.c.gallery.innerHTML.includes('该渠道暂无已核实有货的商品'));
+ }
+ h.c.activeSource=null;h.elements.get('q').value='No Size';
+ for(const changes of [{stock_state:'unknown',reference_stock:'unknown'},{fetched_at:new Date(NOW-3600001).toISOString()}]){
+  h.c.items=[{...fresh,...changes}];h.c.render();
+  assert.ok(!h.c.gallery.innerHTML.includes('已核实有货 · 规格请到官网核对'));
+  assert.ok(h.c.gallery.innerHTML.includes('库存待'));
+ }
+}
+
+for(const test of [testVerifiedStockWithoutSizeMetadata,testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers,testBrandDiversityAndLowPrices,testLowPriceSafetyAndComparability]){test();console.log('PASS '+test.name)}

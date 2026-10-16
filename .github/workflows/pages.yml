@@ -45,6 +45,10 @@ jobs:
             storage/policy_history
           key: bikehunt-crawl-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: bikehunt-crawl-
+      - name: Restore committed manual China snapshot
+        # This source is manually observed, not crawler-managed. Keep its real
+        # committed timestamps; normal stock expiry still applies downstream.
+        run: git restore --source=HEAD -- data/offers/decathlon_cn.json
       - name: Install crawler and test dependencies
         run: pip install -r requirements-dev.txt
       - name: Restore public event cursor

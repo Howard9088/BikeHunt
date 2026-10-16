@@ -40,6 +40,7 @@ function harness(){
  vm.runInContext(slice(flows,'const AMAZON_SEARCH_MARKETS=',"// Standalone marketplace search navigation is retired;"),c);
  vm.runInContext(slice(flows,'async function startGuide(','function updateGuideVerificationMetadata('),c);
  vm.runInContext(source,c);
+ vm.runInContext(slice(flows,'function ruleMarkup(','function syncChannelInfo('),c);
  return {c,elements,nodes,navigated,prompts,requested,loaded,historyCalls,get html(){return html},get title(){return title},get saved(){return saved},get focused(){return focused},setNow:value=>now=value,setAnswer:value=>exit.setAnswer(value),setResult:value=>loadResult=value,get reg(){return vm.runInContext('registrationExitContext',c)},open(d=detail(),options={}){c.currentProduct=d;c.guideContext={detail:d,quote:d.offers[0],route:null,reference:false,book:{documents:[]},...options};c.renderRouteComparison();return c.guideContext},close(){open=false;c.clearPurchaseState();render('')}};
 }
 function statuses(h,q){return Object.fromEntries(h.c.routeOptions(q).map(row=>[row.id,row.status]))}
@@ -168,6 +169,28 @@ async function testDomesticScopeCostsAndExit(){
  const changed=harness();changed.c.history.state.bikehuntPurchase=saved;const changedDetail=structuredClone(d);changedDetail.offers[0].offer.sales_region='其他市场';changed.setResult(changedDetail);await changed.c.restorePurchaseState();assert.equal(changed.c.guideContext.invalidated,true);assert.equal(changed.elements.get('routeContinue').disabled,true);
 }
 
-async function main(){for(const test of [testDomesticScopeCostsAndExit,testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testSharedConfirmationOnlyAtFinalSameTabExit,testReferenceOnlyAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: nine production-JavaScript regression groups passed.');}
+function testDomesticChannelUsesSharedHelp(){
+ const h=harness(),book={documents:[]},entry={code:'decathlon_cn',name_zh:'迪卡侬中国官网',source_codes:['decathlon_cn'],official_url:'https://www.decathlon.com.cn/',shop_url:'https://www.decathlon.com.cn/'};
+ h.c.paymentDirectoryMarkup=()=>'<div class="payment-matrix-fixture">付款方式矩阵</div>';
+ const shared=h.c.domesticPaymentMarkup(),html=h.c.channelInfoMarkup(entry,book);
+ assert.ok(html.includes(shared),'Channel must reuse the exact purchase helper');
+ assert.ok(html.includes('payment-matrix-fixture')&&html.includes('official-entrances'));
+ assert.ok(!html.includes('购买条件暂未确认'));
+ assert.ok(/<details class="domestic-shopping-help">/.test(html));
+ for(const change of [{code:'decathlon'},{source_codes:undefined},{source_codes:[]},{source_codes:['decathlon']},{source_codes:['decathlon_cn','decathlon']},{source_codes:['decathlon_cn','decathlon_cn']},
+   ...['https://www.decathlon.com.cn.evil.test/','http://www.decathlon.com.cn/','https://user@www.decathlon.com.cn/','https://www.decathlon.com.cn:443/','https://www.decathlon.com.cn/?redirect=other','https://www.decathlon.com.cn/#other','https://www.decathlon.com.cn/path','https://www.decathlon.fr/'].flatMap(url=>[{official_url:url},{shop_url:url}])]){
+   const invalid=h.c.channelInfoMarkup({...entry,...change},book);
+   assert.ok(!invalid.includes('domestic-shopping-help'),JSON.stringify(change));
+   assert.ok(invalid.includes('购买条件暂未确认'),JSON.stringify(change));
+ }
+ const original=h.c.domesticPaymentMarkup;
+ h.c.domesticPaymentMarkup=()=>'<div>SHARED_POLICY_SENTINEL</div>';
+ assert.ok(h.c.channelInfoMarkup(entry,book).includes('SHARED_POLICY_SENTINEL'),'No duplicate policy copy');
+ h.c.domesticPaymentMarkup=undefined;
+ assert.ok(h.c.channelInfoMarkup(entry,book).includes('购买条件暂未确认'),'Optional helper failure stays safe');
+ h.c.domesticPaymentMarkup=original;
+}
+
+async function main(){for(const test of [testDomesticChannelUsesSharedHelp,testDomesticScopeCostsAndExit,testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testSharedConfirmationOnlyAtFinalSameTabExit,testReferenceOnlyAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: ten production-JavaScript regression groups passed.');}
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1});
 module.exports={harness,quote,detail,NOW};

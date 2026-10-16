@@ -1,0 +1,75 @@
+{
+  "source": "decathlon_cn",
+  "purpose": "One-time real browser recheck for cache overwrite fix acceptance",
+  "method": "Fresh normal cloud Chrome product navigation, wait for rendered product, explicitly click exact M size, read selected-size and online-stock DOM. No API, login, cart, coupon claim, checkout or robots retry.",
+  "products": [
+    {
+      "model_code": "8969603",
+      "dsm_code": "367685",
+      "source_url": "https://www.decathlon.com.cn/product-detail?dsm_code=367685&model_code=8969603",
+      "name": "男士骑行背带短裤RCR-R 5 - 黑色",
+      "color": "烟熏黑",
+      "size": "M - 180/80A",
+      "checked_at": "2026-10-16T04:11:25.512Z",
+      "displayed_online_stock": 443,
+      "currency": "CNY",
+      "price": 399.9,
+      "availability": "in_stock",
+      "stock_semantics": "Visible 线上库存 for explicitly selected variant; not an API availablequantity field, internal SKU ID unknown; fulfillment not guaranteed.",
+      "coupon": {
+        "estimated_price": 369.9,
+        "label": "满300减30",
+        "claim_label": "领券",
+        "claimed": false,
+        "applied": false,
+        "expiry": null,
+        "eligibility": "unknown",
+        "stacking": "unknown",
+        "other_labels": [
+          "满600减60",
+          "满800减80"
+        ],
+        "note": "Do not use estimated coupon price as unconditional real price. October15-November13 site price protection period is not coupon expiry."
+      },
+      "raw_dom": {
+        "selected_size": "<div data-v-8fc5153a=\"\" class=\"min-w-[40px] h-40 mr-10 mb-10 pt-2 sm:pt-2 box-border px-10 border-1 border-solid flex items-center justify-center text-14 cursor-pointer sm:min-w-[80px] sm:h-80 sm:mr-[17px] sm:mb-24 sm:text-28 sm:px-20 border-[#3643BA] font_maincolor  border-1 sm:font-medium sm:border-[4px]\">\n            M - 180/80A\n        </div>",
+        "online_stock": "<span class=\"text-[#616161]\">线上库存 <span class=\"text-[#149B65]\">443</span></span>"
+      },
+      "visible_price_text": "￥399 .90；预估到手 ￥369 .90"
+    },
+    {
+      "model_code": "8987878",
+      "dsm_code": "355348",
+      "source_url": "https://www.decathlon.com.cn/product-detail?dsm_code=355348",
+      "name": "男女同款迪卡侬 CMA CGM队版复刻版公路骑行服 RCR竞赛系列",
+      "color": "孔雀蓝",
+      "size": "M",
+      "checked_at": "2026-10-16T04:11:54.367Z",
+      "displayed_online_stock": 5,
+      "currency": "CNY",
+      "price": 399.9,
+      "availability": "in_stock",
+      "stock_semantics": "Visible 线上库存 for explicitly selected variant; not an API availablequantity field, internal SKU ID unknown; fulfillment not guaranteed.",
+      "coupon": {
+        "estimated_price": 369.9,
+        "label": "满300减30",
+        "claim_label": "领券",
+        "claimed": false,
+        "applied": false,
+        "expiry": null,
+        "eligibility": "unknown",
+        "stacking": "unknown",
+        "other_labels": [
+          "满600减60",
+          "满800减80"
+        ],
+        "note": "Do not use estimated coupon price as unconditional real price. October15-November13 site price protection period is not coupon expiry."
+      },
+      "raw_dom": {
+        "selected_size": "<div data-v-8fc5153a=\"\" class=\"min-w-[40px] h-40 mr-10 mb-10 pt-2 sm:pt-2 box-border px-10 border-1 border-solid flex items-center justify-center text-14 cursor-pointer sm:min-w-[80px] sm:h-80 sm:mr-[17px] sm:mb-24 sm:text-28 sm:px-20 border-[#3643BA] font_maincolor  border-1 sm:font-medium sm:border-[4px]\">\n            M\n        </div>",
+        "online_stock": "<span class=\"text-[#616161]\">线上库存 <span class=\"text-[#149B65]\">5</span></span>"
+      },
+      "visible_price_text": "￥399 .90；预估到手 ￥369 .90"
+    }
+  ]
+}

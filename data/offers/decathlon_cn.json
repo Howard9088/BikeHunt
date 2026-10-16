@@ -1,6 +1,6 @@
 {
   "source_code": "decathlon_cn",
-  "collected_at": "2026-10-16T03:29:32Z",
+  "collected_at": "2026-10-16T04:11:54.367Z",
   "verification_method": "manual_public_selected_variant",
   "offers": [
     {
@@ -23,12 +23,12 @@
         "currency": "CNY"
       },
       "stock": "in_stock",
-      "fetched_at": "2026-10-16T03:29:07Z",
+      "fetched_at": "2026-10-16T04:11:25.512Z",
       "collection_state": "current",
       "data_kind": "live_snapshot",
       "sales_region": "中国大陆 CNY 报价",
       "family_hint": "8969603",
-      "identity_evidence": "迪卡侬中国官网型号 8969603；公开页面明确选中 M - 180/80A 后读取线上库存，仅核实此规格。",
+      "identity_evidence": "迪卡侬中国官网型号 8969603；公开页面明确选中 M - 180/80A 后读取线上库存，仅核实此规格。 本次库存数量为官网所选尺码公开显示值，不保证实际履约。",
       "purchase_requirements": [
         "购买时请在官网重新选择 M - 180/80A / 烟熏黑；其他尺码库存未核实。",
         "页面显示领券满300减30，预估券后369.90元；须自行领券并确认资格及有效期，未验证实际抵扣。",
@@ -44,7 +44,8 @@
       "china_issued_card": {
         "status": "unknown",
         "note": "中国官网实际付款方式待结账确认。"
-      }
+      },
+      "stock_quantity": 443
     },
     {
       "offer_id": "decathlon_cn-8987878-M",
@@ -66,12 +67,12 @@
         "currency": "CNY"
       },
       "stock": "in_stock",
-      "fetched_at": "2026-10-16T03:29:32Z",
+      "fetched_at": "2026-10-16T04:11:54.367Z",
       "collection_state": "current",
       "data_kind": "live_snapshot",
       "sales_region": "中国大陆 CNY 报价",
       "family_hint": "8987878",
-      "identity_evidence": "迪卡侬中国官网型号 8987878；公开页面明确选中 M 后读取线上库存，仅核实此规格。",
+      "identity_evidence": "迪卡侬中国官网型号 8987878；公开页面明确选中 M 后读取线上库存，仅核实此规格。 本次库存数量为官网所选尺码公开显示值，不保证实际履约。",
       "purchase_requirements": [
         "购买时请在官网重新选择 M / 孔雀蓝；其他尺码库存未核实。",
         "页面显示领券满300减30，预估券后369.90元；须自行领券并确认资格及有效期，未验证实际抵扣。",
@@ -87,7 +88,8 @@
       "china_issued_card": {
         "status": "unknown",
         "note": "中国官网实际付款方式待结账确认。"
-      }
+      },
+      "stock_quantity": 5
     }
   ]
 }
