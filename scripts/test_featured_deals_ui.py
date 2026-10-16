@@ -305,14 +305,15 @@ def gobik_fixture():
 def exercise_gobik_catalog(browser, base, checks, errors, external):
     """Exercise the new brand independently of every original featured-deals fixture."""
     for mode, viewport in [('desktop', {'width': 1440, 'height': 900}),
+                           ('desktop_short', {'width': 1180, 'height': 757}),
                            ('mobile', {'width': 390, 'height': 844}),
                            ('small_mobile', {'width': 320, 'height': 740})]:
         state = gobik_fixture()
         selected = state['factory']
         product_id, variant_id, offer_id = (selected[key] for key in
                                            ['product_id', 'reference_variant_id', 'reference_offer_id'])
-        context = browser.new_context(viewport=viewport, is_mobile=mode != 'desktop',
-                                      has_touch=mode != 'desktop', service_workers='block')
+        context = browser.new_context(viewport=viewport, is_mobile=not mode.startswith('desktop'),
+                                      has_touch=not mode.startswith('desktop'), service_workers='block')
         context.set_default_timeout(7000)
         context.add_init_script('window.BIKEHUNT_PAGES=true;')
         mocked_images = []
@@ -360,6 +361,29 @@ def exercise_gobik_catalog(browser, base, checks, errors, external):
         page.on('pageerror', lambda error: errors.append(str(error)))
         try:
             page.goto(base, wait_until='networkidle')
+            # Default feed: actual text boxes must fit every clipping ancestor.
+            # This catches the 1180x757 regression where DOM text existed below the card.
+            for index in range(2):
+                if index:
+                    page.locator('#next').evaluate('(button) => button.click()')
+                    page.wait_for_timeout(450)
+                card = page.locator('#grid .card').nth(index)
+                for selector in ['.listing-time', '.data-time', '.compare-button']:
+                    label = card.locator(selector)
+                    expect(label).to_be_visible()
+                    bounds = label.evaluate("""node => {
+                        const r=node.getBoundingClientRect();
+                        let top=0,bottom=innerHeight,left=0,right=innerWidth;
+                        for(let p=node.parentElement;p;p=p.parentElement){
+                            const css=getComputedStyle(p),b=p.getBoundingClientRect();
+                            if(/hidden|clip|auto|scroll/.test(css.overflowY)){top=Math.max(top,b.top);bottom=Math.min(bottom,b.bottom)}
+                            if(/hidden|clip|auto|scroll/.test(css.overflowX)){left=Math.max(left,b.left);right=Math.min(right,b.right)}
+                        }
+                        return {top:r.top,bottom:r.bottom,left:r.left,right:r.right,height:r.height,clipTop:top,clipBottom:bottom,clipLeft:left,clipRight:right};
+                    }""")
+                    assert bounds['height'] > 0, (mode, selector, bounds)
+                    assert bounds['top'] >= bounds['clipTop']-1 and bounds['bottom'] <= bounds['clipBottom']+1, (mode, selector, bounds)
+                    assert bounds['left'] >= bounds['clipLeft']-1 and bounds['right'] <= bounds['clipRight']+1, (mode, selector, bounds)
             page.locator('[data-tab="brands"]').click()
             brand = page.locator('.directory-card[data-source="gobik"]')
             expect(brand).to_have_count(1)

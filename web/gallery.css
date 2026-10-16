@@ -52,3 +52,25 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
 @media(max-width:900px){.logo .bikehunt-lockup{width:215px}}
 @media(max-width:600px){.logo .bikehunt-lockup{width:164px}}
 @media(max-width:350px){.logo .bikehunt-lockup{width:132px}}
+
+/* Publication and stock observation stay visible beside the product identity. */
+.product-info .listing-time{margin-top:7px;flex-shrink:0}
+.product-info .data-time{display:block;margin-top:3px;flex-shrink:0}
+@media(min-width:601px) and (max-height:800px){
+ .product-info{padding:20px 28px}
+ .card .product-info h2{font-size:28px;margin:10px 0 12px;letter-spacing:-.7px}
+ .product-meta{margin-bottom:14px}
+ .buyline{margin-bottom:16px}
+ .best-price{font-size:44px}
+ .compare-button{padding:13px 16px}
+}
+@media(max-width:600px) and (max-height:850px){
+ .card .product-info{padding:10px 16px}
+ .card .product-info h2{font-size:22px;margin:6px 0 10px}
+ .card .product-meta{margin-bottom:8px}
+ .card .buyline{margin-bottom:8px}
+ .card .best-price{font-size:32px}
+ .card .compare-button{padding:10px 14px}
+ .card .listing-time{margin-top:4px}
+ .card .data-time{display:block;margin-top:2px;line-height:1.35}
+}

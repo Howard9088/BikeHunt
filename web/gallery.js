@@ -149,7 +149,10 @@ function render(preserveId=null){
       '<div class="product-visual">'+imageMarkup(p.image,p.name,i)+
       (deal?'<span class="discount">'+e(discountLabel(p))+'</span>':low||channel?'<span class="low-price-label">渠道精选</span>':'')+
       '<span class="slide-index">'+String(i+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0')+'</span></div>'+
-      '<div class="product-info"><div class="brand">'+e(p.brand)+'</div><h2>'+e(p.name_zh||p.name)+'</h2><div class="original-name">'+e(p.name)+'</div>'+
+      '<div class="product-info"><div class="brand">'+e(p.brand)+'</div>'+
+      '<div class="deal-spec listing-time">'+e(BikeHuntListingOrder.listingLabel(p))+'</div>'+
+      '<div class="data-time">'+(p.fetched_at?'上次核验 '+e(timeText(p.fetched_at)):e(timeText(null)))+' · 库存与价格以官网为准</div>'+
+      '<h2>'+e(p.name_zh||p.name)+'</h2><div class="original-name">'+e(p.name)+'</div>'+
       '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?e(catalogSizeLabel(p,true)):low||channel?e('参考规格 '+[compactVariantLabel(p.reference_size),p.reference_color].filter(Boolean).join(' / ')):stockVerified&&p.available_sizes?.length?e(catalogSizeLabel(p,false)):verifiedWithoutSizes?'已核实有货 · 规格请到官网核对':expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
       (sold?'<span class="sold">所示报价已售罄</span>':'')+'</div>'+
       '<div class="buyline"><div class="price-label">'+(historicalPrice?'上次记录商品价 · 当前价格请到官网核对':domestic?'中国官网商品价 · 配送费用另核':deal?'已核实折扣 · 商品价，不含运税':low||channel?'所示规格商品价 · 不含运税':sold?'所示报价已售罄':verifiedWithoutSizes?'已核实有货 · 所示商品价，规格请到官网核对':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
@@ -157,8 +160,6 @@ function render(preserveId=null){
       '<div class="foreign-price">'+(deal?'<span class="original-price">商家原价 <s>'+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</s></span> · 现价 ':'')+e(money(p.reference_price.amount,p.reference_price.currency))+' · '+e(p.reference_source)+'</div>'+
       (deal?'<div class="deal-spec">未取得折扣结束时间</div>':channel?'<div class="deal-spec">从该渠道上次核实有货的商品中按本站发布时间从新到旧选择，同时间优先较低商品价；不是同类比价或全网最低价。</div>':lowPriceMarkup(p,low))+'</div>'+ 
       '<button class="compare-button" type="button">选规格，比较 '+p.source_count+' 个渠道 <span aria-hidden="true">→</span></button>'+
-      '<div class="deal-spec listing-time">'+e(BikeHuntListingOrder.listingLabel(p))+'</div>'+
-      '<div class="data-time">'+(p.fetched_at?'上次核验 '+e(timeText(p.fetched_at)):e(timeText(null)))+' · 库存与价格以官网为准</div>'+
       '</div></div></article>';
   }).join('');
   const cards=[...gallery.querySelectorAll('.card')];
