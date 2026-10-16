@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="#fff"/><g fill="none" transform="translate(8 14)"><circle cx="16" cy="35" r="12" stroke="#202631" stroke-width="3.5"/><circle cx="49" cy="35" r="12" stroke="#202631" stroke-width="3.5"/><path d="m16 35 12-20 11 20H16Zm23 0 9-27h-8M23 15h12M4 9h13" stroke="#202631" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M49 29v12M43 35h12" stroke="#0069e0" stroke-width="2.5"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BikeHunt 浏览器图标">
+<rect width="512" height="512" fill="#ffffff"/>
+<path d="M151 122a168 168 0 1 1-51 82" fill="none" stroke="#092d43" stroke-width="54"/>
+<path fill="#00b8c0" fill-rule="evenodd" d="M256 150c-67 0-109 47-109 107 0 71 60 123 109 176 49-53 109-105 109-176 0-60-42-107-109-107zm0 58a51 51 0 1 0 0 102 51 51 0 1 0 0-102z"/>
+</svg>

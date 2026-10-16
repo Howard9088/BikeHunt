@@ -23,6 +23,7 @@ from app.updates import UpdateStore
 from app.update_views import enrich_events
 from app.payment_methods import read_payment_methods
 from app.registration_guides import read_registration_guides, registration_assets, publish_registration_guides
+from app.brand_icons import export_brand_icons
 
 
 def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
@@ -45,12 +46,13 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
         shutil.copy2(web/"visitor-stats.js", output/"web/visitor-stats.js")
     if (web/"icons").is_dir():
         shutil.copytree(web/"icons", output/"web/icons")
+        export_brand_icons(output/"web/icons")  # Regenerate approved SVG-derived browser and app icons.
     index = (web/"index.html").read_text(encoding="utf-8")
     index = index.replace('href="/web/"', 'href="./"').replace('="/web/', '="./web/')
     index = index.replace('<script src="./web/profile.js',
                           '<script src="./web/pages-adapter.js?v=BIKEHUNT_RELEASE_COMMIT" data-release="BIKEHUNT_RELEASE_COMMIT" defer></script>\n<script src="./web/profile.js')
     # Tie every copied interactive asset to this exact deployed release.
-    # Keep source HTML and pending icon work untouched.
+    # Keep other source HTML and release assets untouched.
     index = re.sub(r'(\./web/(?:gallery|flows|external-exit)\.css|\./web/(?:public-visibility|profile|gallery|flows|pages-adapter|registration-guides|purchase-readiness|payment-methods|purchase-flow|bundle-variants|external-exit|visitor-stats)\.js)(?:\?[^" ]*)?',
                    r'\1?v=BIKEHUNT_RELEASE_COMMIT', index)
     index = index.replace('BIKEHUNT_RELEASE_COMMIT', os.environ.get('GITHUB_SHA', 'local'))

@@ -21,7 +21,7 @@ class BrowserIconTests(unittest.TestCase):
         out=self.root/'_site'
         html=(out/'index.html').read_text()
         for href in re.findall(r'href="([^"]*(?:icons/)[^"]*)"',html):
-            self.assertIn('?v=20261014-logo1',href)
+            self.assertIn('?v=20261016-flat-approved1',href)
             absolute=urljoin('https://owner.github.io/BikeHunt/',href)
             self.assertTrue(absolute.startswith('https://owner.github.io/BikeHunt/web/icons/'))
             self.assertTrue((out/urlsplit(href).path.removeprefix('./')).is_file())
@@ -41,7 +41,15 @@ class BrowserIconTests(unittest.TestCase):
         raw=(icons/'favicon.ico').read_bytes()
         self.assertEqual(struct.unpack('<HHH',raw[:6]),(0,1,3))
         self.assertEqual({(raw[6+i*16],raw[7+i*16]) for i in range(3)},{(16,16),(32,32),(48,48)})
-        svg=(icons/'favicon.svg').read_text()
         source=(ROOT/'web/index.html').read_text()
-        for shape in re.findall(r'<(?:circle|path)\b[^>]*>',re.search(r'<svg class="bikehunt-mark".*?</svg>',source).group()):
-            self.assertIn(shape.replace('currentColor','#202631'),svg)
+        logo=(icons/'bikehunt-logo.svg').read_text()
+        app=(icons/'bikehunt-app.svg').read_text()
+        fav=(icons/'favicon.svg').read_text()
+        self.assertIn('viewBox="0 0 700 165"',logo)
+        self.assertIn('viewBox="0 0 512 512"',app)
+        self.assertIn('#00b8c0',fav)
+        self.assertIn('bikehunt-logo.svg?v=20261016-flat-approved1',source)
+        self.assertNotIn('<svg class="bikehunt-mark"',source)
+        self.assertEqual(logo,(ROOT/'web/icons/bikehunt-logo.svg').read_text())
+        self.assertNotEqual((icons/'favicon-16.png').read_bytes(),(ROOT/'web/icons/favicon-16.png').read_bytes())
+        self.assertNotEqual((icons/'icon-192.png').read_bytes(),(ROOT/'web/icons/icon-192.png').read_bytes())

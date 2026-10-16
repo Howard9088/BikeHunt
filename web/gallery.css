@@ -44,3 +44,11 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
 /* Keep the existing footer and gallery heights. */
 .footer{gap:10px}.footer-description{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.footer #visitorStats{flex-shrink:0;white-space:nowrap}
 @media(max-width:600px){.footer{gap:7px}.footer-description{display:none}.footer #fxDate{display:none}.footer #visitorStats{margin-left:auto;font-size:10px}}
+
+/* Approved flat bikeHUNT identity: use its vector wordmark without duplicate text. */
+.logo{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;white-space:nowrap}
+.logo .bikehunt-lockup{display:block;width:254px;height:auto;flex:none}
+.logo small{margin-left:2px}
+@media(max-width:900px){.logo .bikehunt-lockup{width:215px}}
+@media(max-width:600px){.logo .bikehunt-lockup{width:164px}}
+@media(max-width:350px){.logo .bikehunt-lockup{width:132px}}
