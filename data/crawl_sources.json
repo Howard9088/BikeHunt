@@ -138,7 +138,11 @@
       "timeout_ms": 25000,
       "max_pages": 2,
       "max_products": 25
-    }
+    },
+    "catalog_locale_prefixes": [
+      "",
+      "/en-us"
+    ]
   },
   {
     "code": "santini",

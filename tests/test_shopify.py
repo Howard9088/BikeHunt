@@ -63,6 +63,48 @@ def fetcher_for(p=None, product_status=200, robots=b"User-agent: *\nAllow: /", h
 
 
 class ShopifyTests(unittest.TestCase):
+    def test_opted_in_locale_redirect_uses_actual_market_for_feed_and_product_prices(self):
+        requested = CATALOG.replace('/en/', '/')
+        resolved = CATALOG.replace('/en/', '/en-us/')
+        product_url = URL.replace('/en/', '/en-us/')
+        calls = []
+        market = MARKET.replace('EUR', 'USD') + '<script>Shopify.country="US";</script>'
+        def request(url, **kwargs):
+            calls.append(url)
+            if url.endswith('/robots.txt'):
+                return SimpleNamespace(status=200, body=b'User-agent: *\nAllow: /', headers={})
+            if url in (requested, resolved):
+                return SimpleNamespace(status=200, body=market.encode(), url=resolved, headers={})
+            if url == resolved + '/products.json?limit=25&page=1':
+                return SimpleNamespace(status=200, body=json.dumps({'products':[product()]}).encode(), headers={})
+            if url == product_url:
+                body = page(currency='USD').replace(URL, product_url) + '<script>Shopify.country="US";</script>'
+                return SimpleNamespace(status=200, body=body.encode(), headers={})
+            raise AssertionError(url)
+        fetcher = PublicPageFetcher({'shop.example'}, request=request, sleep=lambda _:None, utcnow=lambda:NOW)
+        result = collect_shopify_catalog(fetcher, {**SETTINGS,'catalog_url':requested,
+            'catalog_locale_prefixes':['','/en-us']}, SOURCE, NOW)
+        self.assertEqual(result.errors, [])
+        self.assertEqual(len(result.offers), 2)
+        self.assertTrue(all(row.url.startswith(product_url) and row.price.currency=='USD' for row in result.offers))
+        self.assertEqual(result.coverage['resolved_catalog_url'], resolved)
+        self.assertEqual(result.coverage['market_country'], 'US')
+        self.assertIn(resolved, calls)
+
+    def test_locale_redirect_cannot_change_collection_or_gain_cross_domain_permission(self):
+        requested = CATALOG.replace('/en/', '/')
+        for target in ['https://shop.example/en-us/collections/other',
+                       'https://other.example/en-us/collections/team-kit']:
+            def request(url, **kwargs):
+                if url.endswith('/robots.txt'):
+                    return SimpleNamespace(status=200, body=b'User-agent: *\nAllow: /', headers={})
+                return SimpleNamespace(status=200, body=MARKET.encode(), url=target, headers={})
+            fetcher = PublicPageFetcher({'shop.example'}, request=request, sleep=lambda _:None, utcnow=lambda:NOW)
+            result=collect_shopify_catalog(fetcher, {**SETTINGS,'catalog_url':requested,
+                'catalog_locale_prefixes':['','/en-us']}, SOURCE, NOW)
+            self.assertEqual(result.offers, [])
+            self.assertTrue(result.errors)
+
     def test_auto_fallback_uses_real_rendered_variant_price_and_capture(self):
         fetcher, calls = fetcher_for()
         original = fetcher.request

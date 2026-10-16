@@ -71,6 +71,14 @@ def _catalog_urls(catalog_url: str) -> tuple[str, str]:
     return origin + path + "/products.json", origin + prefix + "/products/"
 
 
+def _catalog_scope(path: str) -> tuple[str, str]:
+    """Separate an explicit locale prefix from the unchanged collection identity."""
+    path = path.rstrip('/')
+    match = re.match(r'^/[a-z]{2}(?:-[a-z]{2})?(?=/|$)', path)
+    prefix = match[0] if match else ''
+    return prefix, path[len(prefix):]
+
+
 def _product_url(product: dict, products_root: str) -> str:
     handle = product.get("handle")
     if not isinstance(handle, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", handle):
@@ -237,13 +245,20 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
     captured = {}
     policy = source_policy(settings)
 
-    def fetch_text(url: str, suffix: str, dynamic: bool = False) -> str:
+    def fetch_text(url: str, suffix: str, dynamic: bool = False,
+                   catalog_locale: bool = False) -> str:
         response = (fetcher.fetch(url, policy=policy.model_copy(update={"mode":"dynamic"}))
                     if dynamic else fetcher.fetch(url))
         final_url = str(getattr(response, "url", url))
         requested, final = urlsplit(url), urlsplit(final_url)
-        if (final.scheme != "https" or final.hostname != requested.hostname
-                or final.path.rstrip("/") != requested.path.rstrip("/")):
+        requested_prefix, requested_scope = _catalog_scope(requested.path)
+        final_prefix, final_scope = _catalog_scope(final.path)
+        allowed = settings.get('catalog_locale_prefixes', [])
+        locale_change = (catalog_locale and isinstance(allowed, list)
+            and requested_prefix in allowed and final_prefix in allowed
+            and requested_scope == final_scope and not requested.query and not final.query)
+        if (final.scheme != "https" or final.netloc != requested.netloc
+                or (final.path.rstrip("/") != requested.path.rstrip("/") and not locale_change)):
             raise CollectionError("Shopify request redirected outside the exact source/market path: "
                                   + requested.path + " -> " + final.scheme + "://"
                                   + (final.hostname or "") + final.path)
@@ -255,8 +270,15 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
         return response.body.decode("utf-8-sig", errors="replace")
 
     try:
-        feed_base, products_root = _catalog_urls(catalog_url)
-        market_html = fetch_text(catalog_url, ".html")
+        _catalog_urls(catalog_url)  # Validate the configured scope before requesting it.
+        market_html = fetch_text(catalog_url, ".html", catalog_locale=True)
+        resolved = str(getattr(captured[catalog_url], 'url', catalog_url))
+        if resolved.rstrip('/') != catalog_url.rstrip('/'):
+            # Request the observed canonical market through robots checking again.
+            # Product/feed paths stay strict; neither scope nor market price is guessed.
+            market_html = fetch_text(resolved, '.html')
+            result.coverage['resolved_catalog_url'] = resolved
+        feed_base, products_root = _catalog_urls(resolved)
         currency = shopify_market_currency(market_html)
         country = shopify_market_country(market_html)
         feed_url = f"{feed_base}?limit={limit}&page=1"
