@@ -3,7 +3,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8');
 const home=fs.readFileSync('web/index.html','utf8');
 assert.ok(!home.includes('wechatReminder'));assert.ok(!flows.includes('showWechat'));
-assert.match(home, /id="wechatCommunity">加入骑游海淘交流群<\/button>/);
+assert.match(home, /id="wechatCommunity" class="community-primary">加入骑游海淘交流群<\/button>/);
+assert.ok(home.indexOf('id="wechatCommunity"') < home.indexOf('</header>'), 'Community entry stays prominently in the header');
 assert.ok(home.includes('id="priceMessages"'));assert.ok(home.includes('id="amazonChannels"'));
 function section(source,start,end){return source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)))}
 function harness(saved=null){
