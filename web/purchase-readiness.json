@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-16-verified-channel-policies-batch2",
+  "revision": "2026-10-16-verified-channel-policies-batch3",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -523,6 +523,78 @@
         "https://www.santinicycling.com/pages/termini-e-condizioni-di-vendita"
       ],
       "sourceLimitations": "官方 FAQ 写明意大利仓发货；通常付款后 24–48 小时交 DHL Express 或 GLS。进口关税及额外税费不含在运费中，不提供中国订单完整含税总价。退货须收货后 45 天内通知，并在通知后 14 天内寄回；仅正常试穿，标签封签及附件齐全、未洗。非欧盟订单满 €300 的退运由 Santini 承担，低于门槛由客户承担，按实际取件地址确认；直接换码仅限欧盟，中国大陆及香港不适用。原路退款，初始运费不退。允许游客下单；注册用于账户查询等功能。Lidl–Trek 商品由同一 Santini 商城销售，此说明不套用 us.santinicycling.com。"
+    },
+    {
+      "sourceCode": "movistar",
+      "scope": "market",
+      "salesRegion": "US 市场 · EUR 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "gobik.com"
+      ],
+      "label": "Movistar · Gobik 官方商城",
+      "policyScope": "当前US 市场 · EUR 报价；未验证其他市场库存；目的地政策须与实际商品、地址及结账市场核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "PayPal（订单总额低于 €150）"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官网支付条件依市场和订单而定；支持支付方式不保证中国发行卡授权成功。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "当前官网市场选择器未列中国大陆，列有香港欧元市场；这不等于已验证香港具体地址或大陆可直邮。国际配送须符合官网运送政策的目的地范围，不能把国际配送字样视为全球无条件可寄。当前美国市场欧元报价须切换目标市场重新核价。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已核公开配送及退货资料未取得明确转运地址许可；须向商家确认，不能视为允许转运。"
+      },
+      "sourceLimitations": "官网 FAQ 明确 PayPal 仅订单总额低于 €150 时提供，达到 €150 或更高不可据此承诺可用；其他卡组织本次未取得可靠官方列举，中国发行卡授权仍未保证。世界其他地区运费 €20，订单满 €150 免运，香港的实际地址及费用仍须结账核对；国际进口税和关税不含商品价或运费，由买家承担，拒付退回会扣往返运费。退换期限为下单起 45 个自然日，不是收货起；商品未用未洗无损、原包装标签齐全。Collection/Backroom 可退，定制 Pre-order/Custom/Team Store 不可退，普通 Movistar 队版不自动等同定制。品牌安排取件的首退一般由品牌承担；折扣/Backroom/Black Friday、第二次退货或退货金额低于 €25 的情形扣 €4，自行安排运输则自付。未取得强制注册或明确游客结账声明；登录加快结账提示不等于必须注册。",
+      "sources": [
+        "https://gobik.com/en/policies/shipping-policy",
+        "https://gobik.com/en/blogs/faq/do-you-ship-international",
+        "https://gobik.com/en/pages/returns",
+        "https://gobik.com/en/blogs/faq/does-a-return-have-shipping-costs",
+        "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+      ]
+    },
+    {
+      "sourceCode": "bahrain",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "alecycling.com"
+      ],
+      "label": "Bahrain · Alé 官方商城",
+      "policyScope": "当前US 市场 · USD 报价；未验证其他市场库存；目的地政策须与实际商品、地址及结账市场核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "信用卡",
+          "PayPal",
+          "Bancontact",
+          "iDeal"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官网支付条件依市场和订单而定；支持支付方式不保证中国发行卡授权成功。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网公开配送表明确列 Hong Kong SAR，未列中国大陆；不能据香港配送推断大陆可直邮。香港公布运费 €40、订单超过 €250 免运，欧元政策金额独立于当前美国美元商品报价；须切换目标地区核对具体商品、地址及门槛边界。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已核公开配送及退货资料未取得明确转运地址许可；须向商家确认，不能视为允许转运。"
+      },
+      "sourceLimitations": "官网付款页要求可核验的账单资料；信用卡与 PayPal 等支付方式不保证中国发行卡授权成功。非欧盟进口税与关税由买家额外承担，尚无中国订单完整到手价。承运商为 FedEx、GLS 或 DHL，通常最迟 5 个工作日出库，不能当作送达保证。官网写 30 天内申请退货或换货，须未用未洗且保留原标签；非欧盟退货退款或换货各收 €25，需按实际订单核对费用。经退货 portal 提供订单号及邮箱，并随包裹附表单与标签；退回检查后原路退款，换贵款补差、便宜款退差。官网要求邮箱、消费者身份及年龄条件，未取得明确必须注册或游客结账声明；不应先注册才查看政策。",
+      "sources": [
+        "https://alecycling.com/en-us/pages/spedizioni-e-consegna",
+        "https://alecycling.com/en-us/pages/prezzi-pagamenti",
+        "https://alecycling.com/en-us/pages/returns-and-cancellations",
+        "https://alecycling.com/en-us/pages/ordini-acquisti-su-sito-web"
+      ]
     }
   ],
   "forwardingExplainer": "转运像海外代收点：先取得自己名下的仓库收件编号，商家把货寄到仓库；仓库称重、可按要求合箱，再收国际运费寄中国。你仍需自行向商家付款；转运不解决中国银行卡拒付，也不自动提供商家售后。只在商家允许、承运商允许商品且进口手续满足时使用。",

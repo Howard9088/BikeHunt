@@ -116,3 +116,18 @@ for(const [code,market,host,words] of [
 }
 assert.equal(data.checkedAt,'2026-10-15');
 console.log('Second batch passed: four exact-market policies, dated conflict visibility, unchanged offers/costs, and no China-issued-card guarantee.');
+
+// Gobik and Alé destination policies cannot upgrade an unverified mainland order.
+for(const [code,market,host,words] of [
+ ['movistar','US 市场 · EUR 报价；未验证其他市场库存','gobik.com',['低于 €150','达到 €150','下单起 45 个自然日','不是收货起','未列中国大陆']],
+ ['bahrain','US 市场 · USD 报价；未验证其他市场库存','alecycling.com',['Hong Kong SAR','未列中国大陆','€40','€250','€25','30 天']]
+]){
+ const quote=offer(code,market,'https://'+host+'/products/example'),before=JSON.stringify(quote),row=context.readinessPolicy(quote);
+ assert.ok(row);assert.equal(row.scope,'market');assert.equal(row.checkedAt,'2026-10-16');assert.equal(row.directChina.status,'conditional_checkout');assert.equal(row.directChina.shippingAmount,undefined);assert.equal(row.payment.chinaIssuedCard,'unknown');
+ assert.equal(context.readinessPolicy({...quote,sales_region:'香港市场'}),null);assert.equal(context.readinessPolicy({...quote,url:'https://www.tradeinn.com/item'}),null);
+ const html=context.readinessContent(quote),directory=context.readinessDirectoryMarkup({code,shop_url:'https://'+host+'/'});
+ for(const word of words){assert.ok(html.includes(word),code+': '+word);assert.ok(directory.includes(word))}
+ assert.ok(directory.includes('指定市场参考'));assert.ok(html.includes('data-china-card-status="unknown"'));assert.ok(!html.includes('官网列中国配送；'));assert.equal(JSON.stringify(quote),before);
+ for(const url of row.sources)assert.equal(context.readinessUrl(url,code),true);
+}
+console.log('Third batch passed: exact Gobik/Alé markets, PayPal threshold and destination limits, return mechanisms, no China-card or landed-total promotion.');

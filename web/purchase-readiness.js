@@ -2,6 +2,7 @@
 // Dated, read-only policy summaries. These never alter an offer or cost estimate.
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
+  movistar:['gobik.com'],bahrain:['alecycling.com'],
   uae:['www.pissei.com'],fizik:['www.fizik.com','www.iubenda.com'],santini:['www.santinicycling.com'],lidl_trek:['www.santinicycling.com'],
   amazon_us:['www.amazonforum.com','www.amazon.com'],amazon_uk:['www.aboutamazon.co.uk','sellercentral-europe.amazon.com','digprjsurvey.amazon.co.uk'],
   amazon_de:['www.aboutamazon.de'],amazon_jp:['press.aboutamazon.com','www.unionpayintl.com'],
@@ -10,6 +11,9 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  movistar:["market", "US 市场 · EUR 报价；未验证其他市场库存", ["gobik.com"]],
+  bahrain:["market", "US 市场 · USD 报价；未验证其他市场库存", ["alecycling.com"]],
+
   uae:["market", "US / USD 报价", ["www.pissei.com"]],
   fizik:["market", "US 市场 · USD 报价；未验证其他市场库存", ["www.fizik.com"]],
   santini:["market", "IT 市场 · EUR 报价；未验证其他市场库存", ["www.santinicycling.com"]],
@@ -171,4 +175,5 @@ function paymentFeasibilityMarkup(offer={}){
   const key=String(++readinessSequence);readinessContexts.set(key,offer);
   return '<div class="payment-feasibility" data-feasibility-context="'+key+'">'+paymentFeasibilityContent(offer)+'</div>';
 }
+
 
