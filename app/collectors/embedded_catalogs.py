@@ -233,13 +233,14 @@ def parse_kask(html: str, source: dict, page_url: str, fetched_at: datetime) -> 
     """Only the selected SKU; visible size alternatives do not prove stock."""
     page = Selector(html)
     nodes = page.css(".product-detail[data-pid][data-absurl]")
-    if len(nodes) != 1:
+    if not nodes or len({(n.attrib['data-pid'], n.attrib['data-absurl']) for n in nodes}) != 1:
         return []
     node = nodes[0]
     sku = node.attrib.get("data-pid", "")
     url = urljoin(page_url, node.attrib.get("data-absurl", ""))
     selected = node.css('[data-attr="size"] button.selected[data-attr-value]')
-    if not sku or len(selected) != 1 or not _same_host(url, page_url):
+    if (not sku or not selected or not _same_host(url, page_url)
+            or len({(n.attrib['data-attr-value'], str(n.get_all_text(strip=True))) for n in selected}) != 1):
         return []
     size = str(selected[0].get_all_text(strip=True)).strip()
     if not size or not sku.endswith("." + selected[0].attrib["data-attr-value"]):
@@ -256,7 +257,7 @@ def parse_kask(html: str, source: dict, page_url: str, fetched_at: datetime) -> 
     if source.get("currency", currency) != currency:
         return []
     price_nodes = node.css(".price .sales .value[content]")
-    if len(price_nodes) != 1:
+    if not price_nodes or len({(n.attrib['content'], str(n.get_all_text(strip=True))) for n in price_nodes}) != 1:
         return []
     price = money(price_nodes[0].attrib["content"], currency)
     visible = formatted_money(str(price_nodes[0].get_all_text(strip=True)), currency)
@@ -277,7 +278,9 @@ def parse_kask(html: str, source: dict, page_url: str, fetched_at: datetime) -> 
         return []
     buttons = node.css("button.add-to-cart[data-pid]")
     stock = "unknown"
-    if len(buttons) == 1 and buttons[0].attrib.get("data-pid") == sku:
+    if (buttons and len({(n.attrib.get('data-pid'), str(n.get_all_text(strip=True)),
+                         'disabled' in n.attrib, n.attrib.get('aria-disabled'), n.attrib.get('class')) for n in buttons}) == 1
+            and buttons[0].attrib.get("data-pid") == sku):
         button = buttons[0]
         label = str(button.get_all_text(strip=True)).strip()
         inactive = ("disabled" in button.attrib or button.attrib.get("aria-disabled") == "true"

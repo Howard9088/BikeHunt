@@ -105,7 +105,9 @@ class SavedTeamCatalogTests(unittest.TestCase):
                     patch('scripts.collect_offers.ROOT', Path(directory)), \
                     patch('scripts.collect_offers.PublicPageFetcher') as fetcher:
                 (Path(directory) / 'data').mkdir()
-                fetcher.return_value.fetch.return_value.body = html.encode()
+                from app.collectors.fetch_policy import CapturedPage
+                fetcher.return_value.fetch.return_value = CapturedPage(
+                    html.encode(), 200, url, {}, 'static', LOTTO_TIME if code == 'lotto' else RED_TIME)
                 repository = MagicMock()
                 collect_source({'code': code, 'parser': parser, 'domains': [], 'urls': [url]},
                                repository, {code: source})

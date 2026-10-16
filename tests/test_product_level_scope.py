@@ -4,11 +4,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from scripts.collect_offers import collect_source
 from test_catalog import make_offer
+from app.collectors.fetch_policy import CapturedPage
+from datetime import datetime, timezone
 
 class ProductLevelScope(unittest.TestCase):
     def test_generic_stock_is_not_a_size_level_claim(self):
         offer=make_offer()
-        response=MagicMock(body=b'raw')
+        response=CapturedPage(b'raw', 200, 'https://example.com/a', {}, 'static', datetime.now(timezone.utc))
         with TemporaryDirectory() as directory, patch('scripts.collect_offers.ROOT',Path(directory)), patch('scripts.collect_offers.PublicPageFetcher') as fetcher, patch('scripts.collect_offers.parse_jsonld',return_value=[offer]):
             (Path(directory)/'data').mkdir()
             fetcher.return_value.fetch.return_value=response

@@ -409,7 +409,10 @@
         "https://movistarteam.com/wp-content/uploads/2021/12/movistarteam-logo-blanco.svg"
       ],
       "logo_checked_at": "2026-10-14T09:52:40.876855+00:00",
-      "shop_evidence_url": "https://movistarteam.com/"
+      "shop_evidence_url": "https://movistarteam.com/",
+      "source_codes": [
+        "movistar"
+      ]
     },
     {
       "code": "nsn",
@@ -496,7 +499,10 @@
       ],
       "logo_checked_at": "2026-10-14T11:04:29.951239+00:00",
       "shop_evidence_url": "https://greenedgecycling.com/2026/",
-      "logo_evidence_url": "https://www.lavuelta.es/es/equipo/JAY/team-jayco-alula"
+      "logo_evidence_url": "https://www.lavuelta.es/es/equipo/JAY/team-jayco-alula",
+      "source_codes": [
+        "jayco"
+      ]
     },
     {
       "code": "picnic",
@@ -578,7 +584,10 @@
         "https://images.squarespace-cdn.com/content/v1/61dc2bca9c37a3548736f95e/86d93cbc-6179-4ab6-a751-3312af47d24b/uno-x_rgb.png?format=1500w"
       ],
       "logo_checked_at": "2026-10-14T09:52:42.318672+00:00",
-      "shop_evidence_url": "https://www.unoxteam.com/"
+      "shop_evidence_url": "https://www.unoxteam.com/",
+      "source_codes": [
+        "unox"
+      ]
     },
     {
       "code": "astana",

@@ -108,7 +108,10 @@ def parse_jsonld(html: str, source: dict, page_url: str,
                     logger.warning("隔离无效价格/名称/品牌 {}", page_url)
                     continue
                 sku = str(quoted.get("sku") or product.get("sku") or "")
-                if source["code"] == "maap":
+                official_maap_team = (source.get("manufacturer_sku_scheme") == "maap"
+                                      and brand.casefold() == "maap"
+                                      and urlsplit(page_url).hostname == "maap.cc")
+                if source["code"] == "maap" or official_maap_team:
                     identity = manufacturer_identity(brand, name, sku)
                     identity_note = "MAAP 官网逐规格制造商 SKU"
                 else:
@@ -128,6 +131,10 @@ def parse_jsonld(html: str, source: dict, page_url: str,
                                                    color=product.get("color"))
                     identity_note = "公开 JSON-LD；商家 SKU 不用作跨站型号"
                 url = urljoin(page_url, quoted.get("url") or product.get("url") or page_url)
+                if official_maap_team:
+                    # Headless MAAP JSON-LD declares a global canonical URL even
+                    # when the actual quote was observed in a localized market.
+                    url = page_url
                 if urlsplit(url).hostname != urlsplit(page_url).hostname:
                     logger.warning("隔离跨来源商品链接 {}", url)
                     continue

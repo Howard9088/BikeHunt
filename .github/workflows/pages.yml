@@ -81,14 +81,15 @@ jobs:
         run: |
           node scripts/test_registration_guides.js
           python scripts/verify_registration_guides.py
-      - name: Install Chromium for changed-code browser regression
-        if: github.event_name == 'push'
+      - name: Install Chromium for dynamic collection and browser regression
         timeout-minutes: 5
         run: python -m playwright install --with-deps chromium
       - name: Validate desktop and mobile five-group browsing
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_browse_groups_ui.py
+      - name: Validate actual JavaScript-rendered inventory capture
+        run: python scripts/test_dynamic_browser.py
       - name: Validate desktop and mobile purchase reference UI
         if: github.event_name == 'push'
         timeout-minutes: 3
@@ -131,6 +132,15 @@ jobs:
         run: python scripts/test_bundle_selection_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
+      - name: Keep exact-variant collection diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynamic-collection-diagnostics-${{ github.run_id }}
+          path: |
+            data/collection_status
+            data/raw/*.diagnostic.json
+          retention-days: 3
       - name: Check policy changes once daily
         run: |
           python - <<'PY'

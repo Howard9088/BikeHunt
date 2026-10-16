@@ -63,6 +63,25 @@ def fetcher_for(p=None, product_status=200, robots=b"User-agent: *\nAllow: /", h
 
 
 class ShopifyTests(unittest.TestCase):
+    def test_auto_fallback_uses_real_rendered_variant_price_and_capture(self):
+        fetcher, calls = fetcher_for()
+        original = fetcher.request
+        def static(url, **kwargs):
+            if url == URL:
+                return SimpleNamespace(status=200, body=MARKET.encode(), headers={})
+            return original(url, **kwargs)
+        browser_calls = []
+        def browser(url, **kwargs):
+            browser_calls.append(url)
+            return SimpleNamespace(status=200, body=page().encode(), headers={})
+        fetcher.request = static
+        fetcher.browser_request = browser
+        result = collect_shopify_catalog(fetcher, SETTINGS | {"fetch_policy":{"mode":"auto"}}, SOURCE, NOW)
+        self.assertEqual(len(result.offers), 2)
+        self.assertEqual(browser_calls, [URL])
+        self.assertEqual({r.fetch_mode for r in result.offers}, {"dynamic"})
+        self.assertTrue(all(len(r.evidence_sha256) == 64 for r in result.offers))
+
     def test_paused_product_url_is_never_requested(self):
         fetcher,calls=fetcher_for()
         result=collect_shopify_catalog(fetcher,{**SETTINGS,"excluded_urls":[URL]},SOURCE,NOW)

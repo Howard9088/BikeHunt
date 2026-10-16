@@ -77,6 +77,10 @@ class Offer(Record):
     import_tax_evidence: Evidence = Field(default_factory=Evidence)
     clearance: Money | None = None
     stock: Literal["in_stock", "out_of_stock", "unknown"] = "unknown"
+    stock_quantity: int | None = Field(default=None, ge=0, strict=True)
+    fetch_mode: Literal["static", "dynamic"] | None = None
+    evidence_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    collection_url: str | None = None
     shipping_to_china: Evidence = Field(default_factory=Evidence)
     china_issued_card: Evidence = Field(default_factory=Evidence)
     accepted_card_networks: list[str] = Field(default_factory=list)

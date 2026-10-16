@@ -56,7 +56,9 @@ class OfferRepository:
                             attempted = datetime.fromisoformat(status.get("attempted_at", ""))
                             failed_urls = {str(error.get("url", "")).split("?", 1)[0]
                                            for error in status.get("errors", [])}
-                            failed = status.get("status") == "failed" or row.url.split("?", 1)[0] in failed_urls
+                            failed = (status.get("status") == "failed"
+                                      or row.url.split("?", 1)[0] in failed_urls
+                                      or (row.collection_url or '').split('?', 1)[0] in failed_urls)
                             if failed and (row.fetched_at is None or attempted > row.fetched_at):
                                 row = row.model_copy(update={"collection_state": "retained"})
                         except (OSError, ValueError, TypeError):
@@ -106,8 +108,9 @@ class OfferRepository:
         """同页成功替换、失败页面保留旧数据；完全失败不覆盖有效快照。"""
         existing = [row for row in self.load() if row.source_code == code
                     and row.data_kind != "legacy_cache"]
-        success_urls = {row.url.split("?", 1)[0] for row in offers}
-        merged = [row for row in existing if row.url.split("?", 1)[0] not in success_urls]
+        success_urls = {(row.collection_url or row.url).split("?", 1)[0] for row in offers}
+        merged = [row for row in existing
+                  if (row.collection_url or row.url).split("?", 1)[0] not in success_urls]
         merged.extend(offers)
         if offers:
             atomic_json(self.data_dir / "offers" / f"{code}.json", {

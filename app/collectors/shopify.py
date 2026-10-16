@@ -16,6 +16,7 @@ from urllib.parse import parse_qs, urljoin, urlsplit, urlunsplit
 from app.catalog.models import Offer, ProductIdentity
 from app.collectors.parsers import evidence, money, offer_id, parse_jsonld
 from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
+from app.collectors.fetch_policy import source_policy
 
 MAX_PRODUCTS = 25
 _SIZE_WORDS = {"size", "taglia", "taille", "maat", "accessory size", "accessoiregrootte"}
@@ -233,8 +234,12 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
         "product_limit": limit, "discovered_product_count": 0, "collected_product_count": 0,
         "offer_count": 0, "complete": False, "partial": True}
 
-    def fetch_text(url: str, suffix: str) -> str:
-        response = fetcher.fetch(url)
+    captured = {}
+    policy = source_policy(settings)
+
+    def fetch_text(url: str, suffix: str, dynamic: bool = False) -> str:
+        response = (fetcher.fetch(url, policy=policy.model_copy(update={"mode":"dynamic"}))
+                    if dynamic else fetcher.fetch(url))
         final_url = str(getattr(response, "url", url))
         requested, final = urlsplit(url), urlsplit(final_url)
         if (final.scheme != "https" or final.hostname != requested.hostname
@@ -246,6 +251,7 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
             raw_dir.mkdir(parents=True, exist_ok=True)
             name = source["code"] + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + suffix
             (raw_dir / name).write_bytes(response.body)
+        captured[url] = response
         return response.body.decode("utf-8-sig", errors="replace")
 
     try:
@@ -279,10 +285,23 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
             product_country = shopify_market_country(html)
             if country and product_country and country != product_country:
                 raise CollectionError("Shopify product country differs from catalog market")
-            rows = parse_shopify_product(product, html, source, url, fetched_at, currency)
+            try:
+                rows = parse_shopify_product(product, html, source, url, fetched_at, currency)
+            except CollectionError:
+                if policy.mode != 'auto':
+                    raise
+                html = fetch_text(url, '.rendered.html', dynamic=True)
+                dynamic_country = shopify_market_country(html)
+                if country and dynamic_country and country != dynamic_country:
+                    raise CollectionError('Rendered product country differs from the catalog market')
+                rows = parse_shopify_product(product, html, source, url, fetched_at, currency)
             if not rows:
                 raise CollectionError("No validated Shopify variants")
-            result.offers.extend(rows)
+            capture = captured[url]
+            result.offers.extend(row.model_copy(update={
+                'fetch_mode':getattr(capture, 'fetch_mode', 'static'),
+                'evidence_sha256':hashlib.sha256(capture.body).hexdigest(),
+                'fetched_at':getattr(capture, 'observed_at', fetched_at)}) for row in rows)
             result.coverage["collected_product_count"] += 1
         except SourceDeferred as exc:
             # No further request on this domain; mark not-yet-refreshed products
@@ -292,5 +311,6 @@ def collect_shopify_catalog(fetcher: PublicPageFetcher, settings: dict, source: 
         except Exception as exc:
             result.errors.append(_error(url, exc))
     complete = len(products) < limit and not result.errors
-    result.coverage.update({"offer_count": len(result.offers), "complete": complete, "partial": not complete})
+    result.coverage.update({"offer_count": len(result.offers), "complete": complete, "partial": not complete,
+        "fetch_mode":policy.mode, "dynamic_offer_count":sum(r.fetch_mode == 'dynamic' for r in result.offers)})
     return result

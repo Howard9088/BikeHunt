@@ -493,7 +493,7 @@
     "currency": "EUR",
     "sales_region": "意大利站 EUR 报价",
     "enabled": true,
-    "collection_strategy": "official_selected_product_variant",
+    "collection_strategy": "dynamic_selected_variant_responses",
     "china_shipping": {
       "status": "unknown",
       "note": "中国大陆配送及运费尚未核实，当前市场商品价不代表可直邮中国。"
@@ -545,10 +545,9 @@
     "brand": "PISSEI",
     "type": "team_official",
     "base_url": "https://www.pissei.com",
-    "currency": "USD",
-    "sales_region": "美国市场 USD 报价",
+    "sales_region": "官网按访问地区定价，逐报价显示实际市场和币种",
     "enabled": true,
-    "collection_strategy": "public_product_jsonld",
+    "collection_strategy": "dynamic_rendered_exact_variant_stock",
     "china_shipping": {
       "status": "unknown",
       "note": "中国大陆配送与运费尚未核实；当前报价不代表可直邮中国。"
@@ -635,6 +634,65 @@
     "china_credit_card": {
       "status": "unknown",
       "note": "实际可用付款方式请在中国官网结账页确认。"
+    }
+  },
+  {
+    "code": "unox",
+    "name": "Uno-X 官方合作商城",
+    "type": "team_official",
+    "base_url": "https://internshop.no",
+    "currency": "NOK",
+    "sales_region": "挪威商城 NOK 报价",
+    "enabled": true,
+    "collection_strategy": "public_club_session_woocommerce_variants",
+    "official_evidence_url": "https://www.unoxteam.com/",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送及费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支持情况待核实。"
+    },
+    "brand": "Uno-X"
+  },
+  {
+    "code": "jayco",
+    "name": "Jayco / Liv AlUla · MAAP 官方队服",
+    "brand": "MAAP",
+    "type": "team_official",
+    "base_url": "https://maap.cc",
+    "sales_region": "台湾市场 TWD 报价；以当前商品市场为准",
+    "enabled": true,
+    "official_evidence_url": "https://maap.cc/tw/greenedge-cycling",
+    "collection_strategy": "public_official_supplier_exact_variants",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送及费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支持情况待核实。"
+    },
+    "manufacturer_sku_scheme": "maap"
+  },
+  {
+    "code": "movistar",
+    "name": "Movistar · Gobik 官方队服",
+    "brand": "Gobik",
+    "type": "team_official",
+    "base_url": "https://gobik.com",
+    "sales_region": "官网当前市场实际币种报价",
+    "enabled": true,
+    "official_evidence_url": "https://gobik.com/en/blogs/gobik-stories/inside-the-worldtour-2026",
+    "collection_strategy": "public_official_supplier_exact_variants",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送及费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支持情况待核实。"
     }
   }
 ]

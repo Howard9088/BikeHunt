@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import hashlib
+import os
+import sys
 import tempfile
 import time
 from collections.abc import Callable
@@ -14,6 +16,9 @@ from urllib.robotparser import RobotFileParser
 from loguru import logger
 import certifi
 from scrapling.fetchers import DynamicFetcher, Fetcher
+from scrapling.parser import Selector
+
+from app.collectors.fetch_policy import CapturedPage, FetchPolicy
 
 USER_AGENT = "BikeHunt/0.3 (public product information)"
 
@@ -64,7 +69,10 @@ class PublicPageFetcher:
     def __init__(self, domains: set[str], request: Callable | None = None,
                  sleep: Callable[[float], None] = time.sleep,
                  clock: Callable[[], float] = time.monotonic,
-                 utcnow: Callable[[], datetime] = lambda: datetime.now(timezone.utc)) -> None:
+                 utcnow: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+                 policy: FetchPolicy | None = None,
+                 browser_request: Callable | None = None,
+                 page_action: Callable | None = None) -> None:
         self.domains = domains
         self.request = request or Fetcher.get
         self.sleep = sleep
@@ -74,8 +82,16 @@ class PublicPageFetcher:
         self.last_request: dict[str, float] = {}
         self.deferred: dict[str, SourceDeferred] = {}
         self.robots_failures: dict[str, CollectionError] = {}
+        self.policy = policy or FetchPolicy()
+        self.browser_request = browser_request or DynamicFetcher.fetch
+        self.page_action = page_action
+        self.variant_pages: list[bytes] = []
+        # Only first-party cookies set by these public requests; never import a
+        # user's browser/login state or persist cookies in the public snapshot.
+        self.public_cookies: dict[str, dict[str, str]] = {}
 
-    def _request(self, url: str, dynamic: bool = False):
+    def _request(self, url: str, dynamic: bool = False, policy: FetchPolicy | None = None):
+        policy = policy or self.policy
         host = urlsplit(url).hostname or ""
         if urlsplit(url).scheme != "https" or host not in self.domains:
             raise CollectionError("URL outside configured HTTPS source domains")
@@ -88,17 +104,40 @@ class PublicPageFetcher:
             self.last_request[host] = self.clock()
             try:
                 if dynamic:
-                    response = DynamicFetcher.fetch(
-                        url, headless=True, real_chrome=True, timeout=20000,
+                    # A retry must not publish partial snapshots from its failed
+                    # predecessor alongside a subsequently successful capture.
+                    self.variant_pages.clear()
+                    action_errors: list[Exception] = []
+                    def checked_action(page):
+                        try:
+                            self.page_action(page)
+                        except Exception as exc:
+                            action_errors.append(exc)
+                            raise
+                    response = self.browser_request(
+                        url, headless=True,
+                        real_chrome=os.environ.get("BIKEHUNT_REAL_CHROME", str(sys.platform == "win32")).lower() == "true",
+                        timeout=policy.timeout_ms, disable_resources=True,
                         retries=1, block_ads=True, google_search=False,
-                        useragent=USER_AGENT,
+                        useragent=USER_AGENT, wait_selector=policy.wait_selector,
+                        page_action=checked_action if self.page_action else None,
+                        cookies=[{'name':name, 'value':value, 'domain':host, 'path':'/'}
+                                 for name, value in self.public_cookies.get(host, {}).items()],
                     )
+                    if action_errors:
+                        raise CollectionError("Dynamic variant capture did not finish") from action_errors[0]
                 else:
                     response = self.request(
                         url, timeout=20, retries=1, stealthy_headers=False,
                         verify=certificate_bundle(),
                         headers={"User-Agent": USER_AGENT},
+                        cookies=self.public_cookies.get(host, {}),
                     )
+                cookies = getattr(response, 'cookies', {})
+                if isinstance(cookies, dict):
+                    self.public_cookies.setdefault(host, {}).update({
+                        name:value for name, value in cookies.items()
+                        if isinstance(name, str) and isinstance(value, str)})
                 headers = getattr(response, "headers", {}) or {}
                 if response.status == 429 or (response.status == 503 and any(
                         str(key).casefold() == "retry-after" for key in headers)):
@@ -119,8 +158,11 @@ class PublicPageFetcher:
                 self.sleep(2 ** attempt)
         raise CollectionError("Request attempts exhausted")
 
-    def fetch(self, url: str, dynamic: bool = False):
+    def fetch(self, url: str, dynamic: bool = False,
+              policy: FetchPolicy | None = None) -> CapturedPage:
         """返回公开网页 Response；禁止或无法核实 robots 时抛出 CollectionError。"""
+        policy = policy or self.policy
+        dynamic = dynamic or policy.mode == "dynamic"
         split = urlsplit(url)
         origin = f"{split.scheme}://{split.netloc}"
         if origin in self.robots_failures:
@@ -151,9 +193,20 @@ class PublicPageFetcher:
         pause = crawl_delay - (self.clock() - self.last_request.get(host, -1000))
         if pause > 0:
             self.sleep(pause)
-        response = self._request(url, dynamic)
+        self.variant_pages.clear()
+        response = self._request(url, dynamic, policy)
         if response.status != 200:
             raise CollectionError(f"Product HTTP {response.status}")
+        final_url = str(getattr(response, "url", url))
+        final = urlsplit(final_url)
+        if final.scheme != "https" or final.hostname not in self.domains:
+            raise CollectionError("Response redirected outside allowed HTTPS domains")
+        if (policy.mode == "auto" and not dynamic and policy.wait_selector
+                and not Selector(response.body.decode("utf-8", errors="replace")).css(policy.wait_selector)):
+            return self.fetch(url, policy=policy.model_copy(update={"mode": "dynamic"}))
         logger.info("采集成功 {} HTTP {}", url, response.status)
-        return response
+        return CapturedPage(response.body, response.status, final_url,
+                            dict(getattr(response, "headers", {}) or {}),
+                            "dynamic" if dynamic else "static",
+                            self.utcnow(), list(self.variant_pages))
 

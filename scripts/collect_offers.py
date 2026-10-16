@@ -26,6 +26,12 @@ from app.collectors.saved_team_catalogs import parse_lotto, parse_redbull_catalo
 from app.collectors.shopify import collect_shopify_catalog
 from app.collectors.embedded_catalogs import parse_assos, parse_pns, parse_kask
 from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
+from app.collectors.fetch_policy import source_policy
+from app.collectors.discovery import SourceSpec, discover
+from app.collectors.rendered import collect_variants, kask_page_action, parse_pissei, parse_kask_rendered
+from app.collectors.rendered import parse_unox
+from scrapling.fetchers import FetcherSession
+from app.collectors.transport import certificate_bundle
 
 
 def saved_deferrals(data_dir: Path, code: str, now: datetime) -> dict[str, SourceDeferred]:
@@ -73,9 +79,22 @@ def source_groups(settings_list: list[dict]) -> list[list[dict]]:
 
 
 def collect_source(settings: dict, repository: OfferRepository, source_map: dict) -> None:
+    """一个来源使用独立公共会话；不读取用户登录凭据。"""
+    if settings.get('public_session'):
+        with FetcherSession(stealthy_headers=False, verify=certificate_bundle()) as session:
+            _collect_source(settings, repository, source_map, request=session.get)
+    else:
+        _collect_source(settings, repository, source_map)
+
+
+def _collect_source(settings: dict, repository: OfferRepository, source_map: dict,
+                    request=None) -> None:
     code = settings["code"]
     source = source_map[code]
-    fetcher = PublicPageFetcher(set(settings["domains"]))
+    policy = source_policy(settings)
+    fetcher = PublicPageFetcher(set(settings["domains"]), policy=policy, request=request)
+    if settings.get("variant_profile") == "kask":
+        fetcher.page_action = kask_page_action(fetcher.variant_pages)
     fetcher.deferred.update(saved_deferrals(ROOT / "data", code, datetime.now(timezone.utc)))
     if settings.get("parser") == "shopify":
         result = collect_shopify_catalog(fetcher, settings, source, datetime.now(timezone.utc), ROOT / "data" / "raw")
@@ -84,17 +103,41 @@ def collect_source(settings: dict, repository: OfferRepository, source_map: dict
         return
     rows = []
     errors: list[dict] = []
-    for url in settings["urls"]:
+    urls = list(settings["urls"])
+    if settings.get("discovery"):
+        discovery = settings["discovery"]
         try:
-            response = fetcher.fetch(url, dynamic=settings.get("dynamic", False))
+            found = discover(SourceSpec(code, frozenset(settings["domains"]),
+                tuple(discovery["catalog_urls"]), discovery["product_link_pattern"],
+                policy.model_copy(update={"wait_selector": None,
+                    "mode": discovery.get("mode", "static")})), fetcher)
+            urls = list(dict.fromkeys([*urls, *found]))[:policy.max_products]
+        except Exception as exc:
+            errors.append(error_record(discovery["catalog_urls"][0], exc))
+    for url in urls:
+        try:
+            response = fetcher.fetch(url)
             fetched_at = datetime.now(timezone.utc)
             raw_path = ROOT / "data" / "raw" / (code + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + ".html")
             raw_path.parent.mkdir(exist_ok=True)
             raw_path.write_bytes(response.body)
-            parse = {"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask}.get(settings["parser"],parse_jsonld)
-            parsed = parse(response.body.decode("utf-8", errors="replace"), source, url, fetched_at)
+            parse = {"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
+            parsed = collect_variants(response, source, parse)
+            if not parsed and policy.mode == "auto" and response.fetch_mode == "static":
+                response = fetcher.fetch(url, policy=policy.model_copy(update={"mode": "dynamic"}))
+                raw_path.write_bytes(response.body)
+                parsed = collect_variants(response, source, parse)
             if not parsed:
                 raise CollectionError("No validated per-variant offers; snapshot not replaced")
+            parsed = [row.model_copy(update={'collection_url':url}) for row in parsed]
+            for index, body in enumerate(response.variant_pages):
+                extension = '.json' if body.lstrip().startswith(b'{') else '.html'
+                raw_path.with_name(raw_path.stem + f'.variant-{index}' + extension).write_bytes(body)
+            from app.catalog.storage import atomic_json
+            atomic_json(raw_path.with_suffix('.diagnostic.json'), {
+                'url':url, 'observed_at':response.observed_at.isoformat(),
+                'fetch_mode':response.fetch_mode, 'evidence_sha256':response.evidence_sha256,
+                'variant_snapshots':len(response.variant_pages), 'offers':len(parsed)})
             if settings.get("product_level_only"):
                 parsed = [row.model_copy(update={"stock": "unknown",
                     "sales_region": source.get("sales_region", ""),
@@ -112,7 +155,10 @@ def collect_source(settings: dict, repository: OfferRepository, source_map: dict
     repository.save(code, rows, datetime.now(timezone.utc), errors, {
         "scope":"configured_product_pages", "scope_note":settings.get("scope_note", "指定商品页面，非完整目录"),
         "collected_product_count":len({row.url.split("?",1)[0] for row in rows}),
-        "configured_page_count":len(settings["urls"]), "partial":True, "complete":False})
+        "configured_page_count":len(urls), "fetch_mode":policy.mode,
+        "dynamic_offer_count":sum(row.fetch_mode == "dynamic" for row in rows),
+        "sized_offer_count":sum(bool(row.identity.size) for row in rows),
+        "partial":True, "complete":False})
     print(json.dumps({"source": code, "offers": len(rows), "errors": errors}, ensure_ascii=True))
 
 

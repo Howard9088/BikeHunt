@@ -17,6 +17,12 @@
       "https://maap.cc/products/evade-pro-base-jersey-2-0-black": "male",
       "https://maap.cc/products/evade-pro-base-jersey-2-0-antarctica": "male",
       "https://maap.cc/products/training-bib-3-0-deep-ultramarine-black": "male"
+    },
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
     }
   },
   {
@@ -27,7 +33,13 @@
     "parser": "teamcycles",
     "urls": [
       "https://www.teamcycles.com/clothing/jerseys/maap-evade-pro-base-20-short-sleeve-cycling-jersey-in-black__29729"
-    ]
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "sigmasports",
@@ -37,7 +49,13 @@
     "parser": "jsonld",
     "urls": [
       "https://www.sigmasports.com/item/MAAP/Evade-Pro-Base-20-Short-Sleeve-Jersey/10BUI"
-    ]
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "poc",
@@ -47,7 +65,13 @@
     "parser": "jsonld",
     "urls": [
       "https://poc.com/en-us/product/ventral-air-mips-cpsc-uranium-black-matt"
-    ]
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "visma",
@@ -58,7 +82,13 @@
     "urls": [
       "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-2026-team-visma-lease-a-bike/",
       "https://www.teamvismaleaseabike.com/shop/cycling-clothing/cycling-jersey-men-the-architect-2/"
-    ]
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "rapha",
@@ -69,7 +99,13 @@
     "urls": [
       "https://www.rapha.cc/jp/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY",
       "https://www.rapha.cc/jp/en/product/rcc-womens-pro-team-bib-shorts-ii---regular/AFR01RGDNY"
-    ]
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "rapha_kr",
@@ -79,7 +115,13 @@
     "parser": "rapha",
     "urls": [
       "https://www.rapha.cc/kr/en/product/mens-rcc-pro-team-bib-shorts-ii---regular/RBS04RGDNY"
-    ]
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "fizik",
@@ -92,7 +134,13 @@
       "https://www.fizik.com/en-us/"
     ],
     "max_products": 25,
-    "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。"
+    "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "santini",
@@ -108,7 +156,13 @@
     "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。",
     "excluded_urls": [
       "https://www.santinicycling.com/products/lidl-trek-women-s-short-sleeve-jersey-print-re941l75c25lt"
-    ]
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "soudal",
@@ -121,7 +175,13 @@
       "https://thewolfpack.shop/collections/soudal-quick-step"
     ],
     "max_products": 25,
-    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "ineos",
@@ -134,7 +194,13 @@
       "https://store.netcompanyineos.com/collections/on-bike-kit"
     ],
     "max_products": 25,
-    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "bahrain",
@@ -147,7 +213,13 @@
       "https://alecycling.com/en-us/collections/ale-x-bahrain-victorious"
     ],
     "max_products": 25,
-    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "decathlon",
@@ -160,7 +232,13 @@
       "https://shop.decathloncmacgmteam.com/en/collections/collection-2026"
     ],
     "max_products": 25,
-    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "picnic",
@@ -173,7 +251,13 @@
       "https://teampicnicpostnl.store/collections/new-season-2026"
     ],
     "max_products": 25,
-    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "castelli",
@@ -186,7 +270,13 @@
       "https://www.castelli-cycling.com"
     ],
     "max_products": 10,
-    "scope_note": "首批最多 10 款商品的有界样本，未覆盖完整品牌目录。"
+    "scope_note": "首批最多 10 款商品的有界样本，未覆盖完整品牌目录。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 10
+    }
   },
   {
     "code": "assos",
@@ -204,7 +294,13 @@
     ],
     "scope_note": "首批 6 款商品的逐尺码价格与库存；未覆盖全品牌目录。",
     "max_products": 6,
-    "coverage_complete": false
+    "coverage_complete": false,
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "pns",
@@ -222,7 +318,13 @@
     ],
     "scope_note": "首批 6 款商品的逐尺码价格与库存；未覆盖全品牌目录。",
     "max_products": 6,
-    "coverage_complete": false
+    "coverage_complete": false,
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "kask",
@@ -241,7 +343,15 @@
     ],
     "scope_note": "首批 7 款公路头盔；每款仅采集页面当前选中的颜色/认证/尺码，其余尺码与颜色未覆盖。",
     "max_products": 7,
-    "coverage_complete": false
+    "coverage_complete": false,
+    "fetch_policy": {
+      "mode": "dynamic",
+      "wait_selector": ".product-detail [data-attr=\"size\"] button[data-attr-value]",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 10
+    },
+    "variant_profile": "kask"
   },
   {
     "code": "groupama",
@@ -254,7 +364,13 @@
       "https://shop.bioracer.com/fr/collections/groupama-fdj-united-1"
     ],
     "max_products": 25,
-    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。"
+    "scope_note": "仅采集指定车队系列，最多 25 款；不把其他车队或全店商品归入此来源。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 25
+    }
   },
   {
     "code": "ef_team_shop",
@@ -266,14 +382,20 @@
       "https://efprocycling.shop/us/product/dispatched-t-shirt/",
       "https://efprocycling.shop/us/product/stamp-hoodie/"
     ],
-    "scope_note": "EF 官方商城美国站已验证的两款产品逐规格报价，非完整目录；仅使用页面明确选中的币种，不推断中国配送或支付可用性。"
+    "scope_note": "EF 官方商城美国站已验证的两款产品逐规格报价，非完整目录；仅使用页面明确选中的币种，不推断中国配送或支付可用性。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "uae",
     "domains": [
       "www.pissei.com"
     ],
-    "parser": "jsonld",
+    "parser": "pissei",
     "urls": [
       "https://www.pissei.com/en/man/top/jackets/uae-team-emirates-xrg-2026-primapelle-official-heavy-jacket-812984.html",
       "https://www.pissei.com/en/man/top/jackets/uae-team-emirates-xrg-2026-official-jacket-813272.html",
@@ -282,7 +404,19 @@
     "scope_note": "首批 3 款 2026 UAE 官方服饰的商品级报价；未核实逐尺码库存或全目录。",
     "max_products": 3,
     "coverage_complete": false,
-    "product_level_only": true
+    "fetch_policy": {
+      "mode": "dynamic",
+      "wait_selector": "#group-5001 option[value]",
+      "timeout_ms": 30000,
+      "max_pages": 2,
+      "max_products": 10
+    },
+    "discovery": {
+      "catalog_urls": [
+        "https://www.pissei.com/en/man/uae-team-emirates-collection-xrg/"
+      ],
+      "product_link_pattern": "/uae-team-emirates[^/]*\\.html$"
+    }
   },
   {
     "code": "nsn",
@@ -296,7 +430,13 @@
     "scope_note": "官方 NSN 合集首批 1 款头盔套装商品级报价；尺码组件库存不等于套装逐尺码报价，未核实全目录。",
     "max_products": 1,
     "coverage_complete": false,
-    "product_level_only": true
+    "product_level_only": true,
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "lotto",
@@ -307,7 +447,13 @@
     "urls": [
       "https://www.lotto-intermarche.be/nl/shop/product/250/beanie"
     ],
-    "scope_note": "单一已核实默认规格的 Beanie 商品页；未覆盖队服或完整目录"
+    "scope_note": "单一已核实默认规格的 Beanie 商品页；未覆盖队服或完整目录",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
   },
   {
     "code": "redbull",
@@ -318,6 +464,74 @@
     "urls": [
       "https://www.redbullshop.com/en-jp/c/redbullborahansgrohe/"
     ],
-    "scope_note": "日本站目录首页的商品参考报价；无逐尺码库存，未覆盖后续页"
+    "scope_note": "日本站目录首页的商品参考报价；无逐尺码库存，未覆盖后续页",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 20
+    }
+  },
+  {
+    "code": "unox",
+    "domains": [
+      "internshop.no"
+    ],
+    "parser": "unox",
+    "public_session": true,
+    "urls": [
+      "https://internshop.no/butikk/uno-x-26-sub-tee-m/"
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 8
+    },
+    "discovery": {
+      "catalog_urls": [
+        "https://internshop.no/?klubb=109"
+      ],
+      "product_link_pattern": "^/butikk/uno-x[^/]+/$"
+    },
+    "scope_note": "官方车队链接的公开俱乐部109商品；只使用公开变体，不登录账户。"
+  },
+  {
+    "code": "jayco",
+    "parser": "jsonld",
+    "domains": [
+      "maap.cc"
+    ],
+    "urls": [],
+    "discovery": {
+      "catalog_urls": [
+        "https://maap.cc/tw/greenedge-cycling"
+      ],
+      "product_link_pattern": "^/tw/products/(?:womens-)?greenedge-26-[^/]+$"
+    },
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 1,
+      "max_products": 10
+    },
+    "scope_note": "MAAP 官方 GreenEDGE 2026 专区的有界商品样本，实际台湾市场 TWD 报价。"
+  },
+  {
+    "code": "movistar",
+    "parser": "shopify",
+    "domains": [
+      "gobik.com"
+    ],
+    "catalog_url": "https://gobik.com/en/collections/movistar-team",
+    "urls": [],
+    "max_products": 20,
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 1,
+      "max_products": 20
+    },
+    "scope_note": "Gobik 官方 Movistar Team 系列最多20件商品，逐变体与商品页核价。"
   }
 ]
