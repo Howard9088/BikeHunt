@@ -379,7 +379,7 @@ async function loadDetail(id,variantId=null,options={}){
     if(resetBundle){const parts=parseBundleSize(detail.identity.size)||options.bundleSelection||{};options={...options,bundleSelection:{jersey:parts.jersey,bib:parts.bib},message:'所选组合的价格或库存已变化，请重新选择袜子，确认最新报价。'};variantId=null;}
     renderProductDetail(detail,options.preservePartial?null:variantId,sequence,options);
     if(options.focusId)document.getElementById(options.focusId)?.focus();
-  }catch(error){if(sequence!==detailSequence)return;currentBundleSelection=null;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>请稍后重试，或到商店查看。<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId,options)}
+  }catch(error){if(sequence!==detailSequence)return;currentBundleSelection=null;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>'+(error.message==='所选规格已变化，请重新选择商品'?'所选规格已变化，请重新选择商品':'请稍后重试，或到商店查看。')+'<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId,options)}
 }
 function renderProductDetail(detail,variantId,sequence,options={}){
   if(!publicProductVisible(detail)){closeSheet();return}
