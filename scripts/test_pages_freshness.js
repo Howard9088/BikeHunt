@@ -276,27 +276,21 @@ async function testFxAgeDateAndTimezoneBoundaries() {
   }
 }
 
-async function testInventoryAndColorsExpireTogether() {
-  const h = await harness();
-  h.setNow(START + 3600000);
-  let detail = await h.request('/api/catalog/red');
-  assert.equal(detail.variants[0].in_stock, true, 'Stock exactly one hour old remains available');
-  h.setNow(START + 3600001);
-  detail = await h.request('/api/catalog/red');
-  assert.equal(detail.variants[0].in_stock, false);
-  assert.equal(detail.colors.every(color => color.in_stock === false), true);
-  assert.ok(detail.offers[0].reasons.includes('库存核实已过期；等待重新核实'));
-  assert.ok(!detail.offers[0].reasons.includes('报价已过期'));
-  assert.ok(!detail.offers[0].reasons.includes('已售罄'));
-  const catalog = await h.request('/api/catalog');
-  assert.deepEqual(catalog.items[0].available_sizes, []);
-  assert.equal(catalog.items[0].stock_state, 'unknown');
-  assert.equal(catalog.items[0].status, '库存核实已过期');
-  const data = snapshot();
-  data.details.blue.variants['blue-M'].offers[0].offer.fetched_at = new Date(START - 3600001).toISOString();
-  const mixed = await harness(data);
-  const colors = (await mixed.request('/api/catalog/red')).colors;
-  assert.deepEqual(colors.map(color => color.in_stock), [true, false], 'Other colors use their own families');
+async function testInventoryAndColorsRetainLastKnownStock() {
+  const h=await harness();
+  for(const elapsed of [3600000,3600001,86400001,7*86400000]){
+    h.setNow(START+elapsed);
+    const detail=await h.request('/api/catalog/red'),catalog=await h.request('/api/catalog');
+    assert.equal(detail.variants[0].in_stock,true);
+    assert.ok(detail.colors.every(color=>color.in_stock));
+    assert.deepEqual(catalog.items[0].available_sizes,['M']);
+    assert.equal(catalog.items[0].stock_state,'in_stock');
+    assert.equal(detail.offers[0].offer.fetched_at,new Date(START).toISOString());
+    if(elapsed>86400000){assert.equal(detail.offers[0].eligible,false);assert.ok(detail.offers[0].reasons.includes('报价已过期'));}
+  }
+  const data=snapshot();data.details.blue.variants['blue-M'].offers[0].offer.stock='unknown';
+  const mixed=await harness(data);
+  assert.deepEqual((await mixed.request('/api/catalog/red')).colors.map(c=>c.in_stock),[true,false],'Never-known stock is not promoted');
 }
 
 async function testSamePublicationNotifiesOnFreshnessChanges() {
@@ -306,16 +300,12 @@ async function testSamePublicationNotifiesOnFreshnessChanges() {
   h.setNow(START + 3600001);
   await h.request('/api/catalog');
   await h.poll();
-  assert.equal(h.events.length, 1, 'A cached API check does not consume the poll notification');
-  assert.equal(h.events[0].type, 'bikehunt-published');
-  assert.equal(h.events[0].detail.freshnessChanged, true);
-  assert.equal(h.events[0].detail.events.length, 0);
-  await h.poll();
-  assert.equal(h.events.length, 1, 'Repeated expired snapshots do not generate repeated alerts');
+  assert.equal(h.events.length, 0, 'One hour alone cannot invalidate inventory');
+  await h.poll(); assert.equal(h.events.length,0);
   h.setNow(START + 86400001);
   await h.poll();
-  assert.equal(h.events.length, 2, 'Historical quote expiry also notifies without a new generated_at');
-  assert.equal(h.events[1].detail.freshnessChanged, true);
+  assert.equal(h.events.length, 1, 'Historical quote expiry also notifies without a new generated_at');
+  assert.equal(h.events[0].detail.freshnessChanged, true);
 }
 
 async function testPublicationCursorNeverMovesBackwards() {
@@ -352,20 +342,20 @@ async function testSoldOutAndFailedRefreshInvalidateActions() {
   assert.equal(red.variants[0].in_stock, false);
   assert.equal(red.offers[0].eligible, false);
   assert.equal(red.recommended_offer_id, null);
-  assert.equal(blue.variants[0].stock_state, 'unknown');
-  assert.equal(blue.variants[0].in_stock, false);
+  assert.equal(blue.variants[0].stock_state, 'in_stock');
+  assert.equal(blue.variants[0].in_stock, true);
   assert.equal(blue.offers[0].eligible, false);
-  assert.ok(blue.offers[0].reasons.some(x => x.includes('最近采集失败')));
+  assert.ok(blue.offers[0].reasons.some(x => x.includes('最近价格核对未完成')));
   const cards = (await h.request('/api/catalog')).items;
   assert.equal(cards[0].stock_state, 'out_of_stock');
-  assert.equal(cards[1].stock_state, 'unknown');
+  assert.equal(cards[1].stock_state, 'in_stock');
   assert.ok(h.events.some(x => x.detail.freshnessChanged), 'Refresh invalidates open purchase flows even without event IDs');
 }
 
 async function testStockTimestampBoundariesFailClosed() {
   const cases = [
     ['exact hour', new Date(START - 3600000).toISOString(), true],
-    ['past hour', new Date(START - 3600001).toISOString(), false],
+    ['past hour', new Date(START - 3600001).toISOString(), true],
     ['missing', null, false],
     ['date only', '2026-10-14', false],
     ['missing timezone', '2026-10-14T12:00:00', false],
@@ -384,19 +374,18 @@ async function testStockTimestampBoundariesFailClosed() {
   }
 }
 
-async function testOfflinePollStillExpiresStock() {
-  const h = await harness();
-  h.setOffline(true);
-  h.setNow(START + 3600001);
-  await h.poll();
-  assert.equal(h.events.length, 1, 'Offline clock expiry must still notify open dialogs');
-  assert.equal(h.events[0].detail.freshnessChanged, true);
-  const cached = vm.runInContext('publicLastData', h.context);
-  assert.equal(cached.details.red.variants['red-M'].variants[0].in_stock, false);
-  assert.equal(cached.catalog.items[0].stock_state, 'unknown');
-  assert.equal(cached.catalog.items[0].status, '库存核实已过期');
-  await h.poll();
-  assert.equal(h.events.length, 1, 'Repeated offline polls remain quiet');
+async function testOfflinePollRetainsStockAndExpiresQuote() {
+  const h=await harness();h.setOffline(true);h.setNow(START+3600001);await h.poll();
+  assert.equal(h.events.length,0);
+  let detail=await h.request('/api/catalog/red');
+  assert.equal(detail.variants[0].in_stock,true);
+  assert.equal(detail.offers[0].offer.fetched_at,new Date(START).toISOString());
+  h.setNow(START+86400001);await h.poll();
+  detail=await h.request('/api/catalog/red');
+  assert.equal(detail.variants[0].in_stock,true);
+  assert.equal(detail.offers[0].eligible,false,'Quote and FX safety still expire offline');
+  assert.equal(h.events.length,1);
+  await h.poll();assert.equal(h.events.length,1);
 }
 
 async function testUnchangedManifestAvoidsFullSnapshotTransfers() {
@@ -415,8 +404,8 @@ async function testUnchangedManifestAvoidsFullSnapshotTransfers() {
   h.setNow(START + 3600001);
   await h.poll();
   assert.equal(h.snapshotReads().length, 1, 'Clock expiry still needs no new snapshot');
-  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false);
-  assert.equal(h.events.length, 1);
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, true);
+  assert.equal(h.events.length, 0);
 }
 
 async function testNewVersionSharesOneInflightSnapshot() {
@@ -563,10 +552,10 @@ async function testHungNetworkDoesNotDelayClockExpiry() {
   let release;
   h.setManifestGate(new Promise(resolve => { release = resolve; }));
   const pending = h.poll();
-  h.setNow(START + 3600001);
+  h.setNow(START + 86400001);
   const concurrent = h.poll();
   assert.equal(h.events.length, 1, 'Clock-driven expiry dispatches before the hanging network check settles');
-  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false);
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, false);
   assert.equal(h.snapshotReads().length, 1);
   release();
   await Promise.all([pending, concurrent]);
@@ -667,9 +656,9 @@ async function testSchema2HeartbeatRestoresOnlyLocallyExpiredSafety() {
   assert.equal(base.details.red.variants['red-M'].offers[0].offer.fetched_at, new Date(START).toISOString());
   assert.equal(base.details.red.variants['red-M'].offers[0].eligible, true);
   await h.poll(); assert.equal(h.events.length, 2, 'Successful same-proof polls cannot repeatedly restore or notify');
-  h.setNow(START + 86400001 + 3600001); await h.poll();
-  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false);
-  assert.equal(h.events.length, 3, 'The renewed observation still expires normally');
+  h.setNow(START + 86400001 + 86400001); await h.poll();
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, false);
+  assert.equal(h.events.length, 3, 'The renewed quote still expires normally');
 }
 
 async function testSchema2ExactReferenceAndEvidenceOverlay() {
@@ -717,7 +706,7 @@ async function testSchema2DiscountReferenceMetadata() {
   const renewed=START+1800000;h.setNow(renewed);h.setRelease(heartbeat(initial,renewed));await h.poll();
   card=(await h.request('/api/catalog')).items[0];assert.equal(card.fetched_at,new Date(renewed).toISOString());assert.equal(card.reference_original_price.amount,'120');assert.equal(card.reference_price.amount,'90');assert.equal(card.reference_cny,'630');assert.equal(card.reference_variant_id,'red-M');assert.equal(h.snapshotReads().length,1);assert.equal(h.events.length,0);
   const later=START+5460000;h.setNow(later);h.setRelease(heartbeat(initial,later,status=>{status.offers['red-offer'].fetched_at=new Date(renewed).toISOString()}));await h.poll();
-  card=(await h.request('/api/catalog')).items[0];assert.equal(card.stock_state,'in_stock','A full-price offer remains freshly stocked');assert.equal(card.reference_stock,'unknown','Another fresh full-price quote cannot renew the expired discounted quote');assert.equal(card.fetched_at,new Date(renewed).toISOString());assert.equal(card.reference_original_price.amount,'120');assert.ok(h.events.some(event=>event.detail.freshnessChanged));
+  card=(await h.request('/api/catalog')).items[0];assert.equal(card.stock_state,'in_stock','A full-price offer remains freshly stocked');assert.equal(card.reference_stock,'in_stock','Age alone does not erase the discounted offer stock observation');assert.equal(card.fetched_at,new Date(renewed).toISOString());assert.equal(card.reference_original_price.amount,'120');assert.equal(h.events.length,0);
 }
 
 async function testSchema2NewContentAndEventsNotifyOnce() {
@@ -920,22 +909,22 @@ async function testSchema2ProcessOnlyProofDoesNotRenewObservations() {
   assert.equal(h.context.window.BIKEHUNT_VERIFICATION.trigger, 'manual');
   assert.equal((await h.request('/api/catalog/red')).offers[0].offer.fetched_at, release.manifest.generated_at);
   h.setNow(START + 3600001); await h.poll();
-  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, false, 'A rebuild timestamp cannot extend the true source verification window');
-  assert.equal(h.events.length, 1); assert.equal(h.snapshotReads().length, 1);
+  assert.equal((await h.request('/api/catalog/red')).variants[0].in_stock, true, 'A rebuild must retain the last stock observation');
+  assert.equal(h.events.length, 0); assert.equal(h.snapshotReads().length, 1);
   assert.ok(!h.marker.title.includes('最近核实'), 'Status publication must not be described as a source recheck');
 }
 
 async function testSchema2ProofCrossingOldExpiryStillInvalidatesCopiedControls() {
   const initial = v2Publication(), h = await harness(snapshot(), {release: initial});
-  const next = heartbeat(initial, START + 3599999, status => {
-    for (const observation of Object.values(status.offers)) observation.fetched_at = new Date(START + 3599000).toISOString();
+  const next = heartbeat(initial, START + 86399999, status => {
+    for (const observation of Object.values(status.offers)) observation.fetched_at = new Date(START + 86399000).toISOString();
   });
-  h.setRelease(next); h.setNow(START + 3599999);
+  h.setRelease(next); h.setNow(START + 86399999);
   let release; h.setStatusGate(new Promise(resolve => { release = resolve; }));
   const pending = h.poll();
   for (let i = 0; i < 20 && h.statusReads().length < 2; i++) await new Promise(resolve => setImmediate(resolve));
   assert.equal(h.events.length, 0, 'The pre-request inventory check is still fresh');
-  h.setNow(START + 3600001); release(); await pending;
+  h.setNow(START + 86400001); release(); await pending;
   assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, true);
   assert.equal(h.events.length, 1, 'Crossing expiry during the proof request must not disappear between matching fresh fingerprints');
   assert.equal(h.events[0].detail.freshnessChanged, true);
@@ -952,20 +941,20 @@ async function testSchema2HungStatusSharesInflightAndStillExpires() {
   for (let i = 0; i < 20 && h.statusReads().length < 2; i++) await new Promise(resolve => setImmediate(resolve));
   assert.equal(h.statusReads().length, 2);
   const manual = h.context.window.fetch('/api/refresh/prices');
-  h.setNow(START + 3600001); const second = h.poll();
+  h.setNow(START + 86400001); const second = h.poll();
   assert.equal(h.events.length, 1, 'Expiry runs while the status network is hung');
   assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, false);
   assert.equal(h.manifestReads().length, 2); assert.equal(h.snapshotReads().length, 1);
   release(); await Promise.all([first, manual, second]);
   assert.equal(h.statusReads().length, 2);
-  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, true, 'The accepted actual observation is still within its own hour');
+  assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, true, 'The accepted actual observation is still within its own quote validity');
   assert.equal(h.events.length, 2, 'Concurrent waiters dispatch one safety restoration event');
-  h.setNow(START + 60000 + 3600001); h.setOffline(true); await h.poll();
+  h.setNow(START + 60000 + 86400001); h.setOffline(true); await h.poll();
   assert.equal((await h.request('/api/catalog/red')).offers[0].eligible, false);
   assert.equal(h.events.length, 3);
 }
 
-async function testSourceQuotesBindIdentityAndExpire(){
+async function testSourceQuotesBindIdentityAndRetainStock(){
  const payload=snapshot();
  for(const card of payload.catalog.items){
   const family=payload.details[card.product_id],detail=family.variants[family.default],q=detail.offers[0],o=q.offer;
@@ -984,19 +973,42 @@ async function testSourceQuotesBindIdentityAndExpire(){
  catalog=await h.request('/api/catalog');
  assert.equal(catalog.items[0].channel_quotes.merchant.fetched_at,new Date(START+60000).toISOString());
  h.setOffline(true);h.setNow(START+3660001);await h.poll();catalog=await h.request('/api/catalog');
- assert.equal(catalog.items[0].channel_quotes.merchant.reference_stock,'unknown');
- assert.equal(catalog.items[0].channel_quotes.merchant.available_sizes.length,0);
+ assert.equal(catalog.items[0].channel_quotes.merchant.reference_stock,'in_stock');
+ assert.equal(catalog.items[0].channel_quotes.merchant.available_sizes.length,1);
  const wrong=structuredClone(payload);wrong.catalog.items[0].source_codes.push('wrong');
  wrong.catalog.items[0].channel_quotes.wrong=wrong.catalog.items[0].channel_quotes.merchant;
  const invalid=await harness(wrong,{release:v2Publication(wrong),expectInitialFailure:true});
  assert.ok(invalid.initialError,'A source mapping cannot reuse another merchant offer');
 }
 
+async function testRetainedStockAndExpiredCouponAreIndependent() {
+ const data=snapshot(),o=data.details.red.variants['red-M'].offers[0].offer;
+ o.collection_state='retained';o.price_valid_until='2026-10-13';
+ o.fetched_at=new Date(START-3*86400000).toISOString();
+ const h=await harness(data);
+ const detail=await h.request('/api/catalog/red'),card=(await h.request('/api/catalog')).items[0];
+ assert.equal(detail.variants[0].in_stock,true);
+ assert.deepEqual(card.available_sizes,['M']);assert.equal(card.stock_state,'in_stock');
+ assert.equal(detail.offers[0].offer.fetched_at,o.fetched_at);
+ assert.equal(detail.offers[0].offer.collection_state,'retained');
+ assert.equal(detail.offers[0].eligible,false);
+ assert.ok(detail.offers[0].reasons.includes('报价已过期'));
+ assert.equal(card.recommended_total_cny,null);
+ const historical=snapshot();historical.details.red.variants['red-M'].offers[0].offer.data_kind='historical_reference';
+ const historicalHarness=await harness(historical);
+ assert.equal((await historicalHarness.request('/api/catalog/red')).variants[0].in_stock,false,'Non-live reference is never known stock');
+ for(const stock of ['unknown','out_of_stock']){
+   const changed=snapshot();changed.details.red.variants['red-M'].offers[0].offer.stock=stock;
+   const x=await harness(changed);
+   assert.equal((await x.request('/api/catalog/red')).variants[0].in_stock,false);
+ }
+}
+
 async function main() {
-  const tests = [testSourceQuotesBindIdentityAndExpire,testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
-    testInventoryAndColorsExpireTogether, testSamePublicationNotifiesOnFreshnessChanges,
+  const tests = [testRetainedStockAndExpiredCouponAreIndependent,testSourceQuotesBindIdentityAndRetainStock,testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
+    testInventoryAndColorsRetainLastKnownStock, testSamePublicationNotifiesOnFreshnessChanges,
     testPublicationCursorNeverMovesBackwards, testSoldOutAndFailedRefreshInvalidateActions,
-    testStockTimestampBoundariesFailClosed, testOfflinePollStillExpiresStock,
+    testStockTimestampBoundariesFailClosed, testOfflinePollRetainsStockAndExpiresQuote,
     testUnchangedManifestAvoidsFullSnapshotTransfers, testNewVersionSharesOneInflightSnapshot,
     testCdnRacesNeverCommitMismatchedSnapshots, testDigestAndPublicationMetadataAreBothRequired,
     testRollbackAndReusedVersionAreRejected, testManifestFailuresFailClosedAndRetry,

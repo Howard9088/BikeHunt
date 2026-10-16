@@ -88,7 +88,7 @@ function recordBundleQuoteChanges(detail,events=[]){
     if(event.recovered_history===true)continue;
     const quote=detail.offers?.find(q=>q.offer.offer_id===event.offer_id),old=guards.get(event.offer_id);
     if(!quote&&!old)continue;
-    const offer=quote?.offer,stock=['in_stock','out_of_stock','unknown'].includes(event.stock)?event.stock:null;
+    const offer=quote?.offer,stock=['in_stock','out_of_stock'].includes(event.stock)?event.stock:null;
     const amount=event.new_price!==null&&event.new_price!==undefined&&Number.isFinite(Number(event.new_price))?String(event.new_price):null;
     const currency=/^[A-Z]{3}$/.test(event.currency||'')?event.currency:null;
     if(!old&&!(stock&&stock!==offer.stock||amount!==null&&amount!==String(offer.price?.amount)||currency&&currency!==offer.price?.currency))continue;

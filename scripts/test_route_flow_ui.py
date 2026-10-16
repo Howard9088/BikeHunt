@@ -242,12 +242,12 @@ def main():
                 page.locator('#close').click()
                 expect(page.locator('#amazonChannels,.amazon-market,[data-amazon-search-link]')).to_have_count(0)
                 assert_no_early_registration(page)
-                # Stale stock can only plan a route, then recheck at the exact official page.
+                # Last-known stock keeps its exact selected size and guarded official route.
                 state['detail']['offers'][0]['offer']['fetched_at'] = '2000-01-01T00:00:00Z'
                 page.locator('.card .compare-button').first.click()
                 page.locator('[data-variant="S"]').click()
-                expect(page.locator('[data-offer="offer-visma"]')).to_be_disabled()
-                page.locator('.offer[data-source="visma"] [data-reference-link]').click()
+                expect(page.locator('[data-offer="offer-visma"]')).to_be_enabled()
+                page.locator('[data-offer="offer-visma"]').click()
                 assert_routes(page)
                 expect(page.locator('#routeComparison')).to_contain_text('库存')
                 select_route(page, 'direct')
@@ -255,7 +255,7 @@ def main():
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
                 assert len(outbound) == 1
                 page.screenshot(path=str(OUT / f'purchase_registration_{mode}.png'))
-                checks.append(mode + ': compact payment after size; exact three routes; prohibited disabled/unknown planning; registration only after route; four numbered modal explanations and exact domain/labels; selected image and failure fallback; full disclosure; Escape/focus trap; stock and URL revalidation; same-tab exact URL; cancel/back/reload preserve source, offer, size and route; no standalone Amazon search module; stale stock reference stage; no early merchant request')
+                checks.append(mode + ': compact payment after size; exact three routes; prohibited disabled/unknown planning; registration only after route; four numbered modal explanations and exact domain/labels; selected image and failure fallback; full disclosure; Escape/focus trap; stock and URL revalidation; same-tab exact URL; cancel/back/reload preserve source, offer, size and route; no standalone Amazon search module; last-known stock keeps the guarded purchase stage; no early merchant request')
 
                 # Domestic official offers keep the same guarded exit and restore flow,
                 # without showing cross-border route choices or imported-cost estimates.

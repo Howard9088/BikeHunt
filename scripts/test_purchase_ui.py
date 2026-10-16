@@ -142,10 +142,13 @@ def main():
                 expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed', 'true')
                 expect(page.locator('.guide-start[data-offer=offer-s]')).to_be_enabled()
                 checks.append(f'{mode}: exact disclosure; generic source links use the same modal and same tab; route selection before registration; repeated dismissal and interstitial Cancel; modifier click; exact same-tab URL; interstitial reload and merchant Back restore their stage and selected size')
-                # A published retained/sold-out result invalidates the pending registration exit.
+                # A refresh failure retains the exact last-known offer; a later explicit sellout invalidates it.
                 page.locator('.guide-start').click()
                 select_purchase_route(page, selected=True)
                 state['detail']['offers'][0]['offer']['collection_state'] = 'retained'
+                page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[],freshnessChanged:true}}))")
+                expect(page.locator('#routeContinue')).to_be_enabled()
+                state['detail']['offers'][0]['offer']['stock'] = 'out_of_stock'
                 state['detail']['variants'][0]['in_stock'] = False
                 state['catalog']['items'][0]['available_sizes'] = []
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[],freshnessChanged:true}}))")
@@ -153,7 +156,7 @@ def main():
                 expect(page.locator('[data-purchase-link][data-offer]')).to_have_count(0)
                 expect(page).to_have_url(base)
                 assert external_reads == ['https://merchant.example/policy', 'https://merchant.example/bib?variant=S']
-                checks.append(f'{mode}: retained snapshot invalidates pending route/registration exit without merchant traffic')
+                checks.append(f'{mode}: retained snapshot preserves guarded route; explicit sold-out snapshot invalidates exit without merchant traffic')
                 # A plain footer reference has no specialized data-* guard and
                 # must receive the same modal even outside the product sheet.
                 page.locator('#close').click()

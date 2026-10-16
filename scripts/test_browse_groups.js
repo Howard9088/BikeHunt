@@ -152,7 +152,7 @@ function testChannelDirectFreshStockWithoutFeaturedCap(){
  c.activeCategoryGroup='other';elem('q').value='old query';
  vm.runInContext(section(flows,'function openSource(','async function startGuide('),c);
  c.openSource('team');assert.equal(c.activeSource,'team');assert.equal(c.activeTab,'products');assert.equal(c.activeCategoryGroup,null);assert.equal(elem('q').value,'');assert.equal(c.panel,undefined,'Channel navigation never opens an interstitial');
- assert.deepEqual(Array.from(c.visibleItems(),p=>p.product_id),['fresh-1','fresh-2','fresh-3'],'All fresh channel products are shown without the homepage cap');
+ assert.deepEqual(Array.from(c.visibleItems(),p=>p.product_id),['fresh-1','fresh-2','fresh-3','expired','retained'],'All reliably observed channel products survive age and refresh failures without the homepage cap');
  assert.equal(c.renderEmptyReferences(),false,'No historical fallback on a channel');
  const shared=freshCard({product_id:'shared',name:'Shared Jersey',brand:'Test',source_codes:['team','other'],channel_quotes:{}});
  const own=freshCard({...shared,reference_source:'Team shop',reference_offer_id:'team-offer',reference_price:{amount:50,currency:'USD'},reference_cny:350,channel_quotes:{}});

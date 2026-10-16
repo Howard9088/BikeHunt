@@ -68,21 +68,20 @@ function testGalleryStockBoundariesAndLabels() {
   const h = harness();
   for (const [timestamp, available] of [
     [new Date(START - 3600000).toISOString(), true],
-    [new Date(START - 3600001).toISOString(), false],
+    [new Date(START - 3600001).toISOString(), true],
+    [new Date(START - 604800000).toISOString(), true],
     [new Date(START + 1).toISOString(), false],
     [null, false], ['2026-10-14', false], ['2026-10-14T12:00:00', false],
     ['2026-02-30T12:00:00Z', false], ['2026-10-14T20:00:00+08:00', true],
   ]) assert.equal(h.context.offerAvailable(quote({fetched_at: timestamp})), available, timestamp);
-  for (const fields of [{stock: 'out_of_stock'}, {collection_state: 'retained'},
-    {price_valid_until: '2026-10-13'}, {price_valid_until: '2026-02-30'}]) {
+  for (const fields of [{stock: 'out_of_stock'}, {stock: 'unknown'}]) {
     assert.equal(h.context.offerAvailable(quote(fields)), false);
   }
   const stale = quote({fetched_at: new Date(START - 3600001).toISOString()});
   const html = h.context.offerMarkup(stale);
-  assert.ok(html.includes('库存待核实'));
-  assert.ok(html.includes('disabled'));
-  assert.ok(!html.includes('推荐渠道'));
-  assert.ok(!html.includes('有库存'));
+  assert.ok(html.includes('上次确认有货'));
+  assert.ok(!html.includes('disabled'));
+  for(const fields of [{collection_state:'retained'},{price_valid_until:'2026-10-13'},{price_valid_until:'2026-02-30'}])assert.equal(h.context.offerAvailable(quote(fields)),true);
   assert.ok(!html.includes('已售罄'));
   assert.equal(h.context.inventoryLabel(quote({stock: 'out_of_stock'}).offer), '已售罄');
 }
@@ -98,16 +97,15 @@ function testClockTimerInvalidatesOpenSelectionAndGuide() {
     h.setNow(START + 3600000); h.poll();
     assert.equal(h.closed, 0, 'Exact one-hour boundary stays available');
     h.setNow(START + 3600001); h.poll();
-    assert.equal(h.context.guideContext, null);
-    assert.equal(h.context.currentProduct, null);
-    assert.ok(h.panel.includes('库存待核实'));
-    assert.ok(!h.panel.includes('已售罄'));
-    assert.equal(h.context.items[0].stock_state, 'unknown');
-    assert.equal(h.context.items[0].available_sizes.length, 0);
-    assert.equal(h.context.items[0].recommended_total_cny, null);
-    assert.equal(h.rendered, 1);
-    h.poll();
-    assert.equal(h.rendered, 1, 'Repeated timer does not render unchanged expiry again');
+    assert.equal(h.closed,0);
+    assert.ok(h.context.currentProduct);
+    if(isGuide)assert.equal(h.context.guideContext.quote,q);
+    assert.equal(h.context.items[0].stock_state,'in_stock');
+    assert.deepEqual(h.context.items[0].available_sizes,['M']);
+    assert.equal(h.context.items[0].fetched_at,q.offer.fetched_at);
+    h.setNow(START+604800000);h.poll();assert.equal(h.closed,0);
+    q.offer.stock='out_of_stock';h.poll();assert.equal(h.context.currentProduct,null);
+    assert.ok(h.panel.includes('已售罄'));
   }
 }
 
@@ -140,15 +138,14 @@ async function testAsyncGuideCannotReviveExpiredOrDismissedSelection() {
     if (dismiss) h.context.closeSheet();
     else h.setNow(START + 3600001);
     resolve({documents: []}); await work;
-    assert.equal(rendered, 0);
-    assert.equal(h.context.guideContext, null);
-    if (!dismiss) assert.ok(h.panel.includes('库存待核实'));
+    assert.equal(rendered, dismiss?0:1);
+    if(dismiss)assert.equal(h.context.guideContext,null);else assert.equal(h.context.guideContext.quote,q);
   }
   const h = harness();
   h.context.guideContext = {quote: quote({fetched_at: new Date(START - 3600001).toISOString()})};
   h.context.renderGuide();
-  assert.equal(h.context.guideContext, null, 'Advancing an expired guide closes stale controls');
-  assert.ok(h.panel.includes('库存待核实'));
+  assert.ok(h.context.guideContext, 'Elapsed time preserves last-known stock controls');
+  assert.equal(h.closed,0);
 }
 
 function verificationFor(q, timestamp) {
@@ -194,8 +191,8 @@ function testVerifiedHeartbeatPreservesOpenSelectionAndGuideWithoutRendering() {
     assert.equal(h.closed, 0); assert.equal(h.context.currentProduct, ui.detail, 'Original clock expiry must not invalidate a genuinely renewed selection');
     assert.equal(h.context.offerAvailable(ui.q), true);
     h.setNow(START + 1800000 + 3600001); h.poll();
-    assert.equal(h.context.guideContext, null); assert.equal(h.context.currentProduct, null);
-    assert.equal(h.rendered, 1, 'Without another genuine recheck, offline stock expiry still invalidates confirmed-stock controls');
+    assert.equal(h.context.guideContext,existingGuide);assert.equal(h.context.currentProduct,ui.detail);
+    assert.equal(h.closed,0,'Offline time does not invalidate last-known inventory');
   }
 }
 function testMetadataRejectsWrongIdentityAndChangedSafety() {
@@ -225,9 +222,8 @@ function testMetadataCannotReviveExpiredOrDismissedGuide() {
     const h = harness(), ui = prepareOpenSelection(h, true), proof = verificationFor(ui.q, START + 3600001);
     if (dismissed) h.context.closeSheet();
     h.setNow(START + 3600001); h.metadata(proof);
-    assert.equal(ui.q.offer.fetched_at, new Date(START).toISOString(), 'An expired quote cannot be silently rejuvenated inside an existing guide');
-    if (!dismissed) h.poll();
-    assert.equal(h.context.guideContext, null); assert.equal(h.context.currentProduct, null);
+    assert.equal(ui.q.offer.fetched_at,new Date(dismissed?START:START+3600001).toISOString(),'Only identity-bound live selections accept genuine observations');
+    if(!dismissed){h.poll();assert.equal(h.context.currentProduct,ui.detail);assert.ok(h.context.guideContext);}else{assert.equal(h.context.guideContext,null);assert.equal(h.context.currentProduct,null);}
   }
 }
 async function testPendingGuideReceivesIdentityBoundHeartbeatWithoutResurrection() {

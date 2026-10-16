@@ -12,7 +12,7 @@ from app.catalog.storage import OfferRepository, atomic_json
 from test_catalog import NOW, make_fx, make_offer
 
 class RefreshIntegrityTests(unittest.TestCase):
-    def test_failed_refresh_keeps_history_but_removes_selectable_stock(self):
+    def test_failed_refresh_keeps_last_known_selectable_stock(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             quote = make_offer()
@@ -25,8 +25,8 @@ class RefreshIntegrityTests(unittest.TestCase):
             self.assertEqual(rows[0].fetched_at, quote.fetched_at)
             self.assertEqual(rows[0].collection_state, 'retained')
             catalog = ComparisonCatalog(rows, make_fx(), NOW+timedelta(minutes=2))
-            self.assertEqual(catalog.search()[0].stock_state, 'unknown')
-            self.assertEqual(catalog.search()[0].available_sizes, [])
+            self.assertEqual(catalog.search()[0].stock_state, 'in_stock')
+            self.assertEqual(catalog.search()[0].available_sizes, ["M"])
             self.assertFalse(compare_offer(rows[0], make_fx(), NOW).eligible)
             fresh = quote.model_copy(update={'fetched_at':NOW+timedelta(minutes=3)})
             repo.save(quote.source_code, [fresh], NOW+timedelta(minutes=3), [])

@@ -248,7 +248,7 @@ class PagesTests(unittest.TestCase):
         self.assertTrue(expired["catalog_changed"])
         self.assertNotEqual(first["snapshot"]["sha256"], second["snapshot"]["sha256"])
         self.assertEqual(status["offers"], expired_status["offers"])
-        self.assertEqual(json.loads(raw)["catalog"]["items"][0]["available_sizes"], [])
+        self.assertEqual(json.loads(raw)["catalog"]["items"][0]["available_sizes"], ["M"])
         failed_at = NOW + timedelta(hours=1, minutes=1)
         repo = OfferRepository(self.root / "data")
         repo.save("a", [], failed_at, [{"url": make_offer().url, "error": "HTTP 429"}])

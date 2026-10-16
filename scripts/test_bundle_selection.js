@@ -71,17 +71,24 @@ async function testProgressiveExactSelectionAndFocus(){
  await h.change('jersey',parts.jersey);assert.equal(h.selected.variantId,null);assert.equal(h.elements.get('bundle-bib').value,'');assert.equal(h.elements.get('bundle-socks').value,'');assert.ok(!h.html.includes('guide-start'));assert.equal(h.fitCalls,0,'Single-garment fit suggestions must not infer a bundle fit');
 }
 async function testRefreshInvalidationAndRaceSafety(){
- for(const kind of ['sold','price','currency','retained','observed']){
+ for(const kind of ['sold','price','currency','observed']){
   const h=harness(),row=fixture.variants[0],fresh=detail();h.render(detail(),row.variant_id);
   if(kind==='sold'){fresh.offers[0].offer.stock='out_of_stock';fresh.variants[0].in_stock=false;fresh.variants[0].stock_state='out_of_stock'}
   if(kind==='price')fresh.offers[0].offer.price.amount='229.00';
   if(kind==='currency')fresh.offers[0].offer.price.currency='USD';
-  if(kind==='retained')fresh.offers[0].offer.collection_state='retained';
   let resolve;h.setResult(()=>new Promise(done=>resolve=done));const pending=h.c.refreshOpenProductDetail(kind==='observed'?[{offer_id:row.offer.offer_id,stock:'out_of_stock'}]:[]);
   assert.ok(!h.html.includes('guide-start'),'Disable old action synchronously before waiting');resolve(fresh);await pending;
   assert.equal(h.selected.variantId,null,kind);assert.ok(!h.html.includes('guide-start'));assert.ok(h.html.includes('重新选择袜子'));
  }
  const unchanged=harness(),row=fixture.variants[0];unchanged.render(detail(),row.variant_id);unchanged.setResult(detail());await unchanged.c.refreshOpenProductDetail();assert.equal(unchanged.selected.variantId,row.variant_id);
+ for(const kind of ['retained','aged','unknown-event']){
+  const kept=harness(),latest=detail();kept.render(detail(),row.variant_id);
+  if(kind==='retained')latest.offers[0].offer.collection_state='retained';
+  if(kind==='aged')latest.offers[0].offer.fetched_at='2020-01-01T00:00:00Z';
+  kept.setResult(latest);await kept.c.refreshOpenProductDetail(kind==='unknown-event'?[{offer_id:row.offer.offer_id,stock:'unknown'}]:[]);
+  assert.equal(kept.selected.variantId,row.variant_id,kind+' must preserve the exact selection');
+  assert.ok(kept.html.includes('guide-start'),kind+' must retain the official purchase entry');
+ }
  const partial=harness();partial.render();await partial.change('jersey','XL');const changedDefault=detail();changedDefault.offers[0].offer.price.amount='229.00';partial.setResult(changedDefault);await partial.c.refreshOpenProductDetail();assert.deepEqual(clone(partial.selected.selection),{jersey:'XL'},'A refreshed default quote must never substitute the user’s partial sizes');assert.equal(partial.selected.variantId,null);
  const cancelled=harness();let resolve;cancelled.setResult(()=>new Promise(done=>resolve=done));const pending=cancelled.c.loadDetail(fixture.product_id,row.variant_id);cancelled.close();resolve(detail());await pending;assert.ok(!cancelled.html.includes('guide-start'));
  const mismatch=harness();mismatch.setResult({...detail(),variant_id:'wrong'});await mismatch.c.loadDetail(fixture.product_id,row.variant_id);assert.ok(mismatch.html.includes('所选规格已变化'));assert.ok(!mismatch.html.includes('guide-start'));

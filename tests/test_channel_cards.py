@@ -13,7 +13,7 @@ class ChannelCardTests(unittest.TestCase):
                 make_offer("old", "3", fetched_at=NOW-timedelta(hours=2)),
                 make_offer("retained", "4", collection_state="retained")]
         card = ComparisonCatalog(rows, make_fx(), NOW).search()[0]
-        self.assertEqual(set(card.channel_quotes), {"a", "b"})
+        self.assertEqual(set(card.channel_quotes), {"a", "b", "old", "retained"})
         self.assertEqual(card.channel_quotes["a"].reference_price.amount, 80)
         self.assertEqual(card.channel_quotes["b"].reference_price.amount, 100)
         for code, quote in card.channel_quotes.items():

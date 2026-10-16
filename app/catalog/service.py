@@ -116,7 +116,10 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
         reasons.append("汇率为过期缓存")
     reasons.extend(offer.purchase_requirements)
     discount = None
-    if (offer.original_price and offer.original_price.currency == offer.price.currency
+    if (offer.collection_state != "retained" and offer.data_kind == "live_snapshot"
+            and 0 <= _age(offer.fetched_at, now) <= QUOTE_MAX_AGE_SECONDS
+            and _price_valid(offer.price_valid_until, now)
+            and offer.original_price and offer.original_price.currency == offer.price.currency
             and offer.original_price.amount > offer.price.amount):
         discount = int(((1 - offer.price.amount / offer.original_price.amount) * 100)
                        .quantize(Decimal(1), rounding=ROUND_HALF_UP))
@@ -173,14 +176,25 @@ class ComparisonCatalog:
         return _identifier(key)
 
     def available(self, offer: Offer) -> bool:
-        return (offer.collection_state != "retained"
-                and offer.stock == "in_stock"
-                and 0 <= _age(offer.fetched_at, self.now) <= STOCK_MAX_AGE_SECONDS
+        """Keep a reliable last-known stock observation until explicit sold-out.
+
+        This is browsing/merchant access, not a guarantee of today's price,
+        stock, payment eligibility, or discount validity.
+        """
+        return (offer.data_kind == "live_snapshot" and offer.stock == "in_stock"
+                and offer.fetched_at is not None and offer.fetched_at.tzinfo is not None
+                and _age(offer.fetched_at, self.now) >= 0)
+
+    def current(self, offer: Offer) -> bool:
+        return (self.available(offer) and offer.collection_state != "retained"
+                and _age(offer.fetched_at, self.now) <= STOCK_MAX_AGE_SECONDS
                 and _price_valid(offer.price_valid_until, self.now))
 
     def discounted(self, offer: Offer) -> bool:
         """A merchant's same-variant price pair, never a historical price drop."""
-        return (self.available(offer) and offer.data_kind == "live_snapshot"
+        return (self.available(offer) and offer.collection_state != "retained"
+                and _age(offer.fetched_at, self.now) <= QUOTE_MAX_AGE_SECONDS
+                and _price_valid(offer.price_valid_until, self.now)
                 and offer.original_price is not None
                 and offer.original_price.currency == offer.price.currency
                 and offer.original_price.amount > offer.price.amount > 0)
@@ -205,13 +219,16 @@ class ComparisonCatalog:
         size_order = {s: i for i, s in enumerate(("XS", "S", "M", "L", "XL", "XXL", "XXXL"))}
         choices.sort(key=lambda v: size_order.get(v.size or "", 100))
         if variant_id is None:
-            chosen = max(choices, key=lambda v: (v.in_stock, v.source_count, -(size_order.get(v.size or "", 100))))
+            chosen = max(choices, key=lambda v: (v.in_stock,
+                any(self.current(x) for group in variants if self._variant_id(group) == v.variant_id for x in group),
+                v.source_count, -(size_order.get(v.size or "", 100))))
             variant_id = chosen.variant_id
         selected = next((v for v in variants if self._variant_id(v) == variant_id), None)
         if selected is None:
             raise KeyError(variant_id)
         compared = [compare_offer(x, self.fx, self.now) for x in selected]
         compared.sort(key=lambda x: (not self.available(x.offer),
+                                     not self.current(x.offer),
                                      not is_domestic_official_offer(x.offer),
                                      not x.eligible,
                                      x.total_cny if x.eligible else Decimal("Infinity"),
@@ -254,7 +271,7 @@ class ComparisonCatalog:
             discounted = [x for x in in_stock if self.discounted(x.offer)]
             reference = (min(discounted, key=lambda x: (x.product_cny if x.product_cny is not None else Decimal("Infinity"), x.offer.offer_id))
                          if discounted else recommended or min(references,key=lambda x: x.product_cny if x.product_cny is not None else Decimal("Infinity")))
-            domestic_references = [x for x in in_stock if is_domestic_official_offer(x.offer)]
+            domestic_references = [x for x in in_stock if self.current(x.offer) and is_domestic_official_offer(x.offer)]
             if domestic_references:
                 reference = min(domestic_references, key=lambda x: (
                     x.product_cny if x.product_cny is not None else Decimal("Infinity"),
@@ -280,9 +297,9 @@ class ComparisonCatalog:
                 discount_pct=reference.discount_pct,
                 reference_stock=reference.offer.stock if self.available(reference.offer) or reference.offer.stock != "in_stock" else "unknown", reference_collection_state=reference.offer.collection_state, fetched_at=reference.offer.fetched_at,
                 recommended_total_cny=recommended.total_cny if recommended else None,
-                status="公开条件与费用已齐" if recommended else "库存核实已过期" if not in_stock and any(
-                    x.offer.stock == "in_stock" and not 0 <= _age(x.offer.fetched_at, self.now) <= STOCK_MAX_AGE_SECONDS
-                    for x in all_compared) else "渠道待核实",
+                status="公开条件与费用已齐" if recommended else
+                    "上次核实时有货；请到官网确认" if in_stock and not self.current(reference.offer)
+                    else "渠道待核实",
                 available_sizes=[v.size for v in detail.variants if v.in_stock and v.size],
                 stock_state="in_stock" if in_stock else "out_of_stock" if all(x.offer.stock=="out_of_stock" for x in all_compared) else "unknown",
                 purchase_requirements=sorted({r for v in variants for x in v for r in x.purchase_requirements}),
@@ -316,7 +333,7 @@ class ComparisonCatalog:
                     "fetched_at": chosen.offer.fetched_at,
                     "discount_pct": chosen.discount_pct,
                     "recommended_total_cny": chosen.total_cny if chosen.eligible else None,
-                    "status": "渠道现货",
+                    "status": "渠道现货" if self.current(chosen.offer) else "上次核实时有货；请到官网确认",
                     "purchase_requirements": list(chosen.offer.purchase_requirements),
                     "stock_state": "in_stock",
                     "available_sizes": list(dict.fromkeys(v.size for v in detail.variants if v.size in sizes)),

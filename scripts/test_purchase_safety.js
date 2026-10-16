@@ -11,10 +11,12 @@ const helper=gallery.slice(gallery.indexOf('function inventoryVerified('),galler
 const context={Date,Number,URL,safeUrl:value=>{try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:''}catch{return ''}}};vm.createContext(context);vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),context);vm.runInContext(helper,context);
 const fresh={offer:{url:'https://shop.example/products/jersey',stock:'in_stock',fetched_at:new Date().toISOString()}};
 assert.equal(context.offerAvailable(fresh),true);
+for(const kind of ['historical_reference','legacy_cache','unknown'])assert.equal(context.offerAvailable({offer:{...fresh.offer,data_kind:kind}}),false,kind+' cannot be promoted to verified stock');
+assert.equal(context.offerAvailable({offer:{...fresh.offer,data_kind:'live_snapshot',collection_state:'retained',fetched_at:'2000-01-01T00:00:00Z'}}),true);
 assert.equal(context.offerAvailable({offer:{...fresh.offer,stock:'out_of_stock'}}),false);
 assert.equal(context.offerAvailable({offer:{...fresh.offer,stock:'unknown'}}),false);
-assert.equal(context.offerAvailable({offer:{...fresh.offer,collection_state:'retained'}}),false);
-assert.equal(context.offerAvailable({offer:{...fresh.offer,fetched_at:'2000-01-01T00:00:00Z'}}),false);
+assert.equal(context.offerAvailable({offer:{...fresh.offer,collection_state:'retained'}}),true);
+assert.equal(context.offerAvailable({offer:{...fresh.offer,fetched_at:'2000-01-01T00:00:00Z'}}),true);
 assert.ok(gallery.includes("p.stock_state!=='out_of_stock'&&profileMatches(p)"));
 assert.ok(gallery.includes("?.stock_state==='out_of_stock')return;"));
 assert.ok(gallery.includes("!offerAvailable(compared)?'disabled'"));

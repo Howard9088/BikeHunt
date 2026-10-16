@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 import os
+import re
 import shutil
 import sys
 import threading
@@ -234,6 +235,314 @@ def exercise_group_entry(page, context, base, mode, return_label, checks):
     checks.append(mode+': exact group name, real QR only, same-tab stable group entrance, Back/Forward preserves source/category/search/read state')
 
 
+
+# Public event snapshot captured 2026-10-16; independent replay, never live stock.
+COLNAGO_CAPTURED_EVENTS = json.loads(r'''[
+  {
+    "id": 2664,
+    "event_key": "a0687524ef3531fba73f5b7fe1b90f5710723b4b76bfc3764b841be9b71f2bcf",
+    "kind": "price_changed",
+    "source_code": "colnago",
+    "source_name": "Colnago 官方商城",
+    "name_zh": "Ace - Cycling Winter 骑行夹克 男款",
+    "category": "jackets",
+    "old_price": "333",
+    "new_price": "332",
+    "currency": "USD",
+    "stock": "in_stock",
+    "old_stock": "in_stock",
+    "observed_at": "2026-10-16T05:21:58.439449+00:00",
+    "offer_id": "7e644ea9f5ba173ea44d",
+    "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=3XL",
+    "product": {
+      "offer_id": "7e644ea9f5ba173ea44d",
+      "name": "Ace - Cycling Winter Jacket Men",
+      "brand": "Colnago",
+      "model": "Ace - Cycling Winter Jacket Men",
+      "color": null,
+      "size": "3XL",
+      "image": "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/jacket-men1.jpg?v=1771074637",
+      "product_id": "455a34bf27086c79c1b8",
+      "variant_id": "8cdc8e7ccbbaa7a8d471",
+      "current_stock": "in_stock",
+      "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=3XL"
+    }
+  },
+  {
+    "id": 2663,
+    "event_key": "4df2ca13880aeda66049dddbf9fea9b7a900602a3864fb27e026c96c90388304",
+    "kind": "price_changed",
+    "source_code": "colnago",
+    "source_name": "Colnago 官方商城",
+    "name_zh": "Ace - Cycling Winter 骑行夹克 男款",
+    "category": "jackets",
+    "old_price": "333",
+    "new_price": "332",
+    "currency": "USD",
+    "stock": "in_stock",
+    "old_stock": "in_stock",
+    "observed_at": "2026-10-16T05:21:58.439449+00:00",
+    "offer_id": "25748b08c8dfbe5596a5",
+    "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=2XL",
+    "product": {
+      "offer_id": "25748b08c8dfbe5596a5",
+      "name": "Ace - Cycling Winter Jacket Men",
+      "brand": "Colnago",
+      "model": "Ace - Cycling Winter Jacket Men",
+      "color": null,
+      "size": "2XL",
+      "image": "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/jacket-men1.jpg?v=1771074637",
+      "product_id": "455a34bf27086c79c1b8",
+      "variant_id": "9d3be143dcf25e4fc659",
+      "current_stock": "in_stock",
+      "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=2XL"
+    }
+  },
+  {
+    "id": 2662,
+    "event_key": "d70893a98be1b8acc37cb4bb86c3ce0a9572bcb754b7bda65b0ae760394b6207",
+    "kind": "price_changed",
+    "source_code": "colnago",
+    "source_name": "Colnago 官方商城",
+    "name_zh": "Ace - Cycling Winter 骑行夹克 男款",
+    "category": "jackets",
+    "old_price": "333",
+    "new_price": "332",
+    "currency": "USD",
+    "stock": "in_stock",
+    "old_stock": "in_stock",
+    "observed_at": "2026-10-16T05:21:58.439449+00:00",
+    "offer_id": "60c1abcbfa5de959a2ec",
+    "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=XL",
+    "product": {
+      "offer_id": "60c1abcbfa5de959a2ec",
+      "name": "Ace - Cycling Winter Jacket Men",
+      "brand": "Colnago",
+      "model": "Ace - Cycling Winter Jacket Men",
+      "color": null,
+      "size": "XL",
+      "image": "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/jacket-men1.jpg?v=1771074637",
+      "product_id": "455a34bf27086c79c1b8",
+      "variant_id": "f492ba15da1091047c27",
+      "current_stock": "in_stock",
+      "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=XL"
+    }
+  },
+  {
+    "id": 2661,
+    "event_key": "fe75300b481c38d33536af38950a637f73e674cca07ad2dba02c04e04e3ac30a",
+    "kind": "price_changed",
+    "source_code": "colnago",
+    "source_name": "Colnago 官方商城",
+    "name_zh": "Ace - Cycling Winter 骑行夹克 男款",
+    "category": "jackets",
+    "old_price": "333",
+    "new_price": "332",
+    "currency": "USD",
+    "stock": "in_stock",
+    "old_stock": "in_stock",
+    "observed_at": "2026-10-16T05:21:58.439449+00:00",
+    "offer_id": "c884cb85a15a5f0bc65a",
+    "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=L",
+    "product": {
+      "offer_id": "c884cb85a15a5f0bc65a",
+      "name": "Ace - Cycling Winter Jacket Men",
+      "brand": "Colnago",
+      "model": "Ace - Cycling Winter Jacket Men",
+      "color": null,
+      "size": "L",
+      "image": "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/jacket-men1.jpg?v=1771074637",
+      "product_id": "455a34bf27086c79c1b8",
+      "variant_id": "664a44e3dfd27a2cac79",
+      "current_stock": "in_stock",
+      "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=L"
+    }
+  },
+  {
+    "id": 2660,
+    "event_key": "ab510ba2efbc7d7959113b487e4d9d9956d96cf562a0442f010340960b95103a",
+    "kind": "price_changed",
+    "source_code": "colnago",
+    "source_name": "Colnago 官方商城",
+    "name_zh": "Ace - Cycling Winter 骑行夹克 男款",
+    "category": "jackets",
+    "old_price": "333",
+    "new_price": "332",
+    "currency": "USD",
+    "stock": "in_stock",
+    "old_stock": "in_stock",
+    "observed_at": "2026-10-16T05:21:58.439449+00:00",
+    "offer_id": "5d2fd84809b3bac8c1f0",
+    "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=M",
+    "product": {
+      "offer_id": "5d2fd84809b3bac8c1f0",
+      "name": "Ace - Cycling Winter Jacket Men",
+      "brand": "Colnago",
+      "model": "Ace - Cycling Winter Jacket Men",
+      "color": null,
+      "size": "M",
+      "image": "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/jacket-men1.jpg?v=1771074637",
+      "product_id": "455a34bf27086c79c1b8",
+      "variant_id": "c8ea73854e218b88b4c4",
+      "current_stock": "in_stock",
+      "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=M"
+    }
+  },
+  {
+    "id": 2659,
+    "event_key": "40f01eb87105e8f1b6a2a51b63a9a8d38fd51d7fe351d6138bc3d38a4fb0200e",
+    "kind": "price_changed",
+    "source_code": "colnago",
+    "source_name": "Colnago 官方商城",
+    "name_zh": "Ace - Cycling Winter 骑行夹克 男款",
+    "category": "jackets",
+    "old_price": "333",
+    "new_price": "332",
+    "currency": "USD",
+    "stock": "in_stock",
+    "old_stock": "in_stock",
+    "observed_at": "2026-10-16T05:21:58.439449+00:00",
+    "offer_id": "d497e9efe63041ec5a4a",
+    "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=S",
+    "product": {
+      "offer_id": "d497e9efe63041ec5a4a",
+      "name": "Ace - Cycling Winter Jacket Men",
+      "brand": "Colnago",
+      "model": "Ace - Cycling Winter Jacket Men",
+      "color": null,
+      "size": "S",
+      "image": "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/jacket-men1.jpg?v=1771074637",
+      "product_id": "455a34bf27086c79c1b8",
+      "variant_id": "c617371693898ac3870b",
+      "current_stock": "in_stock",
+      "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=S"
+    }
+  },
+  {
+    "id": 2658,
+    "event_key": "e946facc990056f2c49dc86a22e4c75955714f20d1a9f15e68aa67b8f9568332",
+    "kind": "price_changed",
+    "source_code": "colnago",
+    "source_name": "Colnago 官方商城",
+    "name_zh": "Ace - Cycling Winter 骑行夹克 男款",
+    "category": "jackets",
+    "old_price": "333",
+    "new_price": "332",
+    "currency": "USD",
+    "stock": "in_stock",
+    "old_stock": "in_stock",
+    "observed_at": "2026-10-16T05:21:58.439449+00:00",
+    "offer_id": "5c452da1246c5c6f752f",
+    "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=XS",
+    "product": {
+      "offer_id": "5c452da1246c5c6f752f",
+      "name": "Ace - Cycling Winter Jacket Men",
+      "brand": "Colnago",
+      "model": "Ace - Cycling Winter Jacket Men",
+      "color": null,
+      "size": "XS",
+      "image": "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/jacket-men1.jpg?v=1771074637",
+      "product_id": "455a34bf27086c79c1b8",
+      "variant_id": "afc9d8da8c49dbe2b5a2",
+      "current_stock": "in_stock",
+      "url": "https://www.colnago.com/en-us/products/cycling-winter-jacket?Size=XS"
+    }
+  }
+]''')
+
+
+def exercise_colnago_message_merge(browser, base, mode, viewport, checks, errors):
+    """Isolated replay of seven captured public events; no merchant networking."""
+    state = fixture()
+    state['events'] = copy.deepcopy(COLNAGO_CAPTURED_EVENTS)
+    requests = []
+    context = browser.new_context(viewport=viewport, is_mobile=mode == 'mobile', has_touch=mode == 'mobile')
+    context.set_default_timeout(7000)
+    context.add_init_script('window.BIKEHUNT_PAGES=true;')
+    def intercept(route):
+        u = urlparse(route.request.url)
+        if u.netloc != urlparse(base).netloc:
+            return route.abort()
+        if not u.path.startswith('/api/'):
+            return route.continue_()
+        if u.path == '/api/catalog':
+            result = state['catalog']
+        elif u.path == '/api/updates':
+            result = {'items': state['events'], 'cursor': max(e['id'] for e in state['events']), 'fx': {'rates': {'USD': '7'}}}
+        elif u.path.startswith('/api/catalog/'):
+            pid = u.path.rsplit('/', 1)[-1]
+            vid = parse_qs(u.query).get('variant_id', [''])[0]
+            requests.append((pid, vid))
+            try:
+                result = detail_for_request(state, pid, vid)
+                captured = next(row for row in state['events'] if row['product']['product_id'] == pid and row['product']['variant_id'] == vid)
+                # Detail is an explicitly synthetic current test snapshot, not a new merchant observation.
+                result['variants'][0].update(in_stock=True, stock_state='in_stock', product_cny_from='2324')
+                result['identity'].update(brand='Colnago', model=captured['product']['model'], size=captured['product']['size'], color=captured['product']['color'])
+                result['offers'][0]['offer']['identity'] = copy.deepcopy(result['identity'])
+                result['offers'][0]['offer'].update(source_code='colnago', source_name='Colnago 官方商城', data_kind='live_snapshot',
+                    price={'amount': captured['new_price'], 'currency': 'USD'}, fetched_at=datetime.now(timezone.utc).isoformat(),
+                    identity_evidence='合成详情回归夹具；非商家实时库存核验')
+                result['offers'][0]['product_cny'] = '2324'
+            except KeyError:
+                return route.fulfill(status=404, content_type='application/json', body='{}')
+        elif u.path == '/api/directories':
+            result = {'brands': [], 'teams': []}
+        elif u.path.startswith('/api/rules/'):
+            result = {'version': 1, 'documents': []}
+        elif u.path.startswith('/api/fit/'):
+            result = {'state': 'no_chart', 'note_zh': '测试数据', 'candidate_sizes': [], 'required_measurements': [], 'source_url': None, 'checked_at': None, 'chart_rows': []}
+        else:
+            result = {}
+        route.fulfill(content_type='application/json', body=json.dumps(result))
+    context.route('**/*', intercept)
+    page = context.new_page()
+    page.on('pageerror', lambda error: errors.append(str(error)))
+    try:
+        page.goto(base, wait_until='networkidle')
+        expect(page.locator('#messageBadge')).to_have_text('1')
+        expect(page.locator('#messageBadge')).to_be_visible()
+        page.locator('#priceMessages').click()
+        expect(page.locator('.message-card')).to_have_count(1)
+        expect(page.locator('.message-variant')).to_have_count(7)
+        expect(page.locator('.message-price')).to_have_count(1)
+        expect(page.locator('.message-price')).to_contain_text('333')
+        expect(page.locator('.message-price')).to_contain_text('332')
+        expect(page.locator('#messageBadge')).to_be_hidden()
+        assert page.locator('#messageBadge').get_attribute('aria-label') == '0 条未读价格消息'
+        for row in state['events']:
+            button = page.locator('.message-variant').filter(has_text=re.compile('^' + re.escape(row['product']['size']) + '$'))
+            expect(button).to_have_count(1)
+            assert button.get_attribute('data-message-product') == row['product']['product_id']
+            assert button.get_attribute('data-message-variant') == row['product']['variant_id']
+            button.click()
+            expect(page.locator('#sheetBody')).to_contain_text(row['product']['model'])
+            assert requests[-1] == (row['product']['product_id'], row['product']['variant_id'])
+            bound = page.evaluate('({product: currentProduct.product_id, variant: currentProduct.variant_id, size: currentProduct.identity.size, offer: currentProduct.offers[0].offer.offer_id, url: currentProduct.offers[0].offer.url})')
+            assert bound == {'product': row['product']['product_id'], 'variant': row['product']['variant_id'],
+                             'size': row['product']['size'], 'offer': row['offer_id'], 'url': row['url']}
+            expect(page.locator('[data-variant="' + row['product']['variant_id'] + '"]')).to_have_attribute('aria-pressed', 'true')
+            expect(page).to_have_url(base)
+            assert len(context.pages) == 1
+            page.locator('#close').click()
+            page.locator('#priceMessages').click()
+        # Changed-price stress fixture only: same family must preserve both price rows.
+        state['events'][0]['new_price'] = '331'
+        page.locator('#close').click()
+        page.locator('#priceMessages').click()
+        expect(page.locator('.message-card')).to_have_count(1)
+        expect(page.locator('.message-variant')).to_have_count(7)
+        expect(page.locator('.message-price')).to_have_count(2)
+        expect(page.locator('.message-price').filter(has_text='331')).to_have_count(1)
+        expect(page.locator('.message-price').filter(has_text='332')).to_have_count(1)
+        expect(page.locator('#messageBadge')).to_be_hidden()
+        page.reload(wait_until='networkidle')
+        expect(page.locator('#messageBadge')).to_be_hidden()
+        checks.append(mode + ': captured Colnago seven exact size events merge to one unread card; read clears badge and persists; all seven variants route internally; differing price rows remain separate; isolated from original fixtures')
+    finally:
+        context.close()
+
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=str(ROOT)))
@@ -400,9 +709,9 @@ def main():
                 checks.append(mode+': search Stamp Hoodie narrows the clothing/source scope to one exact product; explicit route and registration Cancel/Continue use exact same-tab URL; Back/reload restores selected route, query/results, source/size/read state and working clear control')
                 page.locator('[data-tab=products]').click();expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
                 old='2000-01-01T00:00:00Z';state['detail']['offers'][0]['offer']['fetched_at']=old
-                for v in state['detail']['variants']:v['in_stock']=False
-                page.evaluate("openProduct('partial')");expect(page.locator('#sheetBody')).to_contain_text('库存待核实');expect(page.locator('[data-variant]')).to_have_count(0)
-                reference=page.locator('.reference-exit');expect(reference).to_be_visible()
+                page.evaluate("openProduct('partial')");expect(page.locator('[data-variant=\"S\"]')).to_be_visible()
+                page.locator('[data-variant=\"S\"]').click()
+                reference=page.locator('[data-offer=\"offer-s\"]');expect(reference).to_be_enabled()
                 reference.click();select_purchase_route(page)
                 open_final_exit(page, 'https://merchant.example/bib?variant=S');cancel_exit_dialog(page);expect(page.locator('#routeComparison')).to_be_visible();assert len(context.pages)==1
                 page.locator('#routeContinue').click()
@@ -411,14 +720,14 @@ def main():
                 expect(page).to_have_url('https://merchant.example/bib?variant=S');assert len(context.pages)==1
                 page.go_back(wait_until='networkidle');expect(page).to_have_url(base);expect_purchase_restored(page)
                 page.reload(wait_until='networkidle');expect_purchase_restored(page);expect(page.locator('#messageBadge')).to_have_text('1')
-                cancel_purchase_to_detail(page);expect(page.locator('.reference-exit')).to_be_visible()
+                cancel_purchase_to_detail(page);expect(page.locator('[data-offer=\"offer-s\"]')).to_be_enabled()
                 page.screenshot(path=str(OUT/f'catalog_stale_reference_{mode}.png'))
                 state['detail']['offers'][0]['offer']['stock']='out_of_stock'
                 page.evaluate("window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[],freshnessChanged:true}}))")
                 expect(page.locator('#variant')).to_be_visible()
                 expect(page.locator('#sheetBody')).to_contain_text('已售罄')
                 expect(page.locator('[data-reference-link][href]')).to_have_count(0)
-                checks.append(mode+': stale inventory reference-only path remains usable; no stale size claims; newly sold-out snapshot removes link')
+                checks.append(mode+': last-known inventory keeps exact size and guarded merchant route; original observation time retained; newly sold-out snapshot removes link')
                 page.locator('#close').click()
                 restored={**event(1500,'recovered'),'recovered_history':True};state['events'].insert(0,restored)
                 page.evaluate("document.getElementById('updateToast').hidden=true;window.dispatchEvent(new CustomEvent('bikehunt-published',{detail:{events:[{id:1500,category:'jerseys',recovered_history:true}],freshnessChanged:false}}))")
@@ -426,6 +735,8 @@ def main():
                 page.locator('#priceMessages').click();expect(page.locator('#sheetBody')).to_contain_text('恢复的历史记录');expect(page.locator('#messageBadge')).to_be_hidden()
                 checks.append(mode+': recovered history stays visible without unread or toast inflation; genuine unread remains independent')
                 context.close()
+            for mode, viewport in [('desktop', {'width': 1440, 'height': 900}), ('mobile', {'width': 390, 'height': 844})]:
+                exercise_colnago_message_merge(browser, base, mode, viewport, checks, errors)
             browser.close()
     finally:
         server.shutdown();server.server_close();thread.join(timeout=5)

@@ -46,7 +46,7 @@ class FeaturedDealsTests(unittest.TestCase):
             {'original_price': Money(amount='120', currency='EUR')},
             {'price': Money(amount='0', currency='USD')}, {'stock': 'unknown'}, {'stock': 'out_of_stock'},
             {'collection_state': 'retained'}, {'data_kind': 'legacy_cache'}, {'fetched_at': None},
-            {'fetched_at': NOW-timedelta(hours=1, microseconds=1)}, {'fetched_at': NOW+timedelta(seconds=1)},
+            {'fetched_at': NOW-timedelta(hours=24, microseconds=1)}, {'fetched_at': NOW+timedelta(seconds=1)},
             {'price_valid_until': (NOW-timedelta(days=1)).date().isoformat()},
             {'price_valid_until': '2026-02-30'}, {'price_valid_until': 'invalid'},
         ]:
@@ -58,6 +58,7 @@ class FeaturedDealsTests(unittest.TestCase):
         catalog = ComparisonCatalog([good], make_fx(), NOW)
         self.assertTrue(catalog.discounted(good))
         self.assertTrue(catalog.discounted(good.model_copy(update={'fetched_at': NOW-timedelta(hours=1)})))
+        self.assertTrue(catalog.discounted(good.model_copy(update={'fetched_at': NOW-timedelta(hours=24)})))
         self.assertTrue(catalog.discounted(good.model_copy(update={'price_valid_until': NOW.date().isoformat()})))
 
     def test_sold_discount_in_family_does_not_turn_full_price_stock_into_a_deal(self):

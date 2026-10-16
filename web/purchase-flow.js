@@ -32,7 +32,7 @@ function routeDomesticChina(offer={}){
 function domesticPaymentMarkup(){return '<div class="payment-feasibility domestic-payment"><strong>中国官网结算</strong><p>官方帮助列示支付宝、微信、银联及部分银行卡／Visa；本件订单可用方式尚未实测，请在结账确认。</p><details class="domestic-shopping-help"><summary>注册、配送与退货须知</summary><p><strong>注册：</strong>官网购物指南按注册、登录后下单；免注册购买未核实。</p><p><strong>配送：</strong>仅限中国大陆。顺丰普通配送按单笔实付满 99 元免运费，未满收 8 元，自行车除外。门店极速达等其他方式另计，能否配送及实际运费以收货地址和结账页面为准。</p><p><strong>退货：</strong>按 2026 年 3 月 18 日生效规则，适用于中国大陆官方渠道迪卡侬自有品牌。商品须未经使用、洗涤或损坏，包装吊牌完整、不影响二次销售，并有有效购买凭证；特殊商品及活动另看具体约定。</p><p>官网订单可退货后重买；官方线上商品也可按规则到门店办理，非原购买店铺退货以礼品卡退款。个人原因退货承担往来邮费，原包邮商品只承担退货邮费；商家责任由商家承担。</p><p>依据官网购物、配送及退换货帮助，核对于 2026-10-16。优惠资格、运费和最终金额请在官网确认。</p></details></div>'}
 function domesticRouteOptions(quote){
   const o=quote?.offer||{};if(!routeDomesticChina(o))return [];
-  return [{id:'domestic',label:ROUTE_LABELS.domestic,status:'conditional',note:'中国大陆官网报价。请按所选尺码和实际收货地址核对库存、国内运费及配送范围。',advantages:'在中国官网按人民币结算，购买与售后直接联系该商家。',tradeoffs:'具体运费、优惠和配送范围以本件商品结账页面为准。',costs:[['当前规格商品价',routeOriginal(o.price)],['国内运费','待确认'],['其他结账费用（如有）','待确认']],total:null}];
+  return [{id:'domestic',label:ROUTE_LABELS.domestic,status:'conditional',note:'中国大陆官网报价。请按所选尺码和实际收货地址核对库存、国内运费及配送范围。',advantages:'在中国官网按人民币结算，购买与售后直接联系该商家。',tradeoffs:'具体运费、优惠和配送范围以本件商品结账页面为准。',costs:[[(currentPriceEvidence(o)?'所选规格商品价':'上次记录商品价（官网核对）'),routeOriginal(o.price)],['国内运费','待确认'],['其他结账费用（如有）','待确认']],total:null}];
 }
 function routeOptions(quote){
   if(quote?.offer?.source_code==='decathlon_cn')return domesticRouteOptions(quote);
@@ -45,17 +45,17 @@ function routeOptions(quote){
   // Confirmed is reserved for item/address-scoped evidence with complete fees;
   // catalogue-wide destination lists only support a conditional route.
   const verifiedCosts=['product','shipping','tax','clearance','payment'].every(key=>{const c=component(key);return c&&['quoted','included'].includes(c.status)&&c.cny!==null&&c.cny!==undefined&&Number.isFinite(Number(c.cny))&&Number(c.cny)>=0});
-  if(direct==='conditional'&&ship.scope==='offer'&&typeof readinessObservation==='function'&&readinessObservation(ship.checked_at)&&verifiedCosts&&offerAvailable(quote))direct='confirmed';
+  if(direct==='conditional'&&ship.scope==='offer'&&typeof readinessObservation==='function'&&readinessObservation(ship.checked_at)&&verifiedCosts&&offerAvailable(quote)&&currentPriceEvidence(o))direct='confirmed';
   const forwarding=prohibited?'prohibited':changed?'unknown':policy?.forwarding.status==='confirmed'||policy?.forwarding.status==='conditional_checkout'?'conditional':'unknown';
   const directShipping=o.shipping||(!changed&&policy?.directChina.shippingAmount!==undefined?{amount:policy.directChina.shippingAmount,currency:policy.directChina.shippingCurrency}:null);
   const product=routeOriginal(o.price),unknown=['商品外当地税','商家至仓库运费','入库／仓储／合箱费','国际运费及附加费','保障费（如选用）','内地进口税与清关费','支付换汇／银行卡费用'];
   return [
-    {id:'direct',label:ROUTE_LABELS.direct,status:direct,note:direct==='prohibited'?'本商店／报价规则不支持直邮中国大陆。':changed?'配送规则有变化，原结论暂停使用。':policy?.directChina.note||ship.note||'须按本件商品、卖家和实际中国地址核实配送。',advantages:'链路较短，订单与配送责任较容易核对。',tradeoffs:'可能不支持中国地址；单件运费较高，退货邮费另核。',costs:[['当前规格商品价',product],['中国大陆运费',amount('shipping',directShipping)+(!o.shipping&&!component('shipping')&&directShipping?'（官网政策参考，结账核对）':'')],['中国进口税',amount('tax',o.tax)],['清关／代垫手续费',amount('clearance',o.clearance)],['支付换汇／银行卡费用',amount('payment',null)]],total:direct==='confirmed'&&verifiedCosts?['product','shipping','tax','clearance','payment'].reduce((sum,key)=>sum+Number(component(key).cny),0):null},
+    {id:'direct',label:ROUTE_LABELS.direct,status:direct,note:direct==='prohibited'?'本商店／报价规则不支持直邮中国大陆。':changed?'配送规则有变化，原结论暂停使用。':policy?.directChina.note||ship.note||'须按本件商品、卖家和实际中国地址核实配送。',advantages:'链路较短，订单与配送责任较容易核对。',tradeoffs:'可能不支持中国地址；单件运费较高，退货邮费另核。',costs:[[(currentPriceEvidence(o)?'所选规格商品价':'上次记录商品价（官网核对）'),product],['中国大陆运费',amount('shipping',directShipping)+(!o.shipping&&!component('shipping')&&directShipping?'（官网政策参考，结账核对）':'')],['中国进口税',amount('tax',o.tax)],['清关／代垫手续费',amount('clearance',o.clearance)],['支付换汇／银行卡费用',amount('payment',null)]],total:direct==='confirmed'&&verifiedCosts?['product','shipping','tax','clearance','payment'].reduce((sum,key)=>sum+Number(component(key).cny),0):null},
     {id:'forwarding',label:ROUTE_LABELS.forwarding,status:forwarding,note:prohibited?prohibited.forwarding.note:policy?.forwarding.note||'商家是否允许转运、可用仓库及内地线路都待核实；可选作计划，不能据此下单。',advantages:'商家允许时可接收当地配送商品；合箱可能减少重复运费。',tradeoffs:'多段责任、体积重与仓储费用；国际退件更复杂，转运不能解决拒付。',costs:[['当前市场商品参考',product],...unknown.map(label=>[label,'待确认'])],total:null},
     {id:'hongkong',label:ROUTE_LABELS.hongkong,status:prohibited?'prohibited':'unknown',note:prohibited?'商家禁止转运；香港中转也不能绕过该限制。':o.source_code==='maap'&&policy?'MAAP 官方配送页列有香港；转运仓许可、香港再寄内地及本件费用仍待核实。':'商家能否送香港、香港收件安排及进入内地的下一段均待核实。',advantages:'适合已有可靠香港收件安排或原有赴港行程的人。',tradeoffs:'到香港不等于到内地；再寄、保管或本人交通另计，不保证更便宜。',costs:[['当前市场商品参考（非香港报价）',product],['香港结账商品价／当地税','待确认'],['商家至香港运费','待确认'],['香港收件／保管／本地运输','待确认'],['香港再寄内地或本人交通','待确认'],['内地税费与清关','待确认'],['支付换汇／银行卡费用','待确认']],total:null}
   ];
 }
-function purchaseIdentity(quote){const o=quote?.offer;return o?JSON.stringify([o.offer_id,o.source_code,o.sales_region,o.url,o.price?.amount,o.price?.currency,o.verification_identity||null,o.stock,o.collection_state,o.shipping_to_china?.status,o.china_issued_card?.status,quote.eligible,quote.reasons,(quote.landed_cost?.components||[]).map(c=>[c.key,c.status,c.original?.amount,c.original?.currency,c.cny])]):null}
+function purchaseIdentity(quote){const o=quote?.offer;return o?JSON.stringify([o.offer_id,o.source_code,o.sales_region,o.url,o.price?.amount,o.price?.currency,o.verification_identity||null,o.stock,o.shipping_to_china?.status,o.china_issued_card?.status,(quote.landed_cost?.components||[]).map(c=>[c.key,c.status,c.original?.amount,c.original?.currency,c.cny])]):null}
 function savePurchaseState(stage='route'){
   try{
     if(typeof saveBrowseState==='function')saveBrowseState();
@@ -150,19 +150,24 @@ async function invalidatePurchaseFlow(events=[]){
   if(typeof recordBundleQuoteChanges==='function')recordBundleQuoteChanges(g.detail,events);
   const changedEvent=events.find(row=>row.recovered_history!==true&&row.offer_id===g.quote.offer.offer_id&&(row.stock==='out_of_stock'||row.new_price!==null&&row.new_price!==undefined&&String(row.new_price)!==String(g.quote.offer.price?.amount)||row.currency&&row.currency!==g.quote.offer.price?.currency));
   if(changedEvent?.stock==='out_of_stock')g.quote.offer.stock='out_of_stock';
-  // Hide old money synchronously while a new publication is checked. A failed
-  // fetch cannot preserve a ready-looking price or external purchase action.
-  g.invalidated=true;registrationExitContext=null;renderRouteComparison();
-  if(changedEvent)return;
+  // A confirmed price/currency or sold-out change invalidates the saved quote.
+  // A refresh failure or elapsed time alone preserves its last reliable observation.
+  registrationExitContext=null;
+  if(changedEvent){g.invalidated=true;renderRouteComparison();return}
   const expected=purchaseIdentity(g.quote);
+  renderRouteComparison();
   try{
     const detail=await getJson('/api/catalog/'+encodeURIComponent(g.detail.product_id)+'?variant_id='+encodeURIComponent(g.detail.variant_id));
     if(guideContext!==g)return;
-    if(detail.product_id!==g.detail.product_id||detail.variant_id!==g.detail.variant_id)return;
-    const exact=detail.offers.find(row=>row.offer.offer_id===g.quote.offer.offer_id&&row.offer.source_code===g.quote.offer.source_code&&row.offer.url===g.quote.offer.url);
-    if(!exact||exact.offer.stock==='out_of_stock'||purchaseIdentity(exact)!==expected||exact.offer.collection_state==='retained')return;
+    if(detail.product_id!==g.detail.product_id||detail.variant_id!==g.detail.variant_id||!publicProductVisible(detail)){g.invalidated=true;return}
+    const exact=detail.offers.find(row=>row.offer.offer_id===g.quote.offer.offer_id);
+    if(!exact)return;
+    if(exact.offer.stock==='out_of_stock'){g.quote.offer.stock='out_of_stock';g.invalidated=true;return}
+    const observed=exact.offer.stock==='unknown'?{...exact,offer:{...exact.offer,stock:g.quote.offer.stock}}:exact;
+    if(purchaseIdentity(observed)!==expected){g.invalidated=true;return}
+    if(exact.offer.stock==='unknown')return;
     g.detail=detail;g.quote=exact;g.reference=!offerAvailable(exact);g.invalidated=false;
-  }catch{/* Keep the previous price hidden and the final action disabled. */}
+  }catch{/* Keep the last reliable stock observation and its original timestamp. */}
   finally{if(guideContext===g)renderRouteComparison()}
 }
 function guardRouteHelpExit(event){

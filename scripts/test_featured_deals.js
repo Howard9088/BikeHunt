@@ -19,26 +19,26 @@ function harness(){
 }
 function testEligibility(){
  const h=harness();assert.equal(h.c.featuredDeal(card()),true);
- for(const changes of [{reference_original_price:null},{reference_original_price:{amount:'90',currency:'USD'}},{reference_original_price:{amount:'80',currency:'USD'}},{reference_original_price:{amount:'120',currency:'EUR'}},{reference_price:{amount:'NaN',currency:'USD'}},{reference_original_price:{amount:'Infinity',currency:'USD'}},{reference_price:{amount:'0',currency:'USD'}},{reference_offer_id:null},{reference_variant_id:null},{stock_state:'unknown'},{reference_stock:'out_of_stock'},{reference_stock:'unknown'},{reference_collection_state:'retained'},{reference_data_kind:'legacy_cache'},{fetched_at:null},{fetched_at:'2026-10-15T12:00:00'},{fetched_at:new Date(NOW+1).toISOString()},{fetched_at:new Date(NOW-3600001).toISOString()},{reference_price_valid_until:'2026-10-14'},{reference_price_valid_until:'2026-02-30'}])assert.equal(h.c.featuredDeal(card(changes)),false,JSON.stringify(changes));
+ for(const changes of [{reference_original_price:null},{reference_original_price:{amount:'90',currency:'USD'}},{reference_original_price:{amount:'80',currency:'USD'}},{reference_original_price:{amount:'120',currency:'EUR'}},{reference_price:{amount:'NaN',currency:'USD'}},{reference_original_price:{amount:'Infinity',currency:'USD'}},{reference_price:{amount:'0',currency:'USD'}},{reference_offer_id:null},{reference_variant_id:null},{stock_state:'unknown'},{reference_stock:'out_of_stock'},{reference_stock:'unknown'},{reference_collection_state:'retained'},{reference_data_kind:'legacy_cache'},{fetched_at:null},{fetched_at:'2026-10-15T12:00:00'},{fetched_at:new Date(NOW+1).toISOString()},{fetched_at:new Date(NOW-86400001).toISOString()},{reference_price_valid_until:'2026-10-14'},{reference_price_valid_until:'2026-02-30'}])assert.equal(h.c.featuredDeal(card(changes)),false,JSON.stringify(changes));
  assert.equal(h.c.featuredDeal(card({fetched_at:new Date(NOW-3600000).toISOString()})),true);
  assert.equal(h.c.featuredDeal(card({reference_price_valid_until:'2026-10-15'})),true);
  const tiny=card({reference_price:{amount:'99.99',currency:'USD'},reference_original_price:{amount:'100',currency:'USD'},discount_pct:0});assert.equal(h.c.featuredDeal(tiny),true);assert.equal(h.c.discountLabel(tiny),'优惠不足 1%');assert.equal(h.c.discountLabel(card({reference_price:{amount:'0.01',currency:'USD'},reference_original_price:{amount:'100',currency:'USD'}})),'优惠超过 99.9%');
 }
 function testScopeAndRendering(){
- const h=harness(),ordinary=card({product_id:'ordinary',name:'Stamp Hoodie',reference_original_price:null,discount_pct:null}),stale=card({product_id:'stale',fetched_at:new Date(NOW-3600001).toISOString()}),sold=card({product_id:'sold',stock_state:'out_of_stock'});
+ const h=harness(),ordinary=card({product_id:'ordinary',name:'Stamp Hoodie',reference_original_price:null,discount_pct:null}),stale=card({product_id:'stale',fetched_at:new Date(NOW-86400001).toISOString()}),sold=card({product_id:'sold',stock_state:'out_of_stock'});
  h.c.items=[card(),ordinary,stale,sold];assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['ordinary','sale']);
  h.c.render();let html=h.c.gallery.innerHTML;assert.ok(html.includes('−25%'));assert.ok(html.includes('商家原价 <s>US$120.00</s>'));assert.ok(html.includes('现价 US$90.00'));assert.ok(html.includes('¥630.00'));assert.ok(html.includes('L / Black'));assert.ok(!html.includes('9,999'));assert.ok(html.includes('未取得折扣结束时间'));assert.ok(!/限时|倒计时/.test(html));
  h.elements.get('q').value='Stamp Hoodie';h.c.render();assert.equal(h.elements.get('browseLabel').textContent,'搜索结果');assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['ordinary']);assert.ok(!h.c.gallery.innerHTML.includes('class="discount"'));
- h.elements.get('q').value='';h.c.activeSource='brand';h.c.render();assert.equal(h.elements.get('browseLabel').textContent,'品牌目录');assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['sale','ordinary'],'Channel excludes stale and sold-out quotes');
+ h.elements.get('q').value='';h.c.activeSource='brand';h.c.render();assert.equal(h.elements.get('browseLabel').textContent,'品牌目录');assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['sale','ordinary','stale'],'Channel preserves last-known stock and excludes sold-out quotes');
  h.elements.get('q').value='Stamp Hoodie';assert.equal(h.c.visibleItems().length,1);h.c.items.push(card({...ordinary,product_id:'other',source_codes:['other']}));assert.equal(h.c.visibleItems().length,1,'Search keeps brand scope');
- h.c.activeSource=null;h.elements.get('q').value='';h.c.items=[stale,sold];h.c.render();assert.ok(h.c.gallery.innerHTML.includes('暂无已核实有货的渠道精选'));assert.ok(!h.c.gallery.innerHTML.includes('没有找到这个商品'));
+ h.c.activeSource=null;h.elements.get('q').value='';h.c.items=[stale,sold];h.c.render();assert.equal(h.c.visibleItems().length,1);assert.ok(h.c.gallery.innerHTML.includes('上次记录商品价'));assert.ok(!h.c.gallery.innerHTML.includes('没有找到这个商品'));
 }
 function testLocalExpiryAndPriceDate(){
- const h=harness();h.c.items=[card()];h.c.render();h.setNow(NOW+3600001);h.c.expireLocalInventory();assert.equal(h.c.visibleItems().length,0);assert.ok(h.c.gallery.innerHTML.includes('暂无已核实'));
- const date=Date.parse('2026-10-16T00:00:00Z');h.setNow(date-1);h.c.items=[card({fetched_at:new Date(date-1000).toISOString(),reference_price_valid_until:'2026-10-15'})];h.c.render();assert.equal(h.c.visibleItems().length,1);h.setNow(date);h.c.expireLocalInventory();assert.equal(h.c.visibleItems().length,0);assert.equal(h.c.items[0].reference_stock,'unknown');
+ const h=harness();h.c.items=[card()];h.c.render();h.setNow(NOW+86400001);h.c.expireLocalInventory();assert.equal(h.c.visibleItems().length,1);assert.equal(h.c.items[0].stock_state,'in_stock');assert.equal(h.c.featuredDeal(h.c.items[0]),false);assert.ok(h.c.gallery.innerHTML.includes('上次记录商品价'));
+ const date=Date.parse('2026-10-16T00:00:00Z');h.setNow(date-1);h.c.items=[card({fetched_at:new Date(date-1000).toISOString(),reference_price_valid_until:'2026-10-15'})];h.c.render();assert.equal(h.c.visibleItems().length,1);h.setNow(date);h.c.expireLocalInventory();assert.equal(h.c.visibleItems().length,1);assert.equal(h.c.items[0].reference_stock,'in_stock');assert.equal(h.c.featuredDeal(h.c.items[0]),false);
 }
 function testHistoricalDiscountFallbackEligibility(){
- const h=harness(),stale=card({product_id:'stale',category_group:'clothing',fetched_at:new Date(NOW-3600001).toISOString()});
+ const h=harness(),stale=card({product_id:'stale',category_group:'clothing',fetched_at:new Date(NOW-86400001).toISOString()});
  assert.equal(h.c.recordedDiscount(stale),true);assert.equal(h.c.featuredDeal(stale),false);
  for(const changes of [{reference_original_price:null},{reference_price:{amount:'90',currency:'USD'},reference_original_price:{amount:'90',currency:'USD'}},{reference_original_price:{amount:'120',currency:'EUR'}},{reference_price:{amount:'NaN',currency:'USD'}},{reference_original_price:{amount:'Infinity',currency:'USD'}},{reference_price:{amount:'0',currency:'USD'}},{reference_offer_id:null},{reference_variant_id:null},{stock_state:'out_of_stock'},{reference_stock:'out_of_stock'},{reference_data_kind:'research_reference'},{reference_price_valid_until:'2026-10-14'},{reference_price_valid_until:'2026-02-30'}])assert.equal(h.c.recordedDiscount({...stale,...changes}),false,JSON.stringify(changes));
  for(const changes of [{reference_stock:'unknown',stock_state:'unknown'},{reference_collection_state:'retained'},{reference_data_kind:'legacy_cache'},{fetched_at:null}])assert.equal(h.c.recordedDiscount({...stale,...changes}),true);
@@ -51,15 +51,15 @@ function testHistoricalDiscountFallbackEligibility(){
 function testHistoricalEmptyRenderAndExactDetail(){
  const h=harness(),classes=()=>({values:new Set(),add(v){this.values.add(v)},remove(v){this.values.delete(v)},contains(v){return this.values.has(v)}});
  h.c.gallery.classList=classes();h.c.document.body={classList:classes()};h.c.cancelAnimationFrame=()=>{};h.c.animationFrame=0;
- const stale=card({product_id:'stale',fetched_at:new Date(NOW-3600001).toISOString()});
+ const stale=card({product_id:'stale',fetched_at:new Date(NOW-86400001).toISOString()});
  const button={isConnected:true,dataset:{historyOpen:stale.product_id,historyVariant:stale.reference_variant_id}};
  h.c.gallery.querySelectorAll=selector=>selector==='[data-history-open]'?[button]:[];
  let opened=[];h.c.openProduct=(...args)=>opened.push(args);
  vm.runInContext(section(flows,'function referenceImageMarkup(','document.addEventListener(\'error\''),h.c);
  vm.runInContext(section(flows,'function resetReferenceFeed(','function openRoadReferences('),h.c);
  h.c.items=[stale,card({product_id:'ordinary',reference_original_price:null,fetched_at:new Date(NOW-7200000).toISOString()}),card({product_id:'sold',stock_state:'out_of_stock'})];h.c.render();
- assert.equal(h.elements.get('count').textContent,'0 件商品');assert.equal(h.c.visibleItems().length,0);const html=h.c.gallery.innerHTML;
- assert.ok(html.includes('暂无已核实有货的渠道精选'));assert.ok(!html.includes('历史折扣参考'));assert.ok(!html.includes('historical-reference-card'));assert.equal(opened.length,0);
+ assert.equal(h.c.visibleItems().length,1);const html=h.c.gallery.innerHTML;
+ h.c.items=[stale];h.c.render();assert.ok(h.c.gallery.innerHTML.includes('上次记录商品价'));assert.ok(!html.includes('历史折扣参考'));assert.ok(!html.includes('historical-reference-card'));assert.equal(opened.length,0);
  assert.equal(h.c.renderEmptyReferences(),false);assert.ok(!h.c.gallery.classList.contains('reference-feed'));
 
 }
@@ -80,7 +80,7 @@ function testBrandDiversityAndLowPrices(){
  h.c.render();assert.equal(h.elements.get('count').textContent,'3 件渠道精选 · 0 件有折扣');assert.ok(h.c.gallery.innerHTML.includes('渠道精选'));assert.ok(!h.c.gallery.innerHTML.includes('商家原价'));assert.ok(h.c.gallery.innerHTML.includes('不是同类比价或全网最低价'));
  h.c.activeSource='brand';assert.equal(h.c.visibleItems().length,4,'Directory remains complete');h.c.activeSource=null;
  h.elements.get('q').value='Helmet';assert.equal(h.c.visibleItems().length,4,'Search remains complete');h.elements.get('q').value='';
- for(const change of [{stock_state:'out_of_stock'},{reference_stock:'unknown'},{reference_collection_state:'retained'},{fetched_at:new Date(NOW-3600001).toISOString()},{reference_url:null},{reference_price_valid_until:'2026-10-14'},{reference_cny:null}])assert.equal(h.c.channelOfferEligible({...a,...change}),false,JSON.stringify(change));
+ for(const change of [{stock_state:'out_of_stock'},{reference_stock:'unknown'},{reference_url:null},{reference_cny:null}])assert.equal(h.c.channelOfferEligible({...a,...change}),false,JSON.stringify(change));
  const duplicate={...a,product_id:'a-color',name:a.name+' - Blue',reference_cny:'101'};
  assert.deepEqual(Array.from(h.c.channelSelections([a,duplicate,b,c]),p=>p.product_id),['a','b']);
  h.c.activeCategoryGroup='clothing';assert.equal(h.c.visibleItems().length,0);
@@ -111,13 +111,13 @@ function testVerifiedStockWithoutSizeMetadata(){
  h.c.items=[{...sized,channel_quotes:{brand:sized}}];h.c.render();
  assert.ok(!h.c.gallery.innerHTML.includes('已核实有货 · 规格请到官网核对'));
  assert.ok(h.c.gallery.innerHTML.includes('现货商品参考起价 · 先选规格'));
- for(const changes of [{stock_state:'unknown',reference_stock:'unknown'},{stock_state:'out_of_stock',reference_stock:'out_of_stock'},{fetched_at:new Date(NOW-3600001).toISOString()}]){
+ for(const changes of [{stock_state:'unknown',reference_stock:'unknown'},{stock_state:'out_of_stock',reference_stock:'out_of_stock'}]){
   const unavailable={...fresh,...changes};h.c.items=[{...unavailable,channel_quotes:{brand:unavailable}}];h.c.render();
   assert.equal(h.c.visibleItems().length,0);assert.ok(!h.c.gallery.innerHTML.includes('已核实有货 · 规格请到官网核对'));
   assert.ok(h.c.gallery.innerHTML.includes('该渠道暂无已核实有货的商品'));
  }
  h.c.activeSource=null;h.elements.get('q').value='No Size';
- for(const changes of [{stock_state:'unknown',reference_stock:'unknown'},{fetched_at:new Date(NOW-3600001).toISOString()}]){
+ for(const changes of [{stock_state:'unknown',reference_stock:'unknown'},{fetched_at:null}]){
   h.c.items=[{...fresh,...changes}];h.c.render();
   assert.ok(!h.c.gallery.innerHTML.includes('已核实有货 · 规格请到官网核对'));
   assert.ok(h.c.gallery.innerHTML.includes('库存待'));

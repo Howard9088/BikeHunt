@@ -110,9 +110,27 @@ class OfferRepository:
                     and row.data_kind != "legacy_cache"]
         success_urls = {url.split("?", 1)[0] for row in offers
                         for url in (row.collection_url or row.url, row.url)}
-        merged = [row for row in existing
-                  if not {(row.collection_url or row.url).split("?", 1)[0],
-                          row.url.split("?", 1)[0]} & success_urls]
+        previous = {row.offer_id: row for row in existing}
+        # An unknown/omitted variant is not affirmative sold-out evidence.
+        # Preserve the exact last-known record and its original observation time.
+        incoming_ids = {row.offer_id for row in offers}
+        merged = [row.model_copy(update={"collection_state": "retained"})
+                  if {(row.collection_url or row.url).split("?", 1)[0],
+                      row.url.split("?", 1)[0]} & success_urls else row
+                  for row in existing if row.offer_id not in incoming_ids
+                  and (not {(row.collection_url or row.url).split("?", 1)[0],
+                            row.url.split("?", 1)[0]} & success_urls
+                       or (row.stock == "in_stock" and row.fetched_at is not None
+                           and row.fetched_at.tzinfo is not None and row.fetched_at <= fetched_at))]
+        offers = [previous[row.offer_id].model_copy(update={"collection_state": "retained"})
+                  if (row.stock == "unknown" and row.offer_id in previous
+                      and previous[row.offer_id].stock == "in_stock"
+                      and previous[row.offer_id].fetched_at is not None
+                      and previous[row.offer_id].fetched_at.tzinfo is not None
+                      and previous[row.offer_id].fetched_at <= fetched_at
+                      and previous[row.offer_id].identity == row.identity
+                      and previous[row.offer_id].url == row.url)
+                  else row for row in offers]
         merged.extend(offers)
         # Legacy snapshots do not yet carry their collection parent. Replacing
         # an identical SKU must still persist only its newest observation.

@@ -319,7 +319,7 @@ class DynamicTests(unittest.TestCase):
         )[0]
         self.assertIsNone(foreign.identity.mpn)
 
-    def test_parent_refresh_replaces_removed_variants_and_marks_failed_parent_retained(self):
+    def test_parent_refresh_retains_omitted_variants_until_explicit_sold_out(self):
         source = {"code": "uae", "name": "Mock"}
         row = parse_pissei(self.pissei_html(), source, URL, NOW)[0]
         first = row.model_copy(
@@ -340,7 +340,7 @@ class DynamicTests(unittest.TestCase):
             saved = json.loads((Path(folder) / "offers/uae.json").read_text(encoding="utf-8"))
             self.assertEqual(len(saved["offers"]), len({r["offer_id"] for r in saved["offers"]}))
             repository.save("uae", [first], NOW + timedelta(seconds=1), [])
-            self.assertEqual({r.offer_id for r in repository.load()}, {"first", "other"})
+            self.assertEqual({r.offer_id for r in repository.load()}, {"first", "second", "other"})
             repository.save(
                 "uae", [other], NOW + timedelta(seconds=2), [{"url": URL, "error": "timeout"}]
             )

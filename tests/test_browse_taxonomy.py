@@ -217,6 +217,11 @@ class BrowseTaxonomyTests(unittest.TestCase):
                 for key in ["category", "category_group"]:
                     baseline.pop(key)
                     actual.pop(key)
+                    # Last-known channel cards now remain present after one hour.
+                    for quote in baseline.get("channel_quotes", {}).values():
+                        quote.pop(key, None)
+                    for quote in actual.get("channel_quotes", {}).values():
+                        quote.pop(key, None)
                 self.assertEqual(actual, baseline)
                 baseline = details[after.product_id]
                 actual = self.catalog.compare(after.product_id).model_dump(mode="json")

@@ -41,8 +41,8 @@ class ChinaOfficialSnapshotTests(unittest.TestCase):
             recent = ComparisonCatalog([offer], self.fx, offer.fetched_at + timedelta(minutes=5))
             expired = ComparisonCatalog([offer], self.fx, offer.fetched_at + timedelta(hours=1, seconds=1))
             self.assertEqual(recent.search()[0].stock_state, "in_stock")
-            self.assertEqual(expired.search()[0].stock_state, "unknown")
-            self.assertFalse(expired.search()[0].channel_quotes)
+            self.assertEqual(expired.search()[0].stock_state, "in_stock")
+            self.assertTrue(expired.search()[0].channel_quotes)
 
     def test_chinese_garments_use_existing_clothing_groups(self):
         self.assertEqual(category_of(self.offers[0].name), "bibs")

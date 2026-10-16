@@ -1,6 +1,6 @@
 {
   "source_code": "decathlon_cn",
-  "collected_at": "2026-10-16T04:11:54.367Z",
+  "collected_at": "2026-10-16T05:29:21Z",
   "verification_method": "manual_public_selected_variant",
   "offers": [
     {
@@ -23,12 +23,12 @@
         "currency": "CNY"
       },
       "stock": "in_stock",
-      "fetched_at": "2026-10-16T04:11:25.512Z",
+      "fetched_at": "2026-10-16T05:29:14Z",
       "collection_state": "current",
       "data_kind": "live_snapshot",
       "sales_region": "中国大陆 CNY 报价",
       "family_hint": "8969603",
-      "identity_evidence": "迪卡侬中国官网型号 8969603；公开页面明确选中 M - 180/80A 后读取线上库存，仅核实此规格。 本次库存数量为官网所选尺码公开显示值，不保证实际履约。",
+      "identity_evidence": "迪卡侬中国官网型号 8969603；公开页面明确选中 M - 180/80A 后读取线上库存，仅核实此规格。 本次库存数量为官网所选尺码公开显示值，不保证实际履约。 2026-10-16 05:29:14–05:29:21 UTC 同一次公开页面读取复核，fetched_at保守记录该读取窗口起点。",
       "purchase_requirements": [
         "购买时请在官网重新选择 M - 180/80A / 烟熏黑；其他尺码库存未核实。",
         "页面显示领券满300减30，预估券后369.90元；须自行领券并确认资格及有效期，未验证实际抵扣。",
@@ -45,7 +45,7 @@
         "status": "unknown",
         "note": "中国官网实际付款方式待结账确认。"
       },
-      "stock_quantity": 443
+      "stock_quantity": 442
     },
     {
       "offer_id": "decathlon_cn-8987878-M",
@@ -67,12 +67,12 @@
         "currency": "CNY"
       },
       "stock": "in_stock",
-      "fetched_at": "2026-10-16T04:11:54.367Z",
+      "fetched_at": "2026-10-16T05:29:14Z",
       "collection_state": "current",
       "data_kind": "live_snapshot",
       "sales_region": "中国大陆 CNY 报价",
       "family_hint": "8987878",
-      "identity_evidence": "迪卡侬中国官网型号 8987878；公开页面明确选中 M 后读取线上库存，仅核实此规格。 本次库存数量为官网所选尺码公开显示值，不保证实际履约。",
+      "identity_evidence": "迪卡侬中国官网型号 8987878；公开页面明确选中 M 后读取线上库存，仅核实此规格。 本次库存数量为官网所选尺码公开显示值，不保证实际履约。 2026-10-16 05:29:14–05:29:21 UTC 同一次公开页面读取复核，fetched_at保守记录该读取窗口起点。",
       "purchase_requirements": [
         "购买时请在官网重新选择 M / 孔雀蓝；其他尺码库存未核实。",
         "页面显示领券满300减30，预估券后369.90元；须自行领券并确认资格及有效期，未验证实际抵扣。",
@@ -91,5 +91,10 @@
       },
       "stock_quantity": 5
     }
-  ]
+  ],
+  "observation_window": {
+    "start": "2026-10-16T05:29:14Z",
+    "end": "2026-10-16T05:29:21Z",
+    "note": "Both selected-M pages were read in one browser call; fetched_at uses the conservative start of this observed interval, not an invented per-page exact time."
+  }
 }

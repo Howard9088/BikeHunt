@@ -19,22 +19,24 @@ from test_catalog import NOW, make_fx, make_offer
 
 
 class InventoryTests(unittest.TestCase):
-    def test_expired_price_cannot_make_a_size_selectable(self):
+    def test_expired_price_keeps_size_but_not_current_discount(self):
         offer = make_offer(price_valid_until=(NOW-timedelta(days=1)).date().isoformat())
         catalog = ComparisonCatalog([offer], make_fx(), NOW)
-        self.assertFalse(catalog.available(offer))
-        self.assertEqual(catalog.search()[0].available_sizes, [])
+        self.assertTrue(catalog.available(offer))
+        self.assertEqual(catalog.search()[0].available_sizes, ["M"])
+        self.assertFalse(catalog.discounted(offer))
+        self.assertFalse(compare_offer(offer, make_fx(), NOW).eligible)
 
-    def test_only_fresh_in_stock_sizes_are_selectable(self):
+    def test_last_known_in_stock_sizes_remain_selectable(self):
         offers=[make_offer("s",identity=ProductIdentity(brand="Mock",model="Jersey",mpn="M-1",size="S")),
                 make_offer("m",stock="out_of_stock",identity=ProductIdentity(brand="Mock",model="Jersey",mpn="M-1",size="M")),
                 make_offer("l",fetched_at=NOW-timedelta(days=2),identity=ProductIdentity(brand="Mock",model="Jersey",mpn="M-1",size="L"))]
         store=ComparisonCatalog(offers,make_fx(),NOW)
         card=store.search()[0]
-        self.assertEqual(card.available_sizes,["S"])
+        self.assertEqual(card.available_sizes,["S", "L"])
         detail=store.compare(card.product_id)
         self.assertEqual(detail.identity.size,"S")
-        self.assertEqual([v.size for v in detail.variants if v.in_stock],["S"])
+        self.assertEqual([v.size for v in detail.variants if v.in_stock],["S", "L"])
 
     def test_one_hour_stock_boundary_keeps_historical_price(self):
         for elapsed, available in [(3599.999, True), (3600, True), (3600.001, False), (86400, False)]:
@@ -44,20 +46,20 @@ class InventoryTests(unittest.TestCase):
                 card = catalog.search()[0]
                 detail = catalog.compare(card.product_id)
                 compared = compare_offer(offer, make_fx(), NOW)
-                self.assertEqual(catalog.available(offer), available)
+                self.assertEqual(catalog.available(offer), True)
                 self.assertEqual(compared.eligible, available)
-                self.assertEqual(card.available_sizes, ["M"] if available else [])
-                self.assertEqual(card.stock_state, "in_stock" if available else "unknown")
-                self.assertEqual(card.reference_stock, "in_stock" if available else "unknown")
-                self.assertEqual(detail.variants[0].in_stock, available)
-                self.assertTrue(all(color.in_stock == available for color in detail.colors))
+                self.assertEqual(card.available_sizes, ["M"])
+                self.assertEqual(card.stock_state, "in_stock")
+                self.assertEqual(card.reference_stock, "in_stock")
+                self.assertEqual(detail.variants[0].in_stock, True)
+                self.assertTrue(all(color.in_stock for color in detail.colors))
                 self.assertEqual(card.reference_price, offer.price)
                 self.assertIsNotNone(card.reference_cny)
                 self.assertNotIn("报价已过期", compared.reasons)
                 self.assertNotIn("已售罄", compared.reasons)
                 if not available:
                     self.assertIsNone(detail.recommended_offer_id)
-                    self.assertEqual(card.status, "库存核实已过期")
+                    self.assertEqual(card.status, "上次核实时有货；请到官网确认")
                     self.assertIn("库存核实已过期；等待重新核实", compared.reasons)
 
     def test_stock_timestamps_fail_closed(self):
@@ -75,7 +77,7 @@ class InventoryTests(unittest.TestCase):
         fresh = make_offer("fresh", identity=old.identity.model_copy(update={"size":"L"}))
         catalog = ComparisonCatalog([old, fresh], make_fx(), NOW)
         card = catalog.search()[0]
-        self.assertEqual(card.available_sizes, ["L"])
+        self.assertEqual(card.available_sizes, ["M", "L"])
         self.assertEqual(card.stock_state, "in_stock")
         self.assertEqual(catalog.compare(card.product_id).identity.size, "L")
         old_price = old.model_copy(update={"fetched_at":NOW-timedelta(days=1, microseconds=1)})

@@ -28,8 +28,8 @@ function testGroupingAndExactPictures(){
  const h=harness(),a=row(),b=row(2),different=row(3);different.url=different.product.url='https://shop.example/products/26-175-bah?variant=3';different.product.product_id='family-b';different.product.image='https://shop.example/white.jpg';different.old_price='107';different.new_price='108';
  const groups=h.c.groupMessages([a,b,different]);assert.equal(groups.length,2);assert.equal(groups[0].members.length,2);
  const html=h.c.messageCardMarkup(groups[0],{rates:{USD:7}});assert.ok(html.includes('red.jpg'));assert.ok(html.includes('M / L'));assert.ok(html.includes('data-message-variant="v1"'));assert.ok(html.includes('data-message-variant="v2"'));assert.ok(!html.includes('href='));assert.ok(html.includes('data-message-product="family-a"'));
- for(const [field,value] of [['stock','out_of_stock'],['currency','EUR'],['old_price','147'],['new_price','150'],['kind','inventory_changed'],['observed_at','2026-10-14T13:00:00Z']])assert.equal(h.c.groupMessages([a,{...b,[field]:value}]).length,2,field);
- for(const [field,value] of [['model','other'],['color','white'],['image','https://shop.example/other.jpg']])assert.equal(h.c.groupMessages([a,{...b,product:{...b.product,[field]:value}}]).length,2,field);
+ for(const [field,value] of [['stock','out_of_stock'],['currency','EUR'],['kind','inventory_changed'],['observed_at','2026-10-14T13:00:00Z']])assert.equal(h.c.groupMessages([a,{...b,[field]:value}]).length,2,field);
+ for(const [field,value] of [['model','other'],['color','white'],['image','https://shop.example/other.jpg'],['year','2027'],['gender','female']])assert.equal(h.c.groupMessages([a,{...b,product:{...b.product,[field]:value}}]).length,2,field);
  const missing={...a,product:null};assert.ok(h.c.messageCardMarkup(missing,{}).includes('暂无该商品图片'));assert.ok(!h.c.messageCardMarkup(missing,{}).includes('<img'));
  const wrong={...a,product:{...a.product,offer_id:'wrong'}};assert.ok(!h.c.messageCardMarkup(wrong,{}).includes('<img'));
 }
@@ -153,7 +153,7 @@ function testCurrencyMarketUpdateLabelWithoutPriceComparison(){
  assert.ok(html.includes('商家响应的报价币种/市场发生变化，并非你切换了市场'));
  assert.ok(html.includes('不同币种报价不直接比较涨跌'));
  assert.ok(!html.includes('价格更新：'));assert.ok(!/涨价|降价|折扣/.test(html));
- assert.ok(!html.match(/<p>报价币种\/市场更新：[^<]* → /),'A changed market has no old/new comparison');
+ assert.ok(!html.match(/<p[^>]*>报价币种\/市场更新：[^<]* → /),'A changed market has no old/new comparison');
  for(const old_price of ['60','70']){
   const sameCurrency=h.c.messageCardMarkup({...event,old_price},{});
   assert.ok(sameCurrency.includes('价格更新：GBP'+old_price+' → GBP63.36'));
@@ -165,4 +165,51 @@ function testCurrencyMarketUpdateLabelWithoutPriceComparison(){
  }
  assert.ok(h.c.messageCardMarkup({...event,recovered_history:true},{}).includes('历史记录：GBP63.36'));
 }
-(async()=>{for(const t of [testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows,testHistoryScopeValidationAndBackPollingRestart,testMessagesOpenOnlyExactInternalProducts,testStableReadKeysSurviveIdReuseAndTimestampRepeats,testLegacyIdReadsMigrateExactlyOnce,testRecoveredHistoryDoesNotNotifyOrBecomeUnread,testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows,testGuideExitIsStagedAndBoundToExactHref,testCurrencyMarketUpdateLabelWithoutPriceComparison]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 14 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});
+
+function colnagoRow(id,size){
+ const event=row(id,{source_code:'colnago',source_name:'COLNAGO',old_price:'333',new_price:'332',observed_at:'2026-10-16T05:21:58.439449+00:00'});
+ event.url=event.product.url='https://www.colnago.com/en-us/products/cycling-winter-jacket?Size='+encodeURIComponent(size);
+ Object.assign(event.product,{brand:'COLNAGO',model:'Cycling winter jacket',color:null,size,product_id:'455a34bf27086c79c1b8',image:'https://www.colnago.com/jacket.jpg'});
+ return event;
+}
+function testColnagoExactSizeGroupingAndReadKeys(){
+ const h=harness(),events=['XS','S','M','L','XL','2XL','3XL'].map((size,i)=>colnagoRow(2658+i,size)),before=JSON.stringify(events);
+ const groups=h.c.groupMessages(events);assert.equal(groups.length,1);assert.equal(groups[0].members.length,7);
+ const html=h.c.messageCardMarkup(groups[0],{rates:{USD:7}});
+ assert.equal((html.match(/class="message-variant"/g)||[]).length,7);
+ for(const event of events)assert.ok(html.includes('data-message-variant="'+event.product.variant_id+'"'));
+ assert.equal((html.match(/USD333 → USD332/g)||[]).length,1);assert.equal((html.match(/CNY2324/g)||[]).length,1);
+ assert.ok(html.includes('历史变动记录'));assert.equal(JSON.stringify(events),before,'Rendering must not rewrite any exact event URL, identity or read key');
+ h.c.rememberMessageEvents({items:events});assert.equal(h.badge.textContent,'1');h.c.markMessagesRead(groups[0].members);assert.equal(h.badge.hidden,true);
+ const seen=JSON.parse(h.storage.get('bikehuntMessagesReadCursor')).seenKeys;assert.equal(seen.length,7);for(const event of events)assert.ok(seen.includes(event.event_key));
+ h.c.rememberMessageEvents({items:[...events,colnagoRow(2665,'4XL')]});assert.equal(h.badge.textContent,'1');
+}
+function testColnagoGroupingBoundaries(){
+ const h=harness(),a=colnagoRow(1,'S'),b=colnagoRow(2,'M');
+ for(const [field,value] of [['source_code','other'],['currency','EUR'],['observed_at','2026-10-16T05:22:00Z'],['stock','out_of_stock'],['recovered_history',true]])assert.equal(h.c.groupMessages([a,{...b,[field]:value}]).length,2,field);
+ for(const [field,value] of [['color','White'],['year','2027'],['gender','female'],['model','Other'],['product_id','other'],['image','https://www.colnago.com/other.jpg']])assert.equal(h.c.groupMessages([a,{...b,product:{...b.product,[field]:value}}]).length,2,field);
+ for(const change of [
+  event=>{event.url+='&market=us'},event=>{event.url+='&variant=1'},event=>{event.url+='&Size=M'},
+  event=>{event.url=event.url.replace('Size=M','Size=L')},event=>{event.url=event.url.replace('www.colnago.com','other.example')},
+  event=>{event.url=event.url.replace('/en-us/products/','/en-gb/products/')},event=>{event.product.product_id=null},event=>{event.product.model=null}
+ ]){const modified=structuredClone(b);change(modified);modified.product.url=modified.url;assert.equal(h.c.groupMessages([a,modified]).length,2)}
+ const unknownA=structuredClone(a),unknownB=structuredClone(a);unknownA.product.product_id=null;unknownB.product.product_id=null;unknownB.id=3;assert.equal(h.c.groupMessages([unknownA,unknownB]).length,2);
+ const lowercase=structuredClone(b);lowercase.url=lowercase.product.url=lowercase.url.replace('?Size=','?size=');assert.equal(h.c.groupMessages([a,lowercase]).length,1);
+}
+function testGroupedPriceRowsAndMemberMarketWarning(){
+ const h=harness(),a=row(1),b=row(2,{old_price:'147',new_price:'150'}),same=row(3);same.product.size='XL';
+ const group=h.c.groupMessages([a,b,same]);assert.equal(group.length,1);
+ const html=h.c.messageCardMarkup(group[0],{rates:{USD:7}});
+ assert.equal((html.match(/class="message-price"/g)||[]).length,2);
+ assert.equal((html.match(/USD148 → USD149/g)||[]).length,1);assert.equal((html.match(/USD147 → USD150/g)||[]).length,1);
+ assert.ok(html.includes('M / XL：价格更新'));assert.ok(html.includes('L：价格更新'));assert.ok(html.includes('CNY1043'));assert.ok(html.includes('CNY1050'));
+ for(const [field,value] of [['old_price','147'],['new_price','150']])assert.equal(h.c.groupMessages([a,{...b,[field]:value}]).length,1,field);
+ const missingPrice={...a,old_price:undefined},nullPrice={...b,old_price:null,new_price:a.new_price};
+ const missingHtml=h.c.messageCardMarkup(h.c.groupMessages([missingPrice,nullPrice])[0],{});
+ assert.equal((missingHtml.match(/class="message-price"/g)||[]).length,2,'Missing old amount is not a null market-change observation');assert.ok(missingHtml.includes('报价币种/市场更新：'));
+ const market={...b,old_price:null},mixed=h.c.messageCardMarkup(h.c.groupMessages([a,market])[0],{});
+ assert.ok(mixed.includes('报价币种/市场更新：USD150'));assert.ok(mixed.includes('不同币种报价不直接比较涨跌'));assert.ok(!mixed.match(/<p[^>]*>[^<]*报价币种\/市场更新：[^<]* → /));
+ const evil=structuredClone(b);evil.product.size='<img onerror=alert(1)>';evil.new_price='<svg onload=alert(1)>';
+ const escaped=h.c.messageCardMarkup(h.c.groupMessages([a,evil])[0],{});assert.ok(!escaped.includes('<svg'));assert.ok(!escaped.includes('<img onerror'));assert.ok(escaped.includes('&lt;svg'));
+}
+(async()=>{for(const t of [testColnagoExactSizeGroupingAndReadKeys,testColnagoGroupingBoundaries,testGroupedPriceRowsAndMemberMarketWarning,testGroupingAndExactPictures,testReadIdsReloadIncrementFilteredAndCap,testReferenceExitCancelContinueSoldoutAndLatestRecheck,testXssAndUrlGuards,testCategoryScopeAndExplicitGlobalReset,testDismissedMessagesDoNotReopenOrReadUnseenRows,testHistoryScopeValidationAndBackPollingRestart,testMessagesOpenOnlyExactInternalProducts,testStableReadKeysSurviveIdReuseAndTimestampRepeats,testLegacyIdReadsMigrateExactlyOnce,testRecoveredHistoryDoesNotNotifyOrBecomeUnread,testAuthoritativeSnapshotsDropSuppressedAndOldWindowRows,testGuideExitIsStagedAndBoundToExactHref,testCurrencyMarketUpdateLabelWithoutPriceComparison]){await t();console.log('PASS '+t.name)}console.log('Catalog messages: 17 production-JavaScript regression groups passed.')})().catch(e=>{console.error(e);process.exitCode=1});

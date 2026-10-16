@@ -59,7 +59,8 @@ function testThreeScopedRoutesAndHonestCosts(){
  assert.equal(statuses(h,q).direct,'confirmed');assert.equal(h.c.routeOptions(q)[0].total,15);
  for(const key of ['product','shipping','tax','clearance','payment']){const copy=structuredClone(q);copy.landed_cost.components.find(c=>c.key===key).status='unknown';assert.equal(statuses(h,copy).direct,'conditional');assert.equal(h.c.routeOptions(copy)[0].total,null)}
  const changed=structuredClone(q);changed.offer.shipping_to_china.note='原文已变化，正在复核';assert.equal(statuses(h,changed).direct,'unknown');
- h.setNow(NOW+3600001);assert.notEqual(statuses(h,q).direct,'confirmed');
+ h.setNow(NOW+3600001);assert.equal(statuses(h,q).direct,'confirmed','One hour alone cannot revoke observed stock');
+ h.setNow(NOW+86400001);assert.notEqual(statuses(h,q).direct,'confirmed');assert.equal(h.c.routeOptions(q)[0].total,null,'Old prices cannot promise a current total');
  const offline=harness();vm.runInContext('readinessData=null;readinessState="error"',offline.c);
  assert.equal(statuses(offline,quote('maap')).direct,'prohibited','Unavailable policy data cannot make a known MAAP direct ban selectable');
  for(const market of ['Global EN','US']){const routes=statuses(offline,quote('poc',{sales_region:market}));assert.equal(routes.forwarding,'prohibited');assert.equal(routes.hongkong,'prohibited')}
@@ -83,12 +84,12 @@ function testSharedConfirmationOnlyAtFinalSameTabExit(){
  for(const mutate of [g=>g.quote.offer.url+='&variant=L',g=>g.quote.offer.price.amount='99',g=>g.quote.offer.source_code='other',g=>g.quote.offer.stock='out_of_stock',g=>g.invalidated=true]){
   const x=harness();x.open();x.c.selectPurchaseRoute('direct');x.c.continuePurchaseRoute();x.setAnswer(()=>{mutate(x.c.guideContext);return true});x.c.continueRegistrationExit();assert.equal(x.navigated.length,0,'Revalidate exact offer, price, source, status and route after the shared confirmation decision');
  }
- const expired=harness();expired.open();expired.c.selectPurchaseRoute('direct');expired.c.continuePurchaseRoute();expired.setAnswer(()=>{expired.setNow(NOW+3600001);return true});expired.c.continueRegistrationExit();assert.equal(expired.navigated.length,0);
+ const expired=harness();expired.open();expired.c.selectPurchaseRoute('direct');expired.c.continuePurchaseRoute();expired.setAnswer(()=>{expired.setNow(NOW+3600001);return true});expired.c.continueRegistrationExit();assert.equal(expired.navigated.length,1,'Elapsed time alone preserves the guarded exact merchant entrance');
  const hidden=harness();hidden.open();hidden.c.selectPurchaseRoute('direct');hidden.c.continuePurchaseRoute();hidden.close();hidden.setAnswer(true);hidden.c.continueRegistrationExit();assert.equal(hidden.navigated.length,0);assert.equal(hidden.prompts.length,0);
 }
-function testReferenceOnlyAndAmazonRegistration(){
+function testLastKnownStockAndAmazonRegistration(){
  const h=harness(),q=quote('visma',{fetched_at:'2000-01-01T00:00:00Z'});q.reference_product_id='jersey';q.reference_variant_id='variant-m';h.c.currentProduct=detail(q);h.c.startReferenceRoute(q);
- assert.equal(h.c.guideContext.reference,true);assert.ok(h.html.includes('历史报价只作参考'));assert.ok(!h.html.includes('registration-help'));
+ assert.equal(h.c.guideContext.reference,false);assert.ok(h.html.includes('上次确认有货'));assert.ok(h.html.includes('上次记录商品价（官网核对）'));assert.equal(h.c.routeOptions(q)[0].total,null);assert.ok(!h.html.includes('registration-help'));
  h.c.selectPurchaseRoute('direct');h.c.continuePurchaseRoute();h.setAnswer(true);h.c.continueRegistrationExit();assert.deepEqual(h.navigated,[q.offer.url]);
  const markets=vm.runInContext('AMAZON_SEARCH_MARKETS',h.c);
  for(const market of markets)for(const search of market.searches){
@@ -109,13 +110,18 @@ async function testHistoryRestoresExactVerifiedSelection(){
  const cancelled=harness();cancelled.c.history.state.bikehuntPurchase=saved;let resolve;cancelled.setResult(()=>new Promise(done=>resolve=done));const pending=cancelled.c.restorePurchaseState();cancelled.close();resolve(d);await pending;assert.equal(cancelled.reg,null);assert.equal(cancelled.c.guideContext,null);
 }
 async function testPublicationChangeDisablesBeforeRechecking(){
- for(const result of ['price','missing','sold','retained','offline','unchanged']){
+ for(const result of ['price','missing','sold','retained','offline','unknown','unchanged']){
   const h=harness(),d=detail();h.open(d);h.c.selectPurchaseRoute('direct');h.c.continuePurchaseRoute();let resolve,reject;h.setResult(()=>new Promise((yes,no)=>{resolve=yes;reject=no}));
-  const pending=h.c.invalidatePurchaseFlow([{offer_id:'offer-visma',kind:'price_changed'}]);assert.equal(h.reg,null);assert.equal(h.elements.get('routeContinue').disabled,true);assert.ok(!h.html.includes('USD 100.00'),'Old monetary amounts disappear while revalidating');h.setAnswer(true);h.c.continueRegistrationExit();assert.equal(h.navigated.length,0);
-  const fresh=structuredClone(d);if(result==='price')fresh.offers[0].offer.price.amount='99';if(result==='missing')fresh.offers=[];if(result==='sold')fresh.offers[0].offer.stock='out_of_stock';if(result==='retained')fresh.offers[0].offer.collection_state='retained';
+  const beforeTime=d.offers[0].offer.fetched_at;
+  const pending=h.c.invalidatePurchaseFlow([]);assert.equal(h.reg,null);assert.equal(h.elements.get('routeContinue').disabled,false);
+  const fresh=structuredClone(d);if(result==='price')fresh.offers[0].offer.price.amount='99';if(result==='missing')fresh.offers=[];if(result==='sold')fresh.offers[0].offer.stock='out_of_stock';if(result==='retained')fresh.offers[0].offer.collection_state='retained';if(result==='unknown')fresh.offers[0].offer.stock='unknown';
   if(result==='offline')reject(Error('offline'));else resolve(fresh);await pending;
-  assert.equal(h.c.guideContext.invalidated,result!=='unchanged');assert.equal(h.elements.get('routeContinue').disabled,result!=='unchanged');assert.equal(h.c.guideContext.route,'direct');
+  const changed=['price','sold'].includes(result);
+  assert.equal(Boolean(h.c.guideContext.invalidated),changed,result);assert.equal(h.elements.get('routeContinue').disabled,changed,result);assert.equal(h.c.guideContext.route,'direct');
+  if(!changed){assert.equal(h.c.guideContext.quote.offer.fetched_at,beforeTime,'Refresh must not invent a stock timestamp');h.c.continuePurchaseRoute();h.setAnswer(true);h.c.continueRegistrationExit();assert.equal(h.navigated.length,1,result);}
  }
+ const h=harness(),q=quote(),other=structuredClone(q);other.offer.collection_state='retained';other.eligible=false;other.reasons=['Old quote; verify on merchant site'];
+ assert.equal(h.c.purchaseIdentity(q),h.c.purchaseIdentity(other),'Refresh metadata is not a product identity change');
 }
 async function testObservedChangesCannotBeOverruledOrResurrectClosedStages(){
  for(const event of [{offer_id:'offer-visma',stock:'out_of_stock'},{offer_id:'offer-visma',new_price:'99',currency:'USD'},{offer_id:'offer-visma',new_price:'100',currency:'EUR'}]){
@@ -191,6 +197,6 @@ function testDomesticChannelUsesSharedHelp(){
  h.c.domesticPaymentMarkup=original;
 }
 
-async function main(){for(const test of [testDomesticChannelUsesSharedHelp,testDomesticScopeCostsAndExit,testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testSharedConfirmationOnlyAtFinalSameTabExit,testReferenceOnlyAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: ten production-JavaScript regression groups passed.');}
+async function main(){for(const test of [testDomesticChannelUsesSharedHelp,testDomesticScopeCostsAndExit,testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testSharedConfirmationOnlyAtFinalSameTabExit,testLastKnownStockAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: ten production-JavaScript regression groups passed.');}
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1});
 module.exports={harness,quote,detail,NOW};

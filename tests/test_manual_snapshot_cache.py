@@ -83,8 +83,8 @@ class ManualSnapshotCacheTests(unittest.TestCase):
                 fresh = ComparisonCatalog([offer], fx, offer.fetched_at + timedelta(minutes=5))
                 expired = ComparisonCatalog([offer], fx, offer.fetched_at + timedelta(hours=1, seconds=1))
                 self.assertEqual(fresh.search()[0].stock_state, "in_stock")
-                self.assertEqual(expired.search()[0].stock_state, "unknown")
-                self.assertFalse(expired.search()[0].channel_quotes)
+                self.assertEqual(expired.search()[0].stock_state, "in_stock")
+                self.assertTrue(expired.search()[0].channel_quotes)
 
 
 if __name__ == "__main__":
