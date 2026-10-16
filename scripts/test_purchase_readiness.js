@@ -131,3 +131,22 @@ for(const [code,market,host,words] of [
  for(const url of row.sources)assert.equal(context.readinessUrl(url,code),true);
 }
 console.log('Third batch passed: exact Gobik/Alé markets, PayPal threshold and destination limits, return mechanisms, no China-card or landed-total promotion.');
+
+// Real directory entrances must follow the same supplier as offers and policy evidence.
+const actualDirectories=JSON.parse(fs.readFileSync('data/directories.json','utf8'));
+const actualSources=JSON.parse(fs.readFileSync('data/sources.json','utf8'));
+const actualCrawlers=JSON.parse(fs.readFileSync('data/crawl_sources.json','utf8'));
+for(const [code,shop,evidence,oldShop,teamOfficial] of [
+ ['movistar','https://gobik.com/en/collections/movistar-team','https://gobik.com/en/blogs/gobik-stories/inside-the-worldtour-2026','https://www.tradeinn.com/bikeinn/es/movistar_team','https://movistarteam.com/'],
+ ['jayco','https://maap.cc/greenedge-cycling','https://maap.cc/greenedge-cycling','https://shop.greenedgecycling.com/','https://greenedgecycling.com/2026/']
+]){
+ const entry=actualDirectories.teams.find(row=>row.code===code),source=actualSources.find(row=>row.code===code),crawl=actualCrawlers.find(row=>row.code===code);
+ assert.equal(entry.shop_url,shop);assert.equal(entry.shop_evidence_url,evidence);assert.equal(entry.shop_evidence_url,source.official_evidence_url);
+ assert.equal(entry.official_url,teamOfficial);assert.deepEqual(entry.source_codes,[code]);assert.ok(entry.logo_images.length);
+ assert.equal(new URL(entry.shop_url).hostname,new URL(source.base_url).hostname);assert.ok(crawl.domains.includes(new URL(shop).hostname));
+ assert.ok([crawl.catalog_url,...(crawl.discovery?.catalog_urls||[])].includes(shop));
+ const rows=context.readinessDirectoryRows(entry);assert.equal(rows.length,1);assert.equal(rows[0].sourceCode,code);assert.ok(rows[0].merchantHosts.includes(new URL(shop).hostname));
+ assert.ok(context.readinessDirectoryMarkup(entry).includes('已核官网说明'));
+ assert.equal(context.readinessDirectoryRows({...entry,shop_url:oldShop}).length,0);assert.equal(context.readinessDirectoryRows({...entry,shop_url:teamOfficial}).length,0);
+}
+console.log('Directory supplier identities passed: real Gobik/MAAP entrances match crawler, source evidence and scoped readiness; legacy hosts stay rejected.');
