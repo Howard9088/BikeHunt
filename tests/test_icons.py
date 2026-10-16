@@ -21,7 +21,7 @@ class BrowserIconTests(unittest.TestCase):
         out=self.root/'_site'
         html=(out/'index.html').read_text()
         for href in re.findall(r'href="([^"]*(?:icons/)[^"]*)"',html):
-            self.assertIn('?v=20261014-logo1',href)
+            self.assertIn('?v=20261016-premium2',href)
             absolute=urljoin('https://owner.github.io/BikeHunt/',href)
             self.assertTrue(absolute.startswith('https://owner.github.io/BikeHunt/web/icons/'))
             self.assertTrue((out/urlsplit(href).path.removeprefix('./')).is_file())
@@ -43,5 +43,12 @@ class BrowserIconTests(unittest.TestCase):
         self.assertEqual({(raw[6+i*16],raw[7+i*16]) for i in range(3)},{(16,16),(32,32),(48,48)})
         svg=(icons/'favicon.svg').read_text()
         source=(ROOT/'web/index.html').read_text()
-        for shape in re.findall(r'<(?:circle|path)\b[^>]*>',re.search(r'<svg class="bikehunt-mark".*?</svg>',source).group()):
-            self.assertIn(shape.replace('currentColor','#202631'),svg)
+        self.assertIn('viewBox="0 0 512 512"',svg)
+        self.assertIn('stroke="url(#mint)"',svg)
+        self.assertIn('aria-label="BikeHunt 骑行标志"',svg)
+        self.assertIn('<img class="bikehunt-mark" src="/web/icons/favicon.svg?v=20261016-premium2"',source)
+        self.assertNotIn('<svg class="bikehunt-mark"',source)
+        self.assertEqual(svg,(ROOT/'web/icons/favicon.svg').read_text())
+        self.assertIn('20261016-premium2',json.dumps(manifest,ensure_ascii=False))
+        self.assertNotEqual((icons/'favicon-32.png').read_bytes(),(ROOT/'web/icons/favicon-32.png').read_bytes(),
+                            'Release must rasterize the new SVG, not copy the old PNG')

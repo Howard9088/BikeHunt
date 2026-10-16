@@ -23,6 +23,7 @@ from app.updates import UpdateStore
 from app.update_views import enrich_events
 from app.payment_methods import read_payment_methods
 from app.registration_guides import read_registration_guides, registration_assets, publish_registration_guides
+from app.brand_icons import export_brand_icons
 
 
 def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
@@ -45,6 +46,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
         shutil.copy2(web/"visitor-stats.js", output/"web/visitor-stats.js")
     if (web/"icons").is_dir():
         shutil.copytree(web/"icons", output/"web/icons")
+        export_brand_icons(output/"web/icons")  # Generate PNGs and ICO from reviewed SVG.
     index = (web/"index.html").read_text(encoding="utf-8")
     index = index.replace('href="/web/"', 'href="./"').replace('="/web/', '="./web/')
     index = index.replace('<script src="./web/profile.js',
