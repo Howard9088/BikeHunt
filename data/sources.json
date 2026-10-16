@@ -309,7 +309,7 @@
   },
   {
     "code": "fizik",
-    "name": "Fizik 美国官网",
+    "name": "Fizik 官方商城",
     "type": "brand_official",
     "base_url": "https://www.fizik.com",
     "enabled": true,
@@ -322,7 +322,7 @@
       "status": "unknown",
       "note": "中国大陆发行信用卡可用性尚未核实。"
     },
-    "sales_region": "美国站 USD 报价",
+    "sales_region": "官网实际市场及币种；不由网址推断美国站",
     "brand": "Fizik"
   },
   {
@@ -694,5 +694,44 @@
       "status": "unknown",
       "note": "中国发行卡支持情况待核实。"
     }
+  },
+  {
+    "code": "lidl_trek",
+    "name": "Lidl–Trek · Santini官方队服",
+    "brand": "Santini",
+    "type": "team_official",
+    "base_url": "https://www.santinicycling.com",
+    "enabled": true,
+    "sales_region": "官网实际市场和币种；配送条件另核",
+    "official_evidence_url": "https://www.santinicycling.com/collections/lidl-trek",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送和费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支付条件待核实。"
+    },
+    "collection_strategy": "scoped_shopify_feed_plus_product_page"
+  },
+  {
+    "code": "alpecin",
+    "name": "Alpecin · Topfanz官方合作商城",
+    "brand": "Topfanz",
+    "type": "team_official",
+    "base_url": "https://shops.topfanz.com",
+    "currency": "EUR",
+    "enabled": true,
+    "sales_region": "比利时商城 EUR 页面显示价；配送另核",
+    "official_evidence_url": "https://www.alpecin-premiertech.com/webshops/",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送和费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支付条件待核实。"
+    },
+    "collection_strategy": "rendered_actual_size_selections"
   }
 ]

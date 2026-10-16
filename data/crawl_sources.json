@@ -129,12 +129,10 @@
       "www.fizik.com"
     ],
     "parser": "shopify",
-    "catalog_url": "https://www.fizik.com/en-us/",
-    "urls": [
-      "https://www.fizik.com/en-us/"
-    ],
+    "catalog_url": "https://www.fizik.com/collections/sale-shoes",
+    "urls": [],
     "max_products": 25,
-    "scope_note": "首批最多 25 款商品，未覆盖完整品牌目录。",
+    "scope_note": "Fizik官方Sale Shoes系列最多25款；逐鞋码和商品页报价交叉核对，不代表完整品牌目录。",
     "fetch_policy": {
       "mode": "auto",
       "timeout_ms": 25000,
@@ -457,19 +455,23 @@
   },
   {
     "code": "redbull",
-    "parser": "redbull_catalog",
+    "parser": "redbull_product",
     "domains": [
       "www.redbullshop.com"
     ],
-    "urls": [
-      "https://www.redbullshop.com/en-jp/c/redbullborahansgrohe/"
-    ],
-    "scope_note": "日本站目录首页的商品参考报价；无逐尺码库存，未覆盖后续页",
+    "urls": [],
+    "scope_note": "官方红牛–博拉车队分类首页最多24件；逐商品当前颜色下的尺码、SKU、价格、库存数核对；预售不作为现货。",
     "fetch_policy": {
       "mode": "auto",
       "timeout_ms": 25000,
-      "max_pages": 2,
-      "max_products": 20
+      "max_pages": 1,
+      "max_products": 24
+    },
+    "discovery": {
+      "catalog_urls": [
+        "https://www.redbullshop.com/en-jp/c/redbullborahansgrohe/"
+      ],
+      "product_link_pattern": "^/en-jp/p/[^/]+/M-RBB\\d+/$"
     }
   },
   {
@@ -533,5 +535,43 @@
       "max_products": 20
     },
     "scope_note": "Gobik 官方 Movistar Team 系列最多20件商品，逐变体与商品页核价。"
+  },
+  {
+    "code": "lidl_trek",
+    "domains": [
+      "www.santinicycling.com"
+    ],
+    "parser": "shopify",
+    "catalog_url": "https://www.santinicycling.com/collections/lidl-trek",
+    "urls": [],
+    "max_products": 25,
+    "scope_note": "Santini官方Lidl-Trek车队系列最多25件商品；逐变体ID、价格、币种与可售状态核对。",
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 1,
+      "max_products": 25
+    }
+  },
+  {
+    "code": "alpecin",
+    "domains": [
+      "shops.topfanz.com"
+    ],
+    "parser": "topfanz",
+    "urls": [
+      "https://shops.topfanz.com/en/zwift-aerosocks-2026.html",
+      "https://shops.topfanz.com/en/zwift-aerosocks-copy-158834776.html",
+      "https://shops.topfanz.com/en/zwift-aerosocks-i-merci-poupou-2026-edition.html"
+    ],
+    "variant_profile": "topfanz",
+    "fetch_policy": {
+      "mode": "dynamic",
+      "wait_selector": "form#product_configure_form select",
+      "timeout_ms": 30000,
+      "max_pages": 1,
+      "max_products": 3
+    },
+    "scope_note": "官方车队链接的Topfanz三款骑行袜；实际切换尺码核对独立GTIN、价格和库存数；不代表完整队服目录。"
   }
 ]

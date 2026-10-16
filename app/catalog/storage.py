@@ -108,9 +108,11 @@ class OfferRepository:
         """同页成功替换、失败页面保留旧数据；完全失败不覆盖有效快照。"""
         existing = [row for row in self.load() if row.source_code == code
                     and row.data_kind != "legacy_cache"]
-        success_urls = {(row.collection_url or row.url).split("?", 1)[0] for row in offers}
+        success_urls = {url.split("?", 1)[0] for row in offers
+                        for url in (row.collection_url or row.url, row.url)}
         merged = [row for row in existing
-                  if (row.collection_url or row.url).split("?", 1)[0] not in success_urls]
+                  if not {(row.collection_url or row.url).split("?", 1)[0],
+                          row.url.split("?", 1)[0]} & success_urls]
         merged.extend(offers)
         # Legacy snapshots do not yet carry their collection parent. Replacing
         # an identical SKU must still persist only its newest observation.

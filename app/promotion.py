@@ -77,6 +77,10 @@ def safe_https(value: object, hosts: set[str] | None = None, product: bool = Fal
             if "collections" in parts and "products" not in parts:
                 return False
             for key, val in parse_qsl(url.query, keep_blank_values=True):
+                if host == "shops.topfanz.com" and key == "id" and re.fullmatch(r"\d{1,20}", val):
+                    continue
+                if host == "www.redbullshop.com" and key == "preselectedVariant" and re.fullmatch(r"M-RBB\d{6,15}", val):
+                    continue
                 if key not in {"variant", "size", "color", "sku", "pid"} or not re.fullmatch(r"[A-Za-z0-9_.-]{1,150}", val):
                     return False
         return True

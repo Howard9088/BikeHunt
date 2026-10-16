@@ -169,7 +169,7 @@
       "name": "Fizik",
       "name_zh": "Fizik 锁鞋与坐垫",
       "official_url": "https://www.fizik.com",
-      "shop_url": "https://www.fizik.com/en-us/",
+      "shop_url": "https://www.fizik.com/collections/sale-shoes",
       "status": "registered",
       "source_codes": [
         "fizik"
@@ -255,7 +255,10 @@
         "https://www.alpecin-premiertech.com/uploads/xlogo.png.pagespeed.ic.saeZ39w8-_.png"
       ],
       "logo_checked_at": "2026-10-14T09:52:39.127236+00:00",
-      "shop_evidence_url": "https://www.alpecin-premiertech.com/"
+      "shop_evidence_url": "https://www.alpecin-premiertech.com/",
+      "source_codes": [
+        "alpecin"
+      ]
     },
     {
       "code": "bahrain",

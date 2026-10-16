@@ -30,6 +30,7 @@ from app.collectors.fetch_policy import source_policy
 from app.collectors.discovery import SourceSpec, discover
 from app.collectors.rendered import collect_variants, kask_page_action, parse_pissei, parse_kask_rendered
 from app.collectors.rendered import parse_unox
+from app.collectors.remaining import parse_redbull_product, parse_topfanz, topfanz_page_action
 from scrapling.fetchers import FetcherSession
 from app.collectors.transport import certificate_bundle
 
@@ -95,6 +96,8 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
     fetcher = PublicPageFetcher(set(settings["domains"]), policy=policy, request=request)
     if settings.get("variant_profile") == "kask":
         fetcher.page_action = kask_page_action(fetcher.variant_pages)
+    elif settings.get("variant_profile") == "topfanz":
+        fetcher.page_action = topfanz_page_action(fetcher.variant_pages)
     fetcher.deferred.update(saved_deferrals(ROOT / "data", code, datetime.now(timezone.utc)))
     if settings.get("parser") == "shopify":
         result = collect_shopify_catalog(fetcher, settings, source, datetime.now(timezone.utc), ROOT / "data" / "raw")
@@ -121,7 +124,7 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
             raw_path = ROOT / "data" / "raw" / (code + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + ".html")
             raw_path.parent.mkdir(exist_ok=True)
             raw_path.write_bytes(response.body)
-            parse = {"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
+            parse = {"redbull_product":parse_redbull_product,"topfanz":parse_topfanz,"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
             parsed = collect_variants(response, source, parse)
             if not parsed and policy.mode == "auto" and response.fetch_mode == "static":
                 response = fetcher.fetch(url, policy=policy.model_copy(update={"mode": "dynamic"}))
