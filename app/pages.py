@@ -119,13 +119,14 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
     publish_registration_guides(root, output, registration)
+    from app.public_status import public_collection_status, public_urls
     payload = {"generated_at":datetime.now(timezone.utc).isoformat(), "mode":"published_snapshot",
                "publication":{"commit":os.environ.get("GITHUB_SHA"), "run_id":os.environ.get("GITHUB_RUN_ID"), "trigger":os.environ.get("GITHUB_EVENT_NAME")},
-               "collection_status":{p.stem:json.loads(p.read_text(encoding="utf-8")) for p in (root/"data/collection_status").glob("*.json")},
+               "collection_status":public_collection_status({p.stem:json.loads(p.read_text(encoding="utf-8")) for p in (root/"data/collection_status").glob("*.json")}, public_urls(root)),
                "catalog":catalog, "details":details, "directories":directory, "rules":rules,
                "updates":{"items":events, "cursor":max(UpdateStore(root).cursor(), max((row["id"] for row in events), default=0)),
                           "fx":snapshot.model_dump(mode="json"), "history_recovery":UpdateStore(root).history_recovery()}, "fit_charts":charts,
                "community":community}
-    publication = build_publication(payload, output, root/"data/publication_cache")
+    publication = build_publication(payload, output, root/"data/publication_cache", allowed_status_urls=public_urls(root))
     return {"output":str(output), "generated_at":payload["generated_at"],
             "products":len(catalog["items"]), "offers":len(offers), **publication}

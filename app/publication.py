@@ -125,13 +125,17 @@ def reusable_observations(cached: dict, current: dict) -> bool:
     return True
 
 
-def build_publication(payload: dict, output: Path, cache: Path) -> dict:
+def build_publication(payload: dict, output: Path, cache: Path, *, allowed_status_urls=None) -> dict:
     """Write one schema-2 release; a cache hit reuses the exact catalog bytes.
 
     Cache contents need not have been deployed: they are byte reuse, not evidence
     of publication or verification. Each new manifest binds both output files.
     """
+    from app.public_status import public_collection_status
+    payload = copy.deepcopy(payload)
     current_offers = offers_by_id(payload)
+    allowed = set(allowed_status_urls or ()) | {o['url'] for o in current_offers.values()}
+    payload['collection_status'] = public_collection_status(payload.get('collection_status', {}), allowed)
     payload["verification_identities"] = {
         identifier: offer_identity(offer) for identifier, offer in sorted(current_offers.items())}
     semantic_hash = digest(semantic_projection(payload))
@@ -147,6 +151,7 @@ def build_publication(payload: dict, output: Path, cache: Path) -> dict:
                 and cached["publication"]["version"] == catalog_version
                 and digest(semantic_projection(cached)) == semantic_hash
                 and cached.get("verification_identities") == payload["verification_identities"]
+                and public_collection_status(cached.get('collection_status', {}), allowed) == cached.get('collection_status', {})
                 and reusable_observations(cached, payload)):
             raw = candidate
     except (OSError, ValueError, TypeError, KeyError, AttributeError):

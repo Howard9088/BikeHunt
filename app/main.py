@@ -77,6 +77,11 @@ def sources() -> list[dict]:
             )
         except (OSError, ValueError) as exc:
             logger.debug("尚无采集记录 {} {}", code, exc)
+    from app.public_status import public_collection_status, public_urls
+    allowed = public_urls(ROOT)
+    for source in result:
+        if 'last_collection' in source:
+            source['last_collection'] = public_collection_status({source['code']: source['last_collection']}, allowed)[source['code']]
     return result
 
 

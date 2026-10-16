@@ -84,7 +84,7 @@ def parse_jsonld(html: str, source: dict, page_url: str,
         try:
             data = json.loads(block)
         except (json.JSONDecodeError, TypeError) as exc:
-            logger.warning("无效 JSON-LD {} {}", page_url, exc)
+            logger.warning("无效 JSON-LD invalid_structured_data")
             continue
         for product, parent in _nodes(data):
             offers = product.get("offers", [])
@@ -191,7 +191,7 @@ def parse_teamcycles(html: str, source: dict, page_url: str,
                 properties, _ = json.JSONDecoder().raw_decode(script.split(marker, 1)[1])
                 product = properties.get("product")
             except (json.JSONDecodeError, AttributeError, TypeError) as exc:
-                logger.warning("Team Cycles 商品数据格式变更 {}", exc)
+                logger.warning("Team Cycles 商品数据格式变更 invalid_structured_data")
     if not product or not sku:
         return []
     # 公开 summaryCode 与 MAAP 代码前缀必须一致，避免误用跟踪脚本的旧 SKU。

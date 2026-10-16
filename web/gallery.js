@@ -19,7 +19,7 @@ async function getJson(url){const response=await fetch(url);if(!response.ok)thro
 function imageMarkup(url,name,index){
   return '<button class="image-button" type="button" aria-label="查看 '+e(name)+' 的渠道比价"><img '+(index<2?'fetchpriority="high"':'loading="lazy"')+' src="'+e(safeUrl(url))+'" alt="'+e(name)+'"></button><div class="photo-fallback">BikeHunt<span>商品图片暂不可用</span></div>';
 }
-function featuredBrowse(){return !activeSource&&!document.getElementById('q').value.trim()}
+function featuredBrowse(){return !activeSource&&!activeCategoryGroup&&!document.getElementById('q').value.trim()}
 function channelSourceCodes(code){
   const directory=typeof directoryData!=='undefined'?directoryData:null;
   const entry=[...(directory?.brands||[]),...(directory?.teams||[])].find(item=>item.code===code);
@@ -108,7 +108,16 @@ function channelCard(card,source){
   // Older single-source payloads are unambiguous. Multi-source stock is not.
   return card.source_codes?.length===1&&sources.includes(card.source_codes[0])&&channelOfferEligible(card)?card:null;
 }
-function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(activeSource)return scoped.map(p=>channelCard(p,activeSource)).filter(Boolean);if(!featuredBrowse()||includeUnverified)return scoped;return channelSelections(scoped)}
+// Global categories have no homepage cap, but each card still needs a reliable
+// exact offer. A source-bound fallback is returned whole, never field-mixed.
+function availableCategoryCard(card){
+  if(channelOfferEligible(card))return card;
+  return (Array.isArray(card.source_codes)?card.source_codes:[])
+    .map(source=>channelCard(card,source))
+    .filter(quote=>quote&&quote.category_group===card.category_group)
+    .sort((a,b)=>Number(a.reference_cny)-Number(b.reference_cny)||a.reference_offer_id.localeCompare(b.reference_offer_id))[0]||null;
+}
+function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(activeSource)return scoped.map(p=>channelCard(p,activeSource)).filter(Boolean);if(activeCategoryGroup)return scoped.map(availableCategoryCard).filter(Boolean);if(!featuredBrowse()||includeUnverified)return scoped;return channelSelections(scoped)}
 function lowPriceMarkup(card,basis){
   if(!basis)return '';
   const verified=card.reference_stock==='in_stock'&&card.reference_collection_state==='current'&&inventoryVerified(card);

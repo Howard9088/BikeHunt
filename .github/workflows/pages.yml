@@ -38,17 +38,13 @@ jobs:
             data/rules
             data/fx_latest.json
             data/public_updates.json
-            data/collection_status
             data/publication_cache
-            storage/updates.sqlite3
-            storage/policy_raw
-            storage/policy_history
-          key: bikehunt-crawl-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: bikehunt-crawl-
+          key: bikehunt-public-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: bikehunt-public-data-v2-
       - name: Restore committed manual source snapshots
         # These manual sources retain their real committed observation times.
         # Existing quote validation and last-known stock rules remain unchanged.
-        run: git restore --source=HEAD -- data/offers/decathlon_cn.json data/offers/oakley.json
+        run: git restore --source=HEAD -- data/offers/decathlon_cn.json data/offers/oakley.json data/offers/gobik.json
       - name: Install crawler and test dependencies
         run: pip install -r requirements-dev.txt
       - name: Restore public event cursor
@@ -138,15 +134,6 @@ jobs:
         run: python scripts/test_bundle_selection_ui.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
-      - name: Keep exact-variant collection diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dynamic-collection-diagnostics-${{ github.run_id }}
-          path: |
-            data/collection_status
-            data/raw/*.diagnostic.json
-          retention-days: 3
       - name: Check policy changes once daily
         run: |
           python - <<'PY'
@@ -173,12 +160,8 @@ jobs:
             data/rules
             data/fx_latest.json
             data/public_updates.json
-            data/collection_status
             data/publication_cache
-            storage/updates.sqlite3
-            storage/policy_raw
-            storage/policy_history
-          key: bikehunt-crawl-${{ github.run_id }}-${{ github.run_attempt }}
+          key: bikehunt-public-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

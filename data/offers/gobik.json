@@ -1,0 +1,771 @@
+{
+  "source_code": "gobik",
+  "collected_at": "2026-10-16T10:31:49.264Z",
+  "verification_method": "manual_public_selected_variant",
+  "observation_window": {
+    "start": "2026-10-16T10:27:25Z",
+    "end": "2026-10-16T10:31:49.264Z"
+  },
+  "offers": [
+    {
+      "offer_id": "gobik-manual-93c4406f7d35e66e4e2f",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Gobik Factory Team 26",
+        "size": "XS",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Gobik Factory Team 26",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-gobik-factory-team-26",
+      "image": "https://gobik.com/cdn/shop/files/short-sleeve-jersey-cx-pro-4-0-men-gobik-factory-team-26-01.jpg?v=1767891796&width=1500",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:27:25Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-gobik-factory-team-26",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-30b3d404cc51027d98bc",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "BIB SHORTS X MEN Gobik Factory Team 26",
+        "size": "2XS",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "BIB SHORTS X MEN Gobik Factory Team 26",
+      "url": "https://gobik.com/en/products/bib-short-x-men-gobik-factory-team-26-k10",
+      "image": "https://gobik.com/cdn/shop/files/bib-short-x-men-gobik-factory-team-26-k10-01.jpg?v=1767891669&width=1500",
+      "price": {
+        "amount": "150.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:28:29Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/bib-short-x-men-gobik-factory-team-26-k10",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 2XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-786f3a68c14247456b7f",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "BIB SHORTS X WOMEN Gobik Factory Team 26",
+        "size": "2XS",
+        "color": null,
+        "gender": "female"
+      },
+      "name": "BIB SHORTS X WOMEN Gobik Factory Team 26",
+      "url": "https://gobik.com/en/products/bib-short-x-women-gobik-factory-team-26-k9",
+      "image": "https://gobik.com/cdn/shop/files/bib-short-x-women-gobik-factory-team-26-k9-01.jpg?v=1767891740&width=1500",
+      "price": {
+        "amount": "150.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:28:29Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/bib-short-x-women-gobik-factory-team-26-k9",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 2XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-bf66eaf74a11c09bab85",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "JERSEY Hyder MEN Hammock",
+        "size": "2XS",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "JERSEY Hyder MEN Hammock",
+      "url": "https://gobik.com/en/products/long-sleeve-jersey-hyder-men-hammock",
+      "image": "https://gobik.com/cdn/shop/files/10-01-080-075-long-sleeve-jersey-hyder-men-hammock-01.jpg?v=1788787464&width=1500",
+      "price": {
+        "amount": "120.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:30:44.237Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/long-sleeve-jersey-hyder-men-hammock",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 2XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-b522a90f0775f4154c06",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "JERSEY Hyder MEN Cortex",
+        "size": "2XS",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "JERSEY Hyder MEN Cortex",
+      "url": "https://gobik.com/en/products/long-sleeve-jersey-hyder-men-cortex",
+      "image": "https://gobik.com/cdn/shop/files/10-01-080-074-long-sleeve-jersey-hyder-men-cortex-01.jpg?v=1788787526&width=1500",
+      "price": {
+        "amount": "120.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:30:46.541Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/long-sleeve-jersey-hyder-men-cortex",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 2XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-2beb108fd37f84df4075",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "LONG SLEEVE JERSEY Vanquish UNISEX Majesty",
+        "size": "XS",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "LONG SLEEVE JERSEY Vanquish UNISEX Majesty",
+      "url": "https://gobik.com/en/products/long-sleeve-jersey-vanquish-unisex-majesty",
+      "image": "https://gobik.com/cdn/shop/files/10-01-102-021-long-sleeve-jersey-vanquish-men-majesty-1.jpg?v=1785338479&width=1500",
+      "price": {
+        "amount": "95.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 5,
+      "fetched_at": "2026-10-16T10:30:48.838Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/long-sleeve-jersey-vanquish-unisex-majesty",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-439a5fcdfd86f2d98100",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "LONG SLEEVE JERSEY Vanquish UNISEX Monarch",
+        "size": "XS",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "LONG SLEEVE JERSEY Vanquish UNISEX Monarch",
+      "url": "https://gobik.com/en/products/long-sleeve-jersey-vanquish-unisex-monarch",
+      "image": "https://gobik.com/cdn/shop/files/10-01-102-020-long-sleeve-jersey-vanquish-men-monarch-1.jpg?v=1785338420&width=1500",
+      "price": {
+        "amount": "95.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 8,
+      "fetched_at": "2026-10-16T10:30:50.942Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/long-sleeve-jersey-vanquish-unisex-monarch",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-839af0d3e60c4450e062",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY Attitude 2.0 MEN Flank",
+        "size": "XS",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "SHORT SLEEVE JERSEY Attitude 2.0 MEN Flank",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-flank",
+      "image": "https://gobik.com/cdn/shop/files/10-01-058-047-short-sleeve-jersey-attitude-2-0-men-flank-5.jpg?v=1785923928&width=1500",
+      "price": {
+        "amount": "95.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 1,
+      "fetched_at": "2026-10-16T10:30:53.352Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-flank",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-d751f20bb1f95b1334af",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY Attitude 2.0 MEN Grim",
+        "size": "2XS",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "SHORT SLEEVE JERSEY Attitude 2.0 MEN Grim",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-grim",
+      "image": "https://gobik.com/cdn/shop/files/10-01-058-036-short-sleeve-jersey-attitude-2-0-men-grim-01.jpg?v=1776336833&width=1500",
+      "price": {
+        "amount": "95.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:31:26.394Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-grim",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 2XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-555aa9420666891bd0ab",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY Attitude 2.0 MEN MOSS",
+        "size": "S",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "SHORT SLEEVE JERSEY Attitude 2.0 MEN MOSS",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-moss",
+      "image": "https://gobik.com/cdn/shop/files/short-sleeve-jersey-attitude-2-0-men-moss-01.jpg?v=1772802223&width=1500",
+      "price": {
+        "amount": "95.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 4,
+      "fetched_at": "2026-10-16T10:31:28.569Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-moss",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 S；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-d7f9c67dcc9d27090949",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY Attitude 2.0 MEN Tetsu",
+        "size": "S",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "SHORT SLEEVE JERSEY Attitude 2.0 MEN Tetsu",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-tetsu",
+      "image": "https://gobik.com/cdn/shop/files/10-01-058-046-short-sleeve-jersey-attitude-2-0-men-tetsu-web-01.jpg?v=1787747037&width=1500",
+      "price": {
+        "amount": "95.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 1,
+      "fetched_at": "2026-10-16T10:31:30.714Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-tetsu",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 S；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-b7bb187579486e6a9a65",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Almond",
+        "size": "S",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Almond",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-almond",
+      "image": "https://gobik.com/cdn/shop/files/10-01-103-091-short-sleeve-jersey-cx-pro-4-0-men-almond-01.jpg?v=1785339297&width=1500",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 1,
+      "fetched_at": "2026-10-16T10:31:33.156Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-almond",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 S；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-c193e8dd85bcf627b0b6",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Azalea",
+        "size": "XS",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Azalea",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-unisex-azalea",
+      "image": "https://gobik.com/cdn/shop/files/short-sleeve-jersey-cx-solid-men-azalea-02.jpg?v=1774256463&width=1500",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:31:35.655Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-unisex-azalea",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-15c37f0cae60e4fa8e86",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Joint",
+        "size": "XS",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Joint",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-joint",
+      "image": "https://gobik.com/cdn/shop/files/10-01-103-081-short-sleeve-jersey-cx-pro-4-0-men-joint-01.jpg?v=1778498860&width=1500",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:31:38.154Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-joint",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-35b05705d2f63783a92a",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Magnolia",
+        "size": "XS",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Magnolia",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-magnolia",
+      "image": "https://gobik.com/cdn/shop/files/short-sleeve-jersey-cx-pro-4-0-men-magnolia-01.jpg?v=1772796234&width=1500",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 3,
+      "fetched_at": "2026-10-16T10:31:40.242Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-magnolia",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-e91eaca4799dc317829c",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Violet",
+        "size": "M",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "SHORT SLEEVE JERSEY CX Pro 4.0 UNISEX Violet",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-violet",
+      "image": "https://gobik.com/cdn/shop/files/10-01-103-092-short-sleeve-jersey-cx-pro-4-0-men-violet-01.jpg?v=1785339224&width=1500",
+      "price": {
+        "amount": "85.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 1,
+      "fetched_at": "2026-10-16T10:31:42.468Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-violet",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 M；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-ed1ca0dbfab195fc3623",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY Reactive UNISEX Bush",
+        "size": "XS",
+        "color": null,
+        "gender": "unisex"
+      },
+      "name": "SHORT SLEEVE JERSEY Reactive UNISEX Bush",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-reactive-unisex-bush",
+      "image": "https://gobik.com/cdn/shop/files/short-sleeve-jersey-reactive-men-bush-01.jpg?v=1772800025&width=1500",
+      "price": {
+        "amount": "110.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 3,
+      "fetched_at": "2026-10-16T10:31:44.872Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-reactive-unisex-bush",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-0ab1979cc9a40aba4e09",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY Stark MEN Blackcurrant",
+        "size": "2XS",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "SHORT SLEEVE JERSEY Stark MEN Blackcurrant",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-stark-men-blackcurrant",
+      "image": "https://gobik.com/cdn/shop/files/short-sleeve-jersey-stark-men-blackcurrant-01.jpg?v=1772803117&width=1500",
+      "price": {
+        "amount": "80.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:31:47.022Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-stark-men-blackcurrant",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 2XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    },
+    {
+      "offer_id": "gobik-manual-c71b30b32cb20897c9ff",
+      "source_code": "gobik",
+      "source_name": "Gobik 官方商城",
+      "identity": {
+        "brand": "Gobik",
+        "model": "SHORT SLEEVE JERSEY Stark MEN Gerbera",
+        "size": "2XS",
+        "color": null,
+        "gender": "male"
+      },
+      "name": "SHORT SLEEVE JERSEY Stark MEN Gerbera",
+      "url": "https://gobik.com/en/products/short-sleeve-jersey-stark-men-gerbera",
+      "image": "https://gobik.com/cdn/shop/files/short-sleeve-jersey-stark-men-gerbera-02.jpg?v=1774256578&width=1500",
+      "price": {
+        "amount": "80.00",
+        "currency": "EUR"
+      },
+      "stock": "in_stock",
+      "stock_quantity": 2,
+      "fetched_at": "2026-10-16T10:31:49.264Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "西班牙站 EUR 报价",
+      "family_hint": "https://gobik.com/en/products/short-sleeve-jersey-stark-men-gerbera",
+      "identity_evidence": "仅核验所列尺码和颜色；其他规格库存未确认。",
+      "purchase_requirements": [
+        "本次仅人工核验 2XS；购买时请在官网重新选择该尺码，并确认当前库存与价格。",
+        "西班牙站欧元报价；其他地区的价格、配送、税费及付款资格须重新核实。",
+        "尚未启用自动刷新，本次已选尺码库存数量不代表其他尺码或后续履约保证。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "note": "未验证中国大陆收货地址及费用；以官网目的地选择与结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "未实际验证中国发行卡授权。"
+      }
+    }
+  ]
+}

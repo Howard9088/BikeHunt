@@ -12,7 +12,7 @@ c.catalog=catalog;c.fixture=fixture;
 vm.runInContext('paymentChannels=validatePaymentChannels(catalog);paymentData=validatePaymentData(fixture,paymentChannels);paymentState="ready"',c);
 const clone=x=>JSON.parse(JSON.stringify(x));
 function offer(code,extra={}){const row=catalog.channels.find(x=>x.source_code===code),child=fixture.entries.find(x=>x.source_code===code)?.channels?.[0];return {source_code:code,source_name:row?.merchant_name,sales_region:row?.sales_regions[0],url:child?.scope_evidence_urls[0]||row?.base_url,china_issued_card:{status:'yes'},accepted_card_networks:['Legacy unsupported network'],...extra}}
-assert.equal(catalog.channels.length,37);
+assert.equal(catalog.channels.length,38);
 // The China official store is a separate exact market, never the French team shop.
 function assertChinaStore(data){
  const channel=catalog.channels.find(r=>r.source_code==='decathlon_cn');
@@ -111,7 +111,7 @@ vm.runInContext('paymentData=null;paymentState="error"',c);html=c.paymentMethods
 vm.runInContext(fs.readFileSync('web/purchase-readiness.js','utf8').replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.shipping=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));vm.runInContext('readinessData=validateReadinessData(shipping);readinessState="ready"',c);assert.ok(c.readinessContent(offer('maap')).includes('不直邮中国大陆'));assert.ok(!c.paymentFeasibilityMarkup(offer('maap')).includes('Legacy unsupported network'));
 if(!process.argv.includes('--fixtures-only')){
  const production=JSON.parse(fs.readFileSync('web/payment-methods.json','utf8'));c.validatePaymentData(production,catalog);assertChinaStore(production);
- assert.equal(production.entries.length,38,'Release covers 37 channels plus the retained Oakley JP observation');
+ assert.equal(production.entries.length,39,'Release covers 38 channels plus the retained Oakley JP observation');
  for(const channel of catalog.channels)assert.ok(production.entries.some(r=>r.source_code===channel.source_code&&(r.scope==='merchant'||channel.sales_regions.includes(r.sales_region))));
 }
 
@@ -159,3 +159,12 @@ for(const data of [fixture,oakleyProduction]){
 }
 vm.runInContext('paymentData=fixture',c);
 console.log('Oakley US payment exact-market isolation and retained JP passed.');
+
+const gobikChannel=catalog.channels.find(x=>x.source_code==='gobik');
+assert.deepEqual(gobikChannel.sales_regions,['西班牙站 EUR 报价']);
+assert.equal(c.paymentPolicy(offer('gobik',{sales_region:'US 市场 · EUR 报价；未验证其他市场库存'})),null);
+assert.equal(c.paymentPolicy(offer('gobik',{url:'https://other.example/products/test'})),null);
+const gobikRelease=JSON.parse(fs.readFileSync('web/payment-methods.json')).entries.find(x=>x.source_code==='gobik');
+assert.equal(gobikRelease.sales_region,'西班牙站 EUR 报价');
+for(const row of gobikRelease.methods){assert.equal(row.china_applicability.status,'unknown');assert.equal(row.status,row.method_key==='paypal'?'conditional':'unknown')}
+assert.ok(gobikRelease.methods.find(x=>x.method_key==='paypal').note.includes('低于 €150'));

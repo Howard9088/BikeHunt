@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-16-oakley-us-exact-market",
+  "revision": "2026-10-16-oakley-us-exact-market-gobik-spain",
   "checked_at": "2026-10-15",
   "payment_caveat": "仅官方公开资料核验，未注册、未提交个人或付款信息、未下单、未真实扣款。商家列出某支付方式或卡组织不等于中国发行卡或中国账户必然可用；发卡行境外电商授权、3DS、真实账单地址、账户地区和商家风控仍可能限制。付款能力与配送资格分别判断。",
   "coverage": {
-    "registered_sources": 36,
+    "registered_sources": 37,
     "additional_directory_entries": 1,
     "additional_market_entries": 1,
-    "total_entries": 38,
+    "total_entries": 39,
     "actual_payment_tests": 0,
-    "registered_source_registry_total": 38,
+    "registered_source_registry_total": 39,
     "unmapped_registered_sources": [
       "canyon",
       "specialized"
@@ -12243,6 +12243,203 @@
         ],
         "checked_at": "2026-10-16"
       }
+    },
+    {
+      "source_code": "gobik",
+      "merchant_name": "Gobik 官方商城",
+      "sales_region": "西班牙站 EUR 报价",
+      "merchant_hosts": [
+        "gobik.com",
+        "www.gobik.com"
+      ],
+      "scope": "market",
+      "scope_note": "Gobik 西班牙站欧元报价；仅复用同站已核公开政策，具体订单付款方式与目的地资格须结账确认，不套用美国市场报价。",
+      "scope_evidence_urls": [
+        "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+      ],
+      "merchant_evidence_status": "official_text",
+      "methods": [
+        {
+          "method_key": "cards",
+          "name": "银行卡／卡组织",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "china_issued_cards",
+          "name": "中国大陆发行卡",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "paypal",
+          "name": "PayPal",
+          "status": "conditional",
+          "note": "官方帮助说明 PayPal 仅在订单总额低于 €150 时显示；须核对实际订单币种及结账选项，未验证中国账户付款。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "订单总额须低于 €150；PayPal 账户地区、余额/绑定方式和商家风控仍可能限制付款。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "apple_pay",
+          "name": "Apple Pay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "google_pay",
+          "name": "Google Pay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "alipay",
+          "name": "支付宝 Alipay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "wechat_pay",
+          "name": "微信支付 WeChat Pay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "unionpay",
+          "name": "银联 UnionPay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "bank_transfer_local",
+          "name": "银行转账／本地支付",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "gift_cards",
+          "name": "礼品卡",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "instalments",
+          "name": "分期付款",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        }
+      ],
+      "sources": [
+        "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+      ],
+      "checked_at": "2026-10-16"
     }
   ],
   "review_corrections": [

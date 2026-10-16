@@ -86,7 +86,11 @@ class RoadEquipmentTests(unittest.TestCase):
         directory=json.loads((ROOT/'data/directories.json').read_text())
         brands=[b for b in directory['brands'] if b.get('road_reference')]
         self.assertEqual({b['code'] for b in brands},{'trek','canyon'})
-        self.assertTrue(all(not b.get('logo_images') for b in brands))
+        by_code={b['code']:b for b in brands}
+        self.assertFalse(by_code['trek'].get('logo_images'))
+        self.assertEqual(by_code['canyon']['logo_images'], ['/web/assets/brands/canyon.svg'])
+        self.assertEqual(by_code['canyon']['logo_evidence_url'], 'https://www.canyon.com/')
+        self.assertTrue((ROOT/'web/assets/brands/canyon.svg').is_file())
 
     def test_references_remain_verbatim_with_fx_conversion_only_in_the_view(self):
         # Rendering today's item-only CNY must not fabricate a refreshed quote,

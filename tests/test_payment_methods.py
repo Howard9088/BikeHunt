@@ -15,14 +15,14 @@ class PaymentMethodsTests(unittest.TestCase):
         self.fixture = json.loads((ROOT / 'tests/fixtures/payment-methods.json').read_text())
 
     def test_fixture_and_full_source_registry(self):
-        self.assertEqual(len(self.catalog['channels']), 37)
+        self.assertEqual(len(self.catalog['channels']), 38)
         validate_payment_methods(self.fixture, self.catalog, require_complete=True)
         for row in self.fixture['entries']:
             self.assertTrue(REQUIRED_METHODS <= {x['method_key'] for x in row['methods']})
 
     def test_actual_release_covers_all_channels_and_every_required_category(self):
         data = read_payment_methods(ROOT)
-        self.assertEqual(len(data['entries']), 38)
+        self.assertEqual(len(data['entries']), 39)
         for row in data['entries']:
             self.assertTrue(REQUIRED_METHODS <= {m['method_key'] for m in row['methods']})
             for method in row['methods']:

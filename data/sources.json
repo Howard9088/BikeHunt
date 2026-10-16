@@ -841,5 +841,24 @@
       "status": "unknown",
       "note": "美国市场中国发行卡资格未验证。"
     }
+  },
+  {
+    "code": "gobik",
+    "name": "Gobik 官方商城",
+    "brand": "Gobik",
+    "type": "brand_official",
+    "base_url": "https://gobik.com",
+    "sales_region": "西班牙站 EUR 报价",
+    "enabled": true,
+    "collection_strategy": "manual_verified_public_variant",
+    "official_evidence_url": "https://gobik.com/en/collections/gobik-factory-team",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆目的地、运费及税费须官网核对，不据西班牙报价推定。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡与账户资格未实际验证。"
+    }
   }
 ]

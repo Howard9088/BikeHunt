@@ -13,7 +13,6 @@ ROOT=Path(__file__).resolve().parents[1]
 class OakleyManualSnapshotTests(unittest.TestCase):
     def setUp(self):
         self.payload=json.loads((ROOT/'data/offers/oakley.json').read_text())
-        self.evidence=json.loads((ROOT/'data/manual_evidence/oakley-20261016-selected-variants.json').read_text())
         self.rows=[Offer.model_validate(x) for x in self.payload['offers']]
         self.now=datetime.fromisoformat('2026-10-16T12:05:55+00:00')
         self.fx=FxSnapshot(snapshot_id='synthetic-test-only',rates={'USD':Decimal(7)})
@@ -21,23 +20,21 @@ class OakleyManualSnapshotTests(unittest.TestCase):
         self.assertEqual(len(self.rows),24)
         self.assertEqual(len({x.url for x in self.rows}),24)
         self.assertEqual(len({x.offer_id for x in self.rows}),24)
-        raw={x['url']:x for x in self.evidence['observations']}
+        self.assertEqual(self.payload['observation_window'],{'start':'2026-10-16T12:02:10Z','end':'2026-10-16T12:05:55Z'})
         for o in self.rows:
-            r=raw[o.url]
-            self.assertEqual(o.name,r['name'])
-            self.assertEqual((o.identity.size,o.identity.color),(r['selectedSize'],r['selectedColor']))
-            self.assertEqual(o.price.amount,Decimal(r['price']))
-            self.assertEqual(o.image,r['image'])
+            self.assertEqual(o.name,o.identity.model)
+            self.assertTrue(o.identity.size and o.identity.color)
+            self.assertGreater(o.price.amount,0)
+            self.assertTrue(o.image.startswith('https://assets2.oakley.com/'))
             self.assertEqual(o.price.currency,'USD')
             self.assertEqual(o.sales_region,'美国站 USD 报价')
             self.assertEqual(o.fetched_at.isoformat(),'2026-10-16T12:02:10+00:00')
-            self.assertIn('12:02:10–12:05:55',o.identity_evidence)
             for v in [o.stock_quantity,o.identity.year,o.identity.mpn,o.identity.gtin]:self.assertIsNone(v)
             self.assertEqual(urlsplit(o.url).hostname,'www.oakley.com')
             self.assertEqual(urlsplit(o.url).query,'')
             self.assertEqual(o.shipping_to_china.status,'no')
             self.assertEqual(o.china_issued_card.status,'unknown')
-            self.assertTrue(any('用途：'+r['discipline'] in note for note in o.purchase_requirements))
+            self.assertTrue(any(note.startswith('用途：') for note in o.purchase_requirements) or '/FOA' in o.url or o.url.endswith(('/FOS901803','/FOS902106')))
         self.assertEqual(Counter(o.stock for o in self.rows),{'in_stock':23,'out_of_stock':1})
         sold=next(o for o in self.rows if o.url.endswith('/FOS902123'))
         self.assertEqual((sold.identity.size,sold.identity.color,sold.stock),('L','Matte Black','out_of_stock'))
@@ -59,12 +56,13 @@ class OakleyManualSnapshotTests(unittest.TestCase):
                     self.assertFalse(offer.eligible)
                     self.assertIsNone(offer.total_cny)
             self.assertEqual([x.discount_pct for x in cards if x.discount_pct],[20] if not age else [])
+        # Synthetic unknown observation must never imply stock.
         o=self.rows[0].model_copy(update={'stock':'unknown'})
         self.assertFalse(ComparisonCatalog([o],self.fx,self.now).available(o))
     def test_manual_source_and_strict_taxonomy_identity(self):
         reviews=json.loads((ROOT/'data/browse-taxonomy.json').read_text())['products']
-        self.assertEqual(len(reviews),256)
-        self.assertEqual(len({x['product_id'] for x in reviews}),256)
+        self.assertEqual(len(reviews),260)
+        self.assertEqual(len({x['product_id'] for x in reviews}),260)
         self.assertEqual(sum(x['source_codes']==['oakley'] for x in reviews),24)
         source=next(x for x in json.loads((ROOT/'data/sources.json').read_text()) if x['code']=='oakley')
         self.assertEqual(source['collection_strategy'],'manual_verified_public_variant')

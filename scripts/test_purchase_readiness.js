@@ -220,8 +220,8 @@ assert.equal(context.readinessPolicy(offer('alpecin','比利时商城 EUR 页面
 assert.equal(context.readinessPolicy(offer('decathlon','US 市场 · USD 报价；未验证其他市场库存','https://www.decathlon.com.cn/product')),null);
 const ae=context.readinessPolicy(offer('nsn','阿联酋站 USD 报价','https://www.ekoi.com/en-ae/item'));assert.equal(ae.payment.status,'conditional_checkout');assert.ok(ae.payment.methods.includes('PayPal'));
 for(const source of actualSources)assert.ok(data.entries.some(row=>row.sourceCode===source.code),'Missing researched source: '+source.code);
-assert.equal(data.entries.length,38);assert.ok(JSON.stringify(data).length<100000);assert.equal(data.checkedAt,'2026-10-15');
-console.log('Final batch passed: all 34 non-Amazon sources mapped, exact merchant/market boundaries, scoped exceptions, honest evidence gaps and no price/card guarantees.');
+assert.equal(data.entries.length,39);assert.ok(JSON.stringify(data).length<100000);assert.equal(data.checkedAt,'2026-10-15');
+console.log('Final batch passed: all 35 non-Amazon sources mapped, exact merchant/market boundaries, scoped exceptions, honest evidence gaps and no price/card guarantees.');
 
 const oakleyUS=offer('oakley','美国站 USD 报价','https://www.oakley.com/en-us/product/FOS902243');
 const oakleyBefore=JSON.stringify(oakleyUS),oakley=context.readinessPolicy(oakleyUS);
@@ -241,3 +241,12 @@ const oakleyDirectory=context.readinessDirectoryMarkup({code:'oakley',source_cod
 assert.ok(oakleyDirectory.includes('指定市场参考'));assert.ok(oakleyDirectory.includes('目录未提供精确报价市场'));assert.ok(oakleyDirectory.includes('美国站 USD 报价'));
 assert.equal(context.readinessDirectoryMarkup({code:'oakley',source_codes:['oakley'],shop_url:'https://hk.oakley.com/'}),'');
 console.log('Oakley US readiness exact-market isolation passed.');
+
+// Brand observations are Spain/EUR, independent of the existing US Movistar scope.
+const gobikQuote=offer('gobik','西班牙站 EUR 报价','https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-gobik-factory-team-26');
+const gobikBefore=JSON.stringify(gobikQuote),gobikPolicy=context.readinessPolicy(gobikQuote);
+assert.equal(gobikPolicy.sourceCode,'gobik');assert.equal(gobikPolicy.payment.chinaIssuedCard,'unknown');
+assert.equal(context.readinessPolicy({...gobikQuote,sales_region:'US 市场 · EUR 报价；未验证其他市场库存'}),null);
+assert.equal(context.readinessPolicy({...gobikQuote,url:'https://other.example/product'}),null);
+assert.equal(JSON.stringify(gobikQuote),gobikBefore);
+assert.ok(context.readinessDirectoryMarkup({code:'gobik',source_codes:['gobik'],shop_url:'https://gobik.com/en/collections/gobik-factory-team'}).includes('西班牙'));

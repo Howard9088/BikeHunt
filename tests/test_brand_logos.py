@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SVG_NS = 'http://www.w3.org/2000/svg'
-EXPECTED_BRANDS = {'maap', 'rapha', 'assos', 'castelli', 'santini', 'pns', 'poc', 'kask', 'fizik', 'oakley', 'trek', 'specialized', 'canyon', 'colnago', 'decathlon_cn', 'decathlon_overseas'}
+EXPECTED_BRANDS = {'gobik', 'maap', 'rapha', 'assos', 'castelli', 'santini', 'pns', 'poc', 'kask', 'fizik', 'oakley', 'trek', 'specialized', 'canyon', 'colnago', 'decathlon_cn', 'decathlon_overseas'}
 # Hashes are of official source artwork, not a recreation in a substitute font.
 ASSETS = {
     'maap': ('664e49fc71db5831e45e76d7f3cc071d61e26d1e3d27cdf6bf2b8bcf4a30d279', '0 0 76 20', 'maap.cc'),
@@ -24,6 +24,9 @@ ASSETS = {
     'kask': ('832a6b61621f8e81a8f4b3d4be338007a9a511fdccf4c4a707ea5e73d1b74c11', '0 0 95 26', 'www.kask.com'),
     'fizik': ('60f92f36477e738bd6bf30037b8687c6c3993e5fda7f1f09604b900cf3bcab79', '0 0 71.67 20', 'www.fizik.com'),
 }
+
+
+NEW_ASSETS = {'specialized': {'sha256': 'be9823f845bab87a6c2b0dec7ecb2b35a3496c0d18db903b89ffa6825cd55921', 'viewBox': '0 0 1540 160', 'evidence': 'https://www.specialized.com/us/en', 'sources': ['https://www.specialized.com/us/en']}, 'canyon': {'sha256': 'd6dd128a204028ed5d8e8059dbd5fe0bab824103e3808f496aba01c3ab07d783', 'viewBox': '0 0 348.2 49', 'evidence': 'https://www.canyon.com/', 'sources': ['https://www.canyon.com/on/demandware.static/Sites-RoW-Site/-/en_US/v1792150350567/images/iconsNew.svg#sprite-logo']}, 'colnago': {'sha256': 'fb544f4c2359d21a70610513c48e4cbc08ce92f9fbb180887474cf3e37969518', 'viewBox': '150 625 1118 170', 'evidence': 'https://www.colnago.com/', 'sources': ['https://cdn.shopify.com/s/files/1/0828/8980/2039/files/COLNAGO_LOGO.svg?v=1695045286']}, 'gobik': {'sha256': '1456a72180d056711f79e81c31d714be17fc4998a27cd1d0a986027bcc5a0f70', 'viewBox': '0 0 150 45', 'evidence': 'https://gobik.com/', 'sources': ['https://gobik.com/cdn/shop/files/LogoHEADER-100x30px-SVG.svg?v=1693982242&width=600']}}
 
 
 class BrandLogoTests(unittest.TestCase):
@@ -101,6 +104,40 @@ class BrandLogoTests(unittest.TestCase):
                             self.assertTrue(value.startswith('#'), (code, value))
                 for target in re.findall(r'url\(\s*[\'"]?([^\)\'\"]+)', data, flags=re.I):
                     self.assertTrue(target.strip().startswith('#'), (code, target))
+
+    def test_four_added_logos_are_official_inert_local_and_renderable(self):
+        import io
+        import cairosvg
+        from PIL import Image
+        for code, expected in NEW_ASSETS.items():
+            entry = self.brands[code]
+            self.assertEqual(entry['logo_images'][0], f'/web/assets/brands/{code}.svg')
+            self.assertEqual(entry['logo_theme'], 'light')
+            self.assertEqual(entry['logo_checked_on'], '2026-10-16')
+            self.assertEqual(entry['logo_evidence_url'], expected['evidence'])
+            self.assertEqual(entry['logo_source_urls'], expected['sources'])
+            data = (ROOT/entry['logo_images'][0].lstrip('/')).read_bytes()
+            self.assertEqual(hashlib.sha256(data).hexdigest(), expected['sha256'])
+            svg = ET.fromstring(data)
+            self.assertEqual(svg.get('viewBox'), expected['viewBox'])
+            self.assertGreater(len(data), 100)
+            for node in svg.iter():
+                tag = node.tag.rsplit('}', 1)[-1].lower()
+                self.assertNotIn(tag, {'script','foreignobject','image','iframe','animate','set'})
+                for key, value in node.attrib.items():
+                    name = key.rsplit('}',1)[-1].lower()
+                    self.assertFalse(name.startswith('on'))
+                    if name in {'href','src'}: self.assertTrue(value.startswith('#'))
+            self.assertNotRegex(data.decode().lower(), r'<!doctype|<!entity|javascript:')
+            png = cairosvg.svg2png(bytestring=data, output_width=240, output_height=80)
+            image = Image.open(io.BytesIO(png)).convert('RGBA')
+            self.assertEqual(image.size, (240,80))
+            bounds = image.getchannel('A').getbbox()
+            self.assertIsNotNone(bounds)
+            self.assertGreater(bounds[2]-bounds[0], 60)
+            self.assertGreater(bounds[3]-bounds[1], 10)
+            self.assertLessEqual(bounds[2], 240)
+            self.assertLessEqual(bounds[3], 80)
 
     def test_rapha_is_unchanged_and_restricted_sources_keep_names(self):
         self.assertEqual(self.brands['rapha']['logo_images'], ['/web/assets/brands/rapha.svg'])

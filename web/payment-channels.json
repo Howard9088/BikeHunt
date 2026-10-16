@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-16-oakley-us-exact-market",
+  "revision": "2026-10-16-oakley-us-exact-market-gobik-spain",
   "channels": [
     {
       "source_code": "maap",
@@ -789,6 +789,26 @@
       ],
       "base_url": "https://www.colnago.com/en-us/",
       "identity_note": "仅对应 Colnago 美国市场当前美元报价；中国地区页面不能证明本市场付款可用。"
+    },
+    {
+      "source_code": "gobik",
+      "merchant_name": "Gobik 官方商城",
+      "sales_regions": [
+        "西班牙站 EUR 报价"
+      ],
+      "merchant_hosts": [
+        "gobik.com",
+        "www.gobik.com"
+      ],
+      "reference_hosts": [
+        "gobik.com",
+        "www.gobik.com"
+      ],
+      "directory_codes": [
+        "gobik"
+      ],
+      "base_url": "https://gobik.com/",
+      "identity_note": "Gobik 品牌官网西班牙站欧元报价；不沿用 Movistar 美国市场报价或其他商家条件。"
     }
   ]
 }

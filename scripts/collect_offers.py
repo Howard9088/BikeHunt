@@ -64,6 +64,13 @@ def error_record(url: str, exc: Exception) -> dict:
     return row
 
 
+def print_public_collection_result(code: str, count: int, errors: list[dict]) -> None:
+    # Diagnostics remain in local collection_status; CI console gets no body or URL.
+    kinds = ['collection_deferred' if row.get('retry_at') else 'collection_failed'
+             for row in errors]
+    print(json.dumps({'source': code, 'offers': count, 'errors': kinds}, ensure_ascii=True))
+
+
 def source_groups(settings_list: list[dict]) -> list[list[dict]]:
     """Connected host sets are serialized; independent domains use at most 3 workers."""
     groups = []
@@ -104,7 +111,7 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
     if settings.get("parser") == "shopify":
         result = collect_shopify_catalog(fetcher, settings, source, datetime.now(timezone.utc), ROOT / "data" / "raw")
         repository.save(code, result.offers, datetime.now(timezone.utc), result.errors, result.coverage)
-        print(json.dumps({"source":code, "offers":len(result.offers), "errors":result.errors, "coverage":result.coverage}, ensure_ascii=True))
+        print_public_collection_result(code, len(result.offers), result.errors)
         return
     rows = []
     errors: list[dict] = []
@@ -155,7 +162,7 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
             rows.extend(parsed)
             logger.info("{} {} 条逐规格报价", code, len(parsed))
         except Exception as exc:
-            logger.error("来源隔离 {} {} {}", code, url, exc)
+            logger.error("来源隔离 {} collection_failed", code)
             errors.append(error_record(url, exc))
     repository.save(code, rows, datetime.now(timezone.utc), errors, {
         "scope":"configured_product_pages", "scope_note":settings.get("scope_note", "指定商品页面，非完整目录"),
@@ -164,7 +171,7 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
         "dynamic_offer_count":sum(row.fetch_mode == "dynamic" for row in rows),
         "sized_offer_count":sum(bool(row.identity.size) for row in rows),
         "partial":True, "complete":False})
-    print(json.dumps({"source": code, "offers": len(rows), "errors": errors}, ensure_ascii=True))
+    print_public_collection_result(code, len(rows), errors)
 
 
 def main() -> None:

@@ -152,7 +152,7 @@ class PublicPageFetcher:
             except SourceDeferred:
                 raise
             except Exception as exc:
-                logger.warning("请求失败 {} attempt={}/3 {}", url, attempt + 1, exc)
+                logger.warning("请求失败 collection_request_failed attempt={}/3", attempt + 1)
                 if attempt == 2:
                     raise CollectionError(f"Source request failed: {url}") from exc
                 self.sleep(2 ** attempt)

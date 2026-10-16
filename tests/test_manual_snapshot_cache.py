@@ -16,7 +16,8 @@ from app.catalog.service import ComparisonCatalog
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOT = "data/offers/decathlon_cn.json"
 OAKLEY = "data/offers/oakley.json"
-COMMAND = "git restore --source=HEAD -- " + SNAPSHOT + " " + OAKLEY
+GOBIK = "data/offers/gobik.json"
+COMMAND = "git restore --source=HEAD -- " + SNAPSHOT + " " + OAKLEY + " " + GOBIK
 
 
 class ManualSnapshotCacheTests(unittest.TestCase):
@@ -38,6 +39,16 @@ class ManualSnapshotCacheTests(unittest.TestCase):
             self.assertLess(index, next(i for i, value in enumerate(steps)
                                        if consumer in value))
 
+    def test_public_workflow_does_not_export_private_state_or_evidence(self):
+        workflow = (ROOT / ".github/workflows/pages.yml").read_text()
+        for forbidden in ["storage/updates.sqlite3", "storage/policy_raw", "storage/policy_history",
+                          "data/raw", "manual_evidence", "data/collection_status", "actions/upload-artifact@"]:
+            self.assertNotIn(forbidden, workflow)
+        self.assertNotIn("bikehunt-crawl-", workflow)
+        self.assertIn("restore-keys: bikehunt-public-data-v2-", workflow)
+        self.assertIn("python scripts/seed_updates.py", workflow)
+        self.assertIn("uses: actions/upload-pages-artifact@", workflow)
+
     def test_restore_recovers_exact_manual_bytes_leaves_crawler_cache_and_ttl(self):
         committed = (ROOT / SNAPSHOT).read_bytes()
         payload = json.loads(committed)
@@ -56,6 +67,9 @@ class ManualSnapshotCacheTests(unittest.TestCase):
             oakley = root / OAKLEY
             oakley_bytes = (ROOT / OAKLEY).read_bytes()
             oakley.write_bytes(oakley_bytes)
+            gobik = root / GOBIK
+            gobik_bytes = (ROOT / GOBIK).read_bytes()
+            gobik.write_bytes(gobik_bytes)
             automatic = manual.with_name("visma.json")
             automatic.write_text('{"cache": "committed"}')
 
@@ -72,6 +86,7 @@ class ManualSnapshotCacheTests(unittest.TestCase):
                 "user.email=snapshot-test@example.invalid", "commit", "-qm", "fixture")
             manual.write_text(json.dumps(old))
             oakley.write_text("{}")
+            gobik.write_text("{}")
             automatic_cache = b'{"cache": "new automatic observation"}\n'
             automatic.write_bytes(automatic_cache)
             # Execute the exact command used by the workflow, without a shell.
@@ -79,6 +94,7 @@ class ManualSnapshotCacheTests(unittest.TestCase):
                            capture_output=True, text=True)
             self.assertEqual(manual.read_bytes(), committed)
             self.assertEqual(oakley.read_bytes(), oakley_bytes)
+            self.assertEqual(gobik.read_bytes(), gobik_bytes)
             self.assertEqual(automatic.read_bytes(), automatic_cache)
             restored = json.loads(manual.read_bytes())
             self.assertEqual(restored["collected_at"], payload["collected_at"])

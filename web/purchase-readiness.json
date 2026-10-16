@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-16-verified-oakley-us-policy",
+  "revision": "2026-10-16-verified-oakley-us-policy-gobik-spain",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -1319,6 +1319,41 @@
       "sources": [
         "https://www.oakley.com/en-us/support/shipping-returns",
         "https://www.oakley.com/en-us/support/shopping-support"
+      ]
+    },
+    {
+      "sourceCode": "gobik",
+      "scope": "market",
+      "salesRegion": "西班牙站 EUR 报价",
+      "merchantHosts": [
+        "gobik.com"
+      ],
+      "label": "Gobik 官方商城",
+      "policyScope": "西班牙站 EUR 报价；其他目的地须重新选择市场并核对价格、配送及结账条件",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "PayPal（订单总额低于 €150）"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官网支付条件依市场和订单而定；支持支付方式不保证中国发行卡授权成功。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "当前官网市场选择器未列中国大陆，列有香港欧元市场；这不等于已验证香港具体地址或大陆可直邮。国际配送须符合官网运送政策的目的地范围，不能把国际配送字样视为全球无条件可寄。当前西班牙站欧元报价须切换目标市场重新核价。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已核公开配送及退货资料未取得明确转运地址许可；须向商家确认，不能视为允许转运。"
+      },
+      "sourceLimitations": "官网 FAQ 明确 PayPal 仅订单总额低于 €150 时提供，达到 €150 或更高不可据此承诺可用；其他卡组织本次未取得可靠官方列举，中国发行卡授权仍未保证。世界其他地区运费 €20，订单满 €150 免运，香港的实际地址及费用仍须结账核对；国际进口税和关税不含商品价或运费，由买家承担，拒付退回会扣往返运费。退换期限为下单起 45 个自然日，不是收货起；商品未用未洗无损、原包装标签齐全。Collection/Backroom 可退，定制 Pre-order/Custom/Team Store 不可退，普通公开成衣款不自动等同定制。品牌安排取件的首退一般由品牌承担；折扣/Backroom/Black Friday、第二次退货或退货金额低于 €25 的情形扣 €4，自行安排运输则自付。未取得强制注册或明确游客结账声明；登录加快结账提示不等于必须注册。",
+      "sources": [
+        "https://gobik.com/en/policies/shipping-policy",
+        "https://gobik.com/en/blogs/faq/do-you-ship-international",
+        "https://gobik.com/en/pages/returns",
+        "https://gobik.com/en/blogs/faq/does-a-return-have-shipping-costs",
+        "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
       ]
     }
   ],

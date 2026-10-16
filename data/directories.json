@@ -220,7 +220,17 @@
       "reference_note": "已接入官方骑行服饰的部分逐规格报价；不代表完整目录。中国配送、支付与费用仍须分别核实。",
       "source_codes": [
         "specialized"
-      ]
+      ],
+      "logo_images": [
+        "/web/assets/brands/specialized.svg"
+      ],
+      "logo_theme": "light",
+      "logo_evidence_url": "https://www.specialized.com/us/en",
+      "logo_source_urls": [
+        "https://www.specialized.com/us/en"
+      ],
+      "logo_note": "品牌官网标识，按页面尺寸展示。",
+      "logo_checked_on": "2026-10-16"
     },
     {
       "code": "canyon",
@@ -234,7 +244,17 @@
       "reference_note": "美国站报价；中国直邮和转运许可均待核实。美国本土运费不能当作中国运费。Outlet 退货条件有冲突，请逐款确认。",
       "source_codes": [
         "canyon"
-      ]
+      ],
+      "logo_images": [
+        "/web/assets/brands/canyon.svg"
+      ],
+      "logo_theme": "light",
+      "logo_evidence_url": "https://www.canyon.com/",
+      "logo_source_urls": [
+        "https://www.canyon.com/on/demandware.static/Sites-RoW-Site/-/en_US/v1792150350567/images/iconsNew.svg#sprite-logo"
+      ],
+      "logo_note": "品牌官网标识，按页面尺寸展示。",
+      "logo_checked_on": "2026-10-16"
     },
     {
       "code": "colnago",
@@ -248,7 +268,40 @@
       "reference_note": "已接入官方骑行服饰的部分逐规格报价；不代表完整目录。中国配送、支付与费用仍须分别核实。",
       "source_codes": [
         "colnago"
-      ]
+      ],
+      "logo_images": [
+        "/web/assets/brands/colnago.svg"
+      ],
+      "logo_theme": "light",
+      "logo_evidence_url": "https://www.colnago.com/",
+      "logo_source_urls": [
+        "https://cdn.shopify.com/s/files/1/0828/8980/2039/files/COLNAGO_LOGO.svg?v=1695045286"
+      ],
+      "logo_note": "品牌官网标识，按页面尺寸展示。",
+      "logo_checked_on": "2026-10-16"
+    },
+    {
+      "code": "gobik",
+      "name": "Gobik",
+      "name_zh": "Gobik 骑行服",
+      "official_url": "https://gobik.com",
+      "shop_url": "https://gobik.com/en/collections/gobik-factory-team",
+      "shop_evidence_url": "https://gobik.com/en/collections/gobik-factory-team",
+      "source_codes": [
+        "gobik"
+      ],
+      "status": "registered",
+      "logo_images": [
+        "/web/assets/brands/gobik.svg"
+      ],
+      "catalog_note": "人工核验的19款精选，仅列已确认尺码；尚未自动刷新，不代表官网全量库存。",
+      "logo_theme": "light",
+      "logo_evidence_url": "https://gobik.com/",
+      "logo_source_urls": [
+        "https://gobik.com/cdn/shop/files/LogoHEADER-100x30px-SVG.svg?v=1693982242&width=600"
+      ],
+      "logo_note": "品牌官网标识，按页面尺寸展示。",
+      "logo_checked_on": "2026-10-16"
     }
   ],
   "teams": [

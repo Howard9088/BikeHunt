@@ -84,7 +84,7 @@ function testBrandDiversityAndLowPrices(){
  const duplicate={...a,product_id:'a-color',name:a.name+' - Blue',reference_cny:'101'};
  assert.deepEqual(Array.from(h.c.channelSelections([a,duplicate,b,c]),p=>p.product_id),['a','b']);
  h.c.activeCategoryGroup='clothing';assert.equal(h.c.visibleItems().length,0);
- h.c.activeCategoryGroup='helmets';h.c.profileMatches=p=>p.product_id!=='a';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['b','d','c']);
+ h.c.activeCategoryGroup='helmets';h.c.profileMatches=p=>p.product_id!=='a';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['c','b','d'],'Global category preserves complete scoped order rather than homepage channel interleaving');
 }
 function testLowPriceSafetyAndComparability(){
  const h=harness(),base=helmet('a',100),pool=[base,helmet('b',200),helmet('c',300)];
@@ -124,4 +124,53 @@ function testVerifiedStockWithoutSizeMetadata(){
  }
 }
 
-for(const test of [testVerifiedStockWithoutSizeMetadata,testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers,testBrandDiversityAndLowPrices,testLowPriceSafetyAndComparability]){test();console.log('PASS '+test.name)}
+function testGlobalCategoryCompleteness(){
+ const h=harness(),a=helmet('a',100,{color:null}),b=helmet('b',200,{color:null}),c=helmet('c',300,{color:null}),d=helmet('d',400,{color:null});
+ const unknown=helmet('unknown',1,{stock_state:'unknown',reference_stock:'unknown'});
+ const sold=helmet('sold',1,{stock_state:'out_of_stock',reference_stock:'out_of_stock'});
+ const legacy=helmet('legacy',1,{reference_data_kind:'legacy_cache'});
+ h.c.items=[a,b,c,d,unknown,sold,legacy];
+ assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','b'],'Only the homepage applies the two-model channel cap');
+ h.c.activeCategoryGroup='helmets';assert.equal(h.c.featuredBrowse(),false);
+ assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','b','c','d'],'Global helmets show every reliable product in the channel');
+ assert.deepEqual(Array.from(h.c.visibleItems(true),p=>p.product_id),['a','b','c','d'],'Category mode never bypasses stock eligibility');
+ h.c.render();assert.equal(h.elements.get('count').textContent,'4 件商品');
+ assert.ok(!h.c.gallery.innerHTML.includes('class="low-price-label"'));assert.ok(!h.c.gallery.innerHTML.includes('渠道精选'));
+ h.elements.get('q').value='Helmet';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','b','c','d']);
+ h.elements.get('q').value='Helmet c';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['c']);h.elements.get('q').value='';
+ const other=helmet('other',500,{source_codes:['other'],reference_source:'Other merchant'});
+ h.c.items.push(other);h.c.activeSource='brand';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','b','c','d']);
+ h.c.activeSource=null;assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','b','c','d','other']);
+ h.c.shopperProfile={gender:'female'};
+ vm.runInContext(section(fs.readFileSync('web/profile.js','utf8'),'function profileMatches(','function syncGenderScope('),h.c);
+ assert.equal(h.c.visibleItems().length,5,'Hidden female clothing preference never removes helmets');
+ const shoe=card({product_id:'shoe',name:'Verified Cleat Shoe',category:'shoes',category_group:'cleat_shoes',gender:'male'});
+ h.c.items.push(shoe);h.c.activeCategoryGroup='cleat_shoes';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['shoe']);
+ const button={dataset:{tab:'products'}};
+ h.c.document.querySelectorAll=selector=>selector==='[data-tab]'?[button]:[];h.c.syncBrowseControls=()=>{};h.c.navigate=tab=>{h.c.activeTab=tab};
+ h.c.categoryGroups=[{code:'helmets',name:'头盔'},{code:'cleat_shoes',name:'锁鞋'}];
+ vm.runInContext(section(flows,'function chooseCategoryGroup(','function syncBrowseControls('),h.c);
+ vm.runInContext(section(flows,"document.querySelectorAll('[data-tab]').forEach(b=>b.onclick",'const panelError='),h.c);
+ h.c.items=[a,b,c,d,other,unknown,sold];h.c.activeSource='brand';h.c.activeCategoryGroup='helmets';h.elements.get('q').value='Helmet c';
+ button.onclick();assert.equal(h.c.activeSource,null);assert.equal(h.c.activeCategoryGroup,null);assert.equal(h.elements.get('q').value,'');assert.equal(h.c.featuredBrowse(),true);assert.equal(h.c.visibleItems().length,3);
+ h.c.chooseCategoryGroup('helmets');assert.equal(h.c.activeSource,null);assert.equal(h.c.featuredBrowse(),false);
+ assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','b','c','d','other']);
+ h.c.chooseCategoryGroup('helmets');assert.equal(h.c.activeCategoryGroup,null);assert.equal(h.c.visibleItems().length,3);
+}
+function testGlobalCategoryExactQuoteFallback(){
+ const h=harness(),aggregate=helmet('mixed',1,{source_codes:['brand','other'],stock_state:'unknown',reference_stock:'unknown',reference_data_kind:'legacy_cache',reference_offer_id:'old-offer',reference_variant_id:'old-size',fetched_at:new Date(NOW-86400001).toISOString()});
+ const quote=helmet('mixed',2380,{source_codes:['other'],reference_source:'US official merchant',reference_url:'https://official.example/exact-helmet',reference_offer_id:'current-offer',reference_variant_id:'exact-L',reference_size:'L',reference_color:'Black/Red Pro',reference_price:{amount:'340',currency:'USD'}});
+ aggregate.channel_quotes={brand:helmet('different-product',1),other:quote,undeclared:helmet('mixed',1)};
+ const retained=helmet('retained',500,{reference_collection_state:'retained',fetched_at:new Date(NOW-86400001).toISOString()});
+ h.c.items=[aggregate,retained];h.c.activeCategoryGroup='helmets';assert.equal(h.c.visibleItems().length,2);
+ const selected=h.c.visibleItems().find(p=>p.product_id==='mixed');assert.equal(selected,quote,'Return whole exact quote, never field-mix');
+ for(const key of ['reference_source','reference_url','reference_offer_id','reference_variant_id','reference_size','reference_color','reference_price','reference_cny','fetched_at'])assert.equal(selected[key],quote[key],key);
+ assert.equal(h.c.visibleItems().find(p=>p.product_id==='retained'),retained);
+ h.c.render();assert.ok(h.c.gallery.innerHTML.includes('340.00'));assert.ok(h.c.gallery.innerHTML.includes('上次记录商品价'));assert.ok(!h.c.gallery.innerHTML.includes('old-offer'));
+ for(const changes of [{stock_state:'out_of_stock',reference_stock:'out_of_stock'},{stock_state:'unknown',reference_stock:'unknown'},{fetched_at:null},{product_id:'wrong-product'},{category_group:'other'}]){
+ aggregate.channel_quotes.other={...quote,...changes};assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['retained'],'Invalid/mismatched/undeclared quote: '+JSON.stringify(changes));}
+ aggregate.channel_quotes.other=quote;h.elements.get('q').value='Helmet mixed';assert.equal(h.c.visibleItems()[0],quote);h.elements.get('q').value='';aggregate.stock_state='out_of_stock';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['retained']);
+ h.c.activeCategoryGroup=null;h.elements.get('q').value='Helmet';h.c.items=[helmet('unknown',10,{stock_state:'unknown',reference_stock:'unknown'})];assert.equal(h.c.visibleItems().length,1);
+}
+
+for(const test of [testGlobalCategoryCompleteness,testGlobalCategoryExactQuoteFallback,testVerifiedStockWithoutSizeMetadata,testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers,testBrandDiversityAndLowPrices,testLowPriceSafetyAndComparability]){test();console.log('PASS '+test.name)}

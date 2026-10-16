@@ -43,6 +43,18 @@ class PagesTests(unittest.TestCase):
         (self.root/'config').mkdir()
         (self.root/'config/notifications.json').write_text('{"app_token":"AT_private_do_not_publish"}',encoding='utf-8')
 
+    def test_private_collection_errors_are_projected_before_pages_and_cache(self):
+        marker = 'SYNTHETIC_PRIVATE_ERROR_BODY'
+        source = self.root/'data/collection_status/a.json'
+        status = json.loads(source.read_text())
+        status['errors'] = [{'url': make_offer().url, 'error': marker, 'response_body': marker}]
+        atomic_json(source, status)
+        build_public_site(self.root, make_fx())
+        for path in (self.root/'_site').rglob('*.json'):
+            self.assertNotIn(marker, path.read_text())
+        self.assertNotIn(marker, (self.root/'data/publication_cache/site-data.json').read_text())
+        self.assertIn(marker, source.read_text(), 'Local diagnostics stay local and unchanged')
+
     def test_all_public_assets_are_pinned_to_release_without_editing_source_index(self):
         commit = "a" * 40
         index = self.root / "web/index.html"

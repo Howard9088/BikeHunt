@@ -10,7 +10,7 @@ from decimal import Decimal
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -18,6 +18,8 @@ from playwright.sync_api import expect, sync_playwright
 from app.catalog.models import FxSnapshot, Money, Offer, ProductIdentity
 from app.catalog.service import ComparisonCatalog
 from app.localization import CATEGORIES
+from app.public_visibility import public_category_groups
+from exit_dialog_test_support import (assert_exit_closed, assert_exit_focus_trap, open_final_exit, cancel_exit_dialog)
 
 OUT = ROOT / 'artifacts' / 'featured-deals'
 
@@ -219,9 +221,224 @@ def exercise_oakley_flow(browser,base,mode,viewport,checks,errors):
         page.locator('#close').click();assert_cards([card for card in available if card['category_group']=='helmets'])
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
         assert not unexpected,unexpected
+        # Brand -> homepage -> global category must not retain the homepage cap.
+        page.locator('[data-tab=products]').click()
+        assert page.evaluate('activeSource === null && activeCategoryGroup === null && featuredBrowse()')
+        expect(page.locator('#q')).to_have_value('')
+        expect(page.locator('#grid .card')).to_have_count(2)
+        page.locator('[data-category-group=helmets]').click()
+        assert page.evaluate('activeSource === null && !featuredBrowse()')
+        assert_cards([card for card in available if card['category_group'] == 'helmets'])
+        expect(page.locator('#count')).to_have_text('19 件商品')
+        expect(page.locator('#grid .low-price-label')).to_have_count(0)
+        expect(page.locator('#genderFilter')).to_be_hidden()
+        page.locator('#q').fill('VELO MACH MIPS')
+        expected_search = [card for card in available if card['category_group'] == 'helmets'
+                           and all(term in ' '.join(str(card.get(key) or '') for key in ('brand', 'name', 'name_zh', 'color')).lower()
+                                   for term in ('velo', 'mach', 'mips'))]
+        assert_cards(expected_search)
+        expect(page.locator(f'#grid .card[data-id="{chosen["product_id"]}"]')).to_have_count(1)
+        page.locator('#clear').click()
+        assert_cards([card for card in available if card['category_group'] == 'helmets'])
+        page.locator('[data-category-group=helmets]').click()
+        expect(page.locator('#grid .card')).to_have_count(2)
+        assert page.evaluate('activeSource === null && activeCategoryGroup === null && featuredBrowse()')
+        checks.append(mode + ': Oakley brand reset keeps two homepage selections; global helmets exposes all 19 reliable products; category search intersects without a cap; toggling off restores homepage selection')
         checks.append(mode+': real Oakley 23 available / 19 helmets / 4 clothing; exact selected identity, only genuine Mix Jersey discount, sold-out excluded, no China direct route, unknown manual plan, cancel/Escape, price mutation guard and mocked same-tab Back/reload')
     finally:
         context.close()
+
+
+# Frozen replay of the committed manual capture, not a fresh stock verification.
+GOBIK_FACTORY_URL = 'https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-gobik-factory-team-26'
+GOBIK_FACTORY_IMAGE = 'https://gobik.com/cdn/shop/files/short-sleeve-jersey-cx-pro-4-0-men-gobik-factory-team-26-01.jpg?v=1767891796&width=1500'
+
+
+def gobik_fixture():
+    """Use real selected-size observations unchanged; only FX/image bytes are synthetic."""
+    path = ROOT / 'data/offers/gobik.json'
+    captured_bytes = path.read_bytes()
+    payload = json.loads(captured_bytes)
+    offers = [Offer.model_validate(row) for row in payload['offers']]
+    assert len(offers) == 19
+    assert len({row.offer_id for row in offers}) == 19
+    assert len({row.url for row in offers}) == 19
+    assert all(row.source_code == 'gobik' and row.identity.brand == 'Gobik'
+               and row.sales_region == '西班牙站 EUR 报价' and row.price.currency == 'EUR'
+               and row.fetched_at is not None and row.fetched_at.tzinfo is not None
+               for row in offers)
+    factory = next(row for row in offers if row.url == GOBIK_FACTORY_URL)
+    assert factory.identity.size == 'XS'
+    assert factory.price.amount == Decimal('85')
+    assert factory.original_price is None
+    assert factory.image == GOBIK_FACTORY_IMAGE
+    assert not urlparse(factory.url).query, 'Do not invent an official variant URL'
+    replay_time = max(row.fetched_at for row in offers)
+    # Synthetic conversion only, explicitly labelled and never written to production.
+    fx = FxSnapshot(snapshot_id='synthetic-gobik-ui-replay', rate_date=replay_time.date().isoformat(),
+                    fetched_at=replay_time, rates={'EUR': Decimal('8'), 'CNY': Decimal('1')},
+                    source='Synthetic UI test fixture', note='Synthetic EUR rate for UI replay only')
+    catalog = ComparisonCatalog(offers, fx, replay_time, public_only=True)
+    cards = catalog.search()
+    assert len(cards) == 19 and len({card.product_id for card in cards}) == 19
+    assert {card.reference_offer_id for card in cards} == {row.offer_id for row in offers}
+    assert all(card.variant_count == 1 for card in cards), 'One actually observed size per product'
+    details = {card.product_id: catalog.compare(card.product_id, card.reference_variant_id).model_dump(mode='json')
+               for card in cards}
+    directory = json.loads((ROOT / 'data/directories.json').read_text(encoding='utf-8'))
+    entries = [row for row in directory['brands'] if row['code'] == 'gobik']
+    assert len(entries) == 1 and entries[0]['source_codes'] == ['gobik']
+    entry = dict(entries[0], product_count=19, offer_count=19, rule_count=0)
+    factory_card = next(card for card in cards if card.reference_offer_id == factory.offer_id)
+    return {'catalog': {'items': [card.model_dump(mode='json') for card in cards],
+                        'fx': fx.model_dump(mode='json'), 'categories': CATEGORIES,
+                        'category_groups': public_category_groups(), 'source_count': 1},
+            'details': details, 'directories': {'brands': [entry], 'teams': []},
+            'factory': factory_card.model_dump(mode='json'), 'replay_time': replay_time,
+            'images': {row.image for row in offers if row.image}, 'requests': [],
+            'captured_bytes': captured_bytes}
+
+
+def exercise_gobik_catalog(browser, base, checks, errors, external):
+    """Exercise the new brand independently of every original featured-deals fixture."""
+    for mode, viewport in [('desktop', {'width': 1440, 'height': 900}),
+                           ('mobile', {'width': 390, 'height': 844}),
+                           ('small_mobile', {'width': 320, 'height': 740})]:
+        state = gobik_fixture()
+        selected = state['factory']
+        product_id, variant_id, offer_id = (selected[key] for key in
+                                           ['product_id', 'reference_variant_id', 'reference_offer_id'])
+        context = browser.new_context(viewport=viewport, is_mobile=mode != 'desktop',
+                                      has_touch=mode != 'desktop', service_workers='block')
+        context.set_default_timeout(7000)
+        context.add_init_script('window.BIKEHUNT_PAGES=true;')
+        mocked_images = []
+
+        def intercept(route):
+            parsed = urlparse(route.request.url)
+            if parsed.netloc != urlparse(base).netloc:
+                # Preserve the exact observed photo URL. Synthetic image bytes make
+                # this a hermetic identity/layout test, not a merchant image fetch.
+                if route.request.method == 'GET' and route.request.resource_type == 'image' and route.request.url in state['images']:
+                    mocked_images.append(route.request.url)
+                    return route.fulfill(content_type='image/svg+xml', body='<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><text x="10" y="30">Synthetic UI image fixture</text></svg>')
+                external.append(route.request.url)
+                return route.abort()
+            if not parsed.path.startswith('/api/'):
+                return route.continue_()
+            if parsed.path == '/api/catalog':
+                value = state['catalog']
+            elif parsed.path.startswith('/api/catalog/'):
+                requested_id = parsed.path.rsplit('/', 1)[-1]
+                requested_variant = parse_qs(parsed.query).get('variant_id', [None])[0]
+                value = state['details'].get(requested_id)
+                if value is None or requested_variant and requested_variant != value['variant_id']:
+                    return route.fulfill(status=404, content_type='application/json', body='{}')
+                state['requests'].append((requested_id, requested_variant))
+            elif parsed.path == '/api/directories':
+                value = state['directories']
+            elif parsed.path.startswith('/api/rules/'):
+                value = {'version': 1, 'documents': []}
+            elif parsed.path.startswith('/api/fit/'):
+                value = {'state': 'no_chart', 'note_zh': '界面回放测试，无合成尺码建议',
+                         'candidate_sizes': [], 'required_measurements': [], 'chart_rows': [],
+                         'source_url': None, 'checked_at': None}
+            elif parsed.path == '/api/updates':
+                value = {'items': [], 'cursor': 0, 'fx': state['catalog']['fx']}
+            elif parsed.path == '/api/community':
+                value = {'schema_version': 1, 'configured': False, 'available': False}
+            else:
+                value = {}
+            return route.fulfill(content_type='application/json', body=json.dumps(value))
+
+        context.route('**/*', intercept)
+        page = context.new_page()
+        page.clock.set_fixed_time(state['replay_time'])
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        try:
+            page.goto(base, wait_until='networkidle')
+            page.locator('[data-tab="brands"]').click()
+            brand = page.locator('.directory-card[data-source="gobik"]')
+            expect(brand).to_have_count(1)
+            expect(brand).to_contain_text('19 款现货')
+            brand.click()
+            expect(page.locator('#browseLabel')).to_have_text(state['directories']['brands'][0]['name_zh'])
+            expect(page.locator('.card')).to_have_count(19)
+            rendered = page.locator('.card').evaluate_all('cards => cards.map(card => card.dataset.id)')
+            assert len(set(rendered)) == 19
+            assert set(rendered) == {card['product_id'] for card in state['catalog']['items']}
+            # Every card retains its own captured image, amount and single observed size.
+            for item in state['catalog']['items']:
+                card = page.locator(f'.card[data-id="{item["product_id"]}"]')
+                expect(card.locator('.product-visual img')).to_have_attribute('src', item['image'])
+                if item['reference_original_price'] is None:
+                    expect(card.locator('.discount,.original-price')).to_have_count(0)
+            factory_card = page.locator(f'.card[data-id="{product_id}"]')
+            expect(factory_card.locator('.foreign-price')).to_contain_text('85.00')
+            expect(factory_card.locator('.foreign-price')).to_contain_text('€')
+            expect(factory_card).to_contain_text('XS')
+            expect(factory_card).not_to_contain_text('商家原价')
+            expect(factory_card.locator('.discount')).to_have_count(0)
+            factory_card.locator('.compare-button').click()
+            expect(page.locator('#sheetImg')).to_have_attribute('src', GOBIK_FACTORY_IMAGE)
+            choice = page.locator(f'[data-variant="{variant_id}"]')
+            expect(choice).to_have_text('XS')
+            expect(page.locator('[data-variant]')).to_have_count(1)
+            choice.click()
+            expect(choice).to_have_attribute('aria-pressed', 'true')
+            assert state['requests'][-1] == (product_id, variant_id)
+            detail = state['details'][product_id]
+            actual = page.evaluate('currentProduct')
+            assert actual['product_id'] == product_id and actual['variant_id'] == variant_id
+            assert actual['identity'] == detail['identity']
+            assert len(actual['offers']) == 1
+            assert actual['offers'][0]['offer'] == detail['offers'][0]['offer']
+            expect(page.locator('.offers')).to_contain_text('西班牙站 EUR 报价')
+            expect(page.locator('.offers .price')).to_contain_text('85.00')
+            assert_exit_closed(page)
+            page.locator(f'[data-offer="{offer_id}"]').click()
+            routes = page.locator('#routeComparison')
+            expect(routes).to_be_visible()
+            expect(routes).to_contain_text('尺码 XS')
+            expect(routes).to_contain_text('西班牙站 EUR 报价')
+            expect(routes.locator('[data-route]')).to_have_count(3)
+            assert page.evaluate('guideContext.quote.offer.url') == GOBIK_FACTORY_URL
+            assert page.evaluate('guideContext.quote.offer.fetched_at') == detail['offers'][0]['offer']['fetched_at']
+            expect(page.locator('#routeContinue')).to_be_disabled()
+            page.locator('[data-route-select="direct"]').click()
+            assert page.evaluate('routeOptions(guideContext.quote).every(route => route.total === null)')
+            # Repeat with button cancel and Escape; neither may navigate or lose identity.
+            for escape in [False, True]:
+                page.locator('#routeContinue').click()
+                expect(page.locator('#registrationInterstitial')).to_contain_text('西班牙站 EUR 报价')
+                expect(page.locator('#registrationInterstitial')).to_contain_text('XS')
+                assert_exit_closed(page)
+                saved = page.evaluate('history.state.bikehuntPurchase')
+                assert (saved['productId'], saved['variantId'], saved['offerId'],
+                        saved['sourceCode'], saved['url']) == (product_id, variant_id, offer_id, 'gobik', GOBIK_FACTORY_URL)
+                open_final_exit(page, GOBIK_FACTORY_URL, official=True, image=GOBIK_FACTORY_IMAGE)
+                assert page.evaluate('externalExitState.url.href') == GOBIK_FACTORY_URL
+                assert page.evaluate('externalExitState.options.url') == GOBIK_FACTORY_URL
+                assert_exit_focus_trap(page)
+                cancel_exit_dialog(page, escape=escape)
+                expect(routes).to_be_visible()
+                expect(page.locator('#routeContinue')).to_be_focused()
+                expect(page.locator('[data-route-select="direct"]')).to_have_attribute('aria-pressed', 'true')
+                expect(page).to_have_url(base)
+                assert len(context.pages) == 1
+                assert not external, 'Gobik replay must never contact or navigate to a merchant'
+            page.locator('#routeBack').click()
+            expect(page.locator(f'[data-variant="{variant_id}"]')).to_have_attribute('aria-pressed', 'true')
+            expect(page.locator('#sheetImg')).to_have_attribute('src', GOBIK_FACTORY_IMAGE)
+            assert page.evaluate('currentProduct.offers[0].offer.url') == GOBIK_FACTORY_URL
+            assert page.evaluate('currentProduct.offers[0].offer.fetched_at') == detail['offers'][0]['offer']['fetched_at']
+            assert GOBIK_FACTORY_IMAGE in mocked_images
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            page.screenshot(path=str(OUT / f'gobik_identity_synthetic_image_{mode}.png'))
+            assert (ROOT / 'data/offers/gobik.json').read_bytes() == state['captured_bytes']
+            checks.append(mode + ': Gobik frozen capture replay, 19 distinct single-size cards; Factory Team 26 XS EUR 85 Spain, observed photo URL, no invented discount; exact offer/variant/canonical URL; final cancel/Escape restores focus and selection; no external network; synthetic FX/image bytes, original timestamps unchanged')
+        finally:
+            context.close()
 
 
 def main():
@@ -326,6 +543,7 @@ def main():
                 context.close()
             for mode, viewport in [('desktop', {'width': 1440, 'height': 900}), ('mobile', {'width': 390, 'height': 844}), ('small_mobile', {'width': 320, 'height': 740})]:
                 exercise_oakley_flow(browser, base, mode, viewport, checks, errors)
+            exercise_gobik_catalog(browser, base, checks, errors, external)
             browser.close()
     finally:
         server.shutdown();server.server_close();thread.join(timeout=5)

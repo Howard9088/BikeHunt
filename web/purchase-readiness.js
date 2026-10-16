@@ -16,7 +16,7 @@ const READINESS_HOSTS=Object.freeze({
 
   kask:['www.kask.com'],teamcycles:['www.teamcycles.com'],unox:['internshop.no'],canyon:['www.canyon.com'],specialized:['www.specialized.com'],rapha:['support.rapha.cc'],rapha_kr:['support.rapha.cc'],
   redbull:['customerservice.redbullshop.com'],picnic:['teampicnicpostnl.store'],pns:['pasnormalstudios.com'],assos:['www.assos.com'],
-  movistar:['gobik.com'],bahrain:['alecycling.com'],
+  gobik:['gobik.com'],movistar:['gobik.com'],bahrain:['alecycling.com'],
   uae:['www.pissei.com'],fizik:['www.fizik.com','www.iubenda.com'],santini:['www.santinicycling.com'],lidl_trek:['www.santinicycling.com'],
   amazon_us:['www.amazonforum.com','www.amazon.com'],amazon_uk:['www.aboutamazon.co.uk','sellercentral-europe.amazon.com','digprjsurvey.amazon.co.uk'],
   amazon_de:['www.aboutamazon.de'],amazon_jp:['press.aboutamazon.com','www.unionpayintl.com'],
@@ -25,6 +25,7 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  gobik:["market", "西班牙站 EUR 报价", ["gobik.com"]],
   oakley:["market", "美国站 USD 报价", ["www.oakley.com"]],
   soudal:["market", "BE 市场 · EUR 报价；未验证其他市场库存", ["thewolfpack.shop"]],
   ineos:["market", "US 市场 · USD 报价；未验证其他市场库存", ["store.netcompanyineos.com"]],
