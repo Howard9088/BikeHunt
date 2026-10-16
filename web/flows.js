@@ -71,7 +71,7 @@ function domesticChannelInfo(entry){
 }
 function channelInfoMarkup(entry,book){
   return '<div class="source-overview">'+(entry.logo_images?.length?directoryLogo(entry):'')+'<strong>'+e(entry.name_zh)+'</strong></div>'+
-    (entry.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+(domesticChannelInfo(entry)&&typeof domesticPaymentMarkup==='function'?domesticPaymentMarkup():ruleMarkup(book))+
+    (entry.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+(domesticChannelInfo(entry)&&typeof domesticPaymentMarkup==='function'?domesticPaymentMarkup():book.documents.length?ruleMarkup(book):'<div data-directory-empty-rules>'+ruleMarkup(book)+'</div>')+'<section data-directory-readiness aria-label="渠道配送与退货说明">'+(typeof readinessDirectoryMarkup==='function'?readinessDirectoryMarkup(entry):'')+'</section>'+
     (entry.official_url?'<details class="official-entrances"><summary>官网与官方商城入口</summary><p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.official_url))+'">品牌或车队官网 ↗</a></p>'+
       (entry.shop_url?'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.shop_url))+'">官方公布的商城入口 ↗</a></p>':'')+
       '<p>购买前请核对商品规格、配送地区和最终结账金额。</p></details>':'');
@@ -88,7 +88,7 @@ function syncChannelInfo(){
     const code=entry.code;panel.dataset.loaded='loading';body.innerHTML='<p>正在加载购买说明…</p>';
     try{const book=await getJson('/api/rules/'+encodeURIComponent(code));
       if(activeSource!==code||panel.dataset.source!==code)return;
-      body.innerHTML=channelInfoMarkup(entry,book);panel.dataset.loaded='yes';bindDirectoryLogos(body);
+      body.innerHTML=channelInfoMarkup(entry,book);panel.dataset.loaded='yes';bindDirectoryLogos(body);if(typeof refreshDirectoryReadiness==='function')refreshDirectoryReadiness();
     }catch{if(activeSource!==code)return;delete panel.dataset.loaded;body.innerHTML='<p>购买说明暂时无法加载，请稍后重新展开。</p>'}
   };
 }
@@ -676,4 +676,5 @@ window.addEventListener('pagehide',()=>clearInterval(inventoryTimer),{once:true}
 
 // Returning from a same-tab merchant visit must restart timers cleared on pagehide.
 window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload()});
+
 

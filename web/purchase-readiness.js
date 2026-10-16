@@ -47,6 +47,37 @@ function validateReadinessData(data){
   }
   return data;
 }
+// Directory cards have no exact offer market. Market policies remain labelled references.
+const readinessDirectoryLinks=new WeakMap();
+function readinessDirectoryRows(entry){
+  if(!readinessData||!entry)return [];
+  const codes=Array.isArray(entry.source_codes)&&entry.source_codes.length?entry.source_codes:[entry.code];
+  let shop;try{shop=new URL(entry.shop_url);if(shop.protocol!=='https:'||shop.username||shop.password||shop.port)return []}catch{return []}
+  return readinessData.entries.filter(row=>codes.includes(row.sourceCode)&&row.merchantHosts.includes(shop.hostname));
+}
+function readinessDirectoryMarkup(entry){
+  const rows=readinessDirectoryRows(entry),esc=readinessEscape;
+  if(!rows.length)return '';
+  return '<p class="readiness-meta">已核官网说明，配送及退货条件请展开查看</p>'+rows.map(row=>'<details class="readiness-evidence"><summary>'+esc(row.label)+' · 配送、退货与适用范围</summary><p class="readiness-scope">'+esc(row.scope==='market'?'指定市场参考：'+row.salesRegion+'；目录未提供精确报价市场，本说明不确认当前商品可购买。':'商家范围的政策资料；具体商品与地址仍须结账确认。')+'</p><p>'+esc(row.directChina.note)+'</p><p>转运：'+esc(row.forwarding.note)+'</p>'+(row.sourceLimitations?'<p>'+esc(row.sourceLimitations)+'</p>':'')+'<p class="readiness-meta">核对：'+esc(row.checkedAt||readinessData.checkedAt)+' · '+esc(row.policyScope)+'</p><ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.sourceCode,'官方来源 '+(i+1))+'</li>').join('')+'</ul></details>').join('');
+}
+function refreshDirectoryReadiness(){
+  const panel=document.getElementById('channelInfo');
+  if(!panel||typeof activeSource==='undefined'||typeof directoryData==='undefined'||panel.dataset.source!==activeSource||panel.dataset.loaded!=='yes')return;
+  const entry=[...directoryData.brands,...directoryData.teams].find(row=>row.code===activeSource);
+  const slot=panel.querySelector('[data-directory-readiness]');if(!entry||!slot)return;
+  slot.innerHTML=readinessDirectoryMarkup(entry);
+  const empty=panel.querySelector('[data-directory-empty-rules]');if(empty)empty.hidden=readinessDirectoryRows(entry).length>0;
+  slot.querySelectorAll('a[data-readiness-link]').forEach(link=>readinessDirectoryLinks.set(link,{panel,slot,source:entry.code,code:link.dataset.readinessLink,url:link.getAttribute('href')}));
+}
+function allowedDirectoryReadinessLink(link){
+  const saved=readinessDirectoryLinks.get(link);
+  if(!saved||typeof activeSource==='undefined'||typeof activeTab==='undefined'||typeof directoryData==='undefined')return null;
+  const panel=document.getElementById('channelInfo');
+  if(panel!==saved.panel||!panel.open||panel.hidden||activeTab!=='products'||panel.dataset.loaded!=='yes'||panel.dataset.source!==activeSource||activeSource!==saved.source||!panel.contains(saved.slot)||!saved.slot.contains(link))return null;
+  const entry=[...directoryData.brands,...directoryData.teams].find(row=>row.code===activeSource);
+  const code=link.dataset.readinessLink,url=link.getAttribute('href');
+  return code===saved.code&&url===saved.url&&readinessUrl(url,code)&&readinessDirectoryRows(entry).some(row=>row.sourceCode===code&&row.sources.includes(url))?url:null;
+}
 function readinessPolicy(offer){
   if(!readinessData)return null;
   return readinessData.entries.find(row=>{
@@ -87,13 +118,16 @@ function forwardingExplainerContent(){
 }
 function forwardingExplainerMarkup(){return '<details class="forwarding-explainer"><summary>看懂转运和额外费用（一般知识）</summary><div data-forwarding-content>'+forwardingExplainerContent()+'</div></details>'}
 function refreshReadinessMarkup(){
+  refreshDirectoryReadiness();
   document.querySelectorAll('[data-feasibility-context]').forEach(node=>{const offer=readinessContexts.get(node.dataset.feasibilityContext);if(offer)node.innerHTML=paymentFeasibilityContent(offer)});
   if(typeof refreshPurchaseRoutePolicy==='function')refreshPurchaseRoutePolicy();
   document.querySelectorAll('[data-readiness-context]').forEach(node=>{const offer=readinessContexts.get(node.dataset.readinessContext);if(offer)node.innerHTML=readinessContent(offer)});
   document.querySelectorAll('[data-forwarding-content]').forEach(node=>{node.innerHTML=forwardingExplainerContent()});
 }
 function allowedReadinessLink(link){
-  if(!readinessData||!link?.isConnected||!document.getElementById('sheet')?.classList.contains('open')||!document.getElementById('sheetBody')?.contains(link))return null;
+  if(!readinessData||!link?.isConnected)return null;
+  const directoryUrl=allowedDirectoryReadinessLink(link);if(directoryUrl)return directoryUrl;
+  if(!document.getElementById('sheet')?.classList.contains('open')||!document.getElementById('sheetBody')?.contains(link))return null;
   const code=link.dataset.readinessLink,url=link.getAttribute('href');
   const links=readinessData.entries.filter(row=>row.sourceCode===code).flatMap(row=>row.sources).concat(readinessData.forwarders.filter(row=>row.id===code).flatMap(row=>[row.calculator,...row.sources]));
   return readinessUrl(url,code)&&links.includes(url)?url:null;

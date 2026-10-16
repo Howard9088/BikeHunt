@@ -61,3 +61,36 @@ const badDate=structuredClone(data);badDate.entries.find(e=>e.sourceCode==='coln
 const missingDate=structuredClone(data);delete missingDate.entries.find(e=>e.sourceCode==='colnago').checkedAt;assert.doesNotThrow(()=>context.validateReadinessData(missingDate));
 vm.runInContext('readinessData=null;readinessState="error"',context);assert.ok(context.readinessContent(offer('visma')).includes('data-china-card-status="unknown"'));assert.ok(!context.readinessContent(offer('visma')).includes('47.95'));
 console.log('Readiness passed: scoped delivery and forwarding, honest missing fees, same-tab guarded references, and no legacy card-only payment conclusions.');
+// Directory summaries never fabricate an exact offer market or trust injected links.
+vm.runInContext('readinessData=validateReadinessData(data);readinessState="ready"',context);
+const directoryEntry={code:'colnago',source_codes:['colnago'],shop_url:'https://www.colnago.com/en-us/collections/cycling-apparel-for-men'};
+const directoryHtml=context.readinessDirectoryMarkup(directoryEntry);
+for(const text of ['指定市场参考','US 市场','目录未提供精确报价市场','14 天','15 天','2026-10-16','已核官网说明'])assert.ok(directoryHtml.includes(text));
+for(const shop_url of ['', 'https://evil.example/', 'http://www.colnago.com/', 'https://user@www.colnago.com/'])assert.equal(context.readinessDirectoryMarkup({...directoryEntry,shop_url}),'');
+assert.equal(context.readinessDirectoryMarkup({...directoryEntry,source_codes:['other']}),'');
+assert.equal(context.readinessDirectoryMarkup({code:'jayco',shop_url:'https://shop.greenedgecycling.com/'}),'');
+assert.ok(context.readinessDirectoryMarkup({code:'jayco',shop_url:'https://maap.cc/'}).includes('商家范围'));
+assert.equal(context.readinessDirectoryRows({code:'both',source_codes:['maap','jayco'],shop_url:'https://maap.cc/'}).length,2);
+const directoryUrl='https://www.colnago.com/countries';
+let directoryHref=directoryUrl;
+const directoryLink={isConnected:true,dataset:{readinessLink:'colnago'},getAttribute:()=>directoryHref};
+const emptyRules={hidden:false};let directoryLinks=[directoryLink];
+const slot={innerHTML:'',querySelectorAll:()=>directoryLinks,contains:link=>directoryLinks.includes(link)};
+const panel={open:true,hidden:false,dataset:{source:'colnago',loaded:'yes'},querySelector:selector=>selector==='[data-directory-readiness]'?slot:emptyRules,contains:node=>node===slot};
+context.activeSource='colnago';context.activeTab='products';context.directoryData={brands:[directoryEntry],teams:[]};
+const previousGet=context.document.getElementById;
+context.document.getElementById=id=>id==='channelInfo'?panel:id==='sheet'?{classList:{contains:()=>false}}:id==='sheetBody'?{contains:()=>false}:previousGet(id);
+assert.equal(context.allowedReadinessLink(directoryLink),null);
+context.refreshDirectoryReadiness();
+assert.ok(slot.innerHTML.includes('14 天'));assert.equal(emptyRules.hidden,true);
+assert.equal(context.allowedReadinessLink(directoryLink),directoryUrl);
+const injected={...directoryLink};assert.equal(context.allowedReadinessLink(injected),null);
+for(const mutate of [()=>panel.open=false,()=>panel.hidden=true,()=>context.activeSource='maap',()=>context.activeTab='brands',()=>panel.dataset.source='maap',()=>panel.dataset.loaded='loading',()=>directoryEntry.shop_url='https://evil.example/',()=>directoryHref=directoryUrl+'?changed',()=>directoryLink.dataset.readinessLink='maap']){
+ mutate();assert.equal(context.allowedReadinessLink(directoryLink),null);
+ panel.open=true;panel.hidden=false;context.activeSource='colnago';context.activeTab='products';panel.dataset.source='colnago';panel.dataset.loaded='yes';directoryEntry.shop_url='https://www.colnago.com/';directoryHref=directoryUrl;directoryLink.dataset.readinessLink='colnago';
+}
+context.showExternalExit=opts=>{capturedExit=opts};
+context.guardReadinessExit({target:{closest:()=>directoryLink},preventDefault(){},type:'click',button:0});assert.ok(capturedExit.sourceNote.includes('2026-10-16'));assert.equal(capturedExit.validate(),true);panel.open=false;assert.equal(capturedExit.validate(),false);panel.open=true;
+vm.runInContext('readinessData=null;readinessState="loading"',context);context.refreshDirectoryReadiness();assert.equal(slot.innerHTML,'');assert.equal(emptyRules.hidden,false);
+vm.runInContext('readinessData=validateReadinessData(data);readinessState="ready"',context);context.refreshReadinessMarkup();assert.ok(slot.innerHTML.includes('15 天'));assert.equal(emptyRules.hidden,true);
+console.log('Directory readiness passed: scoped references, async refresh, dated evidence, exact merchant matching, and registered current-panel links only.');

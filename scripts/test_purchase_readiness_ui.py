@@ -54,7 +54,7 @@ def main():
                     elif url.path.startswith('/api/catalog/'):
                         value = state['detail']
                     elif url.path == '/api/directories':
-                        value = {'brands': [], 'teams': []}
+                        value = {'brands': [{'code': 'colnago', 'name': 'Colnago', 'name_zh': 'Colnago 骑行服饰', 'source_codes': ['colnago'], 'shop_url': 'https://www.colnago.com/en-us/collections/cycling-apparel-for-men', 'official_url': 'https://www.colnago.com/'}], 'teams': []}
                     elif url.path == '/api/updates':
                         value = {'items': [], 'cursor': 0, 'fx': state['catalog']['fx']}
                     elif url.path.startswith('/api/rules/'):
@@ -74,6 +74,42 @@ def main():
                 assert_exit_closed(page)
                 expect(page.locator('#amazonChannels,.amazon-market,[data-amazon-search-link]')).to_have_count(0)
                 assert external == []
+                # Directory-only policy references must stay separate from offer-market confirmation.
+                page.wait_for_function("readinessState === 'ready'")
+                page.evaluate("window.savedDirectoryPolicies=readinessData;readinessData=null;readinessState='loading';openSource('colnago')")
+                channel = page.locator('#channelInfo')
+                channel.locator('>summary').click()
+                page.wait_for_function("document.getElementById('channelInfo').dataset.loaded === 'yes'")
+                expect(channel).to_contain_text('购买条件暂未确认')
+                page.evaluate("readinessData=window.savedDirectoryPolicies;readinessState='ready';refreshReadinessMarkup()")
+                expect(channel.locator('[data-directory-empty-rules]')).to_be_hidden()
+                expect(channel).to_contain_text('已核官网说明，配送及退货条件请展开查看')
+                policy = channel.locator('[data-directory-readiness] details').first
+                policy.locator('>summary').click()
+                for text in ['指定市场参考', '目录未提供精确报价市场', '14 天', '15 天', '2026-10-16']:
+                    expect(policy).to_contain_text(text)
+                source_link = policy.locator('a[data-readiness-link]').first
+                source_url = source_link.get_attribute('href')
+                source_link.click()
+                assert_exit_dialog(page, source_url, official=False)
+                cancel_exit_dialog(page)
+                expect(source_link).to_be_focused()
+                assert external == []
+                # An identical injected DOM node is not a registered source link.
+                source_link.evaluate("el => {const clone=el.cloneNode(true);clone.id='injectedDirectorySource';el.after(clone)}")
+                page.locator('#injectedDirectorySource').click()
+                assert_exit_closed(page)
+                assert page.locator('#injectedDirectorySource').evaluate('el => allowedReadinessLink(el)') is None
+                page.locator('#injectedDirectorySource').evaluate('el => el.remove()')
+                assert source_link.evaluate('el => allowedReadinessLink(el)') == source_url
+                channel.locator('>summary').click()
+                assert source_link.evaluate('el => allowedReadinessLink(el)') is None
+                channel.locator('>summary').click()
+                page.evaluate("activeSource='maap'")
+                assert source_link.evaluate('el => allowedReadinessLink(el)') is None
+                page.evaluate("activeSource=null;navigate('products')")
+                assert external == []
+                checks.append({'mode': mode, 'directory_policy_scope_and_guard': 'passed'})
                 # Isolated retained help component: no public Amazon entry is restored.
                 page.evaluate("openPanel('转运费用说明', forwardingExplainerMarkup())")
                 explain = page.locator('.forwarding-explainer')
@@ -191,3 +227,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
