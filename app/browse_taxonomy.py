@@ -79,6 +79,8 @@ cycling-shoe label alone does not establish a cleat-compatible product.
         return BrowseClassification("accessories", "other")
     if re.search(r"\b(?:shoe\s*covers?|overshoes?)\b", text):
         return BrowseClassification("accessories", "clothing")
+    if re.search(r"\b(?:hoodies?|sweatshirts?)\b", text):
+        return BrowseClassification("accessories", "clothing")
     category = category_of(name)
     if category in {"jerseys", "bibs", "jackets", "suits"}:
         return BrowseClassification(category, "clothing")

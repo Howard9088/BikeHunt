@@ -441,9 +441,9 @@ def main():
                 check_hidden_bicycle_paths(page, references)
                 check_gender_scope(page)
                 page.locator('[data-category-group=other]').click()
-                expect(page.locator('#grid .card')).to_have_count(1)
-                expect(page.locator('#grid')).to_contain_text('Stamp Hoodie')
-                # Full-price stock now appears in featured; browse research in its merchant scope.
+                expect(page.locator('#grid .card')).to_have_count(0)
+                expect(page.locator('#grid')).not_to_contain_text('Stamp Hoodie')
+                # Hoodies belong to clothing; browse research in its merchant scope.
                 page.locator('[data-tab=brands]').click()
                 page.locator('[data-source=canyon]').click()
                 page.locator('#sourceProducts').click()
