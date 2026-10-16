@@ -244,7 +244,7 @@ function showPublishedMetadata(data){
   window.BIKEHUNT_VERIFICATION={version:publicLastManifest.version,generated_at:publicLastManifest.generated_at,commit:publicLastManifest.commit};
   for(const key of ['run_id','trigger'])if(publicLastStatus?.[key]!==undefined)window.BIKEHUNT_VERIFICATION[key]=publicLastStatus[key];
   const marker=document.getElementById?.('publicationInfo');
-  if(marker){marker.textContent='数据 '+(data.publication?.commit?.slice(0,7)||'本地');marker.title='发布快照 '+data.generated_at+' · 状态发布 '+publicLastManifest.generated_at+' · '+(data.publication?.commit||'');}
+  if(marker){marker.textContent='数据更新时间';marker.title='商品资料更新 '+data.generated_at+' · 页面更新 '+publicLastManifest.generated_at;}
 }
 async function loadPublished(force=false){
   // One in-flight check for initial, timer, focus and manual callers; cached API

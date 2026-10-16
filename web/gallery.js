@@ -13,7 +13,7 @@ function money(value,currency='CNY'){
   return new Intl.NumberFormat('zh-CN',{style:'currency',currency,maximumFractionDigits:currency==='JPY'?0:2}).format(Number(value));
 }
 function cny(value){return value==null?'人民币待换算':money(value)}
-function timeText(value){if(!value)return '历史缓存 · 采集时间未记录';const d=new Date(value);return Number.isNaN(d.getTime())?'采集时间待确认':new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Shanghai'}).format(d)}
+function timeText(value){if(!value)return '更新时间未记录';const d=new Date(value);return Number.isNaN(d.getTime())?'更新时间待确认':new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Shanghai'}).format(d)}
 function updateFxLabel(){const label=document.getElementById('fxDate');label.textContent='汇率 '+(fx.rate_date||'待获取')+(fx.stale?' · 过期缓存':'');label.title=(fx.source||'ECB')+' 每日参考汇率；最近成功核对 '+timeText(fx.fetched_at)+'；周末和节假日沿用最近公布日期。';label.classList.toggle('stale',!!fx.stale)}
 async function getJson(url){const response=await fetch(url);if(!response.ok)throw new Error('请求失败（'+response.status+'）');const data=await response.json();if(url==='/api/catalog')return publicCatalogData(data);if(url.startsWith('/api/catalog/')&&!publicProductVisible(data))throw Error('商品暂未公开，请返回目录');return data}
 function imageMarkup(url,name,index){
@@ -108,7 +108,7 @@ function render(preserveId=null){
   const list=visibleItems(),lowPrices=new Map();
   const verifiedCount=list.filter(p=>featuredDeal(p)).length,lowCount=list.length-verifiedCount;
   document.getElementById('count').textContent=featuredBrowse()&&list.length?list.length+' 件渠道精选 · '+verifiedCount+' 件有折扣':list.length+' 件商品';
-  document.getElementById('sourceCount').textContent=sourceCount+' 个已采集报价源';
+  document.getElementById('sourceCount').textContent=sourceCount+' 个购买渠道';
   if(!list.length&&typeof renderEmptyReferences==='function'&&renderEmptyReferences()){updatePosition(0,0);return}
   if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款商品价较低的现货，折扣另行标注；暂未核实的商品可在渠道目录查看。<br>可搜索商品，或前往品牌官网、世巡车队浏览完整目录。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
   gallery.innerHTML=list.map((p,i)=>{
@@ -129,7 +129,7 @@ function render(preserveId=null){
       '<div class="foreign-price">'+(deal?'<span class="original-price">商家原价 <s>'+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</s></span> · 现价 ':'')+e(money(p.reference_price.amount,p.reference_price.currency))+' · '+e(p.reference_source)+'</div>'+
       (deal?'<div class="deal-spec">未取得折扣结束时间</div>':channel?'<div class="deal-spec">从该渠道已采集现货中按商品价选择；不是同类比价或全网最低价。</div>':lowPriceMarkup(p,low))+'</div>'+ 
       '<button class="compare-button" type="button">选规格，比较 '+p.source_count+' 个渠道 <span aria-hidden="true">→</span></button>'+
-      '<div class="data-time">'+(p.fetched_at?'采集 '+e(timeText(p.fetched_at)):e(timeText(null)))+' · 原币价与人民币参考价</div>'+
+      '<div class="data-time">'+(p.fetched_at?'更新 '+e(timeText(p.fetched_at)):e(timeText(null)))+' · 原币价与人民币参考价</div>'+
       '</div></div></article>';
   }).join('');
   const cards=[...gallery.querySelectorAll('.card')];
@@ -242,7 +242,7 @@ function inventoryVerified(offer,now=Date.now()){
   const age=now-Date.parse(timestamp);return Number.isFinite(age)&&age>=0&&age<=3600000;
 }
 function offerAvailable(quote,now=Date.now()){if(!publicProductVisible(quote))return false;if(typeof bundleQuoteAllowed==='function'&&!bundleQuoteAllowed(quote))return false;const o=quote?.offer;if(!o||o.stock!=='in_stock'||o.collection_state==='retained'||!inventoryVerified(o,now))return false;const until=o.price_valid_until;return !until||/^\d{4}-\d{2}-\d{2}$/.test(until)&&Number.isFinite(Date.parse(until))&&new Date(until).toISOString().slice(0,10)===until&&until>=new Date(now).toISOString().slice(0,10);}
-function inventoryLabel(offer,now=Date.now()){return offer.stock==='out_of_stock'?'已售罄':offer.collection_state==='retained'?'最近采集失败；库存待重新核实':offer.stock!=='in_stock'?'库存待核实':!inventoryVerified(offer,now)?'库存待核实（上次核实已超过一小时）':offerAvailable({offer},now)?'有库存':'报价有效期已结束；库存待重新核实'}
+function inventoryLabel(offer,now=Date.now()){return offer.stock==='out_of_stock'?'已售罄':offer.collection_state==='retained'?'库存暂未确认，请到商店核对':offer.stock!=='in_stock'?'库存待核实':!inventoryVerified(offer,now)?'库存待核实（上次核实已超过一小时）':offerAvailable({offer},now)?'有库存':'报价有效期已结束；库存待重新核实'}
 function featuredDeal(card,now=Date.now()){
   if(!publicProductVisible(card))return false;
   const current=card.reference_price,original=card.reference_original_price;
@@ -290,11 +290,11 @@ function offerMarkup(compared){
     '<p class="offer-note">先比较运输路线，再核对该路线的费用。未知运费、税费和银行卡费用不按 0 计算。</p>'+ 
     (typeof paymentFeasibilityMarkup==='function'?paymentFeasibilityMarkup(o):'')+
     (compared.reasons.length?'<div class="offer-note">'+compared.reasons.map(e).join(' · ')+'</div>':'')+
-    '<div class="source-time">'+(o.fetched_at?'采集 '+e(timeText(o.fetched_at)):e(timeText(null)))+'</div>'+
+    '<div class="source-time">'+(o.fetched_at?'更新 '+e(timeText(o.fetched_at)):e(timeText(null)))+'</div>'+
     '<button class="go guide-start" type="button" data-offer="'+e(o.offer_id)+'" '+(!offerAvailable(compared)?'disabled':'')+'>比较运输路线 <span>→</span></button>'+
     (!available?referenceLinkMarkup(compared):'')+
     '<details><summary>来源与核实依据</summary><p>'+e(o.identity_evidence)+'</p>'+
-    [o.shipping_to_china].filter(Boolean).map(check=>'<p>'+e(check.note)+(safeUrl(check.url)?' <a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(check.url))+'">查看依据</a>':'')+'</p>').join('')+(o.china_issued_card?.note?'<details class="legacy-payment-evidence"><summary>旧报价支付记录（不作为当前支持结论）</summary><p>以下为旧采集字段，未必适用当前商家市场；当前支付方式和限制以上方完整矩阵为准。</p><p>'+e(o.china_issued_card.note)+'</p></details>':'')+'</details></div>';
+    [o.shipping_to_china].filter(Boolean).map(check=>'<p>'+e(check.note)+(safeUrl(check.url)?' <a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(check.url))+'">查看依据</a>':'')+'</p>').join('')+(o.china_issued_card?.note?'<details class="legacy-payment-evidence"><summary>旧报价支付记录（不作为当前支持结论）</summary><p>以下支付说明可能已变更；请以上方支付方式说明及商店结账页面为准。</p><p>'+e(o.china_issued_card.note)+'</p></details>':'')+'</details></div>';
 }
 // Status-only updates preserve existing DOM nodes and selected specifications.
 // An exact bound content identity is required before advancing any copied clock.
@@ -334,11 +334,11 @@ function updateGalleryVerificationMetadata(verification){
   const byId=new Map(items.map(card=>[card.product_id,card]));
   for(const node of gallery.querySelectorAll('.card')){
     const card=byId.get(node.dataset.id),label=node.querySelector('.data-time');
-    if(card&&label)label.textContent=(card.fetched_at?'采集 '+timeText(card.fetched_at):timeText(null))+' · 原币价与人民币参考价';
+    if(card&&label)label.textContent=(card.fetched_at?'更新 '+timeText(card.fetched_at):timeText(null))+' · 原币价与人民币参考价';
   }
   for(const node of document.querySelectorAll('.offer')){
     const id=node.querySelector('[data-offer]')?.dataset.offer,quote=currentProduct?.offers.find(q=>q.offer.offer_id===id),label=node.querySelector('.source-time');
-    if(quote&&label)label.textContent=quote.offer.fetched_at?'采集 '+timeText(quote.offer.fetched_at):timeText(null);
+    if(quote&&label)label.textContent=quote.offer.fetched_at?'更新 '+timeText(quote.offer.fetched_at):timeText(null);
   }
 }
 if(window.BIKEHUNT_PAGES)window.addEventListener('bikehunt-verification',event=>updateGalleryVerificationMetadata(event.detail));
@@ -379,7 +379,7 @@ async function loadDetail(id,variantId=null,options={}){
     if(resetBundle){const parts=parseBundleSize(detail.identity.size)||options.bundleSelection||{};options={...options,bundleSelection:{jersey:parts.jersey,bib:parts.bib},message:'所选组合的价格或库存已变化，请重新选择袜子，确认最新报价。'};variantId=null;}
     renderProductDetail(detail,options.preservePartial?null:variantId,sequence,options);
     if(options.focusId)document.getElementById(options.focusId)?.focus();
-  }catch(error){if(sequence!==detailSequence)return;currentBundleSelection=null;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>'+e(error.message)+'<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId,options)}
+  }catch(error){if(sequence!==detailSequence)return;currentBundleSelection=null;body.innerHTML='<div class="empty"><strong>报价暂时无法读取</strong>请稍后重试，或到商店查看。<br><button id="retryDetail" type="button">重试</button></div>';document.getElementById('retryDetail').onclick=()=>loadDetail(id,variantId,options)}
 }
 function renderProductDetail(detail,variantId,sequence,options={}){
   if(!publicProductVisible(detail)){closeSheet();return}
@@ -449,8 +449,8 @@ async function init(){
     const data=publicCatalogData(await getJson('/api/catalog'));items=data.items;fx=data.fx;sourceCount=data.source_count;
     updateFxLabel();
     try{viewMode=localStorage.getItem('bikehuntView')||'feed'}catch{viewMode='feed'}setView(viewMode,false);
-    document.getElementById('sourceCount').textContent=data.source_count+' 个已采集报价源';
-  }catch(error){gallery.innerHTML='<div class="empty"><strong>商品暂时无法加载</strong>'+e(error.message)+'<br><button id="retry" type="button">重新加载</button></div>';document.getElementById('retry').onclick=init}
+    document.getElementById('sourceCount').textContent=data.source_count+' 个购买渠道';
+  }catch(error){gallery.innerHTML='<div class="empty"><strong>商品暂时无法加载</strong>请稍后重试，或到商店查看。<br><button id="retry" type="button">重新加载</button></div>';document.getElementById('retry').onclick=init}
 }
 document.addEventListener('input',updateShippingBudget);
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));

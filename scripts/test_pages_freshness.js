@@ -219,7 +219,8 @@ async function testInitialSnapshotBypassesBrowserCache() {
   assert.equal(new URL(first.url).searchParams.get('version'),publication(snapshot()).manifest.version);
   assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at,new Date(START).toISOString());
   assert.equal(h.context.window.BIKEHUNT_PUBLICATION.commit,'commit-test');
-  assert.equal(h.marker.textContent,'数据 commit-');
+  assert.equal(h.marker.textContent,'数据更新时间');
+  assert.ok(!h.marker.title.includes('commit-'));
   assert.ok(h.marker.title.includes(new Date(START).toISOString()));
 }
 
@@ -633,7 +634,7 @@ async function testSchema2HeartbeatUsesOnlyStatusAndStaysQuiet() {
   assert.equal(h.context.window.BIKEHUNT_PUBLICATION.generated_at, initial.manifest.snapshot.generated_at);
   assert.equal(h.context.window.BIKEHUNT_PUBLICATION.version, initial.manifest.snapshot.version);
   assert.equal(h.context.window.BIKEHUNT_VERIFICATION.generated_at, next.manifest.generated_at);
-  assert.ok(h.marker.title.includes('状态发布 ' + next.manifest.generated_at));
+  assert.ok(h.marker.title.includes('页面更新 ' + next.manifest.generated_at));
   const manual = await h.request('/api/refresh/prices');
   assert.equal(manual.finished_at, next.manifest.generated_at);
   assert.equal(manual.catalog_generated_at, initial.manifest.snapshot.generated_at);
