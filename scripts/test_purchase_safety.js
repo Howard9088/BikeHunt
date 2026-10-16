@@ -19,7 +19,7 @@ assert.ok(gallery.includes("p.stock_state!=='out_of_stock'&&profileMatches(p)"))
 assert.ok(gallery.includes("?.stock_state==='out_of_stock')return;"));
 assert.ok(gallery.includes("!offerAvailable(compared)?'disabled'"));
 assert.ok(index.includes('世巡车队')&&!index.includes('骑行车队')&&!flows.includes('骑行车队'));
-assert.ok(index.includes('class="bikehunt-mark"'));
+assert.ok(index.includes('class="bikehunt-lockup"')&&index.includes('bikehunt-logo.svg?v=20261016-flat-approved1'));
 assert.ok(flows.includes("本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。"));
 const guard=flows.slice(flows.indexOf('function guardPurchaseExit('),flows.indexOf("document.addEventListener('click',guardPurchaseExit)"));
 let confirmed=0,prevented=0,stages=0;const ctx={guideContext:{quote:fresh},referenceAvailable:context.referenceAvailable,merchantUrl:context.merchantUrl,continuePurchaseRoute:()=>stages++,showExternalExit:()=>{confirmed++;return false;},window:{confirm:()=>{throw Error('No native exit prompt')}}};vm.createContext(ctx);vm.runInContext(guard,ctx);
