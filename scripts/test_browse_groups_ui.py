@@ -447,7 +447,7 @@ def main():
                 page.locator('[data-tab=brands]').click()
                 page.locator('[data-source=canyon]').click()
                 page.locator('#sourceProducts').click()
-                page.locator('[data-category-group=other]').click()
+                expect(page.locator('[data-category-group=other]')).to_have_attribute('aria-pressed', 'true')
                 inline = inline_cards(page, 1)
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
                 expect(inline).to_contain_text('Canyon Midloader')
