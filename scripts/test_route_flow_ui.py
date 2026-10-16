@@ -260,8 +260,11 @@ def main():
                 # Domestic official offers keep the same guarded exit and restore flow,
                 # without showing cross-border route choices or imported-cost estimates.
                 page.locator('#close').click()
+                assert page.evaluate('history.state?.bikehuntPurchase == null')
                 domestic_detail = copy.deepcopy(baseline)
-                domestic_detail.update(variant_id='M')
+                domestic_detail.update(product_id='domestic-m', variant_id='M',
+                                       name='Domestic M jersey fixture', name_zh='国内 M 码骑行服测试')
+                domestic_detail['identity']['brand'] = 'Decathlon'
                 domestic_detail['identity']['size'] = 'M'
                 domestic_detail['variants'] = [{'variant_id': 'M', 'size': 'M', 'in_stock': True,
                                                'stock_state': 'in_stock', 'source_count': 1,
@@ -277,8 +280,27 @@ def main():
                 domestic_quote.pop('landed_cost', None)
                 domestic_detail['offers'] = [domestic_quote]
                 state['detail'] = domestic_detail
-                page.locator('.card .compare-button').first.click()
+                # Featured cards pass their exact reference variant into openProduct.
+                # Keep card/detail/offer identities aligned, including restoration.
+                domestic_card = copy.deepcopy(state['catalog']['items'][0])
+                domestic_card.update(product_id='domestic-m', brand='Decathlon',
+                    name=domestic_detail['name'], name_zh=domestic_detail['name_zh'],
+                    image=domestic_detail['image'], source_codes=['decathlon_cn'],
+                    source_count=1, variant_count=1, available_sizes=['M'],
+                    reference_price={'amount': '399.90', 'currency': 'CNY'}, reference_cny='399.90',
+                    reference_original_price=None, discount_pct=0,
+                    reference_source='迪卡侬中国官网', reference_url=domestic_target,
+                    reference_offer_id='offer-domestic-m', reference_variant_id='M', reference_size='M',
+                    reference_color=domestic_detail['identity']['color'], color=domestic_detail['identity']['color'],
+                    reference_stock='in_stock', reference_collection_state='current', stock_state='in_stock',
+                    fetched_at=domestic_quote['offer']['fetched_at'], recommended_total_cny=None)
+                state['catalog']['items'] = [domestic_card]
+                page.reload(wait_until='networkidle')
+                expect(page.locator('.card')).to_have_count(1)
+                assert page.evaluate("items.length === 1 && items[0].product_id === 'domestic-m' && items[0].reference_variant_id === 'M' && items[0].reference_offer_id === 'offer-domestic-m'")
+                page.locator('.card[data-id="domestic-m"] .compare-button').click()
                 page.locator('[data-variant="M"]').click()
+                assert state['last_variant'] == 'M'
                 page.locator('[data-offer="offer-domestic-m"]').click()
                 panel = page.locator('#routeComparison')
                 expect(panel).to_be_visible()
@@ -310,6 +332,8 @@ def main():
                 page.reload(wait_until='networkidle')
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
                 assert page.evaluate('history.state.bikehuntPurchase.route') == 'domestic'
+                assert page.evaluate('history.state.bikehuntPurchase.productId') == 'domestic-m'
+                assert page.evaluate('history.state.bikehuntPurchase.variantId') == 'M'
                 open_final_exit(page, domestic_target, official=True, image=selected_image)
                 confirm_exit_dialog(page, domestic_target, official=True)
                 expect(page).to_have_url(domestic_target)
