@@ -85,7 +85,7 @@ class RoadEquipmentTests(unittest.TestCase):
     def test_official_entry_fallback_uses_text_not_fake_logos(self):
         directory=json.loads((ROOT/'data/directories.json').read_text())
         brands=[b for b in directory['brands'] if b.get('road_reference')]
-        self.assertEqual(len(brands),4)
+        self.assertEqual({b['code'] for b in brands},{'trek','canyon'})
         self.assertTrue(all(not b.get('logo_images') for b in brands))
 
     def test_references_remain_verbatim_with_fx_conversion_only_in_the_view(self):

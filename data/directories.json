@@ -206,13 +206,13 @@
     {
       "code": "specialized",
       "name": "Specialized",
-      "name_zh": "Specialized 公路车装备",
-      "official_url": "https://www.specialized.com/us/en/shop/sale",
-      "shop_url": "https://www.specialized.com/us/en/shop/sale",
-      "status": "official_link_found",
-      "shop_evidence_url": "https://www.specialized.com/us/en/shop/sale",
-      "road_reference": true,
-      "reference_note": "美国站仅寄美国住宅或美国零售店，不支持直接寄中国；库存、支付和完整费用待核实。",
+      "name_zh": "Specialized 骑行服饰",
+      "official_url": "https://www.specialized.com/us/en/shop/sale?search=apparel&filter=16x520",
+      "shop_url": "https://www.specialized.com/us/en/shop/sale?search=apparel&filter=16x520",
+      "status": "registered",
+      "shop_evidence_url": "https://www.specialized.com/us/en/shop/sale?search=apparel&filter=16x520",
+      "road_reference": false,
+      "reference_note": "已接入官方骑行服饰的部分逐规格报价；不代表完整目录。中国配送、支付与费用仍须分别核实。",
       "source_codes": [
         "specialized"
       ]
@@ -234,13 +234,13 @@
     {
       "code": "colnago",
       "name": "Colnago",
-      "name_zh": "Colnago 公路车装备",
-      "official_url": "https://www.colnago.com/en-us/collections/bikes",
-      "shop_url": "https://www.colnago.com/en-us/collections/bikes",
-      "status": "official_link_found",
-      "shop_evidence_url": "https://www.colnago.com/en-us/collections/bikes",
-      "road_reference": true,
-      "reference_note": "未找到已核实的原价／现价折扣对。美国路径页面的地区提示不一致，实际市场与币种仍需核实。",
+      "name_zh": "Colnago 骑行服饰",
+      "official_url": "https://www.colnago.com/en-us/collections/cycling-apparel-for-men",
+      "shop_url": "https://www.colnago.com/en-us/collections/cycling-apparel-for-men",
+      "status": "registered",
+      "shop_evidence_url": "https://www.colnago.com/en-us/collections/cycling-apparel-for-men",
+      "road_reference": false,
+      "reference_note": "已接入官方骑行服饰的部分逐规格报价；不代表完整目录。中国配送、支付与费用仍须分别核实。",
       "source_codes": [
         "colnago"
       ]

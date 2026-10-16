@@ -74,11 +74,18 @@ class PublicVisibilityTests(unittest.TestCase):
         self.assertEqual(path.read_bytes(), raw)
         self.assertEqual(len(read_road_references(ROOT)['products']), 4)
 
-    def test_directory_hides_bicycle_brands_but_keeps_canyon_accessories(self):
+    def test_directory_hides_bicycle_research_but_keeps_collected_clothing_and_accessories(self):
         original = (ROOT / 'data/directories.json').read_bytes()
         result = public_directories(ROOT)
         codes = {row['code'] for row in result['brands']}
-        self.assertTrue({'trek', 'specialized', 'colnago'}.isdisjoint(codes))
+        self.assertNotIn('trek', codes)
+        self.assertTrue({'specialized', 'colnago', 'canyon'}.issubset(codes))
+        for code in ('specialized', 'colnago'):
+            entry = next(row for row in result['brands'] if row['code'] == code)
+            self.assertFalse(entry.get('road_reference'))
+            self.assertIn('骑行服饰', entry['name_zh'])
+            self.assertNotIn('/collections/bikes', entry['shop_url'])
+            self.assertEqual(entry['source_codes'], [code])
         canyon = next(row for row in result['brands'] if row['code'] == 'canyon')
         target = public_road_references(ROOT)['products'][0]['url']
         self.assertEqual(canyon['name_zh'], 'Canyon 配件')
