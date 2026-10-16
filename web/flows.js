@@ -53,7 +53,7 @@ function syncBrowseControls(){
   document.body.classList.toggle('road-reference-visible',visible);
 }
 function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);const label=activeSource?(entry?.name_zh||entry?.name||activeSource):document.getElementById('q').value.trim()?'搜索结果':'精选好价';const group=categoryGroups.find(c=>c.code===activeCategoryGroup);document.getElementById('browseLabel').textContent=label+(group?' · '+group.name:'')}
-function channelProductCount(code){return items.filter(p=>p.source_codes?.includes(code)&&channelCard(p,code)).length}
+function channelProductCount(code){return items.filter(p=>channelCard(p,code)).length}
 function renderDirectory(section){
   directoryData=publicDirectoryData(directoryData,roadReferenceData);
   const entries=directoryData[section]||[];document.getElementById('browseLabel').textContent=section==='brands'?'品牌官网':'世巡车队';document.getElementById('count').textContent=entries.length+' 个入口';

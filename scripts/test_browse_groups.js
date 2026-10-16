@@ -161,6 +161,18 @@ function testChannelDirectFreshStockWithoutFeaturedCap(){
  assert.equal(c.channelCard(shared,'other'),null,'Another shop stocking a product never proves this shop has it');
  assert.equal(c.channelCard({...shared,channel_quotes:undefined},'team'),null,'Old ambiguous multi-source cards fail closed');
 
+ c.directoryData.teams.push({code:'ef',name_zh:'EF 车队',source_codes:['ef_team_shop']});
+ const ef=freshCard({product_id:'ef-shirt',name:'EF Shirt',brand:'EF',source_codes:['ef_team_shop'],channel_quotes:{}});
+ ef.channel_quotes.ef_team_shop=freshCard({...ef,reference_source:'EF 美国官方商城',reference_url:'https://efprocycling.shop/us/product/shirt/',reference_price:{amount:20,currency:'USD'},reference_cny:140,channel_quotes:{}});
+ c.items=[ef];c.activeSource='ef';
+ assert.equal(c.visibleItems().length,1,'Directory aliases resolve only declared merchant sources');
+ assert.equal(c.visibleItems()[0].reference_url,'https://efprocycling.shop/us/product/shirt/');
+ assert.equal(c.visibleItems()[0].reference_price.currency,'USD');
+ assert.equal(c.channelCard(ef,'team'),null,'Alias resolution does not mix unrelated shops');
+ assert.equal(c.channelProductCount('ef'),1,'Directory count matches its merchant-bound list');
+ ef.channel_quotes.ef_team_shop.reference_stock='out_of_stock';
+ assert.equal(c.visibleItems().length,0,'Sold-out alias quotes cannot inherit stock from elsewhere');
+
  assert.match(fs.readFileSync('web/index.html','utf8'),/<details id="channelInfo" class="channel-info" hidden>/);
 }
 for(const test of [testChannelDirectFreshStockWithoutFeaturedCap,testPublicProjectionRejectsOldPayload,testGroupLeafSourceSearchAndReset,testGroupHistoryAndOldState,testResearchSeparationFilteringAndExactGuard,testStalePayloadAndHiddenIdRejection,testInlineFallbackFilteringAndLiveGuard,testEquipmentGenderIndependence,testReferenceGuideAndCurrencySafety,testTrekAndSpecializedRestrictiveFallback,testNewBrandPaymentsStayUnknown]){test();console.log('PASS '+test.name)}

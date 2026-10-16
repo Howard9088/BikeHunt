@@ -20,7 +20,13 @@ function imageMarkup(url,name,index){
   return '<button class="image-button" type="button" aria-label="查看 '+e(name)+' 的渠道比价"><img '+(index<2?'fetchpriority="high"':'loading="lazy"')+' src="'+e(safeUrl(url))+'" alt="'+e(name)+'"></button><div class="photo-fallback">BikeHunt<span>商品图片暂不可用</span></div>';
 }
 function featuredBrowse(){return !activeSource&&!document.getElementById('q').value.trim()}
-function scopedCatalogItems(){const q=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return items.filter(p=>publicProductVisible(p)&&p.stock_state!=='out_of_stock'&&profileMatches(p)&&(!activeCategoryGroup||p.category_group===activeCategoryGroup)&&(!activeSource||p.source_codes?.includes(activeSource))&&q.every(t=>(p.brand+' '+p.name+' '+(p.name_zh||'')+' '+(p.color||'')).toLowerCase().includes(t)))}
+function channelSourceCodes(code){
+  const directory=typeof directoryData!=='undefined'?directoryData:null;
+  const entry=[...(directory?.brands||[]),...(directory?.teams||[])].find(item=>item.code===code);
+  const sources=entry?.source_codes;
+  return Array.isArray(sources)&&sources.length?sources.filter(source=>typeof source==='string'&&source):[code];
+}
+function scopedCatalogItems(){const q=document.getElementById('q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);return items.filter(p=>publicProductVisible(p)&&p.stock_state!=='out_of_stock'&&profileMatches(p)&&(!activeCategoryGroup||p.category_group===activeCategoryGroup)&&(!activeSource||channelSourceCodes(activeSource).some(source=>p.source_codes?.includes(source)))&&q.every(t=>(p.brand+' '+p.name+' '+(p.name_zh||'')+' '+(p.color||'')).toLowerCase().includes(t)))}
 function brandRoundRobin(products){
   const groups=new Map();for(const p of products){const key=String(p.brand||'').trim().toLowerCase();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(p)}
   const result=[];while(groups.size){for(const [key,queue] of groups){result.push(queue.shift());if(!queue.length)groups.delete(key)}}return result;
@@ -95,12 +101,13 @@ function channelSelections(products,now=Date.now()){
   const result=[];for(let round=0;round<2;round++)for(const [,pool] of groups)if(pool[round])result.push(pool[round]);return result;
 }
 function channelCard(card,source){
+  const sources=channelSourceCodes(source);
   if(card.channel_quotes&&typeof card.channel_quotes==='object'){
-    const scoped=card.channel_quotes[source];
-    return scoped&&scoped.product_id===card.product_id&&channelOfferEligible(scoped)?scoped:null;
+    return sources.map(code=>card.channel_quotes[code]).filter(scoped=>scoped&&scoped.product_id===card.product_id&&channelOfferEligible(scoped))
+      .sort((a,b)=>Number(a.reference_cny)-Number(b.reference_cny))[0]||null;
   }
   // Older single-source payloads are unambiguous. Multi-source stock is not.
-  return card.source_codes?.length===1&&card.source_codes[0]===source&&channelOfferEligible(card)?card:null;
+  return card.source_codes?.length===1&&sources.includes(card.source_codes[0])&&channelOfferEligible(card)?card:null;
 }
 function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(activeSource)return scoped.map(p=>channelCard(p,activeSource)).filter(Boolean);if(!featuredBrowse()||includeUnverified)return scoped;return channelSelections(scoped)}
 function lowPriceMarkup(card,basis){

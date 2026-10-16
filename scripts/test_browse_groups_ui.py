@@ -581,6 +581,51 @@ def main():
                 assert page.evaluate('activeSource === null')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path=str(OUT / f'groups_{mode}.png'))
+                # Explicit alias fixture: a team directory code is not its shop source ID.
+                page.evaluate("""() => {
+                    const seed = items.find(card => channelOfferEligible(card));
+                    if (!seed) throw new Error('Expected a fresh base fixture');
+                    const make = (id, stock) => {
+                        const quote = {...seed, product_id:id, brand:'EF',
+                            name:'EF Alias Jersey '+id, name_zh:'EF 别名测试 '+id,
+                            source_codes:['ef_team_shop'], source_count:1,
+                            reference_source:'EF 官方美国商城',
+                            reference_offer_id:'ef-offer-'+id, reference_variant_id:'ef-size-M',
+                            reference_url:'https://efprocycling.com/shop/'+id+'?variant=M',
+                            reference_price:{amount:'75',currency:'USD'}, reference_cny:'525',
+                            stock_state:stock, reference_stock:stock,
+                            reference_collection_state:'current', reference_data_kind:'live_snapshot'};
+                        delete quote.channel_quotes;
+                        return {...quote, channel_quotes:{ef_team_shop:quote}};
+                    };
+                    items.push(make('ef-alias-live','in_stock'),
+                        make('ef-alias-sold','out_of_stock'),make('ef-alias-unknown','unknown'));
+                    directoryData.teams.push({code:'ef',name:'EF',name_zh:'EF 测试车队',
+                        source_codes:['ef_team_shop'],offer_count:3,product_count:3,rule_count:0});
+                }""")
+                page.locator('[data-tab=teams]').click()
+                page.locator('[data-source=ef]').click()
+                expect(page.locator('#browseLabel')).to_have_text('EF 测试车队')
+                expect(page.locator('#grid .card')).to_have_count(1)
+                expect(page.locator('#grid .card')).to_have_attribute('data-id', 'ef-alias-live')
+                expect(page.locator('#grid')).not_to_contain_text('ef-alias-sold')
+                expect(page.locator('#grid')).not_to_contain_text('ef-alias-unknown')
+                expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+                assert not page.locator('#channelInfo').evaluate('el => el.open')
+                assert page.evaluate("activeSource === 'ef'")
+                quote = page.evaluate("""() => {
+                    const card=visibleItems()[0];
+                    return {source:card.reference_source,url:card.reference_url,
+                            currency:card.reference_price.currency,offer:card.reference_offer_id};
+                }""")
+                assert quote == {'source':'EF 官方美国商城',
+                                 'url':'https://efprocycling.com/shop/ef-alias-live?variant=M',
+                                 'currency':'USD','offer':'ef-offer-ef-alias-live'}
+                # The alias must not broaden unrelated channel scopes.
+                page.locator('[data-tab=brands]').click()
+                page.locator('[data-source=brand]').click()
+                expect(page.locator('#grid .card[data-id^="ef-alias-"]')).to_have_count(0)
+                checks.append(mode + ': EF directory alias resolves only its declared shop source; exact URL/currency/offer retained; sold and unknown stock excluded; unrelated brand isolation')
                 checks.append(mode + ': four one-level public groups; old five-group payload, bike/frame cards, hidden sources, IDs and history rejected; clothing-only gender with persisted residue clearing; reference list to internal detail to exact guarded same-tab exit; original/current currency and CNY item-only with current/stale/missing FX; read-only displayed options and practical purchase steps; exact/missing/failed images; brand direct guard; honest zero verified count; mobile price/layout and native scroll; group/source/query migration; stock/DOM/URL/filter mutation gates; cancel and list-return focus; merchant Back/reload scope; global reset')
                 context.close()
             browser.close()
