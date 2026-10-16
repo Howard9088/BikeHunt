@@ -29,7 +29,7 @@ class PaymentMethodsTests(unittest.TestCase):
                 self.assertTrue(method['note'].strip())
                 self.assertTrue(method['account_region_constraints'].strip())
 
-    def test_china_official_store_is_exact_and_payment_methods_remain_unknown(self):
+    def test_china_official_store_is_exact_and_help_is_not_checkout_proof(self):
         channel = next(c for c in self.catalog['channels'] if c['source_code'] == 'decathlon_cn')
         self.assertEqual(channel['sales_regions'], ['中国大陆 CNY 报价'])
         self.assertEqual(channel['merchant_hosts'], ['www.decathlon.com.cn', 'decathlon.com.cn'])
@@ -42,11 +42,18 @@ class PaymentMethodsTests(unittest.TestCase):
             self.assertEqual(len(row['methods']), 11)
             self.assertEqual({m['method_key'] for m in row['methods']}, REQUIRED_METHODS)
             for method in row['methods']:
-                self.assertEqual(method['status'], 'unknown')
+                listed = method['method_key'] in {'cards', 'china_issued_cards', 'alipay', 'wechat_pay', 'unionpay'}
+                self.assertEqual(method['status'], 'conditional' if listed else 'unknown')
                 self.assertEqual(method['china_applicability']['status'], 'unknown')
-                self.assertEqual(method['merchant_evidence_status'], 'unavailable')
-                self.assertEqual(method['evidence_urls'], [])
-                self.assertIsNone(method['checked_at'])
+                self.assertEqual(method['merchant_evidence_status'], 'official_text' if listed else 'unavailable')
+                self.assertEqual(method['evidence_urls'], ['https://www.decathlon.com.cn/help/introduction'] if listed else [])
+                self.assertEqual(method['checked_at'], '2026-10-16' if listed else None)
+                if listed:
+                    self.assertEqual(method['evidence_class'], 'official_confirmed')
+                    self.assertIn('官方帮助', method['note'])
+                    self.assertIn('未实测', method['note'])
+                if method['method_key'] == 'cards':
+                    self.assertEqual(method['card_networks'], ['Visa'])
                 self.assertTrue(method['note'].strip())
                 self.assertTrue(method['account_region_constraints'].strip())
             self.assertTrue(any(r['source_code'] == 'decathlon' for r in data['entries']))

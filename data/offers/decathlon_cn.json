@@ -1,6 +1,6 @@
 {
   "source_code": "decathlon_cn",
-  "collected_at": "2026-10-16T02:59:03Z",
+  "collected_at": "2026-10-16T03:29:32Z",
   "verification_method": "manual_public_selected_variant",
   "offers": [
     {
@@ -23,7 +23,7 @@
         "currency": "CNY"
       },
       "stock": "in_stock",
-      "fetched_at": "2026-10-16T02:58:28Z",
+      "fetched_at": "2026-10-16T03:29:07Z",
       "collection_state": "current",
       "data_kind": "live_snapshot",
       "sales_region": "中国大陆 CNY 报价",
@@ -66,7 +66,7 @@
         "currency": "CNY"
       },
       "stock": "in_stock",
-      "fetched_at": "2026-10-16T02:59:03Z",
+      "fetched_at": "2026-10-16T03:29:32Z",
       "collection_state": "current",
       "data_kind": "live_snapshot",
       "sales_region": "中国大陆 CNY 报价",

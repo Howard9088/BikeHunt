@@ -1,0 +1,43 @@
+{
+  "source_code": "decathlon_cn",
+  "recheck_type": "one_time_live_public_browser_recheck_before_publication",
+  "products": [
+    {
+      "model_code": "8969603",
+      "dsm_code": "367685",
+      "source_url": "https://www.decathlon.com.cn/product-detail?dsm_code=367685&model_code=8969603",
+      "color": "烟熏黑",
+      "selected_size": "M - 180/80A",
+      "price": 399.9,
+      "currency": "CNY",
+      "conditional_coupon_price": 369.9,
+      "coupon_label": "满300减30",
+      "coupon_claim_required": true,
+      "coupon_expiry": null,
+      "coupon_eligibility": null,
+      "stock_status": "in_stock",
+      "displayed_online_stock": 444,
+      "checked_at": "2026-10-16T03:29:07Z",
+      "raw_dom": "<span class=\"text-[#616161]\">线上库存 <span class=\"text-[#149B65]\">444</span></span><div data-v-8fc5153a=\"\" class=\"min-w-[40px] h-40 mr-10 mb-10 pt-2 sm:pt-2 box-border px-10 border-1 border-solid flex items-center justify-center text-14 cursor-pointer sm:min-w-[80px] sm:h-80 sm:mr-[17px] sm:mb-24 sm:text-28 sm:px-20 border-[#3643BA] font_maincolor  border-1 sm:font-medium sm:border-[4px]\">\n            M - 180/80A\n        </div>"
+    },
+    {
+      "model_code": "8987878",
+      "dsm_code": "355348",
+      "source_url": "https://www.decathlon.com.cn/product-detail?dsm_code=355348",
+      "color": "孔雀蓝",
+      "selected_size": "M",
+      "price": 399.9,
+      "currency": "CNY",
+      "conditional_coupon_price": 369.9,
+      "coupon_label": "满300减30",
+      "coupon_claim_required": true,
+      "coupon_expiry": null,
+      "coupon_eligibility": null,
+      "stock_status": "in_stock",
+      "displayed_online_stock": 5,
+      "checked_at": "2026-10-16T03:29:32Z",
+      "raw_dom": "<span class=\"text-[#616161]\">线上库存 <span class=\"text-[#149B65]\">5</span></span><div data-v-8fc5153a=\"\" class=\"min-w-[40px] h-40 mr-10 mb-10 pt-2 sm:pt-2 box-border px-10 border-1 border-solid flex items-center justify-center text-14 cursor-pointer sm:min-w-[80px] sm:h-80 sm:mr-[17px] sm:mb-24 sm:text-28 sm:px-20 border-[#3643BA] font_maincolor  border-1 sm:font-medium sm:border-[4px]\">\n            M\n        </div>"
+    }
+  ],
+  "limitations": "A new cloud browser tab loaded both original URLs; exact M control clicked and selected highlight plus visible stock label re-read. No login/cart/checkout or coupon claim. Coupon price remains conditional estimate, real base price 399.90. Displayed online stock is not an API quantity or fulfillment guarantee; other sizes unknown. Homepage 15-day price-protection window is not coupon expiry."
+}

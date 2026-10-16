@@ -147,6 +147,14 @@ async function testDomesticScopeCostsAndExit(){
  assert.equal((h.html.match(/class="route-card"/g)||[]).length,1);
  for(const term of ['中国进口税','清关','海外转运','香港','landed-cost-fixture','route-hk-notes'])assert.ok(!h.html.includes(term),term);
  assert.ok(h.html.includes('CNY 399.90'));assert.ok(h.html.includes('尺码 M'));
+ const help=h.c.domesticPaymentMarkup();
+ for(const text of ['支付宝','微信','银联','Visa','本件订单可用方式尚未实测','免注册购买未核实','单笔实付满 99 元','未满收 8 元','自行车除外','门店极速达等其他方式另计','2026 年 3 月 18 日','迪卡侬自有品牌','有效购买凭证','非原购买店铺退货以礼品卡退款','原包邮商品只承担退货邮费'])assert.ok(help.includes(text),text);
+ assert.ok(/<details class="domestic-shopping-help">/.test(help),'Buying help starts collapsed');
+ assert.ok(!/<a\b|href=|<details[^>]*\sopen(?:[\s=>])/.test(help),'Help cannot bypass the final exit or start expanded');
+ assert.ok(!/无条件退货|所有地址包邮|已实测可支付|七天无理由|7天无理由/.test(help));
+ assert.equal(h.c.routeOptions(q)[0].total,null,'Policy threshold is not a shipping quote');
+ assert.ok(h.c.routeOptions(q)[0].costs.some(([label,value])=>label==='国内运费'&&value==='待确认'));
+
  h.c.selectPurchaseRoute('direct');assert.equal(h.c.guideContext.route,null);
  h.c.selectPurchaseRoute('domestic');h.c.continuePurchaseRoute();
  assert.ok(h.html.includes('id="registrationInterstitial"'));assert.ok(h.html.includes('登录或注册'));assert.ok(!h.html.includes('Account / Sign in'));

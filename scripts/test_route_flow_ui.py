@@ -308,6 +308,23 @@ def main():
                 expect(panel.locator('[data-route="domestic"]')).to_have_attribute('data-route-status', 'conditional')
                 expect(panel).to_contain_text('399.90')
                 expect(panel).to_contain_text('尺码 M')
+                help_panel = panel.locator('.domestic-shopping-help')
+                expect(help_panel).to_have_count(1)
+                assert help_panel.get_attribute('open') is None
+                expect(panel.locator('.domestic-payment')).to_contain_text('本件订单可用方式尚未实测')
+                expect(help_panel.locator('a')).to_have_count(0)
+                help_panel.locator('summary').click()
+                expect(help_panel).to_have_attribute('open', '')
+                for phrase in ['免注册购买未核实', '单笔实付满 99 元', '未满收 8 元', '自行车除外',
+                               '门店极速达等其他方式另计', '2026 年 3 月 18 日', '有效购买凭证',
+                               '非原购买店铺退货以礼品卡退款', '原包邮商品只承担退货邮费']:
+                    expect(help_panel).to_contain_text(phrase)
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                help_panel.locator('summary').click()
+                assert help_panel.get_attribute('open') is None
+                assert page.evaluate('routeOptions(guideContext.quote)[0].total === null')
+                expect(panel).to_contain_text('国内运费')
+                assert outbound == [target], 'Opening domestic help must not contact the merchant'
                 expect(panel.locator('.route-hk-notes,.route-budget,.route-policy')).to_have_count(0)
                 for absent in ['中国进口税', '清关', '海外转运', '香港']:
                     expect(panel).not_to_contain_text(absent)

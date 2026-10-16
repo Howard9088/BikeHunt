@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-16-decathlon-cn-unknown-payments",
+  "revision": "2026-10-16-decathlon-cn-official-help-payments",
   "checked_at": "2026-10-15",
   "payment_caveat": "仅官方公开资料核验，未注册、未提交个人或付款信息、未下单、未真实扣款。商家列出某支付方式或卡组织不等于中国发行卡或中国账户必然可用；发卡行境外电商授权、3DS、真实账单地址、账户地区和商家风控仍可能限制。付款能力与配送资格分别判断。",
   "coverage": {
@@ -11590,10 +11590,11 @@
         "decathlon.com.cn"
       ],
       "scope": "market",
-      "scope_note": "仅适用于迪卡侬中国官网、中国大陆人民币报价。官方隐私政策用于确认网站身份，不证明任何付款方式可用；不沿用法国车队商城或其他国家商店的规则。",
+      "scope_note": "仅适用于迪卡侬中国官网、中国大陆人民币报价。官方帮助列示部分付款方式，但页面未标更新日期、银行名单含旧名称；未登录或实际结账，不保证具体订单、银行卡、账户或收货地址适用。法国车队商城及其他国家商店规则不适用。",
       "scope_evidence_urls": [
         "https://www.decathlon.com.cn/",
-        "https://static-econnected.decathlon.com.cn/econnected/privacy.html"
+        "https://static-econnected.decathlon.com.cn/econnected/privacy.html",
+        "https://www.decathlon.com.cn/help/introduction"
       ],
       "merchant_evidence_status": "official_text",
       "checked_at": "2026-10-16",
@@ -11601,35 +11602,41 @@
         {
           "method_key": "cards",
           "name": "银行卡（信用卡/借记卡）",
-          "status": "unknown",
-          "note": "尚未确认中国站接受的信用卡、借记卡及卡组织清单。请在结账页查看可选银行卡方式。",
+          "status": "conditional",
+          "note": "官方帮助列示银行卡在线支付，并提及国外信用卡 Visa。帮助页未标更新日期、银行名单含旧名称；当前订单可选卡种及发卡行授权未实测，以结账页为准。",
           "china_applicability": {
             "status": "unknown",
             "evidence_class": "insufficient_evidence",
             "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
           },
-          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [],
-          "checked_at": null,
-          "card_networks": []
+          "account_region_constraints": "中国大陆站官方帮助列示；当前订单、账户资格、银行卡及收货地址均未实测，须以结账选项和支付机构授权为准。",
+          "merchant_evidence_status": "official_text",
+          "evidence_urls": [
+            "https://www.decathlon.com.cn/help/introduction"
+          ],
+          "checked_at": "2026-10-16",
+          "card_networks": [
+            "Visa"
+          ],
+          "evidence_class": "official_confirmed"
         },
         {
           "method_key": "china_issued_cards",
           "name": "中国大陆发行银行卡",
-          "status": "unknown",
-          "note": "尚未确认本订单支持哪些中国大陆发行银行卡。请核对结账入口及发卡行授权要求。",
+          "status": "conditional",
+          "note": "官方帮助列示国内银行卡在线支付，但银行名单含旧名称，不能保证每家银行或每张卡目前可用。当前订单未实测，请在结账页核对并以银行授权为准。",
           "china_applicability": {
             "status": "unknown",
             "evidence_class": "insufficient_evidence",
             "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
           },
-          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [],
-          "checked_at": null
+          "account_region_constraints": "中国大陆站官方帮助列示；当前订单、账户资格、银行卡及收货地址均未实测，须以结账选项和支付机构授权为准。",
+          "merchant_evidence_status": "official_text",
+          "evidence_urls": [
+            "https://www.decathlon.com.cn/help/introduction"
+          ],
+          "checked_at": "2026-10-16",
+          "evidence_class": "official_confirmed"
         },
         {
           "method_key": "paypal",
@@ -11682,50 +11689,56 @@
         {
           "method_key": "alipay",
           "name": "支付宝",
-          "status": "unknown",
-          "note": "中国站是否提供支付宝及适用账户范围尚未确认，不能仅凭国内商店身份判断。",
+          "status": "conditional",
+          "note": "官方帮助列示支付宝支付。帮助页未标更新日期；当前订单及账户资格未实测，以结账页实际选项为准。",
           "china_applicability": {
             "status": "unknown",
             "evidence_class": "insufficient_evidence",
             "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
           },
-          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [],
-          "checked_at": null
+          "account_region_constraints": "中国大陆站官方帮助列示；当前订单、账户资格、银行卡及收货地址均未实测，须以结账选项和支付机构授权为准。",
+          "merchant_evidence_status": "official_text",
+          "evidence_urls": [
+            "https://www.decathlon.com.cn/help/introduction"
+          ],
+          "checked_at": "2026-10-16",
+          "evidence_class": "official_confirmed"
         },
         {
           "method_key": "wechat_pay",
           "name": "微信支付",
-          "status": "unknown",
-          "note": "中国站是否提供微信支付及适用账户范围尚未确认，请在结账页核对。",
+          "status": "conditional",
+          "note": "官方帮助列示微信支付。帮助页未标更新日期；当前订单及账户资格未实测，以结账页实际选项为准。",
           "china_applicability": {
             "status": "unknown",
             "evidence_class": "insufficient_evidence",
             "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
           },
-          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [],
-          "checked_at": null
+          "account_region_constraints": "中国大陆站官方帮助列示；当前订单、账户资格、银行卡及收货地址均未实测，须以结账选项和支付机构授权为准。",
+          "merchant_evidence_status": "official_text",
+          "evidence_urls": [
+            "https://www.decathlon.com.cn/help/introduction"
+          ],
+          "checked_at": "2026-10-16",
+          "evidence_class": "official_confirmed"
         },
         {
           "method_key": "unionpay",
           "name": "银联 UnionPay",
-          "status": "unknown",
-          "note": "尚未确认中国站银联支付入口及信用卡、借记卡范围，请在结账页核对。",
+          "status": "conditional",
+          "note": "官方帮助列示银联在线支付。帮助页未标更新日期；当前订单、卡片及发卡行授权未实测，以结账页为准。",
           "china_applicability": {
             "status": "unknown",
             "evidence_class": "insufficient_evidence",
             "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
           },
-          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [],
-          "checked_at": null
+          "account_region_constraints": "中国大陆站官方帮助列示；当前订单、账户资格、银行卡及收货地址均未实测，须以结账选项和支付机构授权为准。",
+          "merchant_evidence_status": "official_text",
+          "evidence_urls": [
+            "https://www.decathlon.com.cn/help/introduction"
+          ],
+          "checked_at": "2026-10-16",
+          "evidence_class": "official_confirmed"
         },
         {
           "method_key": "bank_transfer_local",

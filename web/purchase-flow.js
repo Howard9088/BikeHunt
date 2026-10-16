@@ -29,7 +29,7 @@ function routeDomesticChina(offer={}){
   if(offer.source_code!=='decathlon_cn'||offer.sales_region!=='中国大陆 CNY 报价'||offer.price?.currency!=='CNY')return false;
   try{const u=new URL(offer.url);return u.protocol==='https:'&&u.hostname==='www.decathlon.com.cn'&&!u.username&&!u.password&&!u.port&&offer.url.startsWith('https://www.decathlon.com.cn/')&&routeOriginal(offer.price)!=='待确认'}catch{return false}
 }
-function domesticPaymentMarkup(){return '<div class="payment-feasibility domestic-payment"><strong>中国官网结算</strong><p>支付方式、优惠条件和收货地址支持范围，以官网本件商品结账页面为准。</p></div>'}
+function domesticPaymentMarkup(){return '<div class="payment-feasibility domestic-payment"><strong>中国官网结算</strong><p>官方帮助列示支付宝、微信、银联及部分银行卡／Visa；本件订单可用方式尚未实测，请在结账确认。</p><details class="domestic-shopping-help"><summary>注册、配送与退货须知</summary><p><strong>注册：</strong>官网购物指南按注册、登录后下单；免注册购买未核实。</p><p><strong>配送：</strong>仅限中国大陆。顺丰普通配送按单笔实付满 99 元免运费，未满收 8 元，自行车除外。门店极速达等其他方式另计，能否配送及实际运费以收货地址和结账页面为准。</p><p><strong>退货：</strong>按 2026 年 3 月 18 日生效规则，适用于中国大陆官方渠道迪卡侬自有品牌。商品须未经使用、洗涤或损坏，包装吊牌完整、不影响二次销售，并有有效购买凭证；特殊商品及活动另看具体约定。</p><p>官网订单可退货后重买；官方线上商品也可按规则到门店办理，非原购买店铺退货以礼品卡退款。个人原因退货承担往来邮费，原包邮商品只承担退货邮费；商家责任由商家承担。</p><p>依据官网购物、配送及退换货帮助，核对于 2026-10-16。优惠资格、运费和最终金额请在官网确认。</p></details></div>'}
 function domesticRouteOptions(quote){
   const o=quote?.offer||{};if(!routeDomesticChina(o))return [];
   return [{id:'domestic',label:ROUTE_LABELS.domestic,status:'conditional',note:'中国大陆官网报价。请按所选尺码和实际收货地址核对库存、国内运费及配送范围。',advantages:'在中国官网按人民币结算，购买与售后直接联系该商家。',tradeoffs:'具体运费、优惠和配送范围以本件商品结账页面为准。',costs:[['当前规格商品价',routeOriginal(o.price)],['国内运费','待确认'],['其他结账费用（如有）','待确认']],total:null}];

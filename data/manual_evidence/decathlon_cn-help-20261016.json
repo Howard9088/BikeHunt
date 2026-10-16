@@ -1,0 +1,111 @@
+{
+  "source_code": "decathlon_cn",
+  "checked_at": "2026-10-16T03:09:30Z",
+  "verification_method": "Read-only public official help pages in cloud browser; no login, registration, cart, checkout or address entry",
+  "payments": {
+    "source_url": "https://www.decathlon.com.cn/help/introduction",
+    "source_section": "3 在线支付",
+    "page_updated_at": null,
+    "listed_methods": [
+      "银联在线支付",
+      "支付宝支付",
+      "微信支付",
+      "支持的国外信用卡 Visa",
+      "国内银行卡在线支付"
+    ],
+    "short_quote": "网上第三方平台支付（银联在线支付、支付宝支付、微信支付）",
+    "status": "official_help_listed_checkout_unverified",
+    "caveat": "FAQ未标更新日期且银行列表含旧名称。只能标官方帮助列示，当前订单结账可选项未实测；不应填全渠道普遍支持。",
+    "payment_deadline_hours": 2,
+    "confirmation_sync_minutes": "15–20"
+  },
+  "registration": {
+    "source_url": "https://www.decathlon.com.cn/help/introduction",
+    "flow": [
+      "用户注册",
+      "用户登录",
+      "提交订单"
+    ],
+    "guest_checkout": "unknown",
+    "display_text": "官网购物指南按注册、登录后下单；免注册购买未核实。"
+  },
+  "shipping": {
+    "source_url": "https://www.decathlon.com.cn/help/delivery-method",
+    "page_updated_at": null,
+    "market": "CN mainland only",
+    "excluded_regions": [
+      "Hong Kong",
+      "Macau",
+      "Taiwan",
+      "overseas"
+    ],
+    "currency": "CNY",
+    "standard_carrier": "顺丰速运",
+    "free_threshold": 99,
+    "threshold_basis": "single order actual paid amount",
+    "standard_below_threshold_fee": 8,
+    "exception": "自行车不适用以上统一运费规则",
+    "same_day": {
+      "name": "2小时就近门店极速达",
+      "only_selected_stores": true,
+      "fee_at_or_above_99": 2,
+      "fee_below_99": 10,
+      "address_eligibility": "unverified"
+    },
+    "store_pickup": {
+      "fee": 0,
+      "fee_source": "https://www.decathlon.com.cn/product-detail?dsm_code=355348",
+      "cash_on_delivery": false,
+      "hold_days": 7
+    },
+    "caveats": [
+      "不同仓库/门店可能拆包。",
+      "按收货地址、商品及数量计算，实际结算为准。",
+      "官网仅写尽快发货，未验证特定地址时效。"
+    ],
+    "inventory_caveat": "官网说明下单和发货时均检查库存，但系统时差/实际库存差异可能导致无法备货；缺货会在下单48小时内联系。"
+  },
+  "returns": {
+    "source_url": "https://www.decathlon.com.cn/help/return-goods",
+    "page_updated_at": "2026-03-11",
+    "effective_date": "2026-03-18",
+    "scope": "中国大陆官方渠道迪卡侬自有品牌商品；其他品牌和官方二手商品另看具体页面",
+    "conditions": [
+      "未经使用、洗涤或损坏",
+      "原始包装及吊牌完整",
+      "不影响二次销售",
+      "有效购买凭证"
+    ],
+    "general_days_limit": null,
+    "exceptions": [
+      "非生活消费购买",
+      "非官方渠道",
+      "无有效购买凭证",
+      "商品性质不适合，如部分已拆封密封包装商品、内裤，按详情标识",
+      "购买时另有约定或活动规则"
+    ],
+    "online_exchange": "官网/小程序、微信小店不直接换货，可退货后重新购买",
+    "store_return": "官方线上商品可在门店退换，拼多多例外；非原购买店铺退货以礼品卡退款",
+    "original_channel_refund": "通常原路退回；礼品卡支付部分仍退礼品卡",
+    "postage": {
+      "seller_fault": "迪卡侬承担往来邮费，例如制造质量、货不对版、物流问题",
+      "buyer_reason": "买家承担往来邮费；原包邮商品只承担退货邮费"
+    },
+    "processing": "仓库签收通常3个工作日内质检，通过后3个工作日内操作退款；到账另取决支付渠道",
+    "conflict_note": "配送FAQ自提段仍写退货寄回仓库；2026-03更新的专门退换货页面明确允许线下门店，应优先按专门现行规则说明。"
+  },
+  "coupon": {
+    "source_url": "https://www.decathlon.com.cn/product-detail?dsm_code=355348",
+    "displayed_base_price": 399.9,
+    "displayed_estimated_after_coupon": 369.9,
+    "displayed_threshold_discount": "满300减30",
+    "requires_claim": true,
+    "expires_at": null,
+    "eligibility": null,
+    "stacking": null,
+    "verified_applied": false,
+    "display_rule": "标价399.90为实际报价；369.90只能写需领券预估价，资格和期限以官方领取页为准。未点击领取或登录。"
+  },
+  "recommended_payment_copy": "官方帮助列示支付宝、微信、银联及部分银行卡/Visa；实际可用方式请在结账确认。",
+  "sources_are_public": true
+}

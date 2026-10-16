@@ -24,9 +24,13 @@ function assertChinaStore(data){
  assert.deepEqual(row.merchant_hosts,channel.merchant_hosts);
  assert.deepEqual(row.methods.map(m=>m.method_key).sort(),['cards','china_issued_cards','paypal','apple_pay','google_pay','alipay','wechat_pay','unionpay','bank_transfer_local','gift_cards','instalments'].sort());
  for(const method of row.methods){
-  assert.equal(method.status,'unknown');assert.equal(method.china_applicability.status,'unknown');
-  assert.equal(method.merchant_evidence_status,'unavailable');assert.deepEqual(method.evidence_urls,[]);
-  assert.equal(method.checked_at,null);assert.ok(method.note.trim());assert.ok(method.account_region_constraints.trim());
+  const listed=['cards','china_issued_cards','alipay','wechat_pay','unionpay'].includes(method.method_key);
+  assert.equal(method.status,listed?'conditional':'unknown');assert.equal(method.china_applicability.status,'unknown');
+  assert.equal(method.merchant_evidence_status,listed?'official_text':'unavailable');
+  assert.deepEqual(method.evidence_urls,listed?['https://www.decathlon.com.cn/help/introduction']:[]);
+  assert.equal(method.checked_at,listed?'2026-10-16':null);assert.ok(method.note.trim());assert.ok(method.account_region_constraints.trim());
+  if(listed){assert.equal(method.evidence_class,'official_confirmed');assert.ok(method.note.includes('官方帮助'));assert.ok(method.note.includes('未实测'));}
+  if(method.method_key==='cards')assert.deepEqual(method.card_networks,['Visa']);
  }
  assert.ok(data.entries.some(r=>r.source_code==='decathlon'),'The existing French team merchant remains separately covered');
 }
