@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "registration-guides-20261016-real-accounts-v3",
+  "revision": "registration-guides-20261016-real-accounts-v4",
   "entries": [
     {
       "sourceCode": "visma",
@@ -1398,6 +1398,439 @@
           ],
           "screenshotOrigin": "https://shopaccount.bioracer.com",
           "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "teamcycles",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：Team Cycles 英国零售商 / GBP，英语",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:46:00Z",
+      "frames": [
+        {
+          "id": "teamcycles-gb-register",
+          "asset": "assets/registration/teamcycles-gb-register.jpg",
+          "sourceUrl": "https://www.teamcycles.com/account/login/",
+          "verifiedAt": "2026-10-16T02:46:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从官网账户图标 → Login to My Account → New Account 展开注册表。此图属于 Team Cycles 零售商；并非同名车队或其他品牌账户。",
+          "alt": "从官网账户图标 → Login to My Account → New Account 展开注册表。此图属于 Team Cycles 零售商；并非同名车队或其他品牌账户。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "名与姓",
+              "description": "First name＝名；Last name＝姓；星号为必填。",
+              "x": 18.8,
+              "y": 31,
+              "width": 63,
+              "height": 15
+            },
+            {
+              "label": "邮箱地址",
+              "description": "Email address＝邮箱地址。",
+              "x": 18.8,
+              "y": 47,
+              "width": 63,
+              "height": 7
+            },
+            {
+              "label": "密码与确认密码",
+              "description": "Password＝密码；Confirm Password＝再次输入密码。",
+              "x": 18.8,
+              "y": 55.5,
+              "width": 63,
+              "height": 15
+            },
+            {
+              "label": "营销邮件可选",
+              "description": "勾选表示加入 Team Cycles 营销邮件列表；页面说明可随时退订。实拍未勾选。",
+              "x": 18.8,
+              "y": 72,
+              "width": 63,
+              "height": 6
+            },
+            {
+              "label": "创建新账户",
+              "description": "Create New Account＝创建新账户。未提交，后续验证与密码规则未核验。",
+              "x": 18.8,
+              "y": 79,
+              "width": 63,
+              "height": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "sigmasports",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：Sigma Sports 英国 / GBP 入口，英语",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:46:00Z",
+      "frames": [
+        {
+          "id": "sigmasports-gb-account-email",
+          "asset": "assets/registration/sigmasports-gb-account-email.jpg",
+          "sourceUrl": "https://www.sigmasports.com/account/register",
+          "verifiedAt": "2026-10-16T02:46:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从英国 GBP 官网 Sign Up 进入 shopify.com 托管认证。此为 Sigma Sports 零售商账户；当前屏没有密码栏，后续验证未测试。",
+          "alt": "从英国 GBP 官网 Sign Up 进入 shopify.com 托管认证。此为 Sigma Sports 零售商账户；当前屏没有密码栏，后续验证未测试。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Sign in or create an account＝登录或创建账户。",
+              "x": 33.8,
+              "y": 32,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "Shop 登录方式",
+              "description": "Continue with Shop＝使用 Shop 继续；也可选下方邮箱入口。",
+              "x": 33.8,
+              "y": 41.8,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "邮箱地址",
+              "description": "Email＝邮箱，右侧箭头继续。未填写或发送验证。",
+              "x": 33.8,
+              "y": 54.4,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "营销邮件可选",
+              "description": "Email me with news and offers＝接收新闻优惠邮件。实拍未勾选。",
+              "x": 33.8,
+              "y": 63,
+              "width": 33,
+              "height": 4
+            },
+            {
+              "label": "服务条款",
+              "description": "继续即同意 Terms of service＝服务条款；底部有隐私政策入口。",
+              "x": 33.8,
+              "y": 68,
+              "width": 33,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "rapha_kr",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：韩国 KR / KRW 韩文入口；认证实际显示繁体中文",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:46:00Z",
+      "frames": [
+        {
+          "id": "rapha-kr-account-entry",
+          "asset": "assets/registration/rapha-kr-account-entry.jpg",
+          "sourceUrl": "https://www.rapha.cc/kr/ko",
+          "verifiedAt": "2026-10-16T02:46:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "实际在官网选择韩国与 Korean 后打开 /kr/ko。右上账户菜单为韩文；仅说明韩国入口，不代表支付、转运或配送条件。",
+          "alt": "实际在官网选择韩国与 Korean 后打开 /kr/ko。右上账户菜单为韩文；仅说明韩国入口，不代表支付、转运或配送条件。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "账户菜单",
+              "description": "계정＝账户。点击右上人物图标展开。",
+              "x": 91,
+              "y": 7,
+              "width": 3,
+              "height": 6
+            },
+            {
+              "label": "已有账户登录",
+              "description": "로그인＝登录；已有账户选择此项。",
+              "x": 73,
+              "y": 13,
+              "width": 20,
+              "height": 7
+            },
+            {
+              "label": "注册入口",
+              "description": "가입＝注册；点击进入 Rapha 统一认证页面。",
+              "x": 73,
+              "y": 20,
+              "width": 20,
+              "height": 7
+            }
+          ]
+        },
+        {
+          "id": "rapha-kr-register",
+          "asset": "assets/registration/rapha-kr-register.jpg",
+          "sourceUrl": "https://www.rapha.cc/kr/ko",
+          "verifiedAt": "2026-10-16T02:46:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "由韩国官网 가입 实际跳转 auth.rapha.cc 的空白注册页。本次认证页显示繁体中文，与韩文商城入口语言不同；不要据此推断销售地区改变。",
+          "alt": "由韩国官网 가입 实际跳转 auth.rapha.cc 的空白注册页。本次认证页显示繁体中文，与韩文商城入口语言不同；不要据此推断销售地区改变。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "邮箱",
+              "description": "電子郵件地址＝邮箱地址。",
+              "x": 36.4,
+              "y": 40.5,
+              "width": 27.2,
+              "height": 9
+            },
+            {
+              "label": "密码",
+              "description": "密碼＝密码；眼睛图标用于显示密码。",
+              "x": 36.4,
+              "y": 50,
+              "width": 27.2,
+              "height": 8
+            },
+            {
+              "label": "继续",
+              "description": "繼續＝继续。未点击，后续激活未核验。",
+              "x": 36.4,
+              "y": 60,
+              "width": 27.2,
+              "height": 8
+            },
+            {
+              "label": "已有账户",
+              "description": "已有帳戶？登入＝已有账户可登录。",
+              "x": 36.4,
+              "y": 69.5,
+              "width": 27.2,
+              "height": 4
+            },
+            {
+              "label": "条款与隐私",
+              "description": "底部说明注册表示同意条款，并阅读隐私及 Cookie 说明。",
+              "x": 21,
+              "y": 94,
+              "width": 58,
+              "height": 5
+            }
+          ],
+          "screenshotOrigin": "https://auth.rapha.cc",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "castelli",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：官网地区提示选 United States / USD 后的英语账户入口",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:46:00Z",
+      "frames": [
+        {
+          "id": "castelli-us-account-email",
+          "asset": "assets/registration/castelli-us-account-email.jpg",
+          "sourceUrl": "https://www.castelli-cycling.com/en-us",
+          "verifiedAt": "2026-10-16T02:46:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "官网先提示选择地区，本次选择 United States / English 后从 ACCOUNT 进入 shopify.com。此图仅记录美国入口的公开账户页，不代表其他市场付款或配送条件。",
+          "alt": "官网先提示选择地区，本次选择 United States / English 后从 ACCOUNT 进入 shopify.com。此图仅记录美国入口的公开账户页，不代表其他市场付款或配送条件。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Sign in or create an account＝登录或创建账户。",
+              "x": 8.9,
+              "y": 32,
+              "width": 32.5,
+              "height": 8
+            },
+            {
+              "label": "Shop 登录方式",
+              "description": "Continue with Shop＝使用 Shop 继续；与下方邮箱方式不同。",
+              "x": 8.9,
+              "y": 41.8,
+              "width": 32.5,
+              "height": 7
+            },
+            {
+              "label": "邮箱地址",
+              "description": "Email＝邮箱，右侧箭头继续；本屏无密码栏，未提交。",
+              "x": 8.9,
+              "y": 54.4,
+              "width": 32.5,
+              "height": 7
+            },
+            {
+              "label": "营销默认勾选",
+              "description": "Email me with news and offers＝发送新闻与优惠邮件。实拍默认选中，可按意愿取消。",
+              "x": 8.9,
+              "y": 63,
+              "width": 32.5,
+              "height": 4
+            },
+            {
+              "label": "条款与隐私",
+              "description": "继续即同意 Terms of service＝服务条款；底部 Privacy policy＝隐私政策。",
+              "x": 8.9,
+              "y": 68,
+              "width": 32.5,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "pns",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：Rest of EU / EUR，英语",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:52:00Z",
+      "frames": [
+        {
+          "id": "pns-eu-register",
+          "asset": "assets/registration/pns-eu-register.jpg",
+          "sourceUrl": "https://pasnormalstudios.com/eu/account",
+          "verifiedAt": "2026-10-16T02:52:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "从欧洲官网账户图标进入，点 Create your account 打开 International Cycling Club 注册表。本次保持 Rest of EU 市场。仅核验空表单，未注册或连接第三方账号。",
+          "alt": "从欧洲官网账户图标进入，点 Create your account 打开 International Cycling Club 注册表。本次保持 Rest of EU 市场。仅核验空表单，未注册或连接第三方账号。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "其他登录方式",
+              "description": "Strava、Microsoft、Google、Apple 为第三方登录选项；未连接或授权。",
+              "x": 54.5,
+              "y": 40,
+              "width": 39,
+              "height": 7
+            },
+            {
+              "label": "邮箱地址",
+              "description": "Email＝邮箱。",
+              "x": 54.5,
+              "y": 54.5,
+              "width": 39,
+              "height": 9
+            },
+            {
+              "label": "创建密码",
+              "description": "Create Password＝创建密码；页面说明至少含一位数字、一位大写及一位小写字母。未测试其他规则。",
+              "x": 54.5,
+              "y": 64.5,
+              "width": 39,
+              "height": 11
+            },
+            {
+              "label": "注册",
+              "description": "Sign up＝注册；未点击，后续激活未核验。",
+              "x": 54.5,
+              "y": 77,
+              "width": 39,
+              "height": 6
+            },
+            {
+              "label": "条款与已有账户",
+              "description": "继续即同意条款及隐私政策；Already have an account? Login＝已有账户请登录。",
+              "x": 54.5,
+              "y": 84.5,
+              "width": 39,
+              "height": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "nsn",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：NSN渠道对应 Ekoï 商店；实际美国 / USD 入口，英语",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:52:00Z",
+      "frames": [
+        {
+          "id": "nsn-ekoi-us-account-email",
+          "asset": "assets/registration/nsn-ekoi-us-account-email.jpg",
+          "sourceUrl": "https://www.ekoi.com/en-us/module/ekoilogin/login",
+          "verifiedAt": "2026-10-16T02:52:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "从 Ekoï 官网 My Account 进入，当前自动落在 /en-us 美国英语站。此为 NSN 渠道销售商 Ekoï 的公共账户入口，不是独立车队账号，也不代表配置中的阿联酋市场交易条件。",
+          "alt": "从 Ekoï 官网 My Account 进入，当前自动落在 /en-us 美国英语站。此为 NSN 渠道销售商 Ekoï 的公共账户入口，不是独立车队账号，也不代表配置中的阿联酋市场交易条件。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或注册",
+              "description": "Log in · Register＝登录或注册；说明输入邮箱可登录或创建账户。",
+              "x": 29,
+              "y": 36,
+              "width": 41,
+              "height": 9
+            },
+            {
+              "label": "邮箱与下一步",
+              "description": "Mail＝邮箱；NEXT＝下一步。未填写或提交，下一步是否要求密码或验证码未核验。",
+              "x": 29,
+              "y": 46,
+              "width": 41,
+              "height": 7
+            },
+            {
+              "label": "第三方登录",
+              "description": "下方为 Google、Facebook、Apple 登录选项。本次Google按钮显示中文，未连接任何账户。",
+              "x": 38,
+              "y": 62,
+              "width": 23,
+              "height": 18
+            },
+            {
+              "label": "需要帮助",
+              "description": "Need help?＝需要帮助，进入官方支持。",
+              "x": 45.5,
+              "y": 89,
+              "width": 10,
+              "height": 4
+            }
+          ]
         }
       ]
     }
