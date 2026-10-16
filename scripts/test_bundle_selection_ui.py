@@ -127,6 +127,16 @@ def intercept_request(route, state, base):
         state['outbound'].append(route.request.url)
         return route.fulfill(content_type='text/html',
                              body='<title>Mock official destination</title><p>Navigation fixture only.</p>')
+    if parsed.path.endswith('/purchase-readiness.json'):
+        # The genuine bundle snapshot deliberately runs at its historical clock.
+        # Exclude later policy observations instead of redating merchant evidence
+        # or advancing the clock and expiring the captured stock observations.
+        policy = json.loads((ROOT / 'web/purchase-readiness.json').read_text())
+        historical_day = state['clock'].date().isoformat()
+        assert policy['checkedAt'] <= historical_day, 'Historical readiness fixture needs an explicit baseline'
+        policy['entries'] = [entry for entry in policy['entries']
+                             if entry.get('checkedAt', policy['checkedAt']) <= historical_day]
+        return route.fulfill(content_type='application/json', body=json.dumps(policy))
     if not parsed.path.startswith('/api/'):
         return route.continue_()
     if parsed.path == '/api/catalog':
@@ -448,6 +458,7 @@ def main():
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 try:
                     page.goto(base, wait_until='networkidle')
+                    page.wait_for_function("readinessState === 'ready'")
                     row = exercise_real_bundle(page, context, state, mode)
                     exercise_sparse_and_refresh(page, state, row)
                     exercise_compatibility(page, state, mode)
