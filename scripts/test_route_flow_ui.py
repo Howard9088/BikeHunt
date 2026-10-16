@@ -35,9 +35,31 @@ def assert_routes(page):
     assert panel.evaluate('el => el.scrollWidth <= el.clientWidth + 1')
 
 
+def assert_action_colors(locator, selected=True):
+    """Check rendered hierarchy, not CSS text; keep native disabled semantics."""
+    colors = locator.evaluate("""el => {
+        const style = getComputedStyle(el);
+        const probe = document.createElement('span');
+        probe.style.color = 'var(--blue)';
+        document.body.append(probe);
+        const blue = getComputedStyle(probe).color;
+        probe.remove();
+        return {background: style.backgroundColor, color: style.color,
+                border: style.borderTopColor, blue};
+    }""")
+    if selected:
+        assert colors['background'] == colors['blue'], colors
+        assert colors['color'] == 'rgb(255, 255, 255)', colors
+    else:
+        assert colors['background'] == 'rgb(255, 255, 255)', colors
+        assert colors['color'] != colors['background'], colors
+
+
 def select_route(page, name):
     page.locator(f'[data-route-select="{name}"]').click()
     expect(page.locator('#routeContinue')).to_be_enabled()
+    assert_action_colors(page.locator(f'[data-route-select="{name}"]'))
+    assert_action_colors(page.locator('#routeContinue'))
 
 
 def main():
@@ -99,6 +121,8 @@ def main():
                 expect(page.locator('#variant')).to_be_visible()
                 assert_no_early_registration(page)
                 page.locator('[data-variant="S"]').click()
+                assert_action_colors(page.locator('[data-variant="S"]'))
+                assert_action_colors(page.locator('[data-offer="offer-maap"]'))
                 expect(page.locator('.offer .payment-feasibility')).to_have_count(4)
                 expect(page.locator('.offer .purchase-readiness')).to_have_count(0)
                 assert_no_early_registration(page)
@@ -110,6 +134,8 @@ def main():
                 expect(page.locator('[data-route="direct"]')).to_have_attribute('data-route-status', 'prohibited')
                 expect(page.locator('[data-route-select="direct"]')).to_be_disabled()
                 expect(page.locator('[data-route="hongkong"]')).to_have_attribute('data-route-status', 'unknown')
+                assert_action_colors(page.locator('[data-route-select="hongkong"]'), selected=False)
+                assert page.locator('[data-route-select="direct"]').evaluate('el => getComputedStyle(el).cursor') == 'not-allowed'
                 select_route(page, 'hongkong')
                 expect(page.locator('#routeContinue')).to_contain_text('去官网核实')
                 page.screenshot(path=str(OUT / f'purchase_routes_unknown_{mode}.png'))

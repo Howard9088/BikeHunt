@@ -157,3 +157,25 @@ body .gallery.reference-feed{display:block;scroll-snap-type:none;touch-action:pa
 .registration-demo-field{border:1px solid #d5e1ee;padding:5px 7px;background:#fff;border-radius:4px;font-size:10px;color:#526b83;line-height:1.4}
 @media(max-width:700px){.registration-schematic-steps{grid-template-columns:1fr}.registration-schematic{padding:11px}.registration-schematic-step{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start}.registration-schematic-step>strong{align-self:center}.registration-schematic-step .registration-demo-window,.registration-schematic-step>p{grid-column:1/-1}.registration-demo-window{min-height:0}}
 @media(max-width:350px){.registration-schematic{padding:9px}.registration-schematic-step{padding:9px}.registration-schematic-heading>strong{font-size:14px}}
+
+/* Shared action hierarchy: selected single choices and primary actions. */
+.profile-bar button[aria-pressed=true]:not(:disabled),
+.category-nav button[aria-pressed=true]:not(:disabled),
+.category-group-nav button[aria-pressed=true]:not(:disabled),
+.size-choices button[aria-pressed=true]:not(:disabled),
+.route-card button[aria-pressed=true]:not(:disabled){
+  background:var(--blue);border-color:var(--blue);color:#fff
+}
+.size-choices button:not([aria-pressed=true]):not(:disabled),
+.route-card button:not([aria-pressed=true]):not(:disabled){
+  background:#fff;border-color:#bfd1e6;color:#0758ba
+}
+.guide-start:not(:disabled),.guide-actions button#guideNext:not(:disabled),
+#routeContinue:not(:disabled),#registrationContinue:not(:disabled){
+  background:var(--blue);border-color:var(--blue);color:#fff
+}
+.guide-start:focus-visible,.size-choices button:focus-visible,
+.profile-bar button:focus-visible,.category-group-nav button:focus-visible,
+.route-card button:focus-visible,#routeContinue:focus-visible,#registrationContinue:focus-visible{
+  outline:3px solid #87baff;outline-offset:3px
+}

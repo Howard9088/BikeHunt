@@ -64,6 +64,15 @@ for(const code of ['trek','specialized','canyon','colnago']){
 assert.ok(purchaseFlow.includes('registrationHelpMarkup('),'Registration help belongs to the final interstitial');
 assert.ok(purchaseFlow.includes('registrationInterstitial'));
 assert.ok(flows.includes("if(!entry.markets.includes(market))entry.markets.push(market)"));
+const jpGuide=context.registrationLanguageMarkup('rapha','日本站 JPY');
+assert.ok(context.registrationLanguageMarkup('rapha','JP').includes('アカウント'));assert.ok(jpGuide.includes('アカウント'));assert.ok(jpGuide.includes('ニュースレター'));
+assert.ok(jpGuide.includes('不是官网截图'));assert.ok(jpGuide.includes('位置不代表官网按钮位置'));
+assert.ok(!jpGuide.includes('<img'));assert.equal(context.registrationLanguageMarkup('rapha','美国站 USD'),'');
+assert.equal(context.registrationLanguageMarkup('rapha_kr','韩国站 KRW'),'');
+assert.equal(context.registrationLanguageMarkup('unknown','日本站'),'');
+assert.ok(context.registrationLanguageMarkup('maap','US').includes('免密码登录'));
+assert.ok(context.registrationLanguageMarkup('uae','US').includes('用户类型'));
+assert.ok(context.registrationHelpMarkup('rapha','日本站').includes('registration-language-guide'));
 (async()=>{
  response=data;await context.loadRegistrationGuides();assert.equal(requests.length,1);assert.equal(requests[0][1].cache,'no-store');assert.ok(requests[0][0].startsWith('https://bikehunt.example/BikeHunt/web/registration-guides.json?check='));
  assert.ok(context.registrationPublicAccountMarkup('visma').includes('<img'));

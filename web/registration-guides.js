@@ -120,8 +120,47 @@ function registrationPublicAccountMarkup(sourceCode){
   const entry=registrationEntry(sourceCode,null,'public_account');
   return entry?.status==='verified'?registrationGuideMarkup(sourceCode,null,'public_account'):'';
 }
+function registrationLanguageGuide(sourceCode,salesRegion){
+  const market=String(salesRegion||'');
+  if(sourceCode==='rapha'&&/日本|\bJP\b|JPY/i.test(market))return {
+    title:'Rapha 日本站：先找到「アカウント」',scope:'日本站账户入口与账户帮助',
+    steps:[
+      {title:'进入账户',pairs:[['アカウント','账户入口'],['サインイン','登录']],text:'在官网找到「アカウント」。已有账户可在账户页登录。不要把首页的邮件订阅当成购物账户注册。'},
+      {title:'看懂账户提示',pairs:[['メールアドレス','邮箱'],['パスワードをお忘れですか？','忘记密码？'],['続行','继续']],text:'忘记密码时，按账户页提示使用自己的邮箱。继续前核对原文；新用户的创建账户方式以当前账户页为准。'},
+      {title:'区分邮件订阅',pairs:[['ニュースレター','邮件资讯订阅'],['登録する','登记／订阅（取决于所在区域）']],text:'首页「ニュースレター」下的「登録する」是邮件订阅入口，不代表已创建购物账户。'}
+    ],
+    sources:[['日本站首页','https://www.rapha.cc/jp/ja'],['日文账户帮助','https://support.rapha.cc/ja/articles/469']]
+  };
+  if(sourceCode==='maap')return {
+    title:'MAAP：用自己的邮箱进入账户',scope:'MAAP 官方账户帮助；各地区购买条件另行确认',
+    steps:[
+      {title:'准备能收信的邮箱',pairs:[['Email','邮箱'],['Account','账户']],text:'使用自己能收到邮件的邮箱。已有订单建议使用下单时的同一邮箱。'},
+      {title:'按页面选择登录方式',pairs:[['Passwordless login','免密码登录'],['Secure link','安全登录链接']],text:'官方帮助介绍了发送安全链接到已登记邮箱的登录方式。如页面提供该方式，打开自己的邮箱并按邮件提示继续，不必在本站填写密码。'},
+      {title:'核对账户与订单',pairs:[['Orders','订单'],['Email address','邮箱地址']],text:'官方帮助说明，同一邮箱下的订单可关联到账户。具体入口与登录选项请以当前 MAAP 页面为准。'}
+    ],
+    sources:[['MAAP 官方账户帮助','https://support.maap.cc/hc/en-us/articles/7580094532749-I-want-to-reset-my-password']]
+  };
+  if(sourceCode==='uae')return {
+    title:'PISSEI：注册表单中文对照',scope:'英文公开注册页；请另外核对所选配送国家',
+    steps:[
+      {title:'先选账户类型',pairs:[['user type','用户类型'],['country','国家']],text:'先确认用户类型。企业信息可能随所选类型出现；普通购物者按自己实际类型及页面必填标记填写。国家选项不代表已确认能够配送。'},
+      {title:'填写自己的资料',pairs:[['name','名字'],['surname','姓氏'],['email address','邮箱'],['password','密码'],['confirm password','确认密码'],['date of birth','出生日期']],text:'字段旁的星号表示必填。只在 PISSEI 官网填写个人资料，并按原站密码要求操作。'},
+      {title:'分开看隐私与推广选项',pairs:[['privacy policy','隐私政策'],['promotional emails','推广邮件']],text:'阅读隐私政策，分别判断资料处理与推广邮件选项，再按官网当前按钮继续。不要把订阅推广邮件理解为付款。'}
+    ],
+    sources:[['PISSEI 英文注册页','https://www.pissei.com/en/registration']]
+  };
+  return null;
+}
+function registrationLanguageMarkup(sourceCode,salesRegion){
+  const guide=registrationLanguageGuide(sourceCode,salesRegion),escape=registrationEscape;
+  if(!guide)return '';
+  return '<section class="registration-language-guide" aria-label="官网账户中文指引"><h3>'+escape(guide.title)+'</h3><p>'+escape(guide.scope)+'</p><p>下面是根据官网文字整理的操作示意，不是官网截图；卡片位置不代表官网按钮位置。</p>'+
+    guide.steps.map((step,index)=>'<figure class="merchant-diagram"><figcaption>'+String(index+1)+'. '+escape(step.title)+' · 操作示意</figcaption><div class="merchant-diagram-cells">'+step.pairs.map(pair=>'<div><b>'+escape(pair[0])+'</b><span>'+escape(pair[1])+'</span></div>').join('')+'</div><p>'+escape(step.text)+'</p></figure>').join('')+
+    '<p>参考：'+guide.sources.map(pair=>'<a href="'+escape(pair[1])+'" target="_blank" rel="noopener noreferrer">'+escape(pair[0])+'</a>').join(' · ')+'</p></section>';
+}
+
 function registrationHelpMarkup(sourceCode,salesRegion){
-  return '<div class="registration-help" data-registration-help="'+registrationEscape(sourceCode)+'">'+registrationGuideMarkup(sourceCode,salesRegion)+'<div class="registration-public-account">'+registrationPublicAccountMarkup(sourceCode)+'</div></div>';
+  return '<div class="registration-help" data-registration-help="'+registrationEscape(sourceCode)+'">'+registrationLanguageMarkup(sourceCode,salesRegion)+registrationGuideMarkup(sourceCode,salesRegion)+'<div class="registration-public-account">'+registrationPublicAccountMarkup(sourceCode)+'</div></div>';
 }
 function refreshRegistrationGuides(){
   document.querySelectorAll('.registration-guide').forEach(node=>{
