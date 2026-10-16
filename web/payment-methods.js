@@ -72,20 +72,20 @@ function paymentPolicy(offer={}){
   return matching.find(row=>row.scope==='market'&&row.sales_region===paymentMarket(offer.sales_region))||matching.find(row=>row.scope==='merchant')||null;
 }
 function paymentMissingReason(offer={}){
-  if(paymentState==='loading')return '支付资料仍在读取，尚不能确认本商店、本市场。';
-  if(paymentState==='error')return '支付资料未能通过读取或校验，本次不使用旧卡种字段作支持结论。';
+  if(paymentState==='loading')return '正在加载这家商店的支付说明，请稍候。';
+  if(paymentState==='error')return '支付说明暂时无法加载，请稍后重试；付款前请在商家结账页确认。';
   const channel=paymentChannels?.channels.find(x=>x.source_code===offer.source_code);
-  if(!channel)return '当前来源尚未绑定已核实商家身份，不套用同品牌其他商店。';
-  if(!paymentHttps(offer.url,channel.merchant_hosts))return '当前链接缺失或与登记商家域名不一致，不能套用该商家的支付资料。';
-  if(!channel.sales_regions.includes(paymentMarket(offer.sales_region)))return '当前报价市场与已记录市场不一致，不套用其他国家站点的支付条件。';
+  if(!channel)return '这家商店的身份与支付方式尚未确认，请先向品牌核实。';
+  if(!paymentHttps(offer.url,channel.merchant_hosts))return '当前链接与已核实商店不一致，请返回商品重新选择。';
+  if(!channel.sales_regions.includes(paymentMarket(offer.sales_region)))return '这份支付说明不适用于当前国家或地区，请在商家结账页确认。';
   return '尚未取得本商店、本市场可用的逐项支付依据；官网未列某方式也不等于明确不支持。';
 }
 function paymentDisplayText(value){
   const names={cash_on_delivery:'货到付款',cycle_to_work:'骑行通勤福利计划',gift_card_online_purchase:'在线购买礼品卡',paypal_cheque:'PayPal 电子支票',prepaid_cards:'预付卡',revolut_pay:'Revolut Pay',shop_pay:'Shop Pay',unionpay_debit:'银联借记卡',requires_eligible_foreign_account:'需符合资格的境外账户，中国本地账户不自动满足'};
   return names[value]||String(value).replaceAll('observed_market=JP/JPY','本次观察为日本站／日元报价');
 }
-function paymentEvidenceClassLabel(value){return ({official_confirmed:'官方文字有明确说明',page_visible_china_unknown:'页面元素或模板记录，结账与中国适用性未确认',insufficient_evidence:'依据不足',explicitly_unsupported:'官方明确限制',historical_official:'历史官方依据',official_text:'官方文字',official_icons_only:'仅页面图标'})[value]||'证据层级见本项原文说明'}
-function paymentEvidenceDetailLabel(value){return ({not_found:'未找到足够说明',hidden_template:'仅隐藏模板，未确认已启用',footer_icons:'仅页脚图标',blocked:'页面访问受限',page_template:'页面模板，非结账验证'})[value]||(/^[a-z_]+$/.test(value)?'具体证据限制见本项说明':value)}
+function paymentEvidenceClassLabel(value){return ({official_confirmed:'官方文字有明确说明',page_visible_china_unknown:'当前订单及中国用户是否适用尚未确认',insufficient_evidence:'依据不足',explicitly_unsupported:'官方明确限制',historical_official:'历史官方依据',official_text:'官方文字',official_icons_only:'仅页面图标'})[value]||'具体条件请查看商家说明'}
+function paymentEvidenceDetailLabel(value){return ({not_found:'未找到足够说明',hidden_template:'当前订单是否提供此方式尚未确认',footer_icons:'仅页脚图标',blocked:'页面访问受限',page_template:'当前订单是否提供此方式尚未确认'})[value]||(/^[a-z_]+$/.test(value)?'具体条件请查看本项说明':value)}
 function paymentChinaLabel(value){
   if(value&&typeof value==='object'){
     // A merchant-wide rejection does not need separate China-account proof.
@@ -123,8 +123,8 @@ function paymentMethodContent(method,context){
     (Array.isArray(networks)&&networks.length?'<p>记录的卡组织（条件见本项说明）：'+networks.map(esc).join(' / ')+'。不代表中国发行卡获批。</p>':'')+
     '<p><b>中国卡／账户：</b>'+esc(paymentChinaLabel(method.china_applicability))+'</p>'+
     '<p><b>地区条件：</b>'+esc(method.account_region_constraints)+'</p>'+
-    (evidenceClass?'<p class="payment-method-meta">证据层级：'+esc(paymentEvidenceClassLabel(evidenceClass))+'</p>':'')+
-    (method.merchant_evidence_detail?'<p class="payment-method-meta">取证限制：'+esc(paymentEvidenceDetailLabel(method.merchant_evidence_detail))+'</p>':'')+
+    (evidenceClass?'<p class="payment-method-meta">商家说明：'+esc(paymentEvidenceClassLabel(evidenceClass))+'</p>':'')+
+    (method.merchant_evidence_detail?'<p class="payment-method-meta">使用前请确认：'+esc(paymentEvidenceDetailLabel(method.merchant_evidence_detail))+'</p>':'')+
     '<p class="payment-method-meta">核对日期：'+esc(method.checked_at||'未取得可核对资料')+(method.merchant_evidence_status?' · '+esc(PAYMENT_EVIDENCE[method.merchant_evidence_status]):'')+'</p>'+
     (method.evidence_urls.length?'<div class="payment-evidence-links">'+method.evidence_urls.map((url,i)=>paymentEvidenceLink(url,context,method,i)).join('')+'</div>':'<p class="payment-method-meta">本项暂无可引用的官方依据；不据此判定不支持。</p>')+'</dd></div>';
 }
@@ -132,7 +132,7 @@ function paymentDetailsContent(offer,context){
   const result=paymentSummary(offer),row=result.row,esc=paymentEscape;
   return '<p class="payment-scope">'+esc(row?.merchant_name||offer.source_name||offer.source_code||'当前商店')+' · '+esc(offer.sales_region||'未记录市场')+'</p>'+
     (row?'<p class="payment-evidence-type">'+esc(PAYMENT_EVIDENCE[row.merchant_evidence_status])+'。'+esc(paymentDisplayText(row.scope_note))+'</p>':'<p>'+esc(paymentMissingReason(offer))+'</p>')+
-    '<p class="payment-caveat">卡组织支持不等于中国发行卡获批；钱包也不能保证底层卡成功。页面未列或未见标志不等于明确不支持。没有实测注册、绑卡或付款。</p>'+
+    '<p class="payment-caveat">卡组织支持不等于中国发行卡获批；钱包也不能保证底层卡成功。页面未列或未见标志不等于明确不支持。最终能否付款，以商家结账页和支付机构授权结果为准。</p>'+
     '<dl class="payment-method-list">'+result.methods.map(method=>paymentMethodContent(method,context)).join('')+'</dl>';
 }
 function paymentPanelContent(offer,context,compact=true){
@@ -172,7 +172,7 @@ function allowedPaymentLink(link){
 function guardPaymentExit(event){
   const link=event.target.closest?.('a[data-payment-link]');if(!link||(event.type==='auxclick'&&event.button!==1))return;
   event.preventDefault();const allowed=allowedPaymentLink(link);if(!allowed)return;
-  showExternalExit({url:allowed.url,kind:'reference',label:'支付方式官方依据',trigger:link,sourceNote:'本项资料核对：'+allowed.checkedAt+'。仅适用该商家及记录市场；历史资料、图标和账户地区限制见逐项说明。',note:'即将查看官方支付说明。方式受支持不代表中国发行卡或中国账户一定可用。不会代你注册、登录、填卡或付款。',validate:()=>allowedPaymentLink(link)?.url===allowed.url,onConfirm:()=>{if(typeof saveBrowseState==='function')saveBrowseState()}});
+  showExternalExit({url:allowed.url,kind:'reference',label:'支付方式官方依据',trigger:link,sourceNote:'本项资料核对：'+allowed.checkedAt+'。仅适用该商家及记录市场；历史资料、图标和账户地区限制见逐项说明。',note:'即将查看官方支付说明。方式受支持不代表中国发行卡或中国账户一定可用。请在商家页面自行完成账户与付款操作。',validate:()=>allowedPaymentLink(link)?.url===allowed.url,onConfirm:()=>{if(typeof saveBrowseState==='function')saveBrowseState()}});
 }
 for(const type of ['click','auxclick'])document.addEventListener(type,guardPaymentExit);
 async function loadPaymentMethods(){

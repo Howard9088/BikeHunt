@@ -60,10 +60,10 @@ function registrationEntry(sourceCode,salesRegion,scope='market'){
   const key=registrationKey(sourceCode,salesRegion,scope);
   return registrationData.entries.find(entry=>registrationKey(entry.sourceCode,entry.salesRegion,entry.scope)===key)||null;
 }
-function registrationScopeLabel(salesRegion,scope){return scope==='public_account'?'公开账户页，销售市场未核实':registrationText(salesRegion)?salesRegion:'报价销售市场未核实'}
+function registrationScopeLabel(salesRegion,scope){return scope==='public_account'?'账户注册':registrationText(salesRegion)?salesRegion:'账户注册'}
 function registrationImageMarkup(frame){
   const escape=registrationEscape;
-  return '<div class="registration-image-wrap"><img data-registration-image src="'+escape(new URL(frame.asset,REGISTRATION_BASE).href)+'" alt="'+escape(frame.alt)+'" loading="lazy" decoding="async">'+frame.annotations.map((note,index)=>'<span class="registration-annotation" aria-hidden="true" style="left:'+note.x+'%;top:'+note.y+'%;width:'+note.width+'%;height:'+note.height+'%"><span>'+(index+1)+'</span></span>').join('')+'</div><p class="registration-image-error" role="status" hidden>截图暂时无法载入，请稍后重新展开图解。未用示意图代替真实页面。</p>';
+  return '<div class="registration-image-wrap"><img data-registration-image src="'+escape(new URL(frame.asset,REGISTRATION_BASE).href)+'" alt="'+escape(frame.alt)+'" loading="lazy" decoding="async">'+frame.annotations.map((note,index)=>'<span class="registration-annotation" aria-hidden="true" style="left:'+note.x+'%;top:'+note.y+'%;width:'+note.width+'%;height:'+note.height+'%"><span>'+(index+1)+'</span></span>').join('')+'</div><p class="registration-image-error" role="status" hidden>图片暂时无法显示，请参考下方注册步骤。</p>';
 }
 function registrationFrameMarkup(frame){
   return '<div class="registration-preview">'+registrationImageMarkup(frame)+'</div><details class="registration-zoom"><summary><span class="registration-zoom-open">查看大图（原始分辨率）</span><span class="registration-zoom-close">收起大图</span></summary><p>左右、上下滑动查看，中文编号标注保留。可用浏览器双指缩放；键盘 Tab 进入图片区域后，用方向键滚动，Escape 收起并返回此按钮。</p><div class="registration-zoom-viewport" tabindex="0" role="region" aria-label="原始分辨率注册截图，可用方向键横向及纵向滚动">'+registrationImageMarkup(frame)+'</div></details>';
@@ -75,22 +75,19 @@ function closeRegistrationZoom(event){
 }
 function registrationContent(sourceCode,salesRegion,scope='market'){
   const escape=registrationEscape,scopeLabel=registrationScopeLabel(salesRegion,scope),entry=registrationEntry(sourceCode,salesRegion,scope);
-  if(!entry||entry.status!=='verified'){
-    const reason=entry?.status==='needs_review'?'原页面已标记待复核：'+entry.reviewReason:entry?.status==='unverified'?entry.reviewReason:registrationLoadState==='loading'?'正在读取已核对的截图。':registrationLoadState==='error'?'截图资料暂时无法读取。':'尚无这家商店在此范围内已核对的真实注册截图。';
-    return '<p class="registration-status" role="status">注册页面图解待核实 · '+escape(scopeLabel)+'</p><p>'+escape(reason)+'未借用其他市场的图片。</p>'+(entry?'<p class="registration-meta">图解版本：'+escape(entry.revision)+(entry.frames.length?' · 上次页面核对：'+escape(entry.frames.map(frame=>frame.verifiedAt).sort().at(-1)):'')+(entry.checkedAt?' · 资料核对：'+escape(entry.checkedAt):'')+(entry.status==='needs_review'?'。旧图已停用，等待重新核对。':'。尚无可展示的已核实截图。')+'</p>':'')+'<p>可继续阅读通用词语示意，或自行到商家原站核对 Account / Sign in / Create account；本处没有模拟商家截图。</p>';
-  }
-  return '<p class="registration-scope">'+escape(scopeLabel)+' · '+escape(entry.marketLabel)+'</p>'+
-    '<p>以下为公开页面真实截图及中文标注。'+(scope==='public_account'?'仅说明所示公开账户页面，不代表已核实当前报价市场、地区专用账户或结账流程。':'仅适用于所示商店与销售市场。')+'未提交注册或登录；页面可能变化，请对照原站。查看图解不会改变商品购买资格。</p>'+
-    '<p class="registration-meta">图解版本：'+escape(entry.revision)+'</p>'+entry.frames.map(frame=>'<figure class="registration-figure"><figcaption>'+escape(frame.caption)+'</figcaption>'+registrationFrameMarkup(frame)+'<ol class="registration-annotation-list">'+frame.annotations.map(note=>'<li><strong>'+escape(note.label)+'</strong>：'+escape(note.description)+'</li>').join('')+'</ol><p class="registration-meta">页面核对：'+escape(frame.verifiedAt)+' · 截图视口：'+frame.viewport.width+' × '+frame.viewport.height+'。核对日期只记录观察时间，不保证页面至今未变化。</p><p class="registration-source">截图来源：'+escape(frame.sourceUrl)+'</p></figure>').join('');
+  if(!entry||entry.status!=='verified')return '';
+  return '<p class="registration-scope">'+escape(scopeLabel)+(scope!=='public_account'&&entry.marketLabel!==scopeLabel?' · '+escape(entry.marketLabel):'')+'</p>'+
+    '<p>'+(scope==='public_account'?'以下图解介绍商家账户注册。配送地区与购买条件请在结账时确认。':'请按所选商店及地区的页面操作。')+'页面可能更新，请以商家当前页面为准。</p>'+
+    entry.frames.map(frame=>'<figure class="registration-figure"><figcaption>'+escape(frame.caption)+'</figcaption>'+registrationFrameMarkup(frame)+'<ol class="registration-annotation-list">'+frame.annotations.map(note=>'<li><strong>'+escape(note.label)+'</strong>：'+escape(note.description)+'</li>').join('')+'</ol><p class="registration-meta">更新于 '+escape(frame.verifiedAt.slice(0,10))+'</p><p class="registration-source">图片来源：'+escape(frame.sourceUrl)+'</p></figure>').join('');
 }
 function registrationGuideMarkup(sourceCode,salesRegion,scope='market'){
-  const escape=registrationEscape,market=typeof salesRegion==='string'?salesRegion:'';
-  return '<details class="registration-guide" data-registration-source="'+escape(sourceCode)+'" data-registration-market="'+escape(market)+'" data-registration-scope="'+escape(scope)+'"><summary>'+(scope==='public_account'?'公开账户页图解（销售市场未核实）':'注册图解 · '+escape(registrationScopeLabel(market,scope)))+'</summary><div class="registration-content">'+registrationContent(sourceCode,scope==='public_account'?null:market,scope)+'</div></details>';
+  const escape=registrationEscape,market=typeof salesRegion==='string'?salesRegion:'',entry=registrationEntry(sourceCode,scope==='public_account'?null:market,scope);
+  return '<details'+(!entry||entry.status!=='verified'?' hidden':'')+' class="registration-guide" data-registration-source="'+escape(sourceCode)+'" data-registration-market="'+escape(market)+'" data-registration-scope="'+escape(scope)+'"><summary>'+(scope==='public_account'?'账户注册图解':'注册图解 · '+escape(registrationScopeLabel(market,scope)))+'</summary><div class="registration-content">'+registrationContent(sourceCode,scope==='public_account'?null:market,scope)+'</div></details>';
 }
 function registrationPublicAccountMarkup(sourceCode){
   // This is an explicitly separate section, never an exact-market fallback.
   const entry=registrationEntry(sourceCode,null,'public_account');
-  return entry?registrationGuideMarkup(sourceCode,null,'public_account'):'';
+  return entry?.status==='verified'?registrationGuideMarkup(sourceCode,null,'public_account'):'';
 }
 function registrationHelpMarkup(sourceCode,salesRegion){
   return '<div class="registration-help" data-registration-help="'+registrationEscape(sourceCode)+'">'+registrationGuideMarkup(sourceCode,salesRegion)+'<div class="registration-public-account">'+registrationPublicAccountMarkup(sourceCode)+'</div></div>';
@@ -98,12 +95,13 @@ function registrationHelpMarkup(sourceCode,salesRegion){
 function refreshRegistrationGuides(){
   document.querySelectorAll('.registration-guide').forEach(node=>{
     const scope=node.dataset.registrationScope,market=scope==='public_account'?null:node.dataset.registrationMarket;
+    const entry=registrationEntry(node.dataset.registrationSource,market,scope);node.hidden=!entry||entry.status!=='verified';
     const content=node.querySelector('.registration-content');if(content)content.innerHTML=registrationContent(node.dataset.registrationSource,market,scope);
   });
   document.querySelectorAll('[data-registration-help]').forEach(node=>{
     const box=node.querySelector('.registration-public-account'),entry=registrationEntry(node.dataset.registrationHelp,null,'public_account');
-    if(box&&!box.querySelector('.registration-guide')&&entry)box.innerHTML=registrationPublicAccountMarkup(node.dataset.registrationHelp);
-    else if(box&&!entry)box.innerHTML='';
+    if(box&&!box.querySelector('.registration-guide')&&entry?.status==='verified')box.innerHTML=registrationPublicAccountMarkup(node.dataset.registrationHelp);
+    else if(box&&entry?.status!=='verified')box.innerHTML='';
   });
 }
 async function loadRegistrationGuides(){

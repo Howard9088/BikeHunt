@@ -59,9 +59,9 @@ function testHistoricalEmptyRenderAndExactDetail(){
  vm.runInContext(section(flows,'function resetReferenceFeed(','function openRoadReferences('),h.c);
  h.c.items=[stale,card({product_id:'ordinary',reference_original_price:null,fetched_at:new Date(NOW-7200000).toISOString()}),card({product_id:'sold',stock_state:'out_of_stock'})];h.c.render();
  assert.equal(h.elements.get('count').textContent,'0 件商品');assert.equal(h.c.visibleItems().length,0);const html=h.c.gallery.innerHTML;
- assert.ok(html.includes('历史折扣参考 · 1 件'));assert.ok(html.includes('同规格记录原价 US$120.00'));assert.ok(html.includes('记录现价 US$90.00'));assert.ok(html.includes('库存与价格待重新核实'));assert.ok(!html.includes('class="discount"'));assert.ok(!html.includes('data-id="ordinary"'));
- button.onclick();assert.deepEqual(opened,[['stale','v-L']]);stale.reference_stock='out_of_stock';button.onclick();assert.equal(opened.length,1,'A previously rendered history button revalidates stock');
- h.c.render();assert.ok(!h.c.gallery.classList.contains('reference-feed'));assert.ok(h.c.gallery.innerHTML.includes('暂无已核实有货的渠道精选'));
+ assert.ok(html.includes('暂无已核实有货的渠道精选'));assert.ok(!html.includes('历史折扣参考'));assert.ok(!html.includes('historical-reference-card'));assert.equal(opened.length,0);
+ assert.equal(h.c.renderEmptyReferences(),false);assert.ok(!h.c.gallery.classList.contains('reference-feed'));
+
 }
 function testPublishedFactsCannotCrossOffers(){
  const h=harness();Object.assign(h.c,{isRecord:x=>!!x&&typeof x==='object',validDigest:x=>/^[a-f0-9]{64}$/.test(x),validTimestamp:x=>Number.isFinite(Date.parse(x)),publicationMismatch:message=>Error(message)});

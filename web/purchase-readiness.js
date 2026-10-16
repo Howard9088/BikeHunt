@@ -64,9 +64,9 @@ function readinessContent(offer){
   if(changed)delivery='报价规则待复核，暂不确认中国配送';
   const freight=changed?'运费规则待复核':row?.directChina.shippingAmount!==undefined?row.directChina.shippingCurrency+' '+row.directChina.shippingAmount.toFixed(2)+'（官网公布运费，独立于商品币种；非含税总价）':offer.shipping&&offer.shipping.amount!==null&&offer.shipping.amount!==undefined?String(offer.shipping.currency)+' '+String(offer.shipping.amount)+'（报价记录，结账再确认）':'运费待确认';
   const reference=readinessData?.entries.find(item=>item.sourceCode===offer.source_code&&item.scope==='market'&&item.salesRegion!==offer.sales_region&&!item.sourceCode.startsWith('amazon_'));
-  const payment=typeof paymentMethodsMarkup==='function'?paymentMethodsMarkup(offer,false):'<p data-china-card-status="unknown">中国发行卡与其他支付方式：完整支付资料暂不可用；不使用旧卡种字段推断支持。</p>';
+  const payment=typeof paymentMethodsMarkup==='function'?paymentMethodsMarkup(offer,false):'<p data-china-card-status="unknown">支付说明暂时无法加载。中国发行卡或其他支付方式是否可用，请在商家结账页确认。</p>';
   return '<h4>注册前，先确认能不能买</h4><p class="readiness-scope">'+esc(offer.source_name||row?.label||offer.source_code||'当前商店')+' · '+esc(offer.sales_region||'报价市场未记录')+'</p>'+payment+'<dl class="readiness-checks"><div><dt>寄往中国</dt><dd>'+esc(delivery)+'</dd></div><div><dt>运费与税</dt><dd>'+esc(freight)+'；进口税、清关和银行卡费用未齐全不等于 0，不作为最终到手价。</dd></div></dl>'+
-    (row?'<p class="readiness-meta">配送资料核对：'+esc(readinessData.checkedAt)+' · '+esc(row.policyScope)+'</p><details class="readiness-evidence"><summary>配送与转运依据</summary><p>'+esc(row.directChina.note)+'</p><p>转运：'+esc(row.forwarding.note)+'</p>'+(row.sourceLimitations?'<p>'+esc(row.sourceLimitations)+'</p>':'')+'<p>这是上述范围的网页记录，未实测注册、绑卡或付款；不适用于销售同品牌的其他商店。未知条件不计作 0，也不改变商品推荐或购买资格。</p>'+readinessEvidenceMarkup(offer)+'<ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.sourceCode,'官方来源 '+(i+1))+'</li>').join('')+'</ul></details>':'<p class="readiness-meta">'+(readinessState==='loading'?'正在读取本地配送摘要；尚未确认购买条件。':'尚无匹配本商店和报价市场的完整配送摘要；不套用品牌官网或其他国家站点的规则。')+'</p>'+
+    (row?'<p class="readiness-meta">配送资料核对：'+esc(readinessData.checkedAt)+' · '+esc(row.policyScope)+'</p><details class="readiness-evidence"><summary>配送与转运依据</summary><p>'+esc(row.directChina.note)+'</p><p>转运：'+esc(row.forwarding.note)+'</p>'+(row.sourceLimitations?'<p>'+esc(row.sourceLimitations)+'</p>':'')+'<p>这些说明仅适用于所列商店与地区。付款与配送以当前订单为准，未确认的费用不按 0 计算。</p>'+readinessEvidenceMarkup(offer)+'<ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.sourceCode,'官方来源 '+(i+1))+'</li>').join('')+'</ul></details>':'<p class="readiness-meta">'+(readinessState==='loading'?'正在加载配送说明，请稍候。':'这家商店当前地区的配送条件尚未确认，请先向商家咨询。')+'</p>'+
       (reference?'<p class="readiness-warning">其他范围的官方参考（'+esc(reference.policyScope)+'，核对 '+esc(readinessData.checkedAt)+'）：'+esc(reference.directChina.note)+' 转运：'+esc(reference.forwarding.note)+' 这些条款不作为当前报价市场已核实的支付依据。</p>':'')+
       '<details class="readiness-evidence"><summary>查看现有配送证据</summary>'+ (readinessEvidenceMarkup(offer)||'<p>配送来源与核对日期待补齐。</p>')+(reference?reference.sources.map((url,i)=>readinessLink(url,reference.sourceCode,'范围参考来源 '+(i+1))).join(''):'')+'</details>');
 }
@@ -77,7 +77,7 @@ function purchaseReadinessMarkup(offer){
 function forwardingExplainerContent(){
   if(!readinessData)return '<p>转运费用参考'+(readinessState==='loading'?'正在读取':'暂不可用')+'。未知运费、税费和退件费用均不能按 0 计算。</p>';
   const esc=readinessEscape;
-  return '<p>'+esc(readinessData.forwardingExplainer)+'</p><p class="readiness-warning">下面只解释服务与费用，不推荐任何当前商品通过转运下单。商家是否允许尚未知时，先取得许可；明确禁止时不要使用。MAAP 官网不寄中国，转运许可未核实，优先找官网确认的本地渠道；POC Global EN 条款明确禁止转运。</p><h4>别只看“国际运费”</h4><ul>'+readinessData.costChecklist.map(text=>'<li>'+esc(text)+'</li>').join('')+'</ul><p>先索取包装后的实重与长宽高，再选中国目的地估算。按真实成交价、品名和数量申报，不低报。计算器估值、未列税费、DDP / DAP 标签都需结合本单明细确认；这里没有完整含税总价，也不把旧服务商金额提示当现行中国法律。</p>'+readinessData.forwarders.map(row=>'<section class="forwarder-reference"><h4>'+esc(row.name)+'</h4><p>'+esc(row.note)+'</p><p class="readiness-warning">'+esc(row.warning)+'</p><p>'+readinessLink(row.calculator,row.id,'官方运费计算器')+'</p><details><summary>费用规则来源</summary><ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.id,'服务商官方说明 '+(i+1))+'</li>').join('')+'</ul></details></section>').join('')+'<p class="readiness-meta">资料核对：'+esc(readinessData.checkedAt)+'。未开户、订阅或提交报价；具体线路、附加费与退货成本仍需按包裹核对。</p>';
+  return '<p>'+esc(readinessData.forwardingExplainer)+'</p><p class="readiness-warning">下面只解释服务与费用，不推荐任何当前商品通过转运下单。商家是否允许尚未知时，先取得许可；明确禁止时不要使用。MAAP 官网不寄中国，转运许可未核实，优先找官网确认的本地渠道；POC Global EN 条款明确禁止转运。</p><h4>别只看“国际运费”</h4><ul>'+readinessData.costChecklist.map(text=>'<li>'+esc(text)+'</li>').join('')+'</ul><p>先索取包装后的实重与长宽高，再选中国目的地估算。按真实成交价、品名和数量申报，不低报。计算器估值、未列税费、DDP / DAP 标签都需结合本单明细确认；这里没有完整含税总价，也不把旧服务商金额提示当现行中国法律。</p>'+readinessData.forwarders.map(row=>'<section class="forwarder-reference"><h4>'+esc(row.name)+'</h4><p>'+esc(row.note)+'</p><p class="readiness-warning">'+esc(row.warning)+'</p><p>'+readinessLink(row.calculator,row.id,'官方运费计算器')+'</p><details><summary>费用规则来源</summary><ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.id,'服务商官方说明 '+(i+1))+'</li>').join('')+'</ul></details></section>').join('')+'<p class="readiness-meta">资料核对：'+esc(readinessData.checkedAt)+'。具体线路、附加费与退货成本仍需按包裹确认。</p>';
 }
 function forwardingExplainerMarkup(){return '<details class="forwarding-explainer"><summary>看懂转运和额外费用（一般知识）</summary><div data-forwarding-content>'+forwardingExplainerContent()+'</div></details>'}
 function refreshReadinessMarkup(){
@@ -97,7 +97,7 @@ function guardReadinessExit(event){
   event.preventDefault();const url=allowedReadinessLink(link);if(!url)return;
   showExternalExit({url,kind:'reference',label:link.textContent?.trim()||'规则与费用参考',trigger:link,
     sourceNote:'本站保存了该规则或服务商资料，资料核对：'+readinessData.checkedAt+'；记录可能有市场、日期或历史资料限制，不等于本次服务已核验。',
-    note:'即将打开官方规则或费用计算器，仅作资料核对，不代表商家允许转运、接受中国银行卡或保证总费用。不会代你注册、订阅、填卡或付款。',
+    note:'即将打开官方规则或费用计算器，仅作资料核对，不代表商家允许转运、接受中国银行卡或保证总费用。请自行确认服务条款及费用后再使用。',
     validate:()=>allowedReadinessLink(link)===url,onConfirm:()=>{if(typeof saveBrowseState==='function')saveBrowseState()}});
 }
 for(const event of ['click','auxclick'])document.addEventListener(event,guardReadinessExit);
@@ -113,7 +113,7 @@ function paymentFeasibilityContent(offer={}){
   if(typeof paymentSummary==='function'){
     const s=paymentSummary(offer);return '<strong data-china-card-status="'+s.status+'">'+readinessEscape(s.label)+'</strong><span>'+readinessEscape(s.methodsLabel)+' 卡组织和钱包支持不保证中国发卡获批；扣款不明先查订单，勿重复试付。</span>';
   }
-  return '<strong data-china-card-status="unknown">中国发行卡：待核实</strong><span>完整支付资料暂不可用；旧卡种记录不保证中国发卡或账户适用。扣款不明先查订单，勿重复试付。</span>';
+  return '<strong data-china-card-status="unknown">中国发行卡：待核实</strong><span>支付说明暂时无法加载，请先确认商家是否接受你的银行卡或账户。扣款不明先查订单，勿重复试付。</span>';
 }
 function paymentFeasibilityMarkup(offer={}){
   if(typeof paymentMethodsMarkup==='function')return paymentMethodsMarkup(offer);

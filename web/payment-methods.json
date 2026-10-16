@@ -691,7 +691,7 @@
         "www.teamcycles.com"
       ],
       "scope": "market",
-      "scope_note": "目录市场未记录，样本币种 GBP；以下为该域名英国经营网站公开规则，不凭 GBP 自动固定配送/账单市场。空购物篮部分按钮在 HTML 中为隐藏模板，不能等同已展示给合格订单。",
+      "scope_note": "以下为该商店公开的英国地区支付说明；当前订单的配送和账单地区尚未确认，实际可用方式请在结账时核对。",
       "scope_evidence_urls": [
         "https://www.teamcycles.com/cart/",
         "https://www.teamcycles.com/pages/faqs/",
@@ -744,7 +744,7 @@
           "method_key": "paypal",
           "name": "PayPal",
           "status": "conditional",
-          "note": "购物篮可读取 PayPal 结账文案，但为空篮隐藏模板；实际订单选项未确认。",
+          "note": "当前订单是否提供 PayPal 尚未确认，请在结账时核对。",
           "evidence_class": "page_visible_china_unknown",
           "merchant_evidence_status": "mixed",
           "china_applicability": {
@@ -3300,7 +3300,7 @@
           "method_key": "cards",
           "name": "银行卡",
           "status": "supported",
-          "note": "官方列Visa、Mastercard、American Express信用卡；Adyen校验。异国发行卡或多次失败尝试可能触发拒付风控。",
+          "note": "官方列明支持 Visa、Mastercard、American Express 信用卡。境外发行卡或多次付款失败可能被拒绝；扣款状态不明时请先查订单，避免重复付款。",
           "china_applicability": {
             "status": "unknown",
             "note": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
@@ -6740,7 +6740,7 @@
         "shop.bioracer.com"
       ],
       "scope": "market",
-      "scope_note": "审计US/USD；公开首页默认EUR，通用条款未列卡组织/钱包；不以Shopify或PayPal脚本配置当可付款证据。",
+      "scope_note": "当前记录为美国地区美元报价；商店首页也可能显示欧元。该地区可用的银行卡及钱包方式尚未确认，请在结账时核对。",
       "scope_evidence_urls": [
         "https://shop.bioracer.com/",
         "https://shop.bioracer.com/policies/terms-of-service",
@@ -10921,7 +10921,7 @@
         "shop.greenedgecycling.com"
       ],
       "scope": "market",
-      "scope_note": "2026车队官网底部Go to store仍链接此商城，但商城本次返回HTTP404。不是已经核实可用的现行购买渠道。",
+      "scope_note": "2026 年车队官网仍列有此商城，但商城页面暂时无法打开，当前无法确认可购买。",
       "scope_evidence_urls": [
         "https://greenedgecycling.com/2026/",
         "https://shop.greenedgecycling.com/"
@@ -10933,7 +10933,7 @@
           "method_key": "cards",
           "name": "银行卡（信用卡/借记卡）",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -10973,7 +10973,7 @@
           "method_key": "paypal",
           "name": "PayPal",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -10993,7 +10993,7 @@
           "method_key": "apple_pay",
           "name": "Apple Pay",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -11013,7 +11013,7 @@
           "method_key": "google_pay",
           "name": "Google Pay",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -11033,7 +11033,7 @@
           "method_key": "alipay",
           "name": "支付宝",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -11053,7 +11053,7 @@
           "method_key": "wechat_pay",
           "name": "微信支付",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -11073,7 +11073,7 @@
           "method_key": "unionpay",
           "name": "银联 UnionPay",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -11093,7 +11093,7 @@
           "method_key": "bank_transfer_local",
           "name": "银行转账/本地付款",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -11113,7 +11113,7 @@
           "method_key": "gift_cards",
           "name": "礼品卡/购物余额",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",
@@ -11133,7 +11133,7 @@
           "method_key": "instalments",
           "name": "分期/先买后付",
           "status": "unknown",
-          "note": "官方目录链接可验证，但商城本次HTTP404，无法确认任何现行付款方法；不套用其他Jayco/Alé商店。",
+          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
           "china_applicability": {
             "status": "unknown",
             "evidence_status": "insufficient_evidence",

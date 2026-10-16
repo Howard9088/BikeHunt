@@ -30,7 +30,7 @@
       },
       "directChina": {
         "status": "unknown",
-        "note": "本次未读取到现行完整出口目的地规则，不能将所有商品标为可直邮；需逐ASIN、卖家、规格及中国收货地址查看checkout。"
+        "note": "能否直邮中国取决于具体商品、卖家、规格和收货地址，请在结账时确认。"
       },
       "forwarding": {
         "status": "unknown",

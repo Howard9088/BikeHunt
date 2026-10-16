@@ -80,6 +80,8 @@ function testStalePayloadAndHiddenIdRejection(){
 }
 function testInlineFallbackFilteringAndLiveGuard(){
  const {c,elem}=harness();c.activeSource=null;c.activeCategoryGroup='other';
+ assert.equal(c.renderEmptyReferences(),false,'Featured never falls back to unverified stock');
+ c.activeSource='canyon';
  assert.equal(c.renderEmptyReferences(),true);let html=c.gallery.innerHTML;
  assert.equal((html.match(/data-road-reference-card=/g)||[]).length,1);assert.ok(html.includes('id="roadReferenceInline"'));
  assert.ok(html.indexOf('data-road-reference-card=')<html.indexOf('road-brand-entrances'));
