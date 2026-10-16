@@ -15,7 +15,8 @@ from app.catalog.service import ComparisonCatalog
 
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOT = "data/offers/decathlon_cn.json"
-COMMAND = "git restore --source=HEAD -- " + SNAPSHOT
+OAKLEY = "data/offers/oakley.json"
+COMMAND = "git restore --source=HEAD -- " + SNAPSHOT + " " + OAKLEY
 
 
 class ManualSnapshotCacheTests(unittest.TestCase):
@@ -52,6 +53,9 @@ class ManualSnapshotCacheTests(unittest.TestCase):
             manual = root / SNAPSHOT
             manual.parent.mkdir(parents=True)
             manual.write_bytes(committed)
+            oakley = root / OAKLEY
+            oakley_bytes = (ROOT / OAKLEY).read_bytes()
+            oakley.write_bytes(oakley_bytes)
             automatic = manual.with_name("visma.json")
             automatic.write_text('{"cache": "committed"}')
 
@@ -67,12 +71,14 @@ class ManualSnapshotCacheTests(unittest.TestCase):
             git("-c", "user.name=Snapshot Test", "-c",
                 "user.email=snapshot-test@example.invalid", "commit", "-qm", "fixture")
             manual.write_text(json.dumps(old))
+            oakley.write_text("{}")
             automatic_cache = b'{"cache": "new automatic observation"}\n'
             automatic.write_bytes(automatic_cache)
             # Execute the exact command used by the workflow, without a shell.
             subprocess.run(shlex.split(COMMAND), cwd=root, check=True,
                            capture_output=True, text=True)
             self.assertEqual(manual.read_bytes(), committed)
+            self.assertEqual(oakley.read_bytes(), oakley_bytes)
             self.assertEqual(automatic.read_bytes(), automatic_cache)
             restored = json.loads(manual.read_bytes())
             self.assertEqual(restored["collected_at"], payload["collected_at"])

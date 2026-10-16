@@ -111,7 +111,7 @@ vm.runInContext('paymentData=null;paymentState="error"',c);html=c.paymentMethods
 vm.runInContext(fs.readFileSync('web/purchase-readiness.js','utf8').replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.shipping=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));vm.runInContext('readinessData=validateReadinessData(shipping);readinessState="ready"',c);assert.ok(c.readinessContent(offer('maap')).includes('不直邮中国大陆'));assert.ok(!c.paymentFeasibilityMarkup(offer('maap')).includes('Legacy unsupported network'));
 if(!process.argv.includes('--fixtures-only')){
  const production=JSON.parse(fs.readFileSync('web/payment-methods.json','utf8'));c.validatePaymentData(production,catalog);assertChinaStore(production);
- assert.equal(production.entries.length,37,'Release must cover all 37 current channels, including zero-offer directories');
+ assert.equal(production.entries.length,38,'Release covers 37 channels plus the retained Oakley JP observation');
  for(const channel of catalog.channels)assert.ok(production.entries.some(r=>r.source_code===channel.source_code&&(r.scope==='merchant'||channel.sales_regions.includes(r.sales_region))));
 }
 
@@ -123,3 +123,39 @@ assert.equal(c.paymentDisplayText('cash_on_delivery'),'货到付款');
 assert.ok(!c.paymentChinaLabel({status:'unknown',note:'requires_eligible_foreign_account'}).includes('requires_'));
 assert.equal(c.paymentDisplayText('记录 observed_market=JP/JPY'),'记录 本次观察为日本站／日元报价');
 console.log('Payment matrix passed: complete method categories, exact merchant/market scope, China issuer independence, honest missing evidence, source-directory coverage, escaped text, and guarded official links.');
+
+// Exact US policy must coexist with the unchanged JP observation.
+function assertOakleyUS(data){
+ const channel=catalog.channels.find(r=>r.source_code==='oakley');
+ assert.deepEqual(channel.sales_regions,['美国站 USD 报价','未核实']);
+ assert.deepEqual(channel.merchant_hosts,['oakley.com','www.oakley.com']);
+ assert.deepEqual(channel.reference_hosts,['oakley.com','www.oakley.com']);
+ const rows=data.entries.filter(r=>r.source_code==='oakley');assert.equal(rows.length,2);
+ const us=rows.find(r=>r.sales_region==='美国站 USD 报价'),jp=rows.find(r=>r.sales_region==='未核实');
+ assert.equal(us.scope,'market');assert.equal(us.checked_at,'2026-10-16');assert.equal(us.observed_market,'US/USD');
+ assert.deepEqual(us.merchant_hosts,['www.oakley.com']);assert.equal(us.methods.length,11);
+ for(const m of us.methods){
+  const listed=['cards','paypal','apple_pay','unionpay','gift_cards','instalments'].includes(m.method_key);
+  assert.equal(m.status,listed?'conditional':'unknown');assert.equal(m.china_applicability.status,'unknown');
+  assert.equal(m.checked_at,'2026-10-16');assert.equal(m.merchant_evidence_status,listed?'official_text':'unavailable');
+  assert.deepEqual(m.evidence_urls,['https://www.oakley.com/en-us/support/shopping-support']);
+ }
+ assert.ok(us.methods.find(m=>m.method_key==='instalments').note.includes('单件商品'));
+ assert.equal(jp.methods.find(m=>m.method_key==='paypal').status,'unknown');
+ if(jp.observed_market){assert.equal(jp.observed_market,'JP/JPY');assert.equal(jp.checked_at,'2026-10-15')}
+}
+const oakleyProduction=JSON.parse(fs.readFileSync('web/payment-methods.json','utf8'));
+assertOakleyUS(fixture);assertOakleyUS(oakleyProduction);
+for(const data of [fixture,oakleyProduction]){
+ c.oakleyTestData=data;vm.runInContext('paymentData=oakleyTestData',c);
+ const o=offer('oakley'),before=JSON.stringify(o);
+ assert.equal(c.paymentPolicy(o).sales_region,'美国站 USD 报价');
+ assert.equal(c.paymentPolicy(o).methods.find(m=>m.method_key==='paypal').status,'conditional');
+ assert.equal(c.paymentMethodsFor(o).length,11);assert.equal(c.paymentSummary(o).status,'unknown');
+ assert.equal(c.paymentPolicy(offer('oakley',{sales_region:'未核实',url:'https://www.oakley.com/ja-jp'})).methods.find(m=>m.method_key==='paypal').status,'unknown');
+ for(const sales_region of ['日本站报价','JP/JPY','US','',undefined])assert.equal(c.paymentPolicy(offer('oakley',{sales_region})),null);
+ for(const url of ['https://hk.oakley.com/','https://www.oakley.com.evil.example/en-us','https://other.example/en-us'])assert.equal(c.paymentPolicy(offer('oakley',{url})),null);
+ assert.equal(JSON.stringify(o),before);
+}
+vm.runInContext('paymentData=fixture',c);
+console.log('Oakley US payment exact-market isolation and retained JP passed.');

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-16-exact-team-merchants",
+  "revision": "2026-10-16-oakley-us-exact-market",
   "channels": [
     {
       "source_code": "maap",
@@ -603,6 +603,7 @@
       "source_code": "oakley",
       "merchant_name": "Oakley",
       "sales_regions": [
+        "美国站 USD 报价",
         "未核实"
       ],
       "merchant_hosts": [
@@ -616,8 +617,8 @@
       "directory_codes": [
         "oakley"
       ],
-      "base_url": "https://www.oakley.com/",
-      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+      "base_url": "https://www.oakley.com/en-us",
+      "identity_note": "当前商品来自美国站 USD 报价；美国支付证据只匹配该精确市场。旧未核实目录的日本站观察另列，不外推至美国站或其他地区。"
     },
     {
       "source_code": "alpecin",

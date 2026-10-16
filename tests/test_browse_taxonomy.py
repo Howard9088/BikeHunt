@@ -50,11 +50,12 @@ class BrowseTaxonomyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.review = json.loads((ROOT / "data/browse-taxonomy.json").read_text(encoding="utf-8"))
-        cls.rows = {row["product_id"]: row for row in cls.review["products"]}
+        cls.all_review_rows = {row["product_id"]: row for row in cls.review["products"]}
         # Scheduled collectors may change data/offers. Exact historical counts
         # belong to this frozen audit fixture, never today's merchant inventory.
         cls.fixture = json.loads((ROOT / "tests/fixtures/browse-catalog-2026-10-15.json")
                                  .read_text(encoding="utf-8"))
+        cls.rows = {key: cls.all_review_rows[key] for key in cls.fixture["expected_product_groups"]}
         cls.now = datetime.fromisoformat(cls.fixture["snapshot_generated_at"])
         cls.offers = [Offer.model_validate(row) for row in cls.fixture["offers"]]
         cls.original_offers = [offer.model_dump(mode="json") for offer in cls.offers]
@@ -78,7 +79,8 @@ class BrowseTaxonomyTests(unittest.TestCase):
         self.assertEqual(self.fixture["audit_snapshot_sha256"], self.review["snapshot_sha256"])
         self.assertEqual(self.fixture["expected_product_count"], 232)
         self.assertEqual(self.fixture["expected_group_counts"], EXPECTED_COUNTS)
-        self.assertEqual(len(self.review["products"]), 232)
+        self.assertEqual(len(self.rows), 232)
+        self.assertEqual(len(self.review["products"]), len(self.all_review_rows), "No duplicate reviews")
         self.assertTrue(all(row["category_group"] == "other" for row in self.rows.values()
                             if "Bicycle accessory or part" in row["reason"]))
         self.assertEqual(sum("Bicycle accessory or part" in row["reason"]

@@ -1,0 +1,1407 @@
+{
+  "verification_method": "manual_public_selected_variant",
+  "observation_window": {
+    "observation_window_start": "2026-10-16T12:02:10Z",
+    "observation_window_end": "2026-10-16T12:05:55Z",
+    "time_source": "Conversation tool-boundary current_time_reminder messages, not host clock",
+    "precision": "Batch observation window only. Per-request exact wall-clock timestamps not established.",
+    "previous_retrieved_at": "2026-10-16T12:05:00Z was a uniform compilation label, not an exact per-SKU fetch timestamp; superseded and removed.",
+    "host_clock_note": "Host-generated UTC stamps appeared about nine hours ahead of conversation reminders; no per-SKU offset correction is asserted.",
+    "conservative_fetched_at": "2026-10-16T12:02:10Z",
+    "network_access_performed_for_correction": false
+  },
+  "shipping_observation_window": {
+    "start": "2026-10-16T12:02:51Z",
+    "end": "2026-10-16T12:03:03Z"
+  },
+  "observations": [
+    {
+      "id": "FOS900925",
+      "url": "https://www.oakley.com/en-us/product/FOS900925",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c9563e0c-e637-46dc-a858-b37b016b45da/FOS900925__1KE__PIC07__noshad__qt.png",
+      "price": "205.00",
+      "priceFull": "205.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS900925-1KE",
+      "selectedColor": "Satin Mist/Paloma",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "M",
+          "variant": "8056153855822",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153855815",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "DRT5 MAVEN - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS900925?variant=193517784355",
+        "/en-us/product/FOS900925?variant=8056153855785",
+        "/en-us/product/FOS900925?variant=8056153855815",
+        "/en-us/product/FOS900925?variant=8056153855846"
+      ],
+      "selected_upc": "8056153855815",
+      "discipline": "mtb",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS900927",
+      "url": "https://www.oakley.com/en-us/product/FOS900927",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c86ca3a5-b79e-42b2-8336-b37c0004c6b7/FOS900927__11B_030A.png",
+      "price": "205.00",
+      "priceFull": "205.00",
+      "status": "Available-twoLeft",
+      "product_state": "lowstock",
+      "sku": "FOS900927-11B",
+      "selectedColor": "Matte White",
+      "selectedSize": "S",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517975708",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "193517975692",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517975685",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "ARO5 RACE - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS900927?variant=193517975708",
+        "/en-us/product/FOS900927?variant=193517975715",
+        "/en-us/product/FOS900927?variant=193517975760"
+      ],
+      "selected_upc": "193517975708",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS900928",
+      "url": "https://www.oakley.com/en-us/product/FOS900928",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/895e4c64-f5d2-4687-a930-b37c0005115d/FOS900928__7C4_030A.png",
+      "price": "135.00",
+      "priceFull": "135.00",
+      "status": "Available-oneLeft",
+      "product_state": "lowstock",
+      "sku": "FOS900928-7C4",
+      "selectedColor": "Matte Fern",
+      "selectedSize": "S",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517976002",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "193517975999",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517975982",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "ARO3 ENDURANCE -MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS900928?variant=193517976002"
+      ],
+      "selected_upc": "193517976002",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901112",
+      "url": "https://www.oakley.com/en-us/product/FOS901112",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/2401a460-e315-4bd5-85af-b37b0099dab6/FOS901112__1AA_030A.png",
+      "price": "165.00",
+      "priceFull": "165.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901112-1AA",
+      "selectedColor": "I.C.E. White Reflective",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517778101",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "193517778095",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517778088",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "ARO3 ENDURANCE I.C.E - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901112?variant=193517778101"
+      ],
+      "selected_upc": "193517778088",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901113",
+      "url": "https://www.oakley.com/en-us/product/FOS901113",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c72d7cb5-3054-4f04-bdf6-b37b008ddd30/FOS901113__09K_030A.png",
+      "price": "185.00",
+      "priceFull": "185.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901113-09K",
+      "selectedColor": "I.C.E Black Reflective",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517778132",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "193517778125",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517778118",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "ARO3 ALLROAD I.C.E - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901113?variant=193517778132"
+      ],
+      "selected_upc": "193517778118",
+      "discipline": "gravel",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901114",
+      "url": "https://www.oakley.com/en-us/product/FOS901114",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/ad1873b8-1399-4397-b331-b37b00999e15/FOS901114__09K_030A.png",
+      "price": "240.00",
+      "priceFull": "240.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901114-09K",
+      "selectedColor": "I.C.E Black Reflective",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517778163",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "193517778156",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517778149",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "ARO5 RACE I.C.E - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901114?variant=193517778163"
+      ],
+      "selected_upc": "193517778149",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901116",
+      "url": "https://www.oakley.com/en-us/product/FOS901116",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/d1a5085d-8c9c-4402-af73-b37b008f157e/FOS901116__09Q_030A.png",
+      "price": "240.00",
+      "priceFull": "240.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901116-09Q",
+      "selectedColor": "I.C.E. Matte Black/Matte Reflective",
+      "selectedSize": "M",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517778194",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "193517778187",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517778170",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "DRT5 MAVEN I.C.E - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901116?variant=193517778194"
+      ],
+      "selected_upc": "193517778187",
+      "discipline": "mtb",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901117",
+      "url": "https://www.oakley.com/en-us/product/FOS901117",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6fb9b8be-6535-40cc-be20-b37b016cff85/FOS901117__05H_030A.png",
+      "price": "155.00",
+      "priceFull": "155.00",
+      "status": "Available-fewLeft",
+      "product_state": "lowstock",
+      "sku": "FOS901117-05H",
+      "selectedColor": "Matte Blackout",
+      "selectedSize": "S",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517976095",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "193517976088",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517976071",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "ARO3 ALLROAD - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901117?variant=193517976095",
+        "/en-us/product/FOS901117?variant=193517976101",
+        "/en-us/product/FOS901117?variant=193517976309",
+        "/en-us/product/FOS901117?variant=8056153856218"
+      ],
+      "selected_upc": "193517976095",
+      "discipline": "gravel",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901248",
+      "url": "https://www.oakley.com/en-us/product/FOS901248",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fa25d8df-ac4e-47a3-8fa6-b37b016d842e/FOS901248__202_030A.png",
+      "price": "135.00",
+      "priceFull": "135.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901248-202",
+      "selectedColor": "Light Grey",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517784317",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "193517784300",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517784294",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "DRT3 Trail",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901248?variant=193517784294",
+        "/en-us/product/FOS901248?variant=193517976927",
+        "/en-us/product/FOS901248?variant=8056153856508",
+        "/en-us/product/FOS901248?variant=8056153856539"
+      ],
+      "selected_upc": "193517784294",
+      "discipline": "mtb",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901249",
+      "url": "https://www.oakley.com/en-us/product/FOS901249",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/39b46811-2fd7-475a-8cbf-b37b009c1522/FOS901249__09Q_030A.png",
+      "price": "165.00",
+      "priceFull": "165.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901249-09Q",
+      "selectedColor": "I.C.E. Matte Black/Matte Reflective",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517778835",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "193517778828",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517778811",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "DRT3 TRAIL I.C.E - MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901249?variant=193517778828"
+      ],
+      "selected_upc": "193517778811",
+      "discipline": "mtb",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901511",
+      "url": "https://www.oakley.com/en-us/product/FOS901511",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c2d7f5c7-9787-4d7f-9ed3-b37b00a7d122/FOS901511__9XM_030A.png",
+      "price": "330.00",
+      "priceFull": "330.00",
+      "status": "Available-twoLeft",
+      "product_state": "lowstock",
+      "sku": "FOS901511-9XM",
+      "selectedColor": "Black Gloss ICE Ref/Prizm Red",
+      "selectedSize": "S",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "193517977085",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "193517977078",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "193517977061",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "Aro7 Road I.C.E.",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901511?variant=193517977085"
+      ],
+      "selected_upc": "193517977085",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901523",
+      "url": "https://www.oakley.com/en-us/product/FOS901523",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fe21a3f6-4cb9-404d-ac78-b37c000096cb/FOS901523__11B_030A.png",
+      "price": "120.00",
+      "priceFull": "120.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901523-11B",
+      "selectedColor": "Matte White",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153585439",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "8056153585422",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153585415",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "STREET1",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901523?variant=8056153585415",
+        "/en-us/product/FOS901523?variant=8056153585491"
+      ],
+      "selected_upc": "8056153585415",
+      "discipline": "urban",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901772",
+      "url": "https://www.oakley.com/en-us/product/FOS901772",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f045773d-783c-4e14-9398-b37100250471/FOS901772__27T_030A.png",
+      "price": "260.00",
+      "priceFull": "260.00",
+      "status": "Available-fewLeft",
+      "product_state": "lowstock",
+      "sku": "FOS901772-27T",
+      "selectedColor": "Matte Med Grey Retina Burn",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153586092",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "8056153586085",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153586078",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        }
+      ],
+      "name": "Aro7 Lite",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901772?variant=8056153586078"
+      ],
+      "selected_upc": "8056153586078",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901800",
+      "url": "https://www.oakley.com/en-us/product/FOS901800",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/8e0ca3f0-8a73-48e9-845f-b37b00c06d54/FOS901800__09K_030A.png",
+      "price": "150.00",
+      "priceFull": "150.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901800-09K",
+      "selectedColor": "I.C.E Black Reflective",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "M",
+          "variant": "8056153586207",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153586191",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "STREET1 I.C.E.",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS901800?variant=8056153586207"
+      ],
+      "selected_upc": "8056153586191",
+      "discipline": "urban",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS902123",
+      "url": "https://www.oakley.com/en-us/product/FOS902123",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6811cc2b-51cd-47bd-a8e6-b3710020cedf/FOS902123__02K__PIC07__noshad__qt.png",
+      "price": "310.00",
+      "priceFull": "310.00",
+      "status": "SoldOut",
+      "product_state": "outofstock",
+      "sku": "FOS902123-02K",
+      "selectedColor": "Matte Black",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "M",
+          "variant": "8056153828888",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153828871",
+          "aria_disabled": "true",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "VELO MACH",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS902123?variant=8056153828871"
+      ],
+      "selected_upc": null,
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS902226",
+      "url": "https://www.oakley.com/en-us/product/FOS902226",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/22f7b685-443c-44ec-991e-b37100250319/FOS902226__GBP__PIC07__noshad__qt.png",
+      "price": "415.00",
+      "priceFull": "415.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS902226-GBP",
+      "selectedColor": "Gloss Black Pearl",
+      "selectedSize": "M/L",
+      "variants": [
+        {
+          "size": "S/M",
+          "variant": "8056153948616",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M/L",
+          "variant": "8056153948609",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "VELO TT",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS902226?variant=8056153948586",
+        "/en-us/product/FOS902226?variant=8056153948616"
+      ],
+      "selected_upc": "8056153948609",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS902243",
+      "url": "https://www.oakley.com/en-us/product/FOS902243",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/0625ca9b-1283-48da-ae52-b3e600b6677a/FOS902243__BRP_dtl1.png",
+      "price": "340.00",
+      "priceFull": "340.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS902243-BRP",
+      "selectedColor": "Black/Red Pro",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153857062",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "8056153857055",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153857048",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "VELO MACH MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS902243?variant=8056153857048"
+      ],
+      "selected_upc": "8056153857048",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS902248",
+      "url": "https://www.oakley.com/en-us/product/FOS902248",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a830d988-ac3f-4250-808c-b3e500f543c2/FOS902248__02K__PIC07__noshad__qt.png",
+      "price": "340.00",
+      "priceFull": "340.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS902248-02K",
+      "selectedColor": "Matte Black",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153854290",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "8056153854283",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153854276",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "VELO STELVIO MIPS",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/FOS902248?variant=8056153854283",
+        "/en-us/product/FOS902248?variant=8056153857079"
+      ],
+      "selected_upc": "8056153854276",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "GFOS902243",
+      "url": "https://www.oakley.com/en-us/product/GFOS902243",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a8c49e6b-916b-4b74-b295-b42c010c1d57/FOS902243__G26.png",
+      "price": "365.00",
+      "priceFull": "365.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS902243-G26",
+      "selectedColor": "Giro D'Italia '26",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "M",
+          "variant": "8051731109762",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8051731109755",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "VELO MACH MIPS GIRO D'ITALIA COLLECTION",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/GFOS902243?variant=8051731109755"
+      ],
+      "selected_upc": "8051731109755",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "ITFOS901302",
+      "url": "https://www.oakley.com/en-us/product/ITFOS901302",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/46571bf4-1fe7-42d2-bce2-b37b017159c0/FOS901302__02T_030A.png",
+      "price": "230.00",
+      "priceFull": "230.00",
+      "status": "Available-oneLeft",
+      "product_state": "lowstock",
+      "sku": "FOS901302-02T",
+      "selectedColor": "24' Giro D'Italia",
+      "selectedSize": "S",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153349017",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "8056153349000",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153348997",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "ARO5 Race Giro d'Italia",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "url_variant_links": [
+        "/en-us/product/ITFOS901302?variant=8056153349017"
+      ],
+      "selected_upc": "8056153349017",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOA407902",
+      "url": "https://www.oakley.com/en-us/product/FOA407902",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/54853125-98d0-4b4a-af2d-b3e500a40cde/FOA407902__7CE_omfr1.png",
+      "price": "250.00",
+      "priceFull": "250.00",
+      "status": "Available-fewLeft",
+      "product_state": "lowstock",
+      "sku": "FOA407902-7CE",
+      "selectedColor": "Army Green",
+      "selectedSize": "M",
+      "variants": [
+        {
+          "size": "XS",
+          "variant": "8056153902502",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": true
+        },
+        {
+          "size": "S",
+          "variant": "8056153902489",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": true
+        },
+        {
+          "size": "M",
+          "variant": "8056153902472",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        },
+        {
+          "size": "L",
+          "variant": "8056153902465",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "XL",
+          "variant": "8056153902496",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "XXL",
+          "variant": "8056153902519",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "Endurance Tempo Bib",
+      "selected_upc": "8056153902472",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOA406782",
+      "url": "https://www.oakley.com/en-us/product/FOA406782",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/1d482116-bb32-41df-a541-b3e20088b1cd/FOA406782__100_omfr1.png",
+      "price": "152.00",
+      "priceFull": "190.00",
+      "status": "Available-oneLeft",
+      "product_state": "lowstock",
+      "sku": "FOA406782-100",
+      "selectedColor": "White",
+      "selectedSize": "XL",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153889681",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "8056153889674",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153889667",
+          "aria_disabled": "true",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "XL",
+          "variant": "8056153889698",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": true
+        },
+        {
+          "size": "XXL",
+          "variant": "8056153889711",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": true
+        }
+      ],
+      "name": "Endurance Mix Jersey",
+      "selected_upc": "8056153889698",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS901803",
+      "url": "https://www.oakley.com/en-us/product/FOS901803",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a87dba4c-0a60-4f29-8cb1-b3590067c877/FOS901803__02E.png",
+      "price": "55.00",
+      "priceFull": "55.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS901803-02E",
+      "selectedColor": "Blackout",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153611374",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "8056153611367",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153611350",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        },
+        {
+          "size": "XL",
+          "variant": "8056153611381",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "XXL",
+          "variant": "8056153611398",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        }
+      ],
+      "name": "Drops Road Glove 2.0",
+      "selected_upc": "8056153611350",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    },
+    {
+      "id": "FOS902106",
+      "url": "https://www.oakley.com/en-us/product/FOS902106",
+      "market": "US",
+      "currency": "USD",
+      "title": null,
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f7d8572d-683c-470c-b4be-b37b00d171d5/FOS902106__021.png",
+      "price": "25.00",
+      "priceFull": "25.00",
+      "status": "Available",
+      "product_state": "instock",
+      "sku": "FOS902106-021",
+      "selectedColor": "Pitch Black",
+      "selectedSize": "L",
+      "variants": [
+        {
+          "size": "S",
+          "variant": "8056153919333",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "M",
+          "variant": "8056153919326",
+          "aria_disabled": "false",
+          "selected": "false",
+          "low_stock": false
+        },
+        {
+          "size": "L",
+          "variant": "8056153919319",
+          "aria_disabled": "false",
+          "selected": "true",
+          "low_stock": false
+        }
+      ],
+      "name": "Cadence Socks 2.0",
+      "selected_upc": "8056153919319",
+      "variants_evidence_scope": "Selector availability flags only; selected size/color has separate Products Status verification. Units is analytics data, not inventory quantity.",
+      "discipline": "road",
+      "china_direct_shipping": false,
+      "shipping_evidence": "https://www.oakley.com/en-us/support/shipping-returns",
+      "stock_scope": "US online store selected color/size only",
+      "observation_window_start": "2026-10-16T12:02:10Z",
+      "observation_window_end": "2026-10-16T12:05:55Z",
+      "observation_time_precision": "batch_window"
+    }
+  ],
+  "image_checks": [
+    {
+      "id": "FOS900925",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c9563e0c-e637-46dc-a858-b37b016b45da/FOS900925__1KE__PIC07__noshad__qt.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS900927",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c86ca3a5-b79e-42b2-8336-b37c0004c6b7/FOS900927__11B_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS900928",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/895e4c64-f5d2-4687-a930-b37c0005115d/FOS900928__7C4_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901112",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/2401a460-e315-4bd5-85af-b37b0099dab6/FOS901112__1AA_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901113",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c72d7cb5-3054-4f04-bdf6-b37b008ddd30/FOS901113__09K_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901114",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/ad1873b8-1399-4397-b331-b37b00999e15/FOS901114__09K_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901116",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/d1a5085d-8c9c-4402-af73-b37b008f157e/FOS901116__09Q_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901117",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6fb9b8be-6535-40cc-be20-b37b016cff85/FOS901117__05H_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901248",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fa25d8df-ac4e-47a3-8fa6-b37b016d842e/FOS901248__202_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901249",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/39b46811-2fd7-475a-8cbf-b37b009c1522/FOS901249__09Q_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901511",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c2d7f5c7-9787-4d7f-9ed3-b37b00a7d122/FOS901511__9XM_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901523",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fe21a3f6-4cb9-404d-ac78-b37c000096cb/FOS901523__11B_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901772",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f045773d-783c-4e14-9398-b37100250471/FOS901772__27T_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901800",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/8e0ca3f0-8a73-48e9-845f-b37b00c06d54/FOS901800__09K_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS902123",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6811cc2b-51cd-47bd-a8e6-b3710020cedf/FOS902123__02K__PIC07__noshad__qt.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS902226",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/22f7b685-443c-44ec-991e-b37100250319/FOS902226__GBP__PIC07__noshad__qt.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS902243",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/0625ca9b-1283-48da-ae52-b3e600b6677a/FOS902243__BRP_dtl1.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS902248",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a830d988-ac3f-4250-808c-b3e500f543c2/FOS902248__02K__PIC07__noshad__qt.png",
+      "http_status": "200"
+    },
+    {
+      "id": "GFOS902243",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a8c49e6b-916b-4b74-b295-b42c010c1d57/FOS902243__G26.png",
+      "http_status": "200"
+    },
+    {
+      "id": "ITFOS901302",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/46571bf4-1fe7-42d2-bce2-b37b017159c0/FOS901302__02T_030A.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOA407902",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/54853125-98d0-4b4a-af2d-b3e500a40cde/FOA407902__7CE_omfr1.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOA406782",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/1d482116-bb32-41df-a541-b3e20088b1cd/FOA406782__100_omfr1.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS901803",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a87dba4c-0a60-4f29-8cb1-b3590067c877/FOS901803__02E.png",
+      "http_status": "200"
+    },
+    {
+      "id": "FOS902106",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f7d8572d-683c-470c-b4be-b37b00d171d5/FOS902106__021.png",
+      "http_status": "200"
+    }
+  ],
+  "saved_html_sha256": {
+    "FOS900925": "7891d3cf2632cd285385c354f495f492fffeec8afc48fe1b4cb8f1d15f649ed2",
+    "FOS900927": "a35f98173fd4c976934c2551618bd3906f6c2b55579328b43e3e409378b5280e",
+    "FOS900928": "9a06102ba5866e791cea602395598f0d9b88663d207c2eac07e81289dbdea800",
+    "FOS901112": "26fe0067c65547e1c30b3db6803ce6c7124a2fdcb70c2115b4873fcd5f22985b",
+    "FOS901113": "279bea3111c6c814db00b480e32aa08c6b8058edd47c633b080875437aee1143",
+    "FOS901114": "84bab055cd27e9961d9ed699217c20be184c6a5afc3d4cc3b971520d0a1d2ee0",
+    "FOS901116": "f561a1e5799b7cffeced09166b17e23961e7fc0e52b8f616d3f10b9c8626c2e5",
+    "FOS901117": "a351caf47141860e59dd4f7b246b25d789d44809669dee5e81f75f361206880c",
+    "FOS901248": "571692deed4e2908f359d417a7807fecef6a4298a1bc11f385d38a6f226aaea5",
+    "FOS901249": "456c49c714d65ebabec6af3a12e04eb334a56a15fc228762a4d87fa2e387a412",
+    "FOS901511": "565a8852837c0b5a37bb4b7d9f918501cff62663f6ab677b25684d2bf7117f23",
+    "FOS901523": "04ad4b6716d3abbbfe3cade18374d932e02836a51c611fa3cf3d1c7320c67994",
+    "FOS901772": "2188db72733b08c8f301dd474d81f6b789f8bd6ebbad57ec889b1825ff6358dc",
+    "FOS901800": "571e4b0085e8bf2e5e698653dd434f2c8c1b53e326f90e969005863e8ad5b2f8",
+    "FOS902123": "7ece84d774216262fa2ff5f018194ee39f65c568a58bacec784d8085ef6545bd",
+    "FOS902226": "91e040444541e2fe8e18b0682d4078f639303b75fa59256071762342fcf21122",
+    "FOS902243": "7cc8e430612c93223528b1ba200f8505b532ff2d50b36d3a4508d567bcac5953",
+    "FOS902248": "d5381917aec7cd8b0703f84e606c479b74bf219b47f5e8a362221856874235bc",
+    "GFOS902243": "32f7ef1db212a7723fdea26ca83a3ec80c155666b3eb4c5b76f0872194c48859",
+    "ITFOS901302": "cf25daf541a6e1c6b55410afeb2832465c695e737d0fb197c3d6f883ed67eb2e",
+    "FOA407902": "28127649e1c8aa71415d302ac7ef1f44185b3be211ff6fbd0f625af2296d1761",
+    "FOA406782": "196c231be16834798662b89de8ec67d753ebe7a2c15de153f510d16cbd0eb3ea",
+    "FOS901803": "a53c756793e9b8fbb49b9fff94aee90f5d98738edf75cc91ba97634a3e8f09bb",
+    "FOS902106": "cf5cb3e85e341c4646eab433e1ca9aec9fcf6aebc7e4ec409b54d588e59eff91"
+  }
+}

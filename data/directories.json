@@ -187,10 +187,15 @@
     {
       "code": "oakley",
       "name": "Oakley",
-      "name_zh": "Oakley 骑行眼镜",
+      "name_zh": "Oakley 头盔与骑行装备",
       "official_url": "https://www.oakley.com",
-      "shop_url": "https://www.oakley.com",
-      "status": "registered"
+      "shop_url": "https://www.oakley.com/en-us",
+      "status": "registered",
+      "shop_evidence_url": "https://www.oakley.com/en-us/product/FOS902243",
+      "source_codes": [
+        "oakley"
+      ],
+      "catalog_note": "已核美国官网24个商品页面的选中规格，含1条明确售罄；覆盖不同用途头盔和骑行服饰，不代表全量库存。人工快照尚未自动刷新。"
     },
     {
       "code": "trek",

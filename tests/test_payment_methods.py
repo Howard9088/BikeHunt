@@ -22,7 +22,7 @@ class PaymentMethodsTests(unittest.TestCase):
 
     def test_actual_release_covers_all_channels_and_every_required_category(self):
         data = read_payment_methods(ROOT)
-        self.assertEqual(len(data['entries']), 37)
+        self.assertEqual(len(data['entries']), 38)
         for row in data['entries']:
             self.assertTrue(REQUIRED_METHODS <= {m['method_key'] for m in row['methods']})
             for method in row['methods']:
@@ -148,6 +148,41 @@ class PaymentMethodsTests(unittest.TestCase):
         method['evidence_urls'] = [asset['owner_page'], asset['url'] + '&replacement=1']
         with self.assertRaises(ValueError):
             validate_payment_methods(data, self.catalog)
+
+    def test_oakley_us_keeps_jp_and_unknown_china_card(self):
+        market = '美国站 USD 报价'
+        channel = next(r for r in self.catalog['channels'] if r['source_code'] == 'oakley')
+        self.assertEqual(channel['sales_regions'], [market, '未核实'])
+        production = read_payment_methods(ROOT)
+        for data in [self.fixture, production]:
+            rows = [r for r in data['entries'] if r['source_code'] == 'oakley']
+            self.assertEqual(len(rows), 2)
+            us = next(r for r in rows if r['sales_region'] == market)
+            jp = next(r for r in rows if r['sales_region'] == '未核实')
+            self.assertEqual(us['merchant_hosts'], ['www.oakley.com'])
+            self.assertEqual(us['observed_market'], 'US/USD')
+            self.assertEqual({m['method_key'] for m in us['methods']}, REQUIRED_METHODS)
+            for m in us['methods']:
+                listed = m['method_key'] in {'cards', 'paypal', 'apple_pay', 'unionpay', 'gift_cards', 'instalments'}
+                self.assertEqual(m['status'], 'conditional' if listed else 'unknown')
+                self.assertEqual(m['china_applicability']['status'], 'unknown')
+                self.assertEqual(m['checked_at'], '2026-10-16')
+                self.assertEqual(m['evidence_urls'], ['https://www.oakley.com/en-us/support/shopping-support'])
+            self.assertEqual(next(m for m in jp['methods'] if m['method_key'] == 'paypal')['status'], 'unknown')
+            invalid = copy.deepcopy(data)
+            next(r for r in invalid['entries'] if r['source_code'] == 'oakley' and r['sales_region'] == market)['sales_region'] = '日本站报价'
+            with self.assertRaises(ValueError): validate_payment_methods(invalid, self.catalog, require_complete=True)
+        jp = next(r for r in production['entries'] if r['source_code'] == 'oakley' and r['sales_region'] == '未核实')
+        self.assertEqual(jp['observed_market'], 'JP/JPY')
+        self.assertEqual(jp['checked_at'], '2026-10-15')
+        codes = {r['source_code'] for r in production['entries']}
+        sources = {r['code'] for r in json.loads((ROOT/'data/sources.json').read_text())}
+        coverage = production['coverage']
+        self.assertEqual(coverage['registered_sources'], len(codes & sources))
+        self.assertEqual(coverage['additional_directory_entries'], len(codes - sources))
+        self.assertEqual(coverage['additional_market_entries'], len(production['entries'])-len(codes))
+        self.assertEqual(coverage['unmapped_registered_sources'], sorted(sources-codes))
+        self.assertEqual(coverage['actual_payment_tests'], 0)
 
     def test_runtime_and_ci_assets_are_wired(self):
         index = (ROOT / 'web/index.html').read_text()

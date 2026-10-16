@@ -2797,6 +2797,303 @@
       "category_group": "helmets",
       "reason": "Existing true helmet or reviewed source/model/official URL; do not generalize to all future source products",
       "needs_type_review": false
+    },
+    {
+      "product_id": "20f4d3468cfc283e42a5",
+      "name": "STREET1 I.C.E.",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901800",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; urban use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "6325408ab59bf404de3f",
+      "name": "Drops Road Glove 2.0",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901803",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3c2fbe182b1e18262de2",
+      "name": "Endurance Mix Jersey",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOA406782",
+      "category": "jerseys",
+      "category_group": "clothing",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "73cbc4b095679b06ae02",
+      "name": "DRT3 Trail",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901248",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; mtb use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "851de7f3e2b1d71b8c91",
+      "name": "ARO5 Race Giro d'Italia",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/ITFOS901302",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "91a8e5c6a4d073d97802",
+      "name": "ARO5 RACE - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS900927",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "57fbadb1c9fcb31e0d37",
+      "name": "DRT3 TRAIL I.C.E - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901249",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; mtb use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "adc1da7562c48ac22a86",
+      "name": "Aro7 Road I.C.E.",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901511",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "733a1b87531a542a7e09",
+      "name": "ARO3 ENDURANCE -MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS900928",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "8841d99bab014d766a50",
+      "name": "ARO3 ENDURANCE I.C.E - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901112",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "b912971cfe178214cf99",
+      "name": "VELO MACH MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS902243",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3cb25e5ab6e4e2ee48a3",
+      "name": "Cadence Socks 2.0",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS902106",
+      "category": "accessories",
+      "category_group": "clothing",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "9403fd9be4aad8e7bd70",
+      "name": "STREET1",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901523",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; urban use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "c9d2c38400b0634589ed",
+      "name": "ARO3 ALLROAD I.C.E - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901113",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; gravel use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "a71f0b1daa5bed10b592",
+      "name": "Endurance Tempo Bib",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOA407902",
+      "category": "bibs",
+      "category_group": "clothing",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f98a06e50ac28027148b",
+      "name": "VELO MACH MIPS GIRO D'ITALIA COLLECTION",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/GFOS902243",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ed3879f557f8d9934fd5",
+      "name": "VELO TT",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS902226",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "e12fa023616bb7584c67",
+      "name": "VELO MACH",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS902123",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "ca8dd9b76f885f7f3a90",
+      "name": "DRT5 MAVEN I.C.E - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901116",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; mtb use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f727890b8d4f484b4561",
+      "name": "VELO STELVIO MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS902248",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "bd555539cd127a1e17a8",
+      "name": "Aro7 Lite",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901772",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "5e5303670ba0a9bf6c98",
+      "name": "ARO5 RACE I.C.E - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901114",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; road use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "f4977bd6c3455235db0d",
+      "name": "ARO3 ALLROAD - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS901117",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; gravel use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "91e8a7f772913d00da65",
+      "name": "DRT5 MAVEN - MIPS",
+      "source_codes": [
+        "oakley"
+      ],
+      "source_url": "https://www.oakley.com/en-us/product/FOS900925",
+      "category": "helmets",
+      "category_group": "helmets",
+      "reason": "Official selected product page; mtb use; exact model/color identity, no inferred year or compatibility",
+      "needs_type_review": false
+    }
+  ],
+  "supplemental_reviews": [
+    {
+      "source_code": "oakley",
+      "observed_window_start": "2026-10-16T12:02:10Z",
+      "observed_window_end": "2026-10-16T12:05:55Z",
+      "reviewed_product_count": 24,
+      "note": "24 additional exact product/color families. Original 232-product snapshot metadata and counts above remain the frozen historical audit, not current totals. Uses include road, gravel, MTB and urban; no inferred year."
     }
   ]
 }

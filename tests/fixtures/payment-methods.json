@@ -4985,6 +4985,247 @@
           "checked_at": "2026-10-15"
         }
       ]
+    },
+    {
+      "source_code": "oakley",
+      "merchant_name": "Oakley 美国官方商城",
+      "sales_region": "美国站 USD 报价",
+      "merchant_hosts": [
+        "www.oakley.com"
+      ],
+      "scope": "market",
+      "scope_note": "仅适用于 www.oakley.com/en-us 的美国站 USD 报价。依据美国站官方帮助；原未核实目录的 JP/JPY 观察单独保留，不用于美国商品。未进入结账或验证中国发行卡。",
+      "scope_evidence_urls": [
+        "https://www.oakley.com/en-us/support/shopping-support"
+      ],
+      "merchant_evidence_status": "mixed",
+      "checked_at": "2026-10-16",
+      "observed_market": "US/USD",
+      "observed_landing_url": "https://www.oakley.com/en-us",
+      "methods": [
+        {
+          "method_key": "cards",
+          "name": "银行卡／卡组织",
+          "status": "conditional",
+          "note": "美国站官方帮助列出 Visa、Mastercard、American Express、Discover、Diners Club、JCB；这是卡组织受理说明，不保证中国发行卡或本笔授权通过。",
+          "evidence_class": "official_confirmed",
+          "merchant_evidence_status": "official_text",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16",
+          "card_networks": [
+            "Visa",
+            "Mastercard",
+            "American Express",
+            "Discover",
+            "Diners Club",
+            "JCB"
+          ]
+        },
+        {
+          "method_key": "china_issued_cards",
+          "name": "中国大陆发行卡",
+          "status": "unknown",
+          "note": "美国站未明确保证中国大陆发行卡受理；不能以 Visa、UnionPay 或钱包列表替代发行地及具体交易授权证据。",
+          "evidence_class": "insufficient_evidence",
+          "merchant_evidence_status": "unavailable",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16",
+          "merchant_evidence_detail": "not_found"
+        },
+        {
+          "method_key": "paypal",
+          "name": "PayPal",
+          "status": "conditional",
+          "note": "美国站官方帮助列出 PayPal；未核实中国大陆注册账户及其底层银行卡能否用于当前订单。",
+          "evidence_class": "official_confirmed",
+          "merchant_evidence_status": "official_text",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "apple_pay",
+          "name": "Apple Pay",
+          "status": "conditional",
+          "note": "美国站官方帮助列出 Apple Pay；设备、钱包地区及底层卡授权仍须核对。",
+          "evidence_class": "official_confirmed",
+          "merchant_evidence_status": "official_text",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "google_pay",
+          "name": "Google Pay",
+          "status": "unknown",
+          "note": "所查美国站官方帮助未明确列出Google Pay；未列出不等于不支持。",
+          "evidence_class": "insufficient_evidence",
+          "merchant_evidence_status": "unavailable",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16",
+          "merchant_evidence_detail": "not_found"
+        },
+        {
+          "method_key": "alipay",
+          "name": "支付宝 Alipay",
+          "status": "unknown",
+          "note": "所查美国站官方帮助未明确列出支付宝 Alipay；未列出不等于不支持。",
+          "evidence_class": "insufficient_evidence",
+          "merchant_evidence_status": "unavailable",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16",
+          "merchant_evidence_detail": "not_found"
+        },
+        {
+          "method_key": "wechat_pay",
+          "name": "微信支付 WeChat Pay",
+          "status": "unknown",
+          "note": "所查美国站官方帮助未明确列出微信支付 WeChat Pay；未列出不等于不支持。",
+          "evidence_class": "insufficient_evidence",
+          "merchant_evidence_status": "unavailable",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16",
+          "merchant_evidence_detail": "not_found"
+        },
+        {
+          "method_key": "unionpay",
+          "name": "银联 UnionPay",
+          "status": "conditional",
+          "note": "美国站官方帮助列出 UnionPay；未说明所有中国发行银联信用卡或借记卡均可用。",
+          "evidence_class": "official_confirmed",
+          "merchant_evidence_status": "official_text",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "bank_transfer_local",
+          "name": "银行转账／本地支付",
+          "status": "unknown",
+          "note": "所查美国站官方帮助未明确列出银行转账／本地支付；未列出不等于不支持。",
+          "evidence_class": "insufficient_evidence",
+          "merchant_evidence_status": "unavailable",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16",
+          "merchant_evidence_detail": "not_found"
+        },
+        {
+          "method_key": "gift_cards",
+          "name": "礼品卡",
+          "status": "conditional",
+          "note": "美国站官方帮助列出 Oakley gift card；未核实跨市场购买、兑换及余额条件，不把礼品卡视为绕过支付限制的方法。",
+          "evidence_class": "official_confirmed",
+          "merchant_evidence_status": "official_text",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "美国站适用；中国发卡地、真实账单地址、账户地区及风控资格仍须核对。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "instalments",
+          "name": "分期付款",
+          "status": "conditional",
+          "note": "美国站官方帮助列出 Affirm、Klarna，并注明 Affirm 仅适用于单件商品订单；居民、账户及授信资格须单独核实。",
+          "evidence_class": "official_confirmed",
+          "merchant_evidence_status": "official_text",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "未取得美国站接受中国大陆发行卡或中国大陆注册账户的明确保证；未做真实支付验证。"
+          },
+          "account_region_constraints": "Affirm 仅限单件商品订单；Affirm/Klarna 的居民、账户和授信资格未核实。",
+          "evidence_urls": [
+            "https://www.oakley.com/en-us/support/shopping-support"
+          ],
+          "checked_at": "2026-10-16"
+        }
+      ],
+      "sample_product_urls": [],
+      "transport_note": {
+        "status": "not_supported",
+        "scope": "US/USD market only",
+        "evidence_class": "explicitly_unsupported",
+        "note": "美国站官方配送页明确不提供国际配送，因此不支持中国大陆或香港直邮；商业转运许可未证实。",
+        "evidence_urls": [
+          "https://www.oakley.com/en-us/support/shipping-returns"
+        ],
+        "checked_at": "2026-10-16"
+      }
     }
   ]
 }

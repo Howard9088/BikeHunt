@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-16-verified-channel-policies-batch6",
+  "revision": "2026-10-16-verified-oakley-us-policy",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -1276,6 +1276,49 @@
       "sources": [
         "https://www.ekoi.com/en-ae/content/21-payment-methods",
         "https://www.ekoi.com/en-ae/content/3-terms-and-conditions-of-sale"
+      ]
+    },
+    {
+      "sourceCode": "oakley",
+      "scope": "market",
+      "salesRegion": "美国站 USD 报价",
+      "merchantHosts": [
+        "www.oakley.com"
+      ],
+      "label": "Oakley 美国站",
+      "policyScope": "美国站 USD 报价；仅 www.oakley.com/en-us 的普通零售商品，其他市场另核",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "Discover",
+          "Diners Club",
+          "JCB",
+          "PayPal",
+          "Apple Pay",
+          "UnionPay",
+          "Affirm",
+          "Klarna",
+          "Oakley gift card"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "美国站官方帮助列出上述方式，Affirm 仅限单件商品订单。中国发行卡、账户及授信资格未核实；列出卡组织或钱包不保证本笔支付成功。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "美国站官方配送页限美国 50 州及所列美国领地，明确不提供国际配送，因此不支持中国大陆或香港直邮。美国站 USD 商品报价不能用于保证其他地区官网的价格、库存或配送资格。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查美国站配送页和购物帮助，未找到明确商业转运许可；邮政信箱不支持。日本站拒绝海外转运的旧观察不套用美国站，美国收货地址也不等于商业转运已获准。"
+      },
+      "sourceLimitations": "美国站所列本地运费和税费不能当作中国到手价。普通零售退货须保持原包装、全新未用及原标签；页面同时写购买后 30 天内可退、收货后 30 天内寄回，应按订单核对具体截止日。定制眼镜、雪镜及配件不支持退换，普通零售规则不外推 Pro Site。美国本地退货安排不保证中国跨境回邮免费；未核实游客结账或必须注册。",
+      "sources": [
+        "https://www.oakley.com/en-us/support/shipping-returns",
+        "https://www.oakley.com/en-us/support/shopping-support"
       ]
     }
   ],

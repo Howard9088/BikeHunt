@@ -1,0 +1,1047 @@
+{
+  "source_code": "oakley",
+  "collected_at": "2026-10-16T12:02:10Z",
+  "verification_method": "manual_public_selected_variant",
+  "observation_window": {
+    "start": "2026-10-16T12:02:10Z",
+    "end": "2026-10-16T12:05:55Z"
+  },
+  "offers": [
+    {
+      "offer_id": "oakley-manual-ef662e1f5f7cdf94a7a5",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "DRT5 MAVEN - MIPS",
+        "size": "L",
+        "color": "Satin Mist/Paloma"
+      },
+      "name": "DRT5 MAVEN - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS900925",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c9563e0c-e637-46dc-a858-b37b016b45da/FOS900925__1KE__PIC07__noshad__qt.png",
+      "price": {
+        "amount": "205.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS900925",
+      "identity_evidence": "官方页面已选颜色 Satin Mist/Paloma / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Satin Mist/Paloma / L；打开官网后须重新核对并选择该规格。",
+        "用途：mtb；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-211608db7de581ea296e",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "ARO5 RACE - MIPS",
+        "size": "S",
+        "color": "Matte White"
+      },
+      "name": "ARO5 RACE - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS900927",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c86ca3a5-b79e-42b2-8336-b37c0004c6b7/FOS900927__11B_030A.png",
+      "price": {
+        "amount": "205.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS900927",
+      "identity_evidence": "官方页面已选颜色 Matte White / 尺码 S，商品状态 Available-twoLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Matte White / S；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-4b98a6061fc174ac2550",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "ARO3 ENDURANCE -MIPS",
+        "size": "S",
+        "color": "Matte Fern"
+      },
+      "name": "ARO3 ENDURANCE -MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS900928",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/895e4c64-f5d2-4687-a930-b37c0005115d/FOS900928__7C4_030A.png",
+      "price": {
+        "amount": "135.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS900928",
+      "identity_evidence": "官方页面已选颜色 Matte Fern / 尺码 S，商品状态 Available-oneLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Matte Fern / S；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-539153a0e4f56442d6ae",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "ARO3 ENDURANCE I.C.E - MIPS",
+        "size": "L",
+        "color": "I.C.E. White Reflective"
+      },
+      "name": "ARO3 ENDURANCE I.C.E - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS901112",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/2401a460-e315-4bd5-85af-b37b0099dab6/FOS901112__1AA_030A.png",
+      "price": {
+        "amount": "165.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901112",
+      "identity_evidence": "官方页面已选颜色 I.C.E. White Reflective / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 I.C.E. White Reflective / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-86f38fb91a0d0ad40f6c",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "ARO3 ALLROAD I.C.E - MIPS",
+        "size": "L",
+        "color": "I.C.E Black Reflective"
+      },
+      "name": "ARO3 ALLROAD I.C.E - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS901113",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c72d7cb5-3054-4f04-bdf6-b37b008ddd30/FOS901113__09K_030A.png",
+      "price": {
+        "amount": "185.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901113",
+      "identity_evidence": "官方页面已选颜色 I.C.E Black Reflective / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 I.C.E Black Reflective / L；打开官网后须重新核对并选择该规格。",
+        "用途：gravel；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-d60370432e04eb6c54bc",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "ARO5 RACE I.C.E - MIPS",
+        "size": "L",
+        "color": "I.C.E Black Reflective"
+      },
+      "name": "ARO5 RACE I.C.E - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS901114",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/ad1873b8-1399-4397-b331-b37b00999e15/FOS901114__09K_030A.png",
+      "price": {
+        "amount": "240.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901114",
+      "identity_evidence": "官方页面已选颜色 I.C.E Black Reflective / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 I.C.E Black Reflective / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-c5cab71dbf6aaaaad161",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "DRT5 MAVEN I.C.E - MIPS",
+        "size": "M",
+        "color": "I.C.E. Matte Black/Matte Reflective"
+      },
+      "name": "DRT5 MAVEN I.C.E - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS901116",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/d1a5085d-8c9c-4402-af73-b37b008f157e/FOS901116__09Q_030A.png",
+      "price": {
+        "amount": "240.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901116",
+      "identity_evidence": "官方页面已选颜色 I.C.E. Matte Black/Matte Reflective / 尺码 M，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 I.C.E. Matte Black/Matte Reflective / M；打开官网后须重新核对并选择该规格。",
+        "用途：mtb；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-e2b0ef8c85a8145249a2",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "ARO3 ALLROAD - MIPS",
+        "size": "S",
+        "color": "Matte Blackout"
+      },
+      "name": "ARO3 ALLROAD - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS901117",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6fb9b8be-6535-40cc-be20-b37b016cff85/FOS901117__05H_030A.png",
+      "price": {
+        "amount": "155.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901117",
+      "identity_evidence": "官方页面已选颜色 Matte Blackout / 尺码 S，商品状态 Available-fewLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Matte Blackout / S；打开官网后须重新核对并选择该规格。",
+        "用途：gravel；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-1b22b1f84ca123739dbc",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "DRT3 Trail",
+        "size": "L",
+        "color": "Light Grey"
+      },
+      "name": "DRT3 Trail",
+      "url": "https://www.oakley.com/en-us/product/FOS901248",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fa25d8df-ac4e-47a3-8fa6-b37b016d842e/FOS901248__202_030A.png",
+      "price": {
+        "amount": "135.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901248",
+      "identity_evidence": "官方页面已选颜色 Light Grey / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Light Grey / L；打开官网后须重新核对并选择该规格。",
+        "用途：mtb；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-23408e315f5b91e860ab",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "DRT3 TRAIL I.C.E - MIPS",
+        "size": "L",
+        "color": "I.C.E. Matte Black/Matte Reflective"
+      },
+      "name": "DRT3 TRAIL I.C.E - MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS901249",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/39b46811-2fd7-475a-8cbf-b37b009c1522/FOS901249__09Q_030A.png",
+      "price": {
+        "amount": "165.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901249",
+      "identity_evidence": "官方页面已选颜色 I.C.E. Matte Black/Matte Reflective / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 I.C.E. Matte Black/Matte Reflective / L；打开官网后须重新核对并选择该规格。",
+        "用途：mtb；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-2dc07a8e65c1ca9ba376",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "Aro7 Road I.C.E.",
+        "size": "S",
+        "color": "Black Gloss ICE Ref/Prizm Red"
+      },
+      "name": "Aro7 Road I.C.E.",
+      "url": "https://www.oakley.com/en-us/product/FOS901511",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c2d7f5c7-9787-4d7f-9ed3-b37b00a7d122/FOS901511__9XM_030A.png",
+      "price": {
+        "amount": "330.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901511",
+      "identity_evidence": "官方页面已选颜色 Black Gloss ICE Ref/Prizm Red / 尺码 S，商品状态 Available-twoLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Black Gloss ICE Ref/Prizm Red / S；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-6f237337e75305764bb9",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "STREET1",
+        "size": "L",
+        "color": "Matte White"
+      },
+      "name": "STREET1",
+      "url": "https://www.oakley.com/en-us/product/FOS901523",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fe21a3f6-4cb9-404d-ac78-b37c000096cb/FOS901523__11B_030A.png",
+      "price": {
+        "amount": "120.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901523",
+      "identity_evidence": "官方页面已选颜色 Matte White / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Matte White / L；打开官网后须重新核对并选择该规格。",
+        "用途：urban；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-d40fea1afc92308a0e1b",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "Aro7 Lite",
+        "size": "L",
+        "color": "Matte Med Grey Retina Burn"
+      },
+      "name": "Aro7 Lite",
+      "url": "https://www.oakley.com/en-us/product/FOS901772",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f045773d-783c-4e14-9398-b37100250471/FOS901772__27T_030A.png",
+      "price": {
+        "amount": "260.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901772",
+      "identity_evidence": "官方页面已选颜色 Matte Med Grey Retina Burn / 尺码 L，商品状态 Available-fewLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Matte Med Grey Retina Burn / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-017610d8bfdf990c5b79",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "STREET1 I.C.E.",
+        "size": "L",
+        "color": "I.C.E Black Reflective"
+      },
+      "name": "STREET1 I.C.E.",
+      "url": "https://www.oakley.com/en-us/product/FOS901800",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/8e0ca3f0-8a73-48e9-845f-b37b00c06d54/FOS901800__09K_030A.png",
+      "price": {
+        "amount": "150.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901800",
+      "identity_evidence": "官方页面已选颜色 I.C.E Black Reflective / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 I.C.E Black Reflective / L；打开官网后须重新核对并选择该规格。",
+        "用途：urban；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-b7da3e5c2f2426023789",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "VELO MACH",
+        "size": "L",
+        "color": "Matte Black"
+      },
+      "name": "VELO MACH",
+      "url": "https://www.oakley.com/en-us/product/FOS902123",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6811cc2b-51cd-47bd-a8e6-b3710020cedf/FOS902123__02K__PIC07__noshad__qt.png",
+      "price": {
+        "amount": "310.00",
+        "currency": "USD"
+      },
+      "stock": "out_of_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS902123",
+      "identity_evidence": "官方页面已选颜色 Matte Black / 尺码 L，商品状态 SoldOut。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Matte Black / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-aad2bc5191ebebb31382",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "VELO TT",
+        "size": "M/L",
+        "color": "Gloss Black Pearl"
+      },
+      "name": "VELO TT",
+      "url": "https://www.oakley.com/en-us/product/FOS902226",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/22f7b685-443c-44ec-991e-b37100250319/FOS902226__GBP__PIC07__noshad__qt.png",
+      "price": {
+        "amount": "415.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS902226",
+      "identity_evidence": "官方页面已选颜色 Gloss Black Pearl / 尺码 M/L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Gloss Black Pearl / M/L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-5d32449dddc7772b43cb",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "VELO MACH MIPS",
+        "size": "L",
+        "color": "Black/Red Pro"
+      },
+      "name": "VELO MACH MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS902243",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/0625ca9b-1283-48da-ae52-b3e600b6677a/FOS902243__BRP_dtl1.png",
+      "price": {
+        "amount": "340.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS902243",
+      "identity_evidence": "官方页面已选颜色 Black/Red Pro / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Black/Red Pro / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-c6812195c26fba78d9bd",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "VELO STELVIO MIPS",
+        "size": "L",
+        "color": "Matte Black"
+      },
+      "name": "VELO STELVIO MIPS",
+      "url": "https://www.oakley.com/en-us/product/FOS902248",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a830d988-ac3f-4250-808c-b3e500f543c2/FOS902248__02K__PIC07__noshad__qt.png",
+      "price": {
+        "amount": "340.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS902248",
+      "identity_evidence": "官方页面已选颜色 Matte Black / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Matte Black / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-9fb4d1986971c04325f8",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "VELO MACH MIPS GIRO D'ITALIA COLLECTION",
+        "size": "L",
+        "color": "Giro D'Italia '26"
+      },
+      "name": "VELO MACH MIPS GIRO D'ITALIA COLLECTION",
+      "url": "https://www.oakley.com/en-us/product/GFOS902243",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a8c49e6b-916b-4b74-b295-b42c010c1d57/FOS902243__G26.png",
+      "price": {
+        "amount": "365.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/GFOS902243",
+      "identity_evidence": "官方页面已选颜色 Giro D'Italia '26 / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Giro D'Italia '26 / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-1b862aa45119b1b779f2",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "ARO5 Race Giro d'Italia",
+        "size": "S",
+        "color": "24' Giro D'Italia"
+      },
+      "name": "ARO5 Race Giro d'Italia",
+      "url": "https://www.oakley.com/en-us/product/ITFOS901302",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/46571bf4-1fe7-42d2-bce2-b37b017159c0/FOS901302__02T_030A.png",
+      "price": {
+        "amount": "230.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/ITFOS901302",
+      "identity_evidence": "官方页面已选颜色 24' Giro D'Italia / 尺码 S，商品状态 Available-oneLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 24' Giro D'Italia / S；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-908d64ef030633e69080",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "Endurance Tempo Bib",
+        "size": "M",
+        "color": "Army Green"
+      },
+      "name": "Endurance Tempo Bib",
+      "url": "https://www.oakley.com/en-us/product/FOA407902",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/54853125-98d0-4b4a-af2d-b3e500a40cde/FOA407902__7CE_omfr1.png",
+      "price": {
+        "amount": "250.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOA407902",
+      "identity_evidence": "官方页面已选颜色 Army Green / 尺码 M，商品状态 Available-fewLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Army Green / M；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-135153f34ad7f558c9ac",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "Endurance Mix Jersey",
+        "size": "XL",
+        "color": "White"
+      },
+      "name": "Endurance Mix Jersey",
+      "url": "https://www.oakley.com/en-us/product/FOA406782",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/1d482116-bb32-41df-a541-b3e20088b1cd/FOA406782__100_omfr1.png",
+      "price": {
+        "amount": "152.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOA406782",
+      "identity_evidence": "官方页面已选颜色 White / 尺码 XL，商品状态 Available-oneLeft。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 White / XL；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      },
+      "original_price": {
+        "amount": "190.00",
+        "currency": "USD"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-0f4c0469f036089770bb",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "Drops Road Glove 2.0",
+        "size": "L",
+        "color": "Blackout"
+      },
+      "name": "Drops Road Glove 2.0",
+      "url": "https://www.oakley.com/en-us/product/FOS901803",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a87dba4c-0a60-4f29-8cb1-b3590067c877/FOS901803__02E.png",
+      "price": {
+        "amount": "55.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS901803",
+      "identity_evidence": "官方页面已选颜色 Blackout / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Blackout / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    },
+    {
+      "offer_id": "oakley-manual-6befa86b29f6834ed47e",
+      "source_code": "oakley",
+      "source_name": "Oakley 美国官方商城",
+      "identity": {
+        "brand": "Oakley",
+        "model": "Cadence Socks 2.0",
+        "size": "L",
+        "color": "Pitch Black"
+      },
+      "name": "Cadence Socks 2.0",
+      "url": "https://www.oakley.com/en-us/product/FOS902106",
+      "image": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f7d8572d-683c-470c-b4be-b37b00d171d5/FOS902106__021.png",
+      "price": {
+        "amount": "25.00",
+        "currency": "USD"
+      },
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetched_at": "2026-10-16T12:02:10Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "美国站 USD 报价",
+      "family_hint": "https://www.oakley.com/en-us/product/FOS902106",
+      "identity_evidence": "官方页面已选颜色 Pitch Black / 尺码 L，商品状态 Available。仅确认该规格；Units不是库存数量。批量观察窗口2026-10-16 12:02:10–12:05:55 UTC，时间保守取窗口起点。内部ID不冒充官方API ID。",
+      "purchase_requirements": [
+        "本次已核 Pitch Black / L；打开官网后须重新核对并选择该规格。",
+        "用途：road；不把所有头盔视为公路款。",
+        "美国站不提供国际配送；不保证转运地址获接受，付款、税费与配送须另行核对。",
+        "人工核验快照，尚未启用自动刷新。"
+      ],
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://www.oakley.com/en-us/support/shipping-returns",
+        "checked_at": "2026-10-16T12:02:51Z",
+        "scope": "site",
+        "note": "美国官网仅列50州、Puerto Rico与Guam；明确不国际配送。核验窗口12:02:51–12:03:03 UTC。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "美国市场中国发行卡资格未验证，不能套日本站政策。"
+      }
+    }
+  ]
+}

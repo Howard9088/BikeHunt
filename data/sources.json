@@ -820,5 +820,26 @@
       "status": "unknown",
       "note": "中国发行卡支付条件待核实。"
     }
+  },
+  {
+    "code": "oakley",
+    "name": "Oakley 美国官方商城",
+    "brand": "Oakley",
+    "type": "brand_official",
+    "base_url": "https://www.oakley.com/en-us",
+    "sales_region": "美国站 USD 报价",
+    "enabled": true,
+    "collection_strategy": "manual_verified_public_variant",
+    "official_evidence_url": "https://www.oakley.com/en-us/product/FOS902243",
+    "china_shipping": {
+      "status": "no",
+      "evidence_url": "https://www.oakley.com/en-us/support/shipping-returns",
+      "checked_at": "2026-10-16T12:02:51Z",
+      "note": "美国站不提供国际配送；核验窗口12:02:51–12:03:03 UTC。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "美国市场中国发行卡资格未验证。"
+    }
   }
 ]

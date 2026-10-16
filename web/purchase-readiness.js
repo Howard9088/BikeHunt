@@ -2,6 +2,7 @@
 // Dated, read-only policy summaries. These never alter an offer or cost estimate.
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
+  oakley:["www.oakley.com"],
   soudal:["thewolfpack.shop"],
   ineos:["store.netcompanyineos.com"],
   decathlon:["shop.decathloncmacgmteam.com"],
@@ -24,6 +25,7 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  oakley:["market", "美国站 USD 报价", ["www.oakley.com"]],
   soudal:["market", "BE 市场 · EUR 报价；未验证其他市场库存", ["thewolfpack.shop"]],
   ineos:["market", "US 市场 · USD 报价；未验证其他市场库存", ["store.netcompanyineos.com"]],
   decathlon:["market", "US 市场 · USD 报价；未验证其他市场库存", ["shop.decathloncmacgmteam.com"]],

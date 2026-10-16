@@ -220,5 +220,24 @@ assert.equal(context.readinessPolicy(offer('alpecin','比利时商城 EUR 页面
 assert.equal(context.readinessPolicy(offer('decathlon','US 市场 · USD 报价；未验证其他市场库存','https://www.decathlon.com.cn/product')),null);
 const ae=context.readinessPolicy(offer('nsn','阿联酋站 USD 报价','https://www.ekoi.com/en-ae/item'));assert.equal(ae.payment.status,'conditional_checkout');assert.ok(ae.payment.methods.includes('PayPal'));
 for(const source of actualSources)assert.ok(data.entries.some(row=>row.sourceCode===source.code),'Missing researched source: '+source.code);
-assert.equal(data.entries.length,37);assert.ok(JSON.stringify(data).length<100000);assert.equal(data.checkedAt,'2026-10-15');
-console.log('Final batch passed: all 33 existing sources mapped, exact merchant/market boundaries, scoped exceptions, honest evidence gaps and no price/card guarantees.');
+assert.equal(data.entries.length,38);assert.ok(JSON.stringify(data).length<100000);assert.equal(data.checkedAt,'2026-10-15');
+console.log('Final batch passed: all 34 non-Amazon sources mapped, exact merchant/market boundaries, scoped exceptions, honest evidence gaps and no price/card guarantees.');
+
+const oakleyUS=offer('oakley','美国站 USD 报价','https://www.oakley.com/en-us/product/FOS902243');
+const oakleyBefore=JSON.stringify(oakleyUS),oakley=context.readinessPolicy(oakleyUS);
+assert.ok(oakley);assert.equal(oakley.scope,'market');assert.equal(oakley.checkedAt,'2026-10-16');
+assert.deepEqual(oakley.merchantHosts,['www.oakley.com']);
+assert.equal(oakley.directChina.status,'prohibited');assert.equal(oakley.directChina.shippingAmount,undefined);
+assert.equal(oakley.forwarding.status,'unknown');assert.equal(oakley.payment.chinaIssuedCard,'unknown');
+for(const sales_region of ['未核实','日本站报价','JP/JPY','US','',undefined])assert.equal(context.readinessPolicy({...oakleyUS,sales_region}),null);
+for(const url of ['https://hk.oakley.com/product','https://www.oakley.com.evil.example/en-us/product','https://other.example/product'])assert.equal(context.readinessPolicy({...oakleyUS,url}),null);
+for(const url of oakley.sources){assert.equal(context.readinessUrl(url,'oakley'),true);assert.ok(url.startsWith('https://www.oakley.com/en-us/'))}
+assert.equal(context.readinessUrl('https://hk.oakley.com/support','oakley'),false);
+const oakleyHtml=context.readinessContent(oakleyUS);
+for(const word of ['不直邮中国大陆','中国大陆或香港','未找到明确商业转运许可','30 天','2026-10-16'])assert.ok(oakleyHtml.includes(word),word);
+assert.ok(oakleyHtml.includes('data-china-card-status="unknown"'));assert.ok(!oakleyHtml.includes('官网列中国配送；'));
+assert.equal(JSON.stringify(oakleyUS),oakleyBefore);
+const oakleyDirectory=context.readinessDirectoryMarkup({code:'oakley',source_codes:['oakley'],shop_url:'https://www.oakley.com/en-us'});
+assert.ok(oakleyDirectory.includes('指定市场参考'));assert.ok(oakleyDirectory.includes('目录未提供精确报价市场'));assert.ok(oakleyDirectory.includes('美国站 USD 报价'));
+assert.equal(context.readinessDirectoryMarkup({code:'oakley',source_codes:['oakley'],shop_url:'https://hk.oakley.com/'}),'');
+console.log('Oakley US readiness exact-market isolation passed.');
