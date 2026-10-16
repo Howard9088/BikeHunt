@@ -65,7 +65,7 @@ href=method.evidence_urls[0];open=false;assert.equal(c.allowedPaymentLink(link),
 const count=navigated.length;exit.setAnswer(()=>{href+='?changed';return true});c.guardPaymentExit(event);assert.equal(navigated.length,count);
 // Research content is text, never markup.
 const malicious=clone(fixture);malicious.entries[0].methods[0].note='<img src=x onerror=alert(1)>';c.malicious=malicious;vm.runInContext('paymentData=validatePaymentData(malicious,paymentChannels)',c);assert.ok(!c.paymentMethodsMarkup(offer('maap')).includes('<img'));assert.ok(c.paymentMethodsMarkup(offer('maap')).includes('&lt;img'));
-vm.runInContext('paymentData=null;paymentState="error"',c);html=c.paymentMethodsMarkup(offer('maap'));assert.equal((html.match(/data-payment-status="unknown"/g)||[]).length,11);assert.ok(html.includes('未能通过读取或校验'));assert.ok(!html.includes('data-payment-link='));
+vm.runInContext('paymentData=null;paymentState="error"',c);html=c.paymentMethodsMarkup(offer('maap'));assert.equal((html.match(/data-payment-status="unknown"/g)||[]).length,11);assert.ok(html.includes('支付说明暂时无法加载'));assert.ok(!html.includes('读取或校验'));assert.ok(!html.includes('旧卡种字段'));assert.ok(!html.includes('data-payment-link='));
 // An unavailable payment matrix cannot alter established route restrictions.
 vm.runInContext(fs.readFileSync('web/purchase-readiness.js','utf8').replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.shipping=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));vm.runInContext('readinessData=validateReadinessData(shipping);readinessState="ready"',c);assert.ok(c.readinessContent(offer('maap')).includes('不直邮中国大陆'));assert.ok(!c.paymentFeasibilityMarkup(offer('maap')).includes('Legacy unsupported network'));
 if(!process.argv.includes('--fixtures-only')){
