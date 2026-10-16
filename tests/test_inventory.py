@@ -60,7 +60,26 @@ class InventoryTests(unittest.TestCase):
                 if not available:
                     self.assertIsNone(detail.recommended_offer_id)
                     self.assertEqual(card.status, "上次核实时有货；请到官网确认")
-                    self.assertIn("库存核实已过期；等待重新核实", compared.reasons)
+                    self.assertIn("这是上次核验的信息，购买前请到官网确认当前库存与价格", compared.reasons)
+
+    def test_last_known_copy_keeps_unknown_and_sold_out_distinct(self):
+        note = "这是上次核验的信息，购买前请到官网确认当前库存与价格"
+        for age in [timedelta(hours=2), timedelta(days=2)]:
+            for state in ["current", "retained"]:
+                offer = make_offer(fetched_at=NOW-age, collection_state=state)
+                compared = compare_offer(offer, make_fx(), NOW)
+                self.assertEqual(compared.reasons.count(note), 1)
+                self.assertFalse(compared.eligible)
+                self.assertEqual(compared.offer.fetched_at, NOW-age)
+                self.assertNotIn("库存核实已过期；等待重新核实", compared.reasons)
+        for stock, label in [("unknown", "库存待核实"), ("out_of_stock", "已售罄")]:
+            compared = compare_offer(make_offer(stock=stock, collection_state="retained"), make_fx(), NOW)
+            self.assertIn(label, compared.reasons)
+            self.assertNotIn(note, compared.reasons)
+        for stamp in [None, NOW.replace(tzinfo=None), NOW+timedelta(seconds=1)]:
+            compared = compare_offer(make_offer(fetched_at=stamp), make_fx(), NOW)
+            self.assertNotIn(note, compared.reasons)
+            self.assertIn("库存记录缺少有效核实时间", compared.reasons)
 
     def test_stock_timestamps_fail_closed(self):
         for timestamp in [None, NOW.replace(tzinfo=None), NOW+timedelta(microseconds=1)]:

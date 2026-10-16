@@ -87,12 +87,17 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
         reasons.append("中国发行信用卡核实记录已过期")
     elif card.status != "yes" and not network_supported:
         reasons.append("银行卡支付条件待核实")
+    reliable_stock = (offer.data_kind == "live_snapshot" and offer.stock == "in_stock"
+                      and offer.fetched_at is not None and offer.fetched_at.tzinfo is not None
+                      and _age(offer.fetched_at, now) >= 0)
+    last_known_note = "这是上次核验的信息，购买前请到官网确认当前库存与价格"
     if offer.collection_state == "retained":
-        reasons.append("最近采集失败；保留历史报价，库存待重新核实")
+        reasons.append(last_known_note if reliable_stock else "最近价格核对未完成；请以官网结账报价为准")
     if offer.stock != "in_stock":
         reasons.append("已售罄" if offer.stock == "out_of_stock" else "库存待核实")
     if offer.stock == "in_stock" and not 0 <= _age(offer.fetched_at, now) <= STOCK_MAX_AGE_SECONDS:
-        reasons.append("库存核实已过期；等待重新核实")
+        if not (reliable_stock and last_known_note in reasons):
+            reasons.append(last_known_note if reliable_stock else "库存记录缺少有效核实时间")
     if not 0 <= _age(offer.fetched_at, now) <= QUOTE_MAX_AGE_SECONDS:
         reasons.append("报价已过期" if offer.fetched_at else "旧缓存未记录采集时间")
     if offer.price_valid_until:
