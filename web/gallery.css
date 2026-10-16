@@ -44,9 +44,3 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
 /* Keep the existing footer and gallery heights. */
 .footer{gap:10px}.footer-description{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.footer #visitorStats{flex-shrink:0;white-space:nowrap}
 @media(max-width:600px){.footer{gap:7px}.footer-description{display:none}.footer #fxDate{display:none}.footer #visitorStats{margin-left:auto;font-size:10px}}
-
-/* Shared premium cycling mark for desktop and mobile site header. */
-.logo{display:inline-flex;align-items:center;gap:8px}
-.logo .bikehunt-mark{display:block;width:40px;height:40px;flex:none;margin:0;border-radius:10px}
-.logo small{margin-left:6px}
-@media(max-width:600px){.logo{gap:6px}.logo .bikehunt-mark{width:34px;height:34px;border-radius:8px}}
