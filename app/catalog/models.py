@@ -203,6 +203,16 @@ class ProductComparison(Record):
 
 
 class ProductCard(Record):
+    # First verified public listing receipt, never offer.fetched_at.
+    first_listed_at: datetime | None = None
+
+    @field_validator('first_listed_at')
+    @classmethod
+    def listing_requires_timezone(cls, value):
+        if value is not None and value.tzinfo is None:
+            raise ValueError('First listing requires an explicit timezone')
+        return value
+
     product_id: str
     name: str
     name_zh: str = ""

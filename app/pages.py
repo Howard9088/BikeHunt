@@ -40,7 +40,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     output.mkdir()
     web = root/"web"
     (output/"web").mkdir()
-    for name in ("public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "payment-methods.js", "payment-methods.json", "payment-channels.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
+    for name in ("listing-order.js", "public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "payment-methods.js", "payment-methods.json", "payment-channels.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
         shutil.copy2(web/name, output/"web"/name)
     if (web/"visitor-stats.js").is_file():
         shutil.copy2(web/"visitor-stats.js", output/"web/visitor-stats.js")
@@ -70,7 +70,10 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     repository = OfferRepository(root/"data")
     offers = repository.load()
     snapshot = fx or FxProvider(root/"data/fx_latest.json").get()
+    from app.catalog.listings import read_listing_history, prepare_listing_history, family_records
     store = ComparisonCatalog(offers, snapshot, public_only=True)
+    listings = prepare_listing_history(read_listing_history(root), family_records(store))
+    store.listing_history = listings
     public_offers = [offer for family in store.families.values() for variant in family for offer in variant]
     catalog = {"items":[row.model_dump(mode="json") for row in store.search()],
                "categories":public_categories(), "category_groups":public_category_groups(),
@@ -123,7 +126,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     payload = {"generated_at":datetime.now(timezone.utc).isoformat(), "mode":"published_snapshot",
                "publication":{"commit":os.environ.get("GITHUB_SHA"), "run_id":os.environ.get("GITHUB_RUN_ID"), "trigger":os.environ.get("GITHUB_EVENT_NAME")},
                "collection_status":public_collection_status({p.stem:json.loads(p.read_text(encoding="utf-8")) for p in (root/"data/collection_status").glob("*.json")}, public_urls(root)),
-               "catalog":catalog, "details":details, "directories":directory, "rules":rules,
+               "listing_history":listings, "catalog":catalog, "details":details, "directories":directory, "rules":rules,
                "updates":{"items":events, "cursor":max(UpdateStore(root).cursor(), max((row["id"] for row in events), default=0)),
                           "fx":snapshot.model_dump(mode="json"), "history_recovery":UpdateStore(root).history_recovery()}, "fit_charts":charts,
                "community":community}

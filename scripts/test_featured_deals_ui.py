@@ -146,6 +146,7 @@ def exercise_oakley_flow(browser,base,mode,viewport,checks,errors):
         expect(directory.locator('.directory-count')).to_contain_text('23 款现货')
         directory.click();assert_cards(available)
         expect(page.locator('#count')).to_have_text('23 件商品')
+        expect(page.locator('#grid .listing-time')).to_have_text(['本站发布：未记录']*23)
         expect(page.locator('#channelInfo')).to_be_visible()
         assert page.locator('#channelInfo').get_attribute('open') is None
         expect(page.locator('#grid .card.has-deal')).to_have_count(1)
@@ -273,12 +274,14 @@ def gobik_fixture():
     assert factory.original_price is None
     assert factory.image == GOBIK_FACTORY_IMAGE
     assert not urlparse(factory.url).query, 'Do not invent an official variant URL'
-    replay_time = max(row.fetched_at for row in offers)
+    # Replay after the actual first public receipt; stock observation times stay original.
+    replay_time = datetime(2026,10,16,15,0,tzinfo=timezone.utc)
+    listings = json.loads((ROOT/'data/listing_history.json').read_text())
     # Synthetic conversion only, explicitly labelled and never written to production.
     fx = FxSnapshot(snapshot_id='synthetic-gobik-ui-replay', rate_date=replay_time.date().isoformat(),
                     fetched_at=replay_time, rates={'EUR': Decimal('8'), 'CNY': Decimal('1')},
                     source='Synthetic UI test fixture', note='Synthetic EUR rate for UI replay only')
-    catalog = ComparisonCatalog(offers, fx, replay_time, public_only=True)
+    catalog = ComparisonCatalog(offers, fx, replay_time, public_only=True, listing_history=listings)
     cards = catalog.search()
     assert len(cards) == 19 and len({card.product_id for card in cards}) == 19
     assert {card.reference_offer_id for card in cards} == {row.offer_id for row in offers}
@@ -370,6 +373,7 @@ def exercise_gobik_catalog(browser, base, checks, errors, external):
             # Every card retains its own captured image, amount and single observed size.
             for item in state['catalog']['items']:
                 card = page.locator(f'.card[data-id="{item["product_id"]}"]')
+                expect(card.locator('.listing-time')).to_have_text('本站发布：2026-10-16 22:55')
                 expect(card.locator('.product-visual img')).to_have_attribute('src', item['image'])
                 if item['reference_original_price'] is None:
                     expect(card.locator('.discount,.original-price')).to_have_count(0)

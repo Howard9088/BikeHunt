@@ -140,7 +140,8 @@ def _identifier(value: str) -> str:
 
 class ComparisonCatalog:
     def __init__(self, offers: list[Offer], fx: FxSnapshot,
-                 now: datetime | None = None, *, public_only: bool = False) -> None:
+                 now: datetime | None = None, *, public_only: bool = False, listing_history: dict | None = None) -> None:
+        self.listing_history = listing_history
         self.fx = fx
         self.public_only = public_only
         self.hidden_offer_ids: set[str] = set()
@@ -283,7 +284,8 @@ class ComparisonCatalog:
                     x.offer.offer_id))
             reference_variant = next(v for v in variants if any(x.offer_id == reference.offer.offer_id for x in v))
             sources = {x.source_code for v in variants for x in v}
-            card = ProductCard(
+            from app.catalog.listings import first_listed_at
+            card = ProductCard(first_listed_at=first_listed_at(self.listing_history, product_id) if self.listing_history else None,
                 product_id=product_id, name=detail.name, brand=detail.identity.brand,
                 name_zh=detail.name_zh, category=detail.category,
                 category_group=detail.category_group,
@@ -345,7 +347,7 @@ class ComparisonCatalog:
                     "image": chosen.offer.image or card.image,
                 })
             cards.append(card)
-        cards.sort(key=lambda x: (x.stock_state != "in_stock", -(x.fetched_at.timestamp() if x.fetched_at else 0),
-                                  -x.source_count, normalized(x.name), x.product_id))
+        cards.sort(key=lambda x: (x.stock_state != "in_stock", -(x.first_listed_at.timestamp() if x.first_listed_at else 0),
+                                  x.product_id))
         return cards
 

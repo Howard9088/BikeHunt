@@ -12,6 +12,7 @@ function harness(saved=null){
  const storage=new Map(saved?[['bikehuntMessagesReadCursor',saved]]:[]),badge={setAttribute(k,v){this[k]=v}},refs=new Map(),links=[];
  const c=vm.createContext({Date,URL,Number,Map,Set,JSON,activeCategoryGroup:null,activeTab:'products',categories:[{code:'all'},{code:'jerseys'},{code:'bibs'}],categoryGroups:[],roadReferenceData:{brands:[],products:[]},syncBrowseControls(){},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{addEventListener(){},body:{classList:{toggle(){}}},getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,showExternalExit:()=>{throw Error('Purchase entrances must open local stages before confirmation')},window:{confirm:()=>{throw Error('No native exit prompt')}},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
  vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
+ vm.runInContext(fs.readFileSync('web/listing-order.js','utf8'),c);
  vm.runInContext(section(gallery,'const e=value','function money('),c);
  vm.runInContext(section(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(section(flows,'const messageEvents=','const directoryPage='),c);

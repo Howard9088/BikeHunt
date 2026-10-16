@@ -176,6 +176,7 @@ def download_public_snapshot(public_url: str) -> tuple[dict, dict | None]:
                     read("data/verification.json", MAX_STATUS_BYTES), data, commit)
             validate_events(data["updates"]["items"], data["updates"]["cursor"])
             validate_baseline(data, status)
+            data["_listing_manifest"] = manifest
             return data, status
         except Exception as exc:
             logger.warning("公开基线恢复失败 attempt={}/3 {}", attempt + 1, type(exc).__name__)
@@ -367,6 +368,8 @@ def restore_public_cursor(root: Path, public_url: str = "") -> dict:
         markers = validate_recovery_markers(data["updates"].get("history_recovery", {}), cursor)
         offers, collection = validate_baseline(data, status)
         writes, restored_offers = baseline_writes(root, offers, collection)
+        from app.catalog.listings import recover_listing_history
+        recover_listing_history(root, data, data.get('_listing_manifest'))
         source = "published"
     elif existing:
         rows, cursor, source = [], existing, "existing"

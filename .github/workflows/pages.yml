@@ -47,6 +47,12 @@ jobs:
         run: git restore --source=HEAD -- data/offers/decathlon_cn.json data/offers/oakley.json data/offers/gobik.json
       - name: Install crawler and test dependencies
         run: pip install -r requirements-dev.txt
+      - name: Restore first public listing receipts
+        uses: actions/cache/restore@v6
+        with:
+          path: data/listing_receipts/ledger.json
+          key: bikehunt-public-listings-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: bikehunt-public-listings-v1-
       - name: Restore public event cursor
         run: python scripts/seed_updates.py
       - name: Validate core modules
@@ -73,6 +79,8 @@ jobs:
         run: node scripts/test_catalog_messages.js
       - name: Validate verified featured deals and exact discount quotes
         run: node scripts/test_featured_deals.js
+      - name: Verify first public listing order and Beijing time
+        run: node scripts/test_listing_order.js
       - name: Validate read-only merchant language guides
         run: node scripts/test_merchant_guides.js
       - name: Validate complete merchant and market payment matrices
@@ -174,4 +182,9 @@ jobs:
           artifact_name: bikehunt-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Verify public release receipt
-        run: python scripts/verify_public_release.py
+        run: python scripts/verify_public_release.py --record-listings
+      - name: Persist successfully verified first listing receipts
+        uses: actions/cache/save@v6
+        with:
+          path: data/listing_receipts/ledger.json
+          key: bikehunt-public-listings-v1-${{ github.run_id }}-${{ github.run_attempt }}

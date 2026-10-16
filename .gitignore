@@ -19,3 +19,5 @@ _site/
 .pytest_cache/
 
 data/publication_cache/
+
+data/listing_receipts/

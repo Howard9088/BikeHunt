@@ -54,7 +54,8 @@ app = FastAPI(title="BikeHunt 全球骑行好价", version="0.4.2", lifespan=lif
 
 def catalog() -> ComparisonCatalog:
     """一次请求固定一个汇率快照，全部报价使用相同口径。"""
-    return ComparisonCatalog(repository.load(), fx_provider.get(), public_only=True)
+    from app.catalog.listings import read_listing_history
+    return ComparisonCatalog(repository.load(), fx_provider.get(), public_only=True, listing_history=read_listing_history(ROOT))
 
 
 @app.get("/api/health")

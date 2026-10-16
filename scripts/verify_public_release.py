@@ -348,6 +348,12 @@ def verify_release_once(base: str, expected_commit: str, attempt: int = 0) -> di
     if status:
         receipt.update(verification=status, snapshot_publication=data['publication'],
                        snapshot_generated_at=data['generated_at'])
+    receipt['verified_at'] = datetime.now(timezone.utc).isoformat()
+    if 'listing_history' in data:
+        from app.catalog.listings import confirm_public_listing, snapshot_families
+        receipt['listing_history'] = confirm_public_listing(data['listing_history'], snapshot_families(data),
+            verified_at=receipt['verified_at'], snapshot_sha256=manifest['snapshot']['sha256'],
+            commit=expected_commit, snapshot_generated_at=data['generated_at'])
     return receipt
 
 
@@ -387,12 +393,17 @@ def validate_local_release(directory: Path, expected_commit: str) -> dict:
 def main(argv=None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--local-dir', type=Path, help='Validate the build before any deployment')
+    parser.add_argument('--record-listings', action='store_true', help='Persist minimal first-public receipts only after public verification')
     args = parser.parse_args(argv)
     if args.local_dir:
         print(json.dumps(validate_local_release(args.local_dir, os.environ['GITHUB_SHA'])))
         return
     receipt = verify_public_release(os.environ.get('BIKEHUNT_PUBLIC_URL', DEFAULT_PUBLIC_URL),
                                     os.environ['GITHUB_SHA'])
+    history = receipt.pop('listing_history', None)
+    if args.record_listings and history is not None:
+        from app.catalog.storage import atomic_json
+        atomic_json(Path(__file__).resolve().parents[1]/'data/listing_receipts/ledger.json', history)
     print(json.dumps(receipt, ensure_ascii=False))
 
 

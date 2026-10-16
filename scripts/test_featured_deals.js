@@ -9,6 +9,7 @@ function harness(){
  let now=NOW;class Clock extends Date{constructor(...args){super(...(args.length?args:[now]))}static now(){return now}}
  const elements=new Map([['q',{value:''}]]);const c=vm.createContext({Date:Clock,Number,URL,Map,Set,JSON,Intl,activeSource:null,activeCategory:'all',activeCategoryGroup:null,categoryGroups:[],activeTab:'products',items:[],sourceCount:2,currentIndex:0,currentProduct:null,guideContext:null,observer:null,viewMode:'grid',swipe:null,animationUntil:0,performance:{now:()=>0},document:{getElementById(id){if(!elements.has(id))elements.set(id,{textContent:'',classList:{add(){}}});return elements.get(id)},querySelectorAll:()=>[]},gallery:{innerHTML:'',scrollTop:0,querySelectorAll:()=>[]},profileMatches:()=>true,IntersectionObserver:class{observe(){}disconnect(){}},positionHint(){},updatePosition(){},clearSearch(){},directoryData:{brands:[{code:'brand',name_zh:'品牌目录'}],teams:[]}});
  vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
+ vm.runInContext(fs.readFileSync('web/listing-order.js','utf8'),c);
  vm.runInContext(fs.readFileSync('web/bundle-variants.js','utf8'),c);
  vm.runInContext(section(gallery,'const e=value','async function getJson('),c);
  vm.runInContext(section(gallery,'function imageMarkup(','function updatePosition('),c);
@@ -29,7 +30,7 @@ function testScopeAndRendering(){
  h.c.items=[card(),ordinary,stale,sold];assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['ordinary','sale']);
  h.c.render();let html=h.c.gallery.innerHTML;assert.ok(html.includes('−25%'));assert.ok(html.includes('商家原价 <s>US$120.00</s>'));assert.ok(html.includes('现价 US$90.00'));assert.ok(html.includes('¥630.00'));assert.ok(html.includes('L / Black'));assert.ok(!html.includes('9,999'));assert.ok(html.includes('未取得折扣结束时间'));assert.ok(!/限时|倒计时/.test(html));
  h.elements.get('q').value='Stamp Hoodie';h.c.render();assert.equal(h.elements.get('browseLabel').textContent,'搜索结果');assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['ordinary']);assert.ok(!h.c.gallery.innerHTML.includes('class="discount"'));
- h.elements.get('q').value='';h.c.activeSource='brand';h.c.render();assert.equal(h.elements.get('browseLabel').textContent,'品牌目录');assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['sale','ordinary','stale'],'Channel preserves last-known stock and excludes sold-out quotes');
+ h.elements.get('q').value='';h.c.activeSource='brand';h.c.render();assert.equal(h.elements.get('browseLabel').textContent,'品牌目录');assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['ordinary','sale','stale'],'Channel preserves last-known stock and excludes sold-out quotes; unknown listing dates use stable product IDs');
  h.elements.get('q').value='Stamp Hoodie';assert.equal(h.c.visibleItems().length,1);h.c.items.push(card({...ordinary,product_id:'other',source_codes:['other']}));assert.equal(h.c.visibleItems().length,1,'Search keeps brand scope');
  h.c.activeSource=null;h.elements.get('q').value='';h.c.items=[stale,sold];h.c.render();assert.equal(h.c.visibleItems().length,1);assert.ok(h.c.gallery.innerHTML.includes('上次记录商品价'));assert.ok(!h.c.gallery.innerHTML.includes('没有找到这个商品'));
 }
@@ -76,7 +77,7 @@ function helmet(id,amount,changes={}){return card({product_id:id,name:'Helmet '+
 function testBrandDiversityAndLowPrices(){
  const h=harness(),a=helmet('a',100),b=helmet('b',200),c=helmet('c',300),other=helmet('d',400,{reference_source:'Other channel',brand:a.brand});
  h.c.items=[c,b,a,other];
- assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','d','b']);
+ assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['a','b','d']);
  h.c.render();assert.equal(h.elements.get('count').textContent,'3 件渠道精选 · 0 件有折扣');assert.ok(h.c.gallery.innerHTML.includes('渠道精选'));assert.ok(!h.c.gallery.innerHTML.includes('商家原价'));assert.ok(h.c.gallery.innerHTML.includes('不是同类比价或全网最低价'));
  h.c.activeSource='brand';assert.equal(h.c.visibleItems().length,4,'Directory remains complete');h.c.activeSource=null;
  h.elements.get('q').value='Helmet';assert.equal(h.c.visibleItems().length,4,'Search remains complete');h.elements.get('q').value='';
@@ -84,7 +85,7 @@ function testBrandDiversityAndLowPrices(){
  const duplicate={...a,product_id:'a-color',name:a.name+' - Blue',reference_cny:'101'};
  assert.deepEqual(Array.from(h.c.channelSelections([a,duplicate,b,c]),p=>p.product_id),['a','b']);
  h.c.activeCategoryGroup='clothing';assert.equal(h.c.visibleItems().length,0);
- h.c.activeCategoryGroup='helmets';h.c.profileMatches=p=>p.product_id!=='a';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['c','b','d'],'Global category preserves complete scoped order rather than homepage channel interleaving');
+ h.c.activeCategoryGroup='helmets';h.c.profileMatches=p=>p.product_id!=='a';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['b','c','d'],'Global category is uncapped and unknown listing dates use stable product IDs');
 }
 function testLowPriceSafetyAndComparability(){
  const h=harness(),base=helmet('a',100),pool=[base,helmet('b',200),helmet('c',300)];
@@ -173,4 +174,25 @@ function testGlobalCategoryExactQuoteFallback(){
  h.c.activeCategoryGroup=null;h.elements.get('q').value='Helmet';h.c.items=[helmet('unknown',10,{stock_state:'unknown',reference_stock:'unknown'})];assert.equal(h.c.visibleItems().length,1);
 }
 
-for(const test of [testGlobalCategoryCompleteness,testGlobalCategoryExactQuoteFallback,testVerifiedStockWithoutSizeMetadata,testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers,testBrandDiversityAndLowPrices,testLowPriceSafetyAndComparability]){test();console.log('PASS '+test.name)}
+function testFirstPublicationOrderAndLabels(){
+ const html=fs.readFileSync('web/index.html','utf8');
+ assert.ok(html.indexOf('/web/listing-order.js')>=0&&html.indexOf('/web/listing-order.js')<html.indexOf('/web/gallery.js'),'Listing module loads before gallery');
+ const h=harness(),older=helmet('older',100,{first_listed_at:'2026-10-13T16:00:00Z'}),newer=helmet('newer',800,{first_listed_at:'2026-10-14T16:00:00Z'}),tie=helmet('tie',700,{first_listed_at:newer.first_listed_at}),unrecorded=helmet('unrecorded',1),other=helmet('other',900,{reference_source:'Other channel',first_listed_at:'2026-10-15T01:00:00Z'});
+ h.c.items=[unrecorded,older,newer,tie,other];
+ assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['other','tie','newer'],'Homepage takes newest eligible models per channel, breaks timestamp ties by price, and orders channels together newest first');
+ assert.equal(h.c.visibleItems().filter(p=>p.reference_source==='Merchant').length,2);
+ h.c.render();assert.ok(h.c.gallery.innerHTML.includes('本站发布：2026-10-15 09:00'));assert.ok(h.c.gallery.innerHTML.includes('本站发布：2026-10-15 00:00'));assert.ok(!h.c.gallery.innerHTML.includes('class="discount"'),'Ordering cannot create discount qualifications');
+ const duplicate={...newer,product_id:'newer-blue',name:newer.name+' - Blue',first_listed_at:'2026-10-15T02:00:00Z'};
+ assert.deepEqual(Array.from(h.c.channelSelections([newer,duplicate,tie,older]),p=>p.product_id),['newer-blue','tie'],'New color/size aliases still do not consume another model slot');
+ h.c.activeCategoryGroup='helmets';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),['other','newer','tie','older','unrecorded'],'Global category is newest first, unknown last, uncapped, and has stable non-price ties');
+ h.c.render();assert.ok(h.c.gallery.innerHTML.includes('本站发布：未记录'));assert.ok(h.c.gallery.innerHTML.includes('上次核验'),'Publication and verification remain separate labels');
+ const before=Array.from(h.c.visibleItems(),p=>p.product_id);older.fetched_at=new Date(NOW+5000).toISOString();h.setNow(NOW+10000);
+ assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),before,'Refreshing inventory cannot bump first-publication order');
+ h.c.activeCategoryGroup=null;h.elements.get('q').value='Helmet';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),before,'Search uses the same uncapped ordering');
+ h.elements.get('q').value='';h.c.activeSource='brand';assert.deepEqual(Array.from(h.c.visibleItems(),p=>p.product_id),before,'Channel browse uses the same uncapped ordering');
+ const quote={...newer,first_listed_at:null};newer.channel_quotes={brand:quote};
+ assert.equal(h.c.visibleItems().find(p=>p.product_id==='newer'),quote,'Channel cards retain their exact backend publication field without mixing or inventing a fallback');
+ h.c.render();assert.ok(h.c.gallery.innerHTML.includes('本站发布：未记录'));
+}
+
+for(const test of [testFirstPublicationOrderAndLabels,testGlobalCategoryCompleteness,testGlobalCategoryExactQuoteFallback,testVerifiedStockWithoutSizeMetadata,testEligibility,testScopeAndRendering,testLocalExpiryAndPriceDate,testHistoricalDiscountFallbackEligibility,testHistoricalEmptyRenderAndExactDetail,testPublishedFactsCannotCrossOffers,testBrandDiversityAndLowPrices,testLowPriceSafetyAndComparability]){test();console.log('PASS '+test.name)}
