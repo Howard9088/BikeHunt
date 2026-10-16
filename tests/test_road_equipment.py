@@ -48,8 +48,12 @@ class RoadEquipmentTests(unittest.TestCase):
         offers = OfferRepository(ROOT/'data').load()
         self.assertTrue(codes.isdisjoint(o.source_code for o in offers))
         sources=json.loads((ROOT/'data/crawl_sources.json').read_text())
-        # These identities have directory references only, no added collection request.
-        self.assertTrue(codes.isdisjoint(row.get('code', row.get('source_code')) for row in sources))
+        crawlers={row.get('code', row.get('source_code')) for row in sources}
+        # Some brands now also have standalone, newly registered crawlers. Their
+        # historical research reference cards still have no live offers. Trek
+        # remains research-only and must not be silently added as a crawler.
+        self.assertNotIn('trek', crawlers)
+        self.assertTrue({'specialized','canyon','colnago'}.issubset(crawlers))
         # Fixed FX fixture: the repository may contain the older provider-cache format.
         fixed = json.loads((ROOT/'tests/fixtures/browse-catalog-2026-10-15.json').read_text())
         catalog = ComparisonCatalog(offers, FxSnapshot.model_validate(fixed['fx']))
