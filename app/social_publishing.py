@@ -8,6 +8,7 @@ import re
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
+from math import ceil
 from pathlib import Path
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
@@ -54,6 +55,40 @@ class DailyPublisher:
                 yield db
         finally:
             db.close()
+
+    def check_schedule(self, now: datetime | None = None) -> dict:
+        """Persist Shanghai publishing-window status before inspecting deal changes."""
+        now = timestamp(now or datetime.now(timezone.utc))
+        if now is None:
+            raise ValueError("Timezone-aware time required")
+        local = now.astimezone(SHANGHAI)
+        scheduled = local.replace(hour=18, minute=0, second=0, microsecond=0)
+        preparation = scheduled - timedelta(minutes=15)
+        closes = scheduled + timedelta(hours=1)
+        if local < preparation:
+            status = "outside_preparation"
+        elif local < scheduled:
+            status = "waiting"
+        else:
+            status = "open" if local < closes else "missed"
+        result = {
+            "schema_version": 1,
+            "day": local.date().isoformat(),
+            "timezone": "Asia/Shanghai",
+            "checked_at": local.isoformat(),
+            "preparation_at": preparation.isoformat(),
+            "scheduled_at": scheduled.isoformat(),
+            "window_closes_at": closes.isoformat(),
+            "status": status,
+            "can_publish": status == "open",
+            "wait_seconds": max(0, ceil((scheduled - local).total_seconds())) if status == "waiting" else 0,
+            "lateness_seconds": max(0, int((local - scheduled).total_seconds())),
+            "alert_required": status in {"missed", "outside_preparation"},
+        }
+        atomic_json(self.folder / "schedule.json", result)
+        if status == "missed":
+            logger.warning("Daily publication window missed on {} at {}", result["day"], result["checked_at"])
+        return result
 
     def prepare(self, now: datetime | None = None) -> dict:
         """Revalidate exact evidence and export public text only; never submit a note."""

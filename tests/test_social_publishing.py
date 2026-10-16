@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import io
 import json
 import sys
 import unittest
+from contextlib import redirect_stdout
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -35,6 +37,65 @@ class DailyPublishingTests(unittest.TestCase):
         self.assertEqual(self.publisher.reserve(self.at)["status"], "no_changes")
         with self.assertRaises(ValueError):
             self.publisher.reserve(self.at - timedelta(hours=1))
+
+    def test_schedule_preparation_waits_until_18_shanghai(self):
+        result = self.publisher.check_schedule(self.at - timedelta(minutes=15))
+        self.assertEqual(result["status"], "waiting")
+        self.assertEqual(result["wait_seconds"], 900)
+        self.assertFalse(result["can_publish"])
+        self.assertEqual(result["scheduled_at"], "2026-10-15T18:00:00+08:00")
+        almost_open = self.publisher.check_schedule(self.at - timedelta(microseconds=1))
+        self.assertEqual(almost_open["wait_seconds"], 1)
+
+    def test_schedule_opening_and_closing_boundaries(self):
+        for offset in (0, 3599):
+            with self.subTest(offset=offset):
+                result = self.publisher.check_schedule(self.at + timedelta(seconds=offset))
+                self.assertEqual(result["status"], "open")
+                self.assertTrue(result["can_publish"])
+        result = self.publisher.check_schedule(self.at + timedelta(hours=1))
+        self.assertEqual(result["status"], "missed")
+        self.assertTrue(result["alert_required"])
+
+    def test_late_wakeup_is_reported_even_without_price_changes(self):
+        self.assertEqual(self.publisher.prepare(self.at)["status"], "no_changes")
+        result = self.publisher.check_schedule(self.at + timedelta(hours=1, minutes=49))
+        self.assertEqual(result["status"], "missed")
+        self.assertEqual(result["lateness_seconds"], 6540)
+        self.assertFalse(result["can_publish"])
+        self.assertTrue(result["alert_required"])
+        persisted = json.loads((self.publisher.folder / "schedule.json").read_text())
+        self.assertEqual(persisted, result)
+        with self.publisher.connect() as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM posts").fetchone()[0], 0)
+
+    def test_schedule_uses_shanghai_date_across_utc_midnight(self):
+        result = self.publisher.check_schedule(datetime(2026, 10, 15, 23, 45, tzinfo=timezone.utc))
+        self.assertEqual(result["day"], "2026-10-16")
+        self.assertEqual(result["status"], "outside_preparation")
+        self.assertEqual(result["wait_seconds"], 0)
+        self.assertTrue(result["alert_required"])
+        with self.assertRaises(ValueError):
+            self.publisher.check_schedule(datetime(2026, 10, 16, 18))
+
+    def test_scheduled_cli_reports_missed_before_any_collection_or_reservation(self):
+        from scripts import publish_xhs
+
+        (self.publisher.folder / "config.json").write_text(
+            json.dumps({"account_id": "12345678"}), encoding="utf-8"
+        )
+        output = io.StringIO()
+        with (
+            patch.object(publish_xhs, "ROOT", self.root),
+            patch.object(sys, "argv", ["publish_xhs.py", "check-schedule"]),
+            patch("app.social_publishing.datetime") as clock,
+            patch.object(DailyPublisher, "prepare", side_effect=AssertionError("must check time first")),
+            patch.object(DailyPublisher, "reserve", side_effect=AssertionError("must not reserve late")),
+            redirect_stdout(output),
+        ):
+            clock.now.return_value = self.at + timedelta(hours=1, minutes=49)
+            publish_xhs.main()
+        self.assertEqual(json.loads(output.getvalue())["status"], "missed")
 
     def test_daily_maximum_and_receipt_deduplication(self):
         result = self.ready()

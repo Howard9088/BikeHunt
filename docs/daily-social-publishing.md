@@ -4,18 +4,26 @@
 
 北京时间每天 18:00 汇总最多一篇小红书图文，只包含已核实的新降价或从缺货恢复为有货的商品。首次发现、普通价格刷新、过期报价、库存未知、采集失败和恢复的历史消息不触发发布。原有网页结构、GitHub Pages 托管和采集工作流保持不变。
 
+同一个本地 heartbeat 改为每天 17:45 提前准备，18:00 进入发布步骤，仍只允许在 18:00–18:59 最终提交。实际启动时间受本机与桌面应用是否运行影响，不承诺秒级触发；17:45 前需开机并保持 Codex 及 Chrome 登录可用。
+
 `PromotionPreparer` 继续只生成本地证据包；`DailyPublisher` 增加独立发布台账，浏览器操作由本地定时任务执行。源账号只在本地 `storage/social/config.json` 保存，不读取或导出浏览器登录凭据。
 
 ## 执行步骤
 
-1. 使用已安装的项目 Python，先运行 `scripts/collect_offers.py` 刷新现有源；失败源仍隔离。再运行 `scripts/publish_xhs.py prepare` 复核队列。无新变化时不发布、不上传图片。
-2. 18:00–18:59 运行 `scripts/publish_xhs.py reserve`，取得 `job_id` 和本地 `storage/social/candidate.json`、`note.txt`、`cover.png`。最多选三个商品组，保留原币商品价、配色、实际尺码、来源市场及核实时点；运费税费未包含。
+1. 唤醒后先运行 `scripts/publish_xhs.py check-schedule`，结果保存在私有 `storage/social/schedule.json`。`missed` 表示已超过 19:00，必须报告漏执行及真实检查时间，即使没有价格变化也不能静默；停止本次发布。`outside_preparation` 表示当前早于当天 17:45，可能是跨日补唤醒或手动触发，应报告非预定启动时间并结束，不等待数小时。`waiting` 或 `open` 时使用已安装的项目 Python 运行 `scripts/collect_offers.py` 刷新现有源，失败源仍隔离，再运行 `scripts/publish_xhs.py prepare` 复核队列。
+2. 若仍是 `waiting`，按每次不超过 60 秒等待至 18:00，再运行 `check-schedule` 和 `prepare`；提前准备时无变化也要等到发布时点再复核一次。只有 `open` 且候选与线上公开快照一致时，才运行 `scripts/publish_xhs.py reserve`。无新变化时不发布、不上传图片；错过窗口仍须报告。取得 `job_id` 和本地 `storage/social/candidate.json`、`note.txt`、`cover.png`。最多选三个商品组，保留原币商品价、配色、实际尺码、来源市场及核实时点；运费税费未包含。
 3. 用 Chrome 的小红书官方创作平台确认当前账号与本地配置一致，在新建图文中上传封面并填入标题正文。查看实际预览并核对文字，再运行 `scripts/publish_xhs.py begin --job JOB_ID`。只有返回 `attempting` 才点击一次最终发布。出现验证码、登录过期或账号不符时停止并通知用户。
 4. 从发布成功页或笔记管理页读取真实笔记 ID 和链接，运行 `scripts/publish_xhs.py receipt --job JOB_ID --note-id NOTE_ID --note-url NOTE_URL`。若结果不明确，执行 `unknown --job JOB_ID`；查看真实笔记状态后才能处理，不能自动重发。
 
 SQLite 在提交前写入状态并占用本日名额，已提交但无回执的任务会阻止后续发布。账号、同日和商品组都有去重约束。失败不能通过清空台账绕过。首次启动只建立基线，不补发旧消息。定时任务依赖本机开机、Codex 运行及 Chrome 登录态；后台浏览器断开时保留队列并报告。
 
 安装本地图片渲染依赖：`python -m pip install -r requirements-social.txt`。封面由公开事实排版生成，不下载商品图片，不上传证据 JSON、原始页面、数据库或配置。`storage/` 已在 `.gitignore` 中且不进入 Pages。
+
+### 2026-10-16 漏执行排查
+
+Windows 系统日志记录 14:18:46 发起关机、14:19:21 关闭，19:46:40 再启动；Codex 进程在 19:47:15 启动。应用保存的任务仍是北京时间每日 18:00，实际补唤醒为 19:49:24。18:00 时电脑已关闭，非时区配置错误。新增时间预检可阻止 `no_changes` 掩盖漏执行；保留每日名额、未知提交状态及回执去重规则。关机时准点执行需要独立常开环境，当前本机任务不能做到。
+
+回归测试：`python -X utf8 tests/test_social_publishing.py -q`，使用 Mock 数据核验提前等待、18:00 开窗、19:00 关窗、19:49 漏执行提示与跨 UTC 日期，不发真实笔记。
 
 ## 底部累计访问次数
 

@@ -16,7 +16,7 @@ from app.social_publishing import DailyPublisher, render_card
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "action", choices=["configure", "prepare", "reserve", "begin", "receipt", "unknown"]
+        "action", choices=["configure", "check-schedule", "prepare", "reserve", "begin", "receipt", "unknown"]
     )
     parser.add_argument("--account")
     parser.add_argument("--job")
@@ -34,7 +34,9 @@ def main() -> None:
         return
     config = json.loads(config_path.read_text(encoding="utf-8"))
     publisher = DailyPublisher(ROOT, config["account_id"])
-    if args.action in {"prepare", "reserve"}:
+    if args.action == "check-schedule":
+        result = publisher.check_schedule()
+    elif args.action in {"prepare", "reserve"}:
         result = getattr(publisher, args.action)()
         payload = result.get("payload", result)
         if payload.get("status") == "ready":
