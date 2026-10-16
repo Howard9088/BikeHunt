@@ -2,6 +2,7 @@
 // Dated, read-only policy summaries. These never alter an offer or cost estimate.
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
+  uae:['www.pissei.com'],fizik:['www.fizik.com','www.iubenda.com'],santini:['www.santinicycling.com'],lidl_trek:['www.santinicycling.com'],
   amazon_us:['www.amazonforum.com','www.amazon.com'],amazon_uk:['www.aboutamazon.co.uk','sellercentral-europe.amazon.com','digprjsurvey.amazon.co.uk'],
   amazon_de:['www.aboutamazon.de'],amazon_jp:['press.aboutamazon.com','www.unionpayintl.com'],
   visma:['www.teamvismaleaseabike.com'],maap:['support.maap.cc'],poc:['poc.com'],
@@ -9,6 +10,11 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  uae:["market", "US / USD 报价", ["www.pissei.com"]],
+  fizik:["market", "US 市场 · USD 报价；未验证其他市场库存", ["www.fizik.com"]],
+  santini:["market", "IT 市场 · EUR 报价；未验证其他市场库存", ["www.santinicycling.com"]],
+  lidl_trek:["market", "IT 市场 · EUR 报价；未验证其他市场库存", ["www.santinicycling.com"]],
+
   amazon_us:['market','美国站',['amazon.com','www.amazon.com']],amazon_uk:['market','英国站',['amazon.co.uk','www.amazon.co.uk']],
   amazon_de:['market','德国站',['amazon.de','www.amazon.de']],amazon_jp:['market','日本站',['amazon.co.jp','www.amazon.co.jp']],
   visma:['merchant',null,['teamvismaleaseabike.com','www.teamvismaleaseabike.com']],maap:['merchant',null,['maap.cc','www.maap.cc']],poc:['market','Global EN',['poc.com','www.poc.com']],
@@ -165,3 +171,4 @@ function paymentFeasibilityMarkup(offer={}){
   const key=String(++readinessSequence);readinessContexts.set(key,offer);
   return '<div class="payment-feasibility" data-feasibility-context="'+key+'">'+paymentFeasibilityContent(offer)+'</div>';
 }
+

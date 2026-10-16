@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-16-verified-channel-policies",
+  "revision": "2026-10-16-verified-channel-policies-batch2",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -366,6 +366,163 @@
         "https://www.colnago.com/en/legal-area/faq"
       ],
       "sourceLimitations": "中国区 Atlas 商品页写运费在结账计算，关税和清关费用由顾客承担，不能当作当前美国报价的完整到手价。退货总页写收货后 14 天，商品页写 15 天，存在口径冲突；期限及适用范围须购买前确认。普通退货运费由买家承担，定制自行车限制另列。未验证游客结账；中国及香港地区条款未能完整读取，部分页面来自搜索缓存。"
+    },
+    {
+      "sourceCode": "uae",
+      "scope": "market",
+      "salesRegion": "US / USD 报价",
+      "label": "UAE 车队 · Pissei 官方商城",
+      "policyScope": "Pissei 当前美国美元报价；目的地、运费与税费须按目标市场重新核对",
+      "merchantHosts": [
+        "www.pissei.com"
+      ],
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "Maestro",
+          "PayPal",
+          "Amazon Pay",
+          "Apple Pay",
+          "Google Pay"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官网支付页列卡组织及钱包；部分方式有地区条件。PayPal 须为验证账户，可能仅寄该账户地址；未保证中国发行卡授权成功。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网要求先选择配送国家，并按 DHL Express 可服务地区配送；本次未取得中国大陆或香港的地址结账确认。运费按目的地、数量和重量计算，免运活动受国家与时间限制，当前美国报价不能保证直邮中国。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已核官方配送及退货资料未取得明确转运地址许可；须向商家确认，不能视为允许转运。"
+      },
+      "sources": [
+        "https://www.pissei.com/en/payment-method.html",
+        "https://www.pissei.com/en/delivery.html",
+        "https://www.pissei.com/en/delivery-serices.html",
+        "https://www.pissei.com/en/free-return.html",
+        "https://www.pissei.com/en/right-of-withdrawal.html",
+        "https://www.pissei.com/en/complete-your-order.html"
+      ],
+      "sourceLimitations": "发货地意大利；国际订单发出时间约付款后 5 个工作日。税费说明含目的地区域条件，USA AND UK 段落不能外推中国大陆或香港；中国订单的税费责任、预收项目与总额仍须目标市场结账确认。收货后 14 天内申请退货，撤回条款另要求 14 天内交快递，须购买前核对实际截止日。按官方标签及预约流程可免费退，须从原交付国家寄回；跨国退货的运费与清关由客户承担。每单一次退货申请，不直接换货，原运费不退；定制品不可退。官网明确可游客下单；不需要为查看政策先注册。"
+    },
+    {
+      "sourceCode": "fizik",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 报价；未验证其他市场库存",
+      "label": "fizik 官方商城",
+      "policyScope": "fizik 美国市场报价；中国及香港地区选择仅作切换市场参考",
+      "merchantHosts": [
+        "www.fizik.com"
+      ],
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "Diners Club",
+          "Maestro",
+          "Discover",
+          "Apple Pay",
+          "Google Pay",
+          "PayPal"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官网支付页列信用卡、借记卡及钱包；不接受货到付款或银行转账。卡组织支持不保证中国发行卡授权成功。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网地区选择器列 China 和 Hong Kong SAR，均为欧元市场选项；仅证明可选择市场，不保证当前美国美元报价、库存或商品可寄。须切换正确市场重新核价，并验证具体地址。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已核官方配送及退货资料未取得明确转运地址许可；须向商家确认，不能视为允许转运。"
+      },
+      "sources": [
+        "https://www.fizik.com/en-us/pages/payments",
+        "https://www.fizik.com/en-us/pages/shipping",
+        "https://www.fizik.com/en-us/pages/faq",
+        "https://www.fizik.com/en-us/pages/return",
+        "https://www.fizik.com/en-us/pages/terms-and-conditions",
+        "https://www.iubenda.com/terms-and-conditions/236431"
+      ],
+      "sourceLimitations": "配送页目前称全订单免运，同时保留欧洲/北美/英国标准门槛，不能据此把中国订单运费填为 0。官方说明结账金额含关税且无额外清关税费，这是结账安排，不证明当前商品单价已含中国税费或已验证中国地址。退货页主要写收货后 15 天，另有购买日期措辞，起算争议须客服确认；商品须未使用、未安装且保持全新。官方提供免费预付退货标签并承担退货进出口关税；不直接换货，按收回检查或寄回证明的条款处理原路退款。服务条款允许不注册使用，部分账户功能受限。"
+    },
+    {
+      "sourceCode": "santini",
+      "scope": "market",
+      "salesRegion": "IT 市场 · EUR 报价；未验证其他市场库存",
+      "label": "Santini 官方商城",
+      "policyScope": "Santini 国际站意大利欧元报价；不适用美国独立商城政策",
+      "merchantHosts": [
+        "www.santinicycling.com"
+      ],
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "信用卡",
+          "PayPal"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官方 FAQ 确认信用卡与 PayPal；卡组织图标不构成中国发行卡成功授权保证。具体方式以当前市场结账为准。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网市场选择器列中国大陆与香港，均为欧元选项；不等于当前商品和地址已获配送确认。世界其他地区订单超过 €300 免运，较低金额按重量和目的地计算；门槛边界与地址费用仍须结账确认。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已核官方配送及退货资料未取得明确转运地址许可；须向商家确认，不能视为允许转运。"
+      },
+      "sources": [
+        "https://www.santinicycling.com/pages/faq",
+        "https://www.santinicycling.com/pages/spedizione",
+        "https://www.santinicycling.com/pages/resi",
+        "https://www.santinicycling.com/pages/termini-e-condizioni-di-vendita"
+      ],
+      "sourceLimitations": "官方 FAQ 写明意大利仓发货；通常付款后 24–48 小时交 DHL Express 或 GLS。进口关税及额外税费不含在运费中，不提供中国订单完整含税总价。退货须收货后 45 天内通知，并在通知后 14 天内寄回；仅正常试穿，标签封签及附件齐全、未洗。非欧盟订单满 €300 的退运由 Santini 承担，低于门槛由客户承担，按实际取件地址确认；直接换码仅限欧盟，中国大陆及香港不适用。原路退款，初始运费不退。允许游客下单；注册用于账户查询等功能。Lidl–Trek 商品由同一 Santini 商城销售，此说明不套用 us.santinicycling.com。"
+    },
+    {
+      "sourceCode": "lidl_trek",
+      "scope": "market",
+      "salesRegion": "IT 市场 · EUR 报价；未验证其他市场库存",
+      "label": "Lidl–Trek · Santini 官方商城",
+      "policyScope": "Santini 国际站意大利欧元报价；不适用美国独立商城政策",
+      "merchantHosts": [
+        "www.santinicycling.com"
+      ],
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "信用卡",
+          "PayPal"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官方 FAQ 确认信用卡与 PayPal；卡组织图标不构成中国发行卡成功授权保证。具体方式以当前市场结账为准。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网市场选择器列中国大陆与香港，均为欧元选项；不等于当前商品和地址已获配送确认。世界其他地区订单超过 €300 免运，较低金额按重量和目的地计算；门槛边界与地址费用仍须结账确认。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已核官方配送及退货资料未取得明确转运地址许可；须向商家确认，不能视为允许转运。"
+      },
+      "sources": [
+        "https://www.santinicycling.com/pages/faq",
+        "https://www.santinicycling.com/pages/spedizione",
+        "https://www.santinicycling.com/pages/resi",
+        "https://www.santinicycling.com/pages/termini-e-condizioni-di-vendita"
+      ],
+      "sourceLimitations": "官方 FAQ 写明意大利仓发货；通常付款后 24–48 小时交 DHL Express 或 GLS。进口关税及额外税费不含在运费中，不提供中国订单完整含税总价。退货须收货后 45 天内通知，并在通知后 14 天内寄回；仅正常试穿，标签封签及附件齐全、未洗。非欧盟订单满 €300 的退运由 Santini 承担，低于门槛由客户承担，按实际取件地址确认；直接换码仅限欧盟，中国大陆及香港不适用。原路退款，初始运费不退。允许游客下单；注册用于账户查询等功能。Lidl–Trek 商品由同一 Santini 商城销售，此说明不套用 us.santinicycling.com。"
     }
   ],
   "forwardingExplainer": "转运像海外代收点：先取得自己名下的仓库收件编号，商家把货寄到仓库；仓库称重、可按要求合箱，再收国际运费寄中国。你仍需自行向商家付款；转运不解决中国银行卡拒付，也不自动提供商家售后。只在商家允许、承运商允许商品且进口手续满足时使用。",

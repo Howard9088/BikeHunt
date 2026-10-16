@@ -94,3 +94,25 @@ context.guardReadinessExit({target:{closest:()=>directoryLink},preventDefault(){
 vm.runInContext('readinessData=null;readinessState="loading"',context);context.refreshDirectoryReadiness();assert.equal(slot.innerHTML,'');assert.equal(emptyRules.hidden,false);
 vm.runInContext('readinessData=validateReadinessData(data);readinessState="ready"',context);context.refreshReadinessMarkup();assert.ok(slot.innerHTML.includes('15 天'));assert.equal(emptyRules.hidden,true);
 console.log('Directory readiness passed: scoped references, async refresh, dated evidence, exact merchant matching, and registered current-panel links only.');
+
+// Second policy batch is bound to observed markets, never a purchase or issuer guarantee.
+for(const [code,market,host,words] of [
+ ['uae','US / USD 报价','www.pissei.com',['USA AND UK','不能外推中国','14 天','游客']],
+ ['fizik','US 市场 · USD 报价；未验证其他市场库存','www.fizik.com',['15 天','购买日期','全订单免运','不证明当前商品单价']],
+ ['santini','IT 市场 · EUR 报价；未验证其他市场库存','www.santinicycling.com',['45 天','14 天','仅限欧盟','意大利仓']],
+ ['lidl_trek','IT 市场 · EUR 报价；未验证其他市场库存','www.santinicycling.com',['45 天','初始运费不退','us.santinicycling.com']]
+]){
+ const quote=offer(code,market,'https://'+host+'/products/example'),before=JSON.stringify(quote);
+ const row=context.readinessPolicy(quote);assert.ok(row);assert.equal(row.scope,'market');assert.equal(row.checkedAt,'2026-10-16');
+ assert.equal(row.payment.chinaIssuedCard,'unknown');assert.equal(row.directChina.status,'conditional_checkout');assert.equal(row.directChina.shippingAmount,undefined);
+ assert.equal(context.readinessPolicy({...quote,sales_region:'中国市场'}),null);
+ assert.equal(context.readinessPolicy({...quote,url:'https://evil.example/product'}),null);
+ const html=context.readinessContent(quote);for(const word of words)assert.ok(html.includes(word),code+': '+word);
+ assert.ok(html.includes('data-china-card-status="unknown"'));assert.ok(!html.includes('官网列中国配送；'));
+ assert.equal(JSON.stringify(quote),before);
+ const directory=context.readinessDirectoryMarkup({code,source_codes:[code],shop_url:'https://'+host+'/'});
+ assert.ok(directory.includes('指定市场参考'));assert.ok(directory.includes('目录未提供精确报价市场'));for(const word of words)assert.ok(directory.includes(word));
+ for(const url of row.sources)assert.equal(context.readinessUrl(url,code),true);
+}
+assert.equal(data.checkedAt,'2026-10-15');
+console.log('Second batch passed: four exact-market policies, dated conflict visibility, unchanged offers/costs, and no China-issued-card guarantee.');
