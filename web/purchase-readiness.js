@@ -2,6 +2,17 @@
 // Dated, read-only policy summaries. These never alter an offer or cost estimate.
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
+  soudal:["thewolfpack.shop"],
+  ineos:["store.netcompanyineos.com"],
+  decathlon:["shop.decathloncmacgmteam.com"],
+  castelli:["www.castelli-cycling.com"],
+  groupama:["shop.bioracer.com"],
+  ef_team_shop:["efprocycling.shop"],
+  alpecin:["shops.topfanz.com"],
+  sigmasports:["www.sigmasports.com"],
+  lotto:["www.lotto-intermarche.be"],
+  nsn:["www.ekoi.com"],
+
   kask:['www.kask.com'],teamcycles:['www.teamcycles.com'],unox:['internshop.no'],canyon:['www.canyon.com'],specialized:['www.specialized.com'],rapha:['support.rapha.cc'],rapha_kr:['support.rapha.cc'],
   redbull:['customerservice.redbullshop.com'],picnic:['teampicnicpostnl.store'],pns:['pasnormalstudios.com'],assos:['www.assos.com'],
   movistar:['gobik.com'],bahrain:['alecycling.com'],
@@ -13,6 +24,17 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  soudal:["market", "BE 市场 · EUR 报价；未验证其他市场库存", ["thewolfpack.shop"]],
+  ineos:["market", "US 市场 · USD 报价；未验证其他市场库存", ["store.netcompanyineos.com"]],
+  decathlon:["market", "US 市场 · USD 报价；未验证其他市场库存", ["shop.decathloncmacgmteam.com"]],
+  castelli:["market", "AF 市场 · EUR 报价；未验证其他市场库存", ["www.castelli-cycling.com"]],
+  groupama:["market", "US 市场 · USD 报价；未验证其他市场库存", ["shop.bioracer.com"]],
+  ef_team_shop:["market", "美国", ["efprocycling.shop"]],
+  alpecin:["market", "比利时商城 EUR 页面显示价；配送费用另核", ["shops.topfanz.com"]],
+  sigmasports:["merchant", null, ["www.sigmasports.com"]],
+  lotto:["market", "比利时站 EUR 报价", ["www.lotto-intermarche.be"]],
+  nsn:["market", "阿联酋站 USD 报价", ["www.ekoi.com"]],
+
   kask:["market", "意大利站 EUR 报价", ["www.kask.com"]],
   teamcycles:["merchant", null, ["www.teamcycles.com"]],
   unox:["market", "挪威商城 / NOK 报价", ["internshop.no"]],
@@ -190,6 +212,7 @@ function paymentFeasibilityMarkup(offer={}){
   const key=String(++readinessSequence);readinessContexts.set(key,offer);
   return '<div class="payment-feasibility" data-feasibility-context="'+key+'">'+paymentFeasibilityContent(offer)+'</div>';
 }
+
 
 
 

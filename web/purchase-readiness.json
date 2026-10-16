@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-16-verified-channel-policies-batch5",
+  "revision": "2026-10-16-verified-channel-policies-batch6",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -965,6 +965,317 @@
         "https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options",
         "https://support.rapha.cc/ko/articles/51",
         "https://support.rapha.cc/de/articles/51"
+      ]
+    },
+    {
+      "sourceCode": "soudal",
+      "scope": "market",
+      "salesRegion": "BE 市场 · EUR 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "thewolfpack.shop"
+      ],
+      "label": "Soudal Quick-Step · Wolfpack 商城",
+      "policyScope": "当前BE 市场 · EUR 报价；未验证其他市场库存；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "已查官方付款及退货资料，未取得中国大陆或香港配送范围、运费的明确说明，须向商家或目标地址结账核实。当前比利时欧元报价不能据此保证寄往中国。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "支付页称实际方式以结账选择为准，接受 Wolfpack 礼品卡；国际信用卡或多次失败可能触发安全拒付，未取得可靠卡组织清单或中国发行卡保证。购物车含税提示不等于中国进口税已付，进口税责任未找到明确说明。退货须未用未损且原包装完整，退运由客户承担，收回检查后原付款方式退款；不直接换货。退货页页脚写 14 日但未明确起算日，须购买前确认。退货地址在比利时；账户入口不证明购买必须注册，游客结账政策尚未找到明确声明。",
+      "sources": [
+        "https://thewolfpack.shop/pages/payment",
+        "https://thewolfpack.shop/pages/return-policy"
+      ]
+    },
+    {
+      "sourceCode": "ineos",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "store.netcompanyineos.com"
+      ],
+      "label": "INEOS 官方商城",
+      "policyScope": "当前US 市场 · USD 报价；未验证其他市场库存；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官方地区选择器列中国大陆与香港，国际政策称覆盖多个目的地；这不是具体商品与地址已确认可寄。须按目标地区和 Global-e 结账重新核对，美国美元报价不自动适用于中国订单。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "国际订单由 Global-e 作为销售方处理，官方正文列 Visa、Mastercard、American Express、PayPal，具体支付方式与中国卡授权仍须结账确认。运费按国家、方式、件数及重量计算且不含进口税；部分目的地或方式可预付税，不能一律称包税。收货后 14 天退货，不直接换货。2026 年 6 月 16 日起国际订单使用 Global-e 退货门户；旧国际 DHL 标签扣费及英国 £4.95 规则不能套用于新国际流程，当前国际退货费用须确认。验收后原方式约 3–5 个工作日退款。英国退货登录要求不能证明购买强制注册，购买注册条件未找到明确说明。",
+      "sources": [
+        "https://store.netcompanyineos.com/pages/shipping-policy",
+        "https://store.netcompanyineos.com/policies/refund-policy"
+      ]
+    },
+    {
+      "sourceCode": "decathlon",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "shop.decathloncmacgmteam.com"
+      ],
+      "label": "Decathlon CMA CGM 海外车队商城",
+      "policyScope": "当前US 市场 · USD 报价；未验证其他市场库存；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "地区选择器包含中国大陆及香港，但销售条款未逐一确认两地地址可配送；须切换目标地区并核实商品、地址及费用。当前海外车队商城美国美元报价不适用迪卡侬中国商城的国内政策。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "销售条款列 Carte Bleue、PayPal、Apple Pay；不能将 Carte Bleue 自动改写成 Visa，也未保证中国发行卡可用。价格含法国 VAT 不等于中国进口税已付；运费及附加费结账另列，进口关税承担尚未明确。系列页 €90 免邮仅法国本土，另有商品 €150 免邮提示，均不能当中国免运门槛。退款政策列收货后 30 个日历日，未穿用且原标签包装凭证齐全，先申请，退货标签费从退款扣；销售条款另列 14 天撤回权及符合流程时商家承担预付标签退运，不能归纳为全部免费或全部自费。普通换货需退后重买，批准后通常 10 工作日原路退款。登录加快结账提示不证明必须注册或游客结账一定成功；部分独立政策内容本次未能确认，具体机制须向商家核实。",
+      "sources": [
+        "https://shop.decathloncmacgmteam.com/en/policies/terms-of-sale",
+        "https://shop.decathloncmacgmteam.com/en/policies/refund-policy",
+        "https://shop.decathloncmacgmteam.com/en/collections/collection-2026",
+        "https://shop.decathloncmacgmteam.com/en/products/cuissard-replica?variant=52687810527574",
+        "https://shop.decathloncmacgmteam.com/en/cart"
+      ]
+    },
+    {
+      "sourceCode": "castelli",
+      "scope": "market",
+      "salesRegion": "AF 市场 · EUR 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "www.castelli-cycling.com"
+      ],
+      "label": "Castelli 官方商城",
+      "policyScope": "当前AF 市场 · EUR 报价；未验证其他市场库存；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "当前采集报价标为 AF 市场、欧元，不等于中国大陆或香港报价。官方地区菜单列中国，但主要运费表未列中国大陆；香港另列运费 USD 15、超过 USD 150 免运，不能套给当前 AF/EUR 订单。目标地区及具体地址须重新核对。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "官方付款页列 Visa、Maestro、Mastercard、Discover、American Express、Google Pay、PayPal；Apple Pay 限部分国家，iDeal 限荷兰，不保证中国发行卡授权。配送说明称最终订单金额含 VAT 与关税，但尚未验证中国地址及税费明细，当前商品价不因此成为中国含税到手价。收货后 30 天申请退货，退货标签有效 10 天；香港退货标签另列 USD 10，不能套用于其他市场。无直接换货，定制商品不可退。新网站采用验证码登录，历史订单另有流程；这不证明所有购买必须注册。",
+      "sources": [
+        "https://www.castelli-cycling.com/pages/customer-service-payment-methods",
+        "https://www.castelli-cycling.com/pages/customer-service-shipping-times-and-costs",
+        "https://www.castelli-cycling.com/pages/customer-service-returns-and-refounds",
+        "https://www.castelli-cycling.com/pages/customer-service-new-website-faq"
+      ]
+    },
+    {
+      "sourceCode": "groupama",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "shop.bioracer.com"
+      ],
+      "label": "Groupama · Bioracer 商城",
+      "policyScope": "当前US 市场 · USD 报价；未验证其他市场库存；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网地区选择器出现中国大陆及香港，但不构成具体商品和地址配送保证。当前美国美元报价须按目标市场重新核价；欧洲以外运费表是区域政策，不等于中国订单已核实。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "公开运费表列欧洲以外 €34.95、满 €250 免运，独立于当前美元商品价格。比利时发货，非欧盟税费由收件人承担；条款有关 VAT 的措辞存在差异，不能据含税字样推定中国进口税已含。退货页写收货后 30 天、未用及标签包装完整，非欧盟退运由客户承担；销售条款另列 14 天撤回权，须区分适用机制。付款及注册资格仍按当前订单确认，卡组织支持不能保证中国发行卡获批；未确认商业转运许可。",
+      "sources": [
+        "https://shop.bioracer.com/pages/shipping-and-returns",
+        "https://shop.bioracer.com/policies/terms-of-service"
+      ]
+    },
+    {
+      "sourceCode": "ef_team_shop",
+      "scope": "market",
+      "salesRegion": "美国",
+      "merchantHosts": [
+        "efprocycling.shop"
+      ],
+      "label": "EF Pro Cycling 美国商城",
+      "policyScope": "当前美国；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "美国商城配送政策有 Worldwide 区域行，但未单独点名中国大陆或香港；须确认具体商品及地址，不能把全球区域文字当作已核实中国配送。该资料仅限 /us/ 美国商城，不适用其他地区店铺。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "美国商城由 Exakt USA LLC 运营，FAQ 说明经 Stripe 付款，卡组织图标不保证中国发行卡授权。运费由买家按结账金额支付，美国税结账计算；境外 Customs/VAT 等可能由承运人收费或到货支付，不能称包税。所有商品按需生产，不接受改变主意、颜色或尺寸导致的退换；瑕疵须收货后 15 天内向客服提交说明与照片，可按核查结果补发或退款，若要求寄回调查则商家承担回邮。FAQ 与配送页的生产及送达时效不同，不能统一承诺送达日期。已查 FAQ、配送及条款，未找到购买强制注册或商业转运许可的明确说明。",
+      "sources": [
+        "https://efprocycling.shop/us/faq/",
+        "https://efprocycling.shop/us/shipping-policy/",
+        "https://efprocycling.shop/us/terms-of-service/"
+      ]
+    },
+    {
+      "sourceCode": "alpecin",
+      "scope": "market",
+      "salesRegion": "比利时商城 EUR 页面显示价；配送费用另核",
+      "merchantHosts": [
+        "shops.topfanz.com"
+      ],
+      "label": "Alpecin · Topfanz 球迷商城",
+      "policyScope": "当前比利时商城 EUR 页面显示价；配送费用另核；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "当前 Alpecin 袜类商品来自 Topfanz 欧元商城。配送页列 Rest of world 及加拿大运费 €50，但未逐国点名中国大陆和香港，须按地址核验，不能据全球区域规则保证直邮。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "配送页所说 forwarders 指 DPD、DHL 等承运商，不是客户使用的商业转运仓。已查未找到商业转运地址许可，不能因该词认定支持转运。"
+      },
+      "sourceLimitations": "付款页正文确认 Visa、Mastercard，其他页脚卡组织仅图标证据，未保证中国发行卡授权。非个性化商品一般全球时效 5–8 个工作日，定制约 10–12 个工作日，均非具体中国订单承诺。收货后 14 天可退原状未使用损伤且保留标签商品，定制印字球衣及口罩等除外；退邮买家承担，不直接换货，应退后重新下单。进口税责任和强制注册要求已查未找到明确说明。该规则只适用于 Topfanz，Kalas 的运费、30 天退货或标签安排不能套用于当前袜类商品。",
+      "sources": [
+        "https://shops.topfanz.com/en/clubs/be/alpecin-premier-tech-fenix-premier-tech/",
+        "https://shops.topfanz.com/en/service/payment-methods/",
+        "https://shops.topfanz.com/en/service/shipping-returns/"
+      ]
+    },
+    {
+      "sourceCode": "sigmasports",
+      "scope": "merchant",
+      "salesRegion": null,
+      "merchantHosts": [
+        "www.sigmasports.com"
+      ],
+      "label": "Sigma Sports 商店",
+      "policyScope": "该商店政策；报价未记录精确市场；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网存在国际及 Global-e 订单渠道，但未取得中国大陆或香港具体地址可达承诺，部分商品另受厂商地区限制。当前报价未锁定结账市场，须按实际目的地、商品和支付资格核对。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "英国与国际付款规则分开：英国列主要卡组织及 PayPal，Apple Pay 仅英镑；国际可列支付宝或银联，不能把国际方式自动套用英国订单，也不保证中国发行卡授权。国际可选择预付进口税不等于默认包税。退货页上部写购买起 30 天，取消条款写收货起 30 天，起算口径有冲突，须确认截止日；商品未使用且原包装吊牌齐全。英国普通退邮 £3.50、店退免费；非英国退邮买家承担，退款不含关税、税费及手续费，须自行向当地海关申请。不直接换货，2026 年 9 月 2 日后欧洲及其他国际订单使用分开的退货流程。英国访客订单的发票流程证明该渠道存在访客订单，不能据此保证国际订单无需注册。",
+      "sources": [
+        "https://www.sigmasports.com/payment-and-delivery",
+        "https://www.sigmasports.com/returns-policy"
+      ]
+    },
+    {
+      "sourceCode": "lotto",
+      "scope": "market",
+      "salesRegion": "比利时站 EUR 报价",
+      "merchantHosts": [
+        "www.lotto-intermarche.be"
+      ],
+      "label": "Lotto Intermarché 官方商城",
+      "policyScope": "当前比利时站 EUR 报价；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已列支付方式不保证中国发行卡或账户获批；请按当前市场结账选项及发卡行要求核对。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "已查官方销售条款，未找到中国大陆及香港逐国适用的配送说明；须向商家或目标地址结账确认，不能把当前比利时欧元商品价当作中国可购报价。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "付款条款列 Visa、Mastercard、Bancontact、iDEAL、Payconiq，中国发行卡授权仍未保证。税费第 5.2 节称价格包含 VAT 及进出口税，第 6.1 节却默认 DAP 交货，官方文字有冲突；不能承诺中国包税，也不能直接断言所有税费都由买家另付，须核实本单明细。普通商品收货后 14 天内通知撤回，通知后 14 天内退回，买家承担直接退运费，保持原包装及同等状态；定制品另有排除。已查未找到强制注册或商业转运的明确适用政策。",
+      "sources": [
+        "https://www.lotto-intermarche.be/en/terms-and-conditions",
+        "https://www.lotto-intermarche.be/nl/shop/product/250/beanie"
+      ]
+    },
+    {
+      "sourceCode": "nsn",
+      "scope": "market",
+      "salesRegion": "阿联酋站 USD 报价",
+      "merchantHosts": [
+        "www.ekoi.com"
+      ],
+      "label": "NSN · Ekoï 阿联酋站",
+      "policyScope": "当前阿联酋站 USD 报价；具体商品、目的地和结账条件须分别确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "PayPal"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "阿联酋站官方付款页明确银行卡及 PayPal；中国发行卡或中国账户是否可用仍取决于结账及发卡行授权。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "阿联酋站配送资料未明确中国大陆或香港直邮适用性；香港市场选项不能证明当前阿联酋美元头盔报价可寄香港。须切换目标市场并验证商品、地址及费用。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次已查公开配送、退货及相关条款，未取得明确商业转运地址许可；不能视为允许转运。"
+      },
+      "sourceLimitations": "阿联酋站官方付款页明确银行卡（Visa、Mastercard 等）及 PayPal，未保证中国发行卡或中国 PayPal 账户授权。非欧盟报价不含目的地 VAT 和关税，由买家承担；拒缴退回可能扣往返运费及 €5–15 准备费。销售条款要求登录或创建账户，但未承诺中国用户注册资格。普通新品退货期为 30 天，须未训练穿用、未洗且吊牌原包装齐全，先申请；免费退仅指定欧美国家，不能保证阿联酋、中国大陆或香港免费。头盔退回须加固硬箱，个性文字或图案头盔不适用撤回权。商业转运许可未找到明确适用说明。",
+      "sources": [
+        "https://www.ekoi.com/en-ae/content/21-payment-methods",
+        "https://www.ekoi.com/en-ae/content/3-terms-and-conditions-of-sale"
       ]
     }
   ],

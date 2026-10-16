@@ -32,8 +32,13 @@ class PurchaseReadinessTests(unittest.TestCase):
         self.assertEqual(teamcycles['directChina']['status'], 'unknown')
         self.assertIn('自行车配送部分', teamcycles['directChina']['note'])
         self.assertIn('不能因此推断所有骑行服', teamcycles['directChina']['note'])
-        self.assertNotIn('sigmasports', self.rows)
-        self.assertNotIn('decathlon', self.rows)
+        self.assertEqual(self.rows['sigmasports']['scope'], 'merchant')
+        self.assertIsNone(self.rows['sigmasports']['salesRegion'])
+        self.assertEqual(self.rows['sigmasports']['merchantHosts'], ['www.sigmasports.com'])
+        self.assertEqual(self.rows['decathlon']['scope'], 'market')
+        self.assertEqual(self.rows['decathlon']['salesRegion'], 'US 市场 · USD 报价；未验证其他市场库存')
+        self.assertEqual(self.rows['decathlon']['merchantHosts'], ['shop.decathloncmacgmteam.com'])
+        self.assertEqual(self.rows['decathlon']['directChina']['status'], 'conditional_checkout')
 
     def test_shipping_restrictions_and_currency_stay_explicit(self):
         visma = self.rows['visma']['directChina']
@@ -66,3 +71,4 @@ class PurchaseReadinessTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

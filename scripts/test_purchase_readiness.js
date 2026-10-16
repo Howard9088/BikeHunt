@@ -15,7 +15,7 @@ const visma=context.readinessContent({...offer('visma','US 市场报价（USD）
 const maap=context.readinessContent(offer('maap','','https://maap.cc/products/item'));assert.ok(maap.includes('不直邮中国大陆'));assert.ok(maap.includes('优先寻找经官网验证的本地授权渠道'));
 const poc=context.readinessContent(offer('poc','Global EN','https://poc.com/en/item'));assert.ok(poc.includes('package forwarding services'));
 const pocUS=context.readinessContent(offer('poc','美国站报价','https://poc.com/en-us/item'));assert.ok(pocUS.includes('其他范围的官方参考'));assert.ok(!pocUS.includes('data-readiness-link="myus"'));
-for(const code of ['unmapped_shop','sigmasports','decathlon','__proto__']){const html=context.readinessContent(offer(code,'中国'));assert.ok(!html.includes('不直邮中国大陆'));assert.ok(!html.includes('EUR 47.95'));assert.ok(!html.includes('data-readiness-link='))}
+for(const code of ['unmapped_shop','unmapped_other','__proto__']){const html=context.readinessContent(offer(code,'中国'));assert.ok(!html.includes('不直邮中国大陆'));assert.ok(!html.includes('EUR 47.95'));assert.ok(!html.includes('data-readiness-link='))}
 assert.ok(context.readinessContent(offer('other')).includes('运费待确认'));
 assert.ok(context.readinessContent({...offer('visma'),shipping_to_china:{note:'配送原文已变化，正在复核'}}).includes('报价规则待复核'));
 // Card-only fields cannot revive stale, incomplete, or another market's payment claims.
@@ -192,3 +192,33 @@ for(const [code,market,host,status,words] of [
  if(code.startsWith('rapha'))assert.equal(row.forwarding.status,'prohibited');
 }
 console.log('Fifth batch passed: regional exclusions, Teamcycles apparel uncertainty, Uno-X eligibility, Canyon product boundaries and Rapha forwarding prohibition.');
+
+// Final existing-source batch; no country selector or general international statement proves an order.
+for(const [code,market,host,words] of [
+ ['sigmasports','','www.sigmasports.com',['购买起 30 天','收货起 30 天','起算口径有冲突','非英国退邮买家承担']],
+ ['soudal','BE 市场 · EUR 报价；未验证其他市场库存','thewolfpack.shop',['未取得中国大陆或香港','14 日但未明确起算日']],
+ ['ineos','US 市场 · USD 报价；未验证其他市场库存','store.netcompanyineos.com',['Global-e','2026 年 6 月 16 日','不能一律称包税']],
+ ['decathlon','US 市场 · USD 报价；未验证其他市场库存','shop.decathloncmacgmteam.com',['30 个日历日','14 天撤回权','不能归纳为全部免费或全部自费','仅法国本土']],
+ ['castelli','AF 市场 · EUR 报价；未验证其他市场库存','www.castelli-cycling.com',['AF/EUR','香港另列运费 USD 15','不能套用于其他市场']],
+ ['groupama','US 市场 · USD 报价；未验证其他市场库存','shop.bioracer.com',['独立于当前美元商品价格','VAT 的措辞存在差异','14 天撤回权']],
+ ['ef_team_shop','美国','efprocycling.shop',['所有商品按需生产','颜色或尺寸导致的退换','15 天内']],
+ ['nsn','阿联酋站 USD 报价','www.ekoi.com',['官方付款页明确','登录或创建账户','个性文字或图案头盔']],
+ ['lotto','比利时站 EUR 报价','www.lotto-intermarche.be',['第 5.2 节','第 6.1 节','官方文字有冲突']],
+ ['alpecin','比利时商城 EUR 页面显示价；配送费用另核','shops.topfanz.com',['Topfanz','Kalas','不是客户使用的商业转运仓']]
+]){
+ const quote=offer(code,market,'https://'+host+'/item'),before=JSON.stringify(quote),row=context.readinessPolicy(quote);
+ assert.ok(row);assert.equal(row.checkedAt,'2026-10-16');assert.equal(row.payment.chinaIssuedCard,'unknown');assert.equal(row.directChina.shippingAmount,undefined);
+ if(code==='sigmasports'){assert.equal(row.scope,'merchant');assert.equal(row.salesRegion,null)}else{assert.equal(row.scope,'market');assert.equal(context.readinessPolicy({...quote,sales_region:'other market'}),null)}
+ assert.equal(context.readinessPolicy({...quote,url:'https://other.example/item'}),null);
+ const html=context.readinessContent(quote),directory=context.readinessDirectoryMarkup({code,shop_url:'https://'+host+'/'});
+ for(const word of words){assert.ok(html.includes(word),code+': '+word);assert.ok(directory.includes(word))}
+ assert.ok(html.includes('data-china-card-status="unknown"'));assert.equal(JSON.stringify(quote),before);
+ for(const url of row.sources)assert.equal(context.readinessUrl(url,code),true);
+ assert.ok(!/GET|缓存|脚本|读取工具|支付矩阵/.test(JSON.stringify(row)));
+}
+assert.equal(context.readinessPolicy(offer('alpecin','比利时商城 EUR 页面显示价；配送费用另核','https://www.kalas.cc/product')),null);
+assert.equal(context.readinessPolicy(offer('decathlon','US 市场 · USD 报价；未验证其他市场库存','https://www.decathlon.com.cn/product')),null);
+const ae=context.readinessPolicy(offer('nsn','阿联酋站 USD 报价','https://www.ekoi.com/en-ae/item'));assert.equal(ae.payment.status,'conditional_checkout');assert.ok(ae.payment.methods.includes('PayPal'));
+for(const source of actualSources)assert.ok(data.entries.some(row=>row.sourceCode===source.code),'Missing researched source: '+source.code);
+assert.equal(data.entries.length,37);assert.ok(JSON.stringify(data).length<100000);assert.equal(data.checkedAt,'2026-10-15');
+console.log('Final batch passed: all 33 existing sources mapped, exact merchant/market boundaries, scoped exceptions, honest evidence gaps and no price/card guarantees.');
