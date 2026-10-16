@@ -35,4 +35,4 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
 
 /* Keep the original large-image feed; surface the existing group entrance. */
 .community-primary{flex-shrink:0;min-height:40px;padding:9px 14px;border:0;border-radius:10px;background:#147b54;color:#fff;font-weight:700;font-size:13px;white-space:nowrap}
-@media(max-width:600px){.header-in{gap:8px;flex-wrap:wrap}.community-primary{margin-left:auto;font-size:12px;min-height:34px;padding:6px 9px}.header-in .search{width:100%;margin:0}.logo small{display:none}}
+@media(max-width:600px){:root{--header:104px}.header-in{gap:6px;flex-wrap:wrap;align-content:center}.community-primary{margin-left:auto;font-size:12px;min-height:34px;padding:6px 9px}.header-in .search{width:100%;flex-basis:100%;margin:0}.logo small{display:none}}
