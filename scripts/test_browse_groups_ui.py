@@ -441,6 +441,13 @@ def main():
                 check_hidden_bicycle_paths(page, references)
                 check_gender_scope(page)
                 page.locator('[data-category-group=other]').click()
+                expect(page.locator('#grid .card')).to_have_count(1)
+                expect(page.locator('#grid')).to_contain_text('Stamp Hoodie')
+                # Full-price stock now appears in featured; browse research in its merchant scope.
+                page.locator('[data-tab=brands]').click()
+                page.locator('[data-source=canyon]').click()
+                page.locator('#sourceProducts').click()
+                page.locator('[data-category-group=other]').click()
                 inline = inline_cards(page, 1)
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
                 expect(inline).to_contain_text('Canyon Midloader')
