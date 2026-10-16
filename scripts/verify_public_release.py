@@ -311,7 +311,7 @@ def validate_offer_labels(data: dict) -> None:
 
 def validate_html(html: str, expected_commit: str) -> None:
     require('世巡车队' in html and '骑行车队' not in html, 'Published team label conflicts')
-    require('bikehunt-mark' in html and 'purchaseDisclaimerInfo' in html,
+    require('bikehunt-lockup' in html and 'bikehunt-logo.svg' in html and 'purchaseDisclaimerInfo' in html,
             'Published branding or purchase disclaimer missing')
     require(f'data-release="{expected_commit}"' in html and 'publicationInfo' in html,
             'CDN still serving older HTML')

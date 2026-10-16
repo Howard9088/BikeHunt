@@ -39,7 +39,7 @@ def release(commit=COMMIT, generated_at='2026-10-14T12:00:00+00:00'):
     manifest = {'schema_version': 1, 'version': version, 'generated_at': generated_at,
                 'commit': commit, 'snapshot': {'path': 'data/site-data.json',
                     'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}}
-    html = ('世巡车队 bikehunt-mark purchaseDisclaimerInfo publicationInfo '
+    html = ('世巡车队 bikehunt-lockup bikehunt-logo.svg purchaseDisclaimerInfo publicationInfo '
             f'data-release="{commit}"').encode('utf-8')
     return manifest, raw, html
 
@@ -238,7 +238,8 @@ class PublicReleaseTests(unittest.TestCase):
         html = raw_html.decode('utf-8')
         verifier.validate_html(html, COMMIT)
         for bad in [html.replace(COMMIT, OLD_COMMIT), html.replace('世巡车队', '骑行车队'),
-                    html.replace('bikehunt-mark', ''), html.replace('purchaseDisclaimerInfo', ''),
+                    html.replace('bikehunt-lockup', ''), html.replace('bikehunt-logo.svg', ''),
+                     html.replace('purchaseDisclaimerInfo', ''),
                     html.replace('publicationInfo', '')]:
             with self.subTest(html=bad), self.assertRaises(verifier.VerificationError):
                 verifier.validate_html(bad, COMMIT)
