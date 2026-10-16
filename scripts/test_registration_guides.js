@@ -74,7 +74,7 @@ assert.ok(context.registrationLanguageMarkup('maap','US').includes('免密码登
 assert.ok(context.registrationLanguageMarkup('uae','US').includes('用户类型'));
 assert.ok(context.registrationHelpMarkup('rapha','日本站').includes('registration-language-guide'));
 
-for(const [code,origin,entryUrl] of [['rapha','https://auth.rapha.cc','https://www.rapha.cc/jp/ja'],['maap','https://shopify.com','https://maap.cc/'],['fizik','https://shopify.com','https://www.fizik.com/'],["soudal","https://shopify.com","https://thewolfpack.shop/"],["ineos","https://shopify.com","https://store.netcompanyineos.com/"],["picnic","https://shopify.com","https://teampicnicpostnl.store/"]]){
+for(const [code,origin,entryUrl] of [['rapha','https://auth.rapha.cc','https://www.rapha.cc/jp/ja'],['maap','https://shopify.com','https://maap.cc/'],['fizik','https://shopify.com','https://www.fizik.com/'],["soudal","https://shopify.com","https://thewolfpack.shop/"],["ineos","https://shopify.com","https://store.netcompanyineos.com/"],["picnic","https://shopify.com","https://teampicnicpostnl.store/"],["decathlon","https://shopify.com","https://shop.decathloncmacgmteam.com/"],["groupama","https://shopaccount.bioracer.com","https://shop.bioracer.com/"]]){
   const provenance=structuredClone(data);provenance.entries=[structuredClone(data.entries.find(entry=>entry.sourceCode==='visma'))];
   provenance.entries[0].sourceCode=code;
   for(const frame of provenance.entries[0].frames)Object.assign(frame,{sourceUrl:entryUrl,screenshotOrigin:origin,sourceLabel:'官网进入链接'});
@@ -100,6 +100,9 @@ assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.raph
 assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.rapha.cc',sourceLabel:'官网进入链接'},'soudal'),false);
 assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.rapha.cc',sourceLabel:'官网进入链接'},'ineos'),false);
 assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.rapha.cc',sourceLabel:'官网进入链接'},'picnic'),false);
+assert.equal(context.registrationProvenance({screenshotOrigin:'https://shopaccount.bioracer.com',sourceLabel:'官网进入链接'},'decathlon'),false);
+assert.equal(context.registrationProvenance({screenshotOrigin:'https://shopify.com',sourceLabel:'官网进入链接'},'groupama'),false);
+assert.equal(context.registrationProvenance({screenshotOrigin:'https://shopaccount.bioracer.com',sourceLabel:'官网进入链接'},'visma'),false);
 install(data);
 
 (async()=>{

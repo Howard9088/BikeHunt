@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "registration-guides-20261016-real-accounts-v2",
+  "revision": "registration-guides-20261016-real-accounts-v3",
   "entries": [
     {
       "sourceCode": "visma",
@@ -1106,6 +1106,297 @@
             }
           ],
           "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "lotto",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：比利时官网荷兰语 NL 界面；不代表其他市场条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:34:00Z",
+      "frames": [
+        {
+          "id": "lotto-nl-register-top",
+          "asset": "assets/registration/lotto-nl-register-top.jpg",
+          "sourceUrl": "https://www.lotto-intermarche.be/nl/account/register",
+          "verifiedAt": "2026-10-16T02:34:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "从官网 Profiel 账户页选 Registreren。此页说明账户可用于官网商店购买；NL 是荷兰语界面标记，不是荷兰配送保证。",
+          "alt": "从官网 Profiel 账户页选 Registreren。此页说明账户可用于官网商店购买；NL 是荷兰语界面标记，不是荷兰配送保证。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "创建账户",
+              "description": "Maak hier je account aan＝在这里创建账户。",
+              "x": 10,
+              "y": 25,
+              "width": 70,
+              "height": 6
+            },
+            {
+              "label": "性别",
+              "description": "Geslacht＝性别；Man＝男，Vrouw＝女，X＝其他选项。页面带星号。",
+              "x": 10,
+              "y": 51,
+              "width": 25,
+              "height": 8
+            },
+            {
+              "label": "名与姓",
+              "description": "Voornaam＝名；Familienaam＝姓。两项都带星号。",
+              "x": 10,
+              "y": 60,
+              "width": 79,
+              "height": 22
+            },
+            {
+              "label": "邮箱地址",
+              "description": "E-mailadres＝邮箱地址；密码部分在下一张图。",
+              "x": 10,
+              "y": 84,
+              "width": 79,
+              "height": 10
+            }
+          ]
+        },
+        {
+          "id": "lotto-nl-register-bottom",
+          "asset": "assets/registration/lotto-nl-register-bottom.jpg",
+          "sourceUrl": "https://www.lotto-intermarche.be/nl/account/register",
+          "verifiedAt": "2026-10-16T02:34:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "同一荷兰语注册表单下半部。所有资料与同意框均保持空白；未提交注册。",
+          "alt": "同一荷兰语注册表单下半部。所有资料与同意框均保持空白；未提交注册。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "密码与确认密码",
+              "description": "Wachtwoord＝密码；Bevestig wachtwoord＝确认密码。",
+              "x": 10,
+              "y": 31,
+              "width": 79,
+              "height": 22
+            },
+            {
+              "label": "隐私政策同意",
+              "description": "Ik ga akkoord met de privacy policy＝我同意隐私政策。先阅读再自行决定；实拍未勾选。",
+              "x": 10,
+              "y": 59,
+              "width": 60,
+              "height": 5
+            },
+            {
+              "label": "一般条款",
+              "description": "下方提示继续注册即同意 algemene voorwaarden＝一般条款。",
+              "x": 10,
+              "y": 65.5,
+              "width": 70,
+              "height": 4
+            },
+            {
+              "label": "完成注册",
+              "description": "Voltooi mijn registratie＝完成我的注册。未点击，后续激活步骤未核验。",
+              "x": 10,
+              "y": 70,
+              "width": 22,
+              "height": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "decathlon",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：Decathlon CMA CGM 车队店 FR / EUR，法语",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:34:00Z",
+      "frames": [
+        {
+          "id": "decathlon-team-fr-account-email",
+          "asset": "assets/registration/decathlon-team-fr-account-email.jpg",
+          "sourceUrl": "https://shop.decathloncmacgmteam.com/",
+          "verifiedAt": "2026-10-16T02:34:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从车队店 Compte → Autres options de connexion 进入 Shopify 托管认证（shopify.com）。这是 Decathlon CMA CGM 车队商城，不是普通迪卡侬零售站账户图解。",
+          "alt": "从车队店 Compte → Autres options de connexion 进入 Shopify 托管认证（shopify.com）。这是 Decathlon CMA CGM 车队商城，不是普通迪卡侬零售站账户图解。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Se connecter ou créer un compte＝登录或创建账户。",
+              "x": 33.8,
+              "y": 40,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "Shop 登录方式",
+              "description": "Continuer avec Shop＝使用 Shop 继续；与邮箱入口为不同方式。",
+              "x": 33.8,
+              "y": 49.5,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "邮箱地址",
+              "description": "Adresse e-mail＝邮箱；箭头继续。当前屏没有密码栏，未提交，后续验证未测试。",
+              "x": 33.8,
+              "y": 62,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "条款与隐私",
+              "description": "En continuant…＝继续即同意使用条款；底部 Politique de confidentialité＝隐私政策。",
+              "x": 33.8,
+              "y": 71.5,
+              "width": 33,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "bahrain",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：Bahrain渠道使用Alé商店；当前Italia / EUR，意大利语",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:34:00Z",
+      "frames": [
+        {
+          "id": "bahrain-ale-it-register",
+          "asset": "assets/registration/bahrain-ale-it-register.jpg",
+          "sourceUrl": "https://alecycling.com/account/register",
+          "verifiedAt": "2026-10-16T02:34:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "从 Alé 官网 Accedi → Crea account 打开注册表单。当前保留 Italia / Italiano 界面。本站 Bahrain 渠道销售来源为 Alé；这是 Alé 商店账户，不是独立车队账号。",
+          "alt": "从 Alé 官网 Accedi → Crea account 打开注册表单。当前保留 Italia / Italiano 界面。本站 Bahrain 渠道销售来源为 Alé；这是 Alé 商店账户，不是独立车队账号。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "名与姓",
+              "description": "Nome＝名；Cognome＝姓；星号为页面标注必填。",
+              "x": 36.8,
+              "y": 36,
+              "width": 25,
+              "height": 7
+            },
+            {
+              "label": "邮箱和密码",
+              "description": "Indirizzo email＝邮箱；Password＝密码。此页未显示确认密码栏。",
+              "x": 36.8,
+              "y": 44.5,
+              "width": 25,
+              "height": 16
+            },
+            {
+              "label": "出生日期",
+              "description": "Data di nascita＝出生日期，未标星号。日期占位由浏览器语言显示为年/月/日。",
+              "x": 36.8,
+              "y": 62.5,
+              "width": 25,
+              "height": 7
+            },
+            {
+              "label": "营销与资料分析选择",
+              "description": "Ricevi offerte dai nostri partner＝接收合作伙伴优惠；Acconsento alla profilazione＝同意个人资料分析。实拍均未选。",
+              "x": 36.8,
+              "y": 74,
+              "width": 35,
+              "height": 9
+            },
+            {
+              "label": "注册",
+              "description": "Registrati＝注册。未点击提交，未核验密码规则及后续激活。",
+              "x": 36.8,
+              "y": 87,
+              "width": 21,
+              "height": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "groupama",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：Groupama渠道使用Bioracer商店；当前BE / EUR，英语",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:34:00Z",
+      "frames": [
+        {
+          "id": "groupama-bioracer-be-account-email",
+          "asset": "assets/registration/groupama-bioracer-be-account-email.jpg",
+          "sourceUrl": "https://shop.bioracer.com/",
+          "verifiedAt": "2026-10-16T02:34:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从 Bioracer 官网 Login 进入 shopaccount.bioracer.com 认证页。本站 Groupama 渠道来源是 Bioracer 商店；此图是该商店账户，不是独立车队账号。当前入口为 BE。",
+          "alt": "从 Bioracer 官网 Login 进入 shopaccount.bioracer.com 认证页。本站 Groupama 渠道来源是 Bioracer 商店；此图是该商店账户，不是独立车队账号。当前入口为 BE。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "邮箱验证码入口",
+              "description": "页面说明输入邮箱后发送 verification code＝验证码。仅观察说明，未实际发送或验证。",
+              "x": 33.8,
+              "y": 41,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "填写邮箱",
+              "description": "Email＝邮箱；右侧箭头继续。当前屏没有密码栏。",
+              "x": 33.8,
+              "y": 50,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "营销默认勾选",
+              "description": "Email me with news and offers＝发送新闻与优惠邮件。实拍默认选中，可按意愿取消。",
+              "x": 33.8,
+              "y": 58,
+              "width": 33,
+              "height": 4
+            },
+            {
+              "label": "服务条款与隐私",
+              "description": "继续即同意 Terms of service＝服务条款；底部 Privacy policy＝隐私政策。",
+              "x": 33.8,
+              "y": 63.5,
+              "width": 33,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopaccount.bioracer.com",
           "sourceLabel": "官网进入链接"
         }
       ]

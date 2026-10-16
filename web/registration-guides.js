@@ -24,7 +24,7 @@ function registrationSourceUrl(value,code){
 function registrationProvenance(frame,code){
   const hasOrigin=Object.prototype.hasOwnProperty.call(frame,'screenshotOrigin'),hasLabel=Object.prototype.hasOwnProperty.call(frame,'sourceLabel');
   if(!hasOrigin&&!hasLabel)return true;
-  const origins={rapha:'https://auth.rapha.cc',maap:'https://shopify.com',fizik:'https://shopify.com',soudal:'https://shopify.com',ineos:'https://shopify.com',picnic:'https://shopify.com'};
+  const origins={rapha:'https://auth.rapha.cc',maap:'https://shopify.com',fizik:'https://shopify.com',soudal:'https://shopify.com',ineos:'https://shopify.com',picnic:'https://shopify.com',decathlon:'https://shopify.com',groupama:'https://shopaccount.bioracer.com'};
   return hasOrigin&&hasLabel&&Object.prototype.hasOwnProperty.call(origins,code)&&frame.screenshotOrigin===origins[code]&&frame.sourceLabel==='官网进入链接';
 }
 function registrationProvenanceMarkup(frame){

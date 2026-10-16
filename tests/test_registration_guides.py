@@ -29,7 +29,9 @@ class RegistrationGuideTests(unittest.TestCase):
                                         ('fizik', 'https://shopify.com', 'https://www.fizik.com/'),
                                         ('soudal', 'https://shopify.com', 'https://thewolfpack.shop/'),
                                         ('ineos', 'https://shopify.com', 'https://store.netcompanyineos.com/'),
-                                        ('picnic', 'https://shopify.com', 'https://teampicnicpostnl.store/')]:
+                                        ('picnic', 'https://shopify.com', 'https://teampicnicpostnl.store/'),
+                                        ('decathlon', 'https://shopify.com', 'https://shop.decathloncmacgmteam.com/'),
+                                        ('groupama', 'https://shopaccount.bioracer.com', 'https://shop.bioracer.com/')]:
             data = fixture()
             data['entries'][0]['sourceCode'] = code
             for frame in data['entries'][0]['frames']:
@@ -52,7 +54,7 @@ class RegistrationGuideTests(unittest.TestCase):
                 elif change == 'wrong_label':
                     frame['sourceLabel'] = '<img src=x>'
                 elif change == 'other_auth':
-                    frame['screenshotOrigin'] = 'https://shopify.com' if code == 'rapha' else 'https://auth.rapha.cc'
+                    frame['screenshotOrigin'] = 'https://shopify.com' if code in ('rapha', 'groupama') else 'https://shopaccount.bioracer.com'
                 else:
                     invalid['entries'][0]['sourceCode'] = 'visma'
                     for item in invalid['entries'][0]['frames']:
