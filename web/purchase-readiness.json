@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-16-verified-channel-policies-batch3",
+  "revision": "2026-10-16-verified-channel-policies-batch4",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -594,6 +594,159 @@
         "https://alecycling.com/en-us/pages/prezzi-pagamenti",
         "https://alecycling.com/en-us/pages/returns-and-cancellations",
         "https://alecycling.com/en-us/pages/ordini-acquisti-su-sito-web"
+      ]
+    },
+    {
+      "sourceCode": "redbull",
+      "scope": "market",
+      "salesRegion": "日本市场 JPY 报价",
+      "merchantHosts": [
+        "www.redbullshop.com"
+      ],
+      "label": "Red Bull–BORA 官方商城",
+      "policyScope": "当前日本市场 JPY 报价；辅助政策不替代该市场具体订单确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "Maestro",
+          "American Express",
+          "JCB",
+          "PayPal"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官方帮助列银行卡和 PayPal 等方式，同时明确付款选项取决于配送地址；未保证中国发行卡授权成功。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "官方配送清单明确列香港，未列中国大陆，并写明未列国家目前不能订购，因此当前官网不支持中国大陆直邮。香港仍须验证具体商品与地址；当前日本日元报价不等于香港订单价格，切换地区后须重新核价。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "官方允许账单地址与配送地址不同，但禁止 Packstation 和邮政信箱；已查未找到商业转运许可，不同地址不能等同允许转运，也不能用转运绕过已明确的限制。"
+      },
+      "sourceLimitations": "日本运费为 ¥4000、订单超过 ¥13000 免运；世界其他地区表列 €30、订单超过 €100 免运，香港无独立报价行，实际以香港结账为准，不能套日本门槛。除欧盟、瑞士、英国相应安排外，进口关税等由收件人承担；不能承诺香港包税。收货后 30 天可退未穿未洗未损商品，个性化商品除外；香港等非奥地利/德国/法国/荷兰地区自付退邮，非欧盟退货需海关发票，退往德国。退款按原方式，不直接换货。账户页仅说明保存地址及订单记录等功能；已查未找到强制注册或明确游客购买政策。政策来自通用官方帮助；当前商品为日本市场日元报价，其他目的地须重新核价。",
+      "sources": [
+        "https://customerservice.redbullshop.com/hc/en-us/articles/27271018703389-What-payment-options-do-I-have",
+        "https://customerservice.redbullshop.com/hc/en-us/articles/27271048952221-Which-countries-do-you-deliver-to",
+        "https://customerservice.redbullshop.com/hc/en-us/sections/27269814144413",
+        "https://customerservice.redbullshop.com/hc/en-us/articles/27271049078173-Will-I-have-to-pay-customs-or-import-charges-for-my-order",
+        "https://customerservice.redbullshop.com/hc/en-us/articles/27271048195997-Can-I-return-my-order",
+        "https://customerservice.redbullshop.com/hc/en-us/articles/27271048550557-How-do-I-return-my-order",
+        "https://customerservice.redbullshop.com/hc/en-us/articles/27271018943517-What-are-the-benefits-of-a-customer-account-in-the-Red-Bull-Shop",
+        "https://customerservice.redbullshop.com/hc/en-us/articles/27271048785181-Can-my-delivery-address-differ-from-my-billing-address"
+      ]
+    },
+    {
+      "sourceCode": "picnic",
+      "scope": "market",
+      "salesRegion": "US 市场 · EUR 报价；未验证其他市场库存",
+      "merchantHosts": [
+        "teampicnicpostnl.store"
+      ],
+      "label": "Picnic PostNL 官方商城",
+      "policyScope": "当前US 市场 · EUR 报价；未验证其他市场库存；辅助政策不替代该市场具体订单确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "American Express",
+          "Maestro",
+          "Mastercard",
+          "Visa"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "官网页脚图标列卡组织及若干钱包，仅为官方图标证据；具体方式、账户及中国发行卡授权依赖结账和发卡行。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "已检查官方配送政策，只具体列荷兰和比利时时效，未找到中国大陆或香港的明确配送承诺。地区菜单未列两地不能直接推断禁止；须向商家或目标地址结账核实，当前美国市场欧元报价不保证可寄中国。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查官网主页、配送及条款，未找到明确允许或禁止商业转运地址的说明；不能视为许可。"
+      },
+      "sourceLimitations": "运费在结账计算。另查到荷兰欧元商品页标示 Taxes included，仅适用该页面上下文，不证明中国进口税已含；配送及条款未找到进口税责任的明确说明。收货后 14 天内申请退货，须未穿未用、原标签包装及凭据，先获客服批准后寄回荷兰 Delft。特价商品及礼品卡明确不退；核准后按原方式在 10 个工作日内退款。退货标签不等于免费，已查未明确谁承担退邮。已查未找到强制注册或明确游客结账政策。已查官方政策，具体账户与地址仍须结账核对；未实际结账。",
+      "sources": [
+        "https://teampicnicpostnl.store/",
+        "https://teampicnicpostnl.store/policies/shipping-policy",
+        "https://teampicnicpostnl.store/policies/terms-of-service",
+        "https://teampicnicpostnl.store/policies/refund-policy",
+        "https://teampicnicpostnl.store/products/team-picnic-postnl-racing-jersey-2026"
+      ]
+    },
+    {
+      "sourceCode": "pns",
+      "scope": "market",
+      "salesRegion": "欧洲站 EUR 报价",
+      "merchantHosts": [
+        "pasnormalstudios.com"
+      ],
+      "label": "Pas Normal Studios 欧洲站",
+      "policyScope": "当前欧洲站 EUR 报价；辅助政策不替代该市场具体订单确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "Maestro",
+          "UnionPay",
+          "Apple Pay",
+          "Google Pay",
+          "MobilePay",
+          "Klarna"
+        ],
+        "chinaIssuedCard": "unknown",
+        "note": "欧洲站条款列支付方式，FAQ 说明随结账国家变化并有 3DS；MobilePay 限丹麦、Klarna 限指定国家，中国发行卡及中国账户均无接受保证。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "已查欧洲站条款及 FAQ，未找到中国大陆和香港逐国适用的配送承诺；Rest of world 或市场菜单不能代替具体地址验证。须先确认目标市场、商品及收货地址，再核价下单。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查条款及 FAQ，未找到明确商业转运许可或禁令；官网明确不配送邮政信箱，不能据此推定商业转运可用。"
+      },
+      "sourceLimitations": "全球运费条款写满 €200 免邮、低于门槛最高 €34，估计 3–5 个工作日；这些不是中国或香港具体订单报价。FAQ 的全球区为 DDU，进口税、关税及清关费由买家承担；DDP 例外国家在 FAQ 与条款的美国范围存在更新差异，不能外推中国或香港包税。退货政策写收货后 30 天，条款另列 30 天通知、45 天寄回，须按订单确认截止日；商品未穿、干净且吊牌原包装齐全。退货按地区可能收费，不能保证中国或香港免费；不直接换货，退后重新购买。已查 FAQ 及条款，未找到必须注册账户或中国用户资格的明确政策。",
+      "sources": [
+        "https://pasnormalstudios.com/eu/pages/terms",
+        "https://pasnormalstudios.com/eu/pages/faq",
+        "https://pasnormalstudios.com/eu/pages/return-policy"
+      ]
+    },
+    {
+      "sourceCode": "assos",
+      "scope": "market",
+      "salesRegion": "国际站 USD 报价",
+      "merchantHosts": [
+        "www.assos.com"
+      ],
+      "label": "ASSOS 国际站",
+      "policyScope": "当前国际站 USD 报价；辅助政策不替代该市场具体订单确认",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "本次未能确认适用于国际站的完整付款政策；不能把美国站付款方式直接用于国际站订单。请结合已列官方付款资料，在商家结账时确认，中国发行卡授权仍未保证。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "当前 /int 国际站的中国大陆及香港配送政策证据不足，尚未确认具体地址适用性。本次未能确认适用于国际站的完整政策内容，尚需向商家核实；这不等于官网没有说明，也不证明不能购买。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "本次未能确认适用于国际站的完整转运规定，尚需向商家核实；不能据此判断官网没有说明或已允许转运。"
+      },
+      "sourceLimitations": "国际站卡组织、税费责任、具体运费及注册要求没有足够适用证据，不能借美国或意大利市场补成国际站保证。意大利语言/市场的退货页含 Rest of the World 分段：30 天免费退、全新未穿且标签原包装齐全、商家安排取件、原支付退款、原配送费不退，并有游客订单流程。这仅是其他市场页面的辅助旁证，不能保证当前 /int 订单 30 天免费退或无需注册。本次未能确认适用于国际站的完整政策内容，尚需向商家核实；未完成结账、注册或支付测试。",
+      "sources": [
+        "https://www.assos.com/int/customer-service/?section=terms-and-conditions",
+        "https://www.assos.com/int/customer-service/?section=shipping",
+        "https://www.assos.com/it/customer-service/?section=returns"
       ]
     }
   ],

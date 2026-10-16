@@ -2,6 +2,7 @@
 // Dated, read-only policy summaries. These never alter an offer or cost estimate.
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
+  redbull:['customerservice.redbullshop.com'],picnic:['teampicnicpostnl.store'],pns:['pasnormalstudios.com'],assos:['www.assos.com'],
   movistar:['gobik.com'],bahrain:['alecycling.com'],
   uae:['www.pissei.com'],fizik:['www.fizik.com','www.iubenda.com'],santini:['www.santinicycling.com'],lidl_trek:['www.santinicycling.com'],
   amazon_us:['www.amazonforum.com','www.amazon.com'],amazon_uk:['www.aboutamazon.co.uk','sellercentral-europe.amazon.com','digprjsurvey.amazon.co.uk'],
@@ -11,6 +12,11 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  redbull:["market", "日本市场 JPY 报价", ["www.redbullshop.com"]],
+  picnic:["market", "US 市场 · EUR 报价；未验证其他市场库存", ["teampicnicpostnl.store"]],
+  pns:["market", "欧洲站 EUR 报价", ["pasnormalstudios.com"]],
+  assos:["market", "国际站 USD 报价", ["www.assos.com"]],
+
   movistar:["market", "US 市场 · EUR 报价；未验证其他市场库存", ["gobik.com"]],
   bahrain:["market", "US 市场 · USD 报价；未验证其他市场库存", ["alecycling.com"]],
 
@@ -175,5 +181,6 @@ function paymentFeasibilityMarkup(offer={}){
   const key=String(++readinessSequence);readinessContexts.set(key,offer);
   return '<div class="payment-feasibility" data-feasibility-context="'+key+'">'+paymentFeasibilityContent(offer)+'</div>';
 }
+
 
 

@@ -150,3 +150,23 @@ for(const [code,shop,evidence,oldShop,teamOfficial] of [
  assert.equal(context.readinessDirectoryRows({...entry,shop_url:oldShop}).length,0);assert.equal(context.readinessDirectoryRows({...entry,shop_url:teamOfficial}).length,0);
 }
 console.log('Directory supplier identities passed: real Gobik/MAAP entrances match crawler, source evidence and scoped readiness; legacy hosts stay rejected.');
+
+// Fourth batch distinguishes official exclusions, checked-but-unspecified policies and missing applicable text.
+for(const [code,market,host,status,words] of [
+ ['redbull','日本市场 JPY 报价','www.redbullshop.com','prohibited',['不支持中国大陆直邮','明确列香港','不能套日本门槛','自付退邮']],
+ ['picnic','US 市场 · EUR 报价；未验证其他市场库存','teampicnicpostnl.store','unknown',['未找到中国大陆或香港','不能直接推断禁止','特价商品及礼品卡明确不退','已查官方政策，具体账户与地址仍须结账核对']],
+ ['pns','欧洲站 EUR 报价','pasnormalstudios.com','conditional_checkout',['30 天通知、45 天寄回','不能外推中国或香港包税','不能保证中国或香港免费']],
+ ['assos','国际站 USD 报价','www.assos.com','unknown',['未能确认适用于国际站的完整政策内容','不能借美国或意大利市场','辅助旁证','不能保证当前 /int 订单']]
+]){
+ const quote=offer(code,market,'https://'+host+'/products/example'),before=JSON.stringify(quote),row=context.readinessPolicy(quote);
+ assert.ok(row);assert.equal(row.scope,'market');assert.equal(row.checkedAt,'2026-10-16');assert.equal(row.directChina.status,status);assert.equal(row.directChina.shippingAmount,undefined);assert.equal(row.payment.chinaIssuedCard,'unknown');
+ assert.equal(context.readinessPolicy({...quote,sales_region:'other market'}),null);assert.equal(context.readinessPolicy({...quote,url:'https://other.example/product'}),null);
+ const html=context.readinessContent(quote),directory=context.readinessDirectoryMarkup({code,shop_url:'https://'+host+'/'});
+ for(const word of words){assert.ok(html.includes(word),code+': '+word);assert.ok(directory.includes(word))}
+ assert.ok(directory.includes('指定市场参考'));assert.ok(html.includes('data-china-card-status="unknown"'));assert.equal(JSON.stringify(quote),before);
+ for(const url of row.sources)assert.equal(context.readinessUrl(url,code),true);
+}
+const assosIntl=context.readinessPolicy(offer('assos','国际站 USD 报价','https://www.assos.com/int/item'));assert.equal(assosIntl.payment.status,'unknown');assert.equal(assosIntl.payment.methods.length,0);assert.ok(assosIntl.sources.every(url=>!url.includes('/us/')));
+console.log('Fourth batch passed: scoped Red Bull/Picnic/PNS/ASSOS evidence, mainland exclusions versus unknowns, international-page limits and no cost/card upgrades.');
+
+for(const code of ['redbull','picnic','assos']){const row=data.entries.find(r=>r.sourceCode===code);assert.ok(!/GET|缓存|脚本|读取工具|支付矩阵/.test(JSON.stringify(row)));}
