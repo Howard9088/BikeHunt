@@ -27,7 +27,7 @@ from app.public_recovery import baseline_writes, validate_baseline
 from scripts.verify_public_release import validate_manifest, validate_snapshot, verify_status
 
 SQLITE_MAX_CURSOR = 2**63 - 2
-MAX_RESPONSE_BYTES = 32 * 1024 * 1024
+MAX_RESPONSE_BYTES = 64 * 1024 * 1024
 MAX_MANIFEST_BYTES = 64 * 1024
 MAX_STATUS_BYTES = 8 * 1024 * 1024
 EVENT_FIELDS = (
