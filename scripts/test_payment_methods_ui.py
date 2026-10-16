@@ -137,8 +137,45 @@ def main():
                 expect(page.locator('#grid .card')).to_have_count(0)
                 expect(page.locator('#grid')).to_contain_text('该渠道暂无已核实有货的商品')
                 page.locator('#channelInfo > summary').click()
-                expect(page.locator('#channelInfo .source-payment-overview')).to_be_visible()
-                expect(page.locator('.source-payment-overview [data-payment-method-key]')).to_have_count(11)
+                overview = page.locator('#channelInfo .source-payment-overview')
+                expect(overview).to_be_visible()
+                expect(overview).to_have_count(1)
+                # One matrix per exact market; the retained JP observation is separate.
+                markets = [('美国站 USD 报价', 'conditional'), ('未核实', 'unknown')]
+                panels = overview.locator('.payment-matrix')
+                expect(panels).to_have_count(len(markets))
+                required = {'cards', 'china_issued_cards', 'paypal', 'apple_pay', 'google_pay',
+                            'alipay', 'wechat_pay', 'unionpay', 'bank_transfer_local',
+                            'gift_cards', 'instalments'}
+                for index, (market, paypal_status) in enumerate(markets):
+                    rows = [row for row in matrix['entries']
+                            if row['source_code'] == 'oakley' and row['sales_region'] == market]
+                    assert len(rows) == 1
+                    expected_row = rows[0]
+                    market_panel = panels.nth(index)
+                    expect(market_panel).to_be_visible()
+                    scope_text = expected_row['merchant_name'] + ' · ' + market
+                    expect(market_panel.locator('.payment-market-scope').first).to_have_text(scope_text)
+                    expect(market_panel.locator('.payment-scope')).to_have_text(scope_text)
+                    expect(market_panel.locator('[data-china-card-status]')).to_have_attribute('data-china-card-status', 'unknown')
+                    methods = market_panel.locator('[data-payment-method-key]')
+                    expect(methods).to_have_count(11)
+                    actual_keys = methods.evaluate_all('(els) => els.map(el => el.dataset.paymentMethodKey)')
+                    assert len(actual_keys) == len(set(actual_keys)) and set(actual_keys) == required
+                    for method in expected_row['methods']:
+                        item = market_panel.locator('[data-payment-method-key=' + method['method_key'] + ']')
+                        expect(item).to_have_count(1)
+                        expect(item.locator('[data-payment-status]')).to_have_attribute('data-payment-status', method['status'])
+                        actual_urls = item.locator('a[data-payment-link]').evaluate_all('(els) => els.map(el => el.getAttribute("href"))')
+                        assert actual_urls == method['evidence_urls']
+                    expect(market_panel.locator('[data-payment-method-key=paypal] [data-payment-status]')).to_have_attribute('data-payment-status', paypal_status)
+                    expect(market_panel.locator('[data-payment-method-key=china_issued_cards] [data-payment-status]')).to_have_attribute('data-payment-status', 'unknown')
+                    urls = market_panel.locator('a[data-payment-link]').evaluate_all('(els) => els.map(el => el.getAttribute("href"))')
+                    if market == '美国站 USD 报价':
+                        assert urls and all(url.startswith('https://www.oakley.com/en-us/') for url in urls)
+                    else:
+                        assert urls == []  # The synthetic JP row has no evidence; never borrow US links.
+                assert external == [target]
                 expect(page.locator('#sourceProducts')).to_have_count(0)
                 expect(page.locator('#sheetBody .registration-help')).to_have_count(0)
                 page.locator('[data-tab=teams]').click()
