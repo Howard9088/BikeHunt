@@ -39,7 +39,7 @@ def screenshot_provenance(frame, code):
     has_origin, has_label = 'screenshotOrigin' in frame, 'sourceLabel' in frame
     if not has_origin and not has_label:
         return True
-    origins = {'rapha': 'https://auth.rapha.cc', 'maap': 'https://shopify.com', 'fizik': 'https://shopify.com'}
+    origins = {'rapha': 'https://auth.rapha.cc', 'maap': 'https://shopify.com', 'fizik': 'https://shopify.com', 'soudal': 'https://shopify.com', 'ineos': 'https://shopify.com', 'picnic': 'https://shopify.com'}
     return (has_origin and has_label and code in origins
             and frame['screenshotOrigin'] == origins[code]
             and frame['sourceLabel'] == '官网进入链接')

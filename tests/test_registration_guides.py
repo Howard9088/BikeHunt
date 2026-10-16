@@ -26,7 +26,10 @@ class RegistrationGuideTests(unittest.TestCase):
     def test_exact_optional_screenshot_origin_and_label(self):
         for code, origin, entry_url in [('rapha', 'https://auth.rapha.cc', 'https://www.rapha.cc/jp/ja'),
                                         ('maap', 'https://shopify.com', 'https://maap.cc/'),
-                                        ('fizik', 'https://shopify.com', 'https://www.fizik.com/')]:
+                                        ('fizik', 'https://shopify.com', 'https://www.fizik.com/'),
+                                        ('soudal', 'https://shopify.com', 'https://thewolfpack.shop/'),
+                                        ('ineos', 'https://shopify.com', 'https://store.netcompanyineos.com/'),
+                                        ('picnic', 'https://shopify.com', 'https://teampicnicpostnl.store/')]:
             data = fixture()
             data['entries'][0]['sourceCode'] = code
             for frame in data['entries'][0]['frames']:

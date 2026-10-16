@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "registration-guides-20261016-real-accounts-v1",
+  "revision": "registration-guides-20261016-real-accounts-v2",
   "entries": [
     {
       "sourceCode": "visma",
@@ -839,6 +839,268 @@
               "description": "By continuing…＝继续即同意服务条款；底部 Privacy policy＝隐私政策。",
               "x": 33.8,
               "y": 70.5,
+              "width": 33,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "soudal",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：当前 BE / EUR，英语；不代表其他市场配送或付款条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:25:00Z",
+      "frames": [
+        {
+          "id": "soudal-be-account-email",
+          "asset": "assets/registration/soudal-be-account-email.jpg",
+          "sourceUrl": "https://thewolfpack.shop/",
+          "verifiedAt": "2026-10-16T02:25:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从 The Wolfpack 官网账户图标进入 Shopify 托管认证页（shopify.com）。入口当前带 BE 地区，商店显示欧元；仅核验公开邮箱起始屏。",
+          "alt": "从 The Wolfpack 官网账户图标进入 Shopify 托管认证页（shopify.com）。入口当前带 BE 地区，商店显示欧元；仅核验公开邮箱起始屏。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Sign in or create an account＝登录或创建账户。页面品牌同时有 Soudal Quick-Step 与 AG Insurance-Soudal；本图对应本站 soudal 渠道。",
+              "x": 33.8,
+              "y": 39,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "Shop 登录方式",
+              "description": "Continue with Shop＝使用 Shop 继续；与下方邮箱入口是不同选项。",
+              "x": 33.8,
+              "y": 48.5,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "邮箱入口",
+              "description": "Email＝邮箱；右侧箭头继续。当前屏没有密码栏，未测试邮箱验证码或后续创建流程。",
+              "x": 33.8,
+              "y": 61,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "继续前阅读条款",
+              "description": "By continuing…＝继续即同意服务条款；底部 Privacy policy＝隐私政策。",
+              "x": 33.8,
+              "y": 70.5,
+              "width": 33,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "ineos",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：当前 GB / GBP，英语；不代表其他市场配送或付款条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:25:00Z",
+      "frames": [
+        {
+          "id": "ineos-gb-account-email",
+          "asset": "assets/registration/ineos-gb-account-email.jpg",
+          "sourceUrl": "https://store.netcompanyineos.com/",
+          "verifiedAt": "2026-10-16T02:25:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从 Netcompany INEOS 官方商城 My Account 进入 Shopify 托管认证页（shopify.com）。英国入口、英镑商店；实拍邮箱起始屏，未提交。",
+          "alt": "从 Netcompany INEOS 官方商城 My Account 进入 Shopify 托管认证页（shopify.com）。英国入口、英镑商店；实拍邮箱起始屏，未提交。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Sign in or create an account＝登录或创建账户；页面文案不代表账户已成功建立。",
+              "x": 33.8,
+              "y": 32,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "Shop 登录方式",
+              "description": "Continue with Shop＝使用 Shop 继续，是另一入口，本次未点击。",
+              "x": 33.8,
+              "y": 41,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "填写邮箱",
+              "description": "Email＝邮箱；右侧箭头继续。当前屏无密码栏，后续验证未测试。",
+              "x": 33.8,
+              "y": 54,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "营销默认勾选",
+              "description": "此段说明将发送新闻、资讯与优惠；不想接收请取消勾选。截图保留官网默认已勾选状态，未提交任何资料。",
+              "x": 33.8,
+              "y": 62.5,
+              "width": 33,
+              "height": 10
+            },
+            {
+              "label": "条款与隐私",
+              "description": "继续即同意 Terms of service＝服务条款；Privacy policy＝隐私政策。请先阅读。",
+              "x": 33.8,
+              "y": 75,
+              "width": 33,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "ef_team_shop",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：EF 美国商城 / USD，英语；不代表其他商城账户",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:25:00Z",
+      "frames": [
+        {
+          "id": "ef-us-register",
+          "asset": "assets/registration/ef-us-register.jpg",
+          "sourceUrl": "https://efprocycling.shop/us/my-account/",
+          "verifiedAt": "2026-10-16T02:25:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "从 EF 美国商城账户图标进入 My account，再选 Create an account。当前实拍为 Register 注册表单；仅适用于 efprocycling.shop/us，不是 ASSOS 或其他 EF 关联商店账户。",
+          "alt": "从 EF 美国商城账户图标进入 My account，再选 Create an account。当前实拍为 Register 注册表单；仅适用于 efprocycling.shop/us，不是 ASSOS 或其他 EF 关联商店账户。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "用户名",
+              "description": "Username＝用户名；星号表示页面标注必填。这里不是姓名字段。",
+              "x": 30.5,
+              "y": 28,
+              "width": 38,
+              "height": 11
+            },
+            {
+              "label": "邮箱地址",
+              "description": "Email address＝邮箱地址。请使用能接收后续邮件的邮箱；邮件验证流程未测试。",
+              "x": 30.5,
+              "y": 40.5,
+              "width": 38,
+              "height": 11
+            },
+            {
+              "label": "密码",
+              "description": "Password＝密码。此页仅一个密码栏，未测试密码复杂度规则。",
+              "x": 30.5,
+              "y": 53,
+              "width": 38,
+              "height": 11
+            },
+            {
+              "label": "隐私说明",
+              "description": "说明个人资料用于网站体验、管理账户及隐私政策所列用途；可先阅读 privacy policy。",
+              "x": 30.5,
+              "y": 65.5,
+              "width": 38,
+              "height": 8
+            },
+            {
+              "label": "注册与已有账户登录",
+              "description": "Register＝提交注册；下方 Log in＝已有账户登录。本次未点击提交或创建账户。",
+              "x": 30.5,
+              "y": 77,
+              "width": 38,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "picnic",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：当前 NL / EUR，英语认证页；不代表其他市场条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:25:00Z",
+      "frames": [
+        {
+          "id": "picnic-nl-account-email",
+          "asset": "assets/registration/picnic-nl-account-email.jpg",
+          "sourceUrl": "https://teampicnicpostnl.store/",
+          "verifiedAt": "2026-10-16T02:25:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从 Team Picnic PostNL 官方商城 Log in 进入 Shopify 托管认证页（shopify.com）。入口为 NL，商店显示 EUR；认证页英语，仅核验邮箱起始屏。",
+          "alt": "从 Team Picnic PostNL 官方商城 Log in 进入 Shopify 托管认证页（shopify.com）。入口为 NL，商店显示 EUR；认证页英语，仅核验邮箱起始屏。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Sign in or create an account＝登录或创建账户。",
+              "x": 33.8,
+              "y": 40,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "Shop 登录方式",
+              "description": "Continue with Shop＝使用 Shop 继续；也可使用下方邮箱入口。",
+              "x": 33.8,
+              "y": 49,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "邮箱入口",
+              "description": "Email＝邮箱；右侧箭头继续。当前屏没有密码栏；验证码及后续步骤未测试。",
+              "x": 33.8,
+              "y": 61.5,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "资讯与优惠默认勾选",
+              "description": "Email me with news and offers＝给我发送新闻与优惠邮件。截图保留默认勾选；可按个人意愿选择。",
+              "x": 33.8,
+              "y": 70,
+              "width": 33,
+              "height": 4
+            },
+            {
+              "label": "服务条款",
+              "description": "继续即同意 Terms of service＝服务条款；底部 Privacy policy＝隐私政策。",
+              "x": 33.8,
+              "y": 75.5,
               "width": 33,
               "height": 4
             }
