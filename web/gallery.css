@@ -74,3 +74,10 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
  .card .listing-time{margin-top:4px}
  .card .data-time{display:block;margin-top:2px;line-height:1.35}
 }
+/* Very narrow, short feeds retain both dates and the complete action button. */
+@media(max-width:360px) and (max-height:780px){
+ .card .product-visual{min-height:80px}
+ .card .product-info{padding:6px 14px}
+ .card .original-name{margin:-3px 0 5px}
+ .card .product-meta,.card .buyline{margin-bottom:6px}
+}
