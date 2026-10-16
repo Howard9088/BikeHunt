@@ -45,6 +45,24 @@ def fixture():
     return state
 
 
+def assert_last_known_home_cards(page):
+    # Age does not remove reliable stock; retained stock does not regain a deal.
+    expected = {
+        '0e344be353d7defc6a54': ('Sale Jersey', 'brand', True),
+        '6f3844171a6ef5499688': ('Stamp Hoodie', 'brand', False),
+        'aed4178a1c8850a986bf': ('Stale Jersey', 'team', True),
+        'f6a0a6f2835e41bc07e5': ('Retained Jersey', 'team', False),
+    }
+    expect(page.locator('#grid .card')).to_have_count(len(expected))
+    rows = page.evaluate("visibleItems().map(p => ({id:p.product_id, name:p.name, sources:p.source_codes, stock:p.reference_stock, deal:featuredDeal(p)}))")
+    assert {row['id'] for row in rows} == set(expected)
+    for row in rows:
+        name, source, deal = expected[row['id']]
+        assert (row['name'], row['sources'], row['stock'], row['deal']) == (name, [source], 'in_stock', deal)
+        expect(page.locator(f'#grid .card[data-id="{row["id"]}"]')).to_have_count(1)
+    assert all(row['stock'] not in ('unknown', 'out_of_stock') for row in rows)
+
+
 def inline_cards(page, count):
     """Sheet references deliberately duplicate records; only count gallery cards."""
     inline = page.locator('#grid #roadReferenceInline')
@@ -220,7 +238,7 @@ def check_gender_scope(page):
     page.reload(wait_until='networkidle')
     expect(page.locator('#genderFilter')).to_be_hidden()
     assert page.evaluate("shopperProfile.gender === 'all'")
-    expect(page.locator('#grid .card')).to_have_count(2)
+    assert_last_known_home_cards(page)
 
 
 def check_hidden_bicycle_paths(page, references):
@@ -245,7 +263,7 @@ def check_hidden_bicycle_paths(page, references):
         expect(page.locator('#grid .card,#grid [data-road-reference-card]')).to_have_count(0)
         expect(page.locator('[data-category-group=road_equipment]')).to_have_count(0)
     page.locator('[data-tab=products]').click()
-    expect(page.locator('#grid .card')).to_have_count(2)
+    assert_last_known_home_cards(page)
 
 
 def assert_inline_layout(page, viewport):
@@ -436,7 +454,7 @@ def main():
                 assert page.locator('[data-category-group]').all_text_contents() == ['骑行服饰', '锁鞋', '头盔', '配件与周边']
                 expect(page.locator('#categoryNav')).to_have_count(0)
                 expect(page.locator('[data-category]')).to_have_count(0)
-                expect(page.locator('#grid .card')).to_have_count(2)
+                assert_last_known_home_cards(page)
                 expect(page.locator('#roadReferenceInline')).to_have_count(0)
                 check_hidden_bicycle_paths(page, references)
                 check_gender_scope(page)
@@ -577,7 +595,7 @@ def main():
                 expect(page.locator('[data-category]')).to_have_count(0)
                 assert page.evaluate("activeCategory === 'all'")
                 expect(page.locator('#roadReferenceInline')).to_have_count(0)
-                expect(page.locator('#grid .card')).to_have_count(2)
+                assert_last_known_home_cards(page)
                 assert page.evaluate('activeSource === null')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path=str(OUT / f'groups_{mode}.png'))
