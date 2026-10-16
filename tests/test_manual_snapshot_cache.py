@@ -60,6 +60,9 @@ class ManualSnapshotCacheTests(unittest.TestCase):
                                       capture_output=True, text=True)
 
             git("init", "-q")
+            # The fixture checks exact committed bytes, independently of the host's
+            # global Windows checkout conversion. Change only this temporary repo.
+            git("config", "core.autocrlf", "false")
             git("add", "data/offers")
             git("-c", "user.name=Snapshot Test", "-c",
                 "user.email=snapshot-test@example.invalid", "commit", "-qm", "fixture")
