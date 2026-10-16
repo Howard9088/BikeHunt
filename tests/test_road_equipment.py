@@ -43,10 +43,9 @@ class RoadEquipmentTests(unittest.TestCase):
         self.assertIn('不支持直接寄中国', data['brands'][1]['note'])
         self.assertIn('退货条件有冲突', data['brands'][2]['note'])
 
-    def test_research_does_not_register_new_crawlers_or_offers(self):
+    def test_research_references_remain_separate_from_explicitly_collected_variants(self):
         codes = {'trek','specialized','canyon','colnago'}
         offers = OfferRepository(ROOT/'data').load()
-        self.assertTrue(codes.isdisjoint(o.source_code for o in offers))
         sources=json.loads((ROOT/'data/crawl_sources.json').read_text())
         crawlers={row.get('code', row.get('source_code')) for row in sources}
         # Some brands now also have standalone, newly registered crawlers. Their
@@ -54,6 +53,14 @@ class RoadEquipmentTests(unittest.TestCase):
         # remains research-only and must not be silently added as a crawler.
         self.assertNotIn('trek', crawlers)
         self.assertTrue({'specialized','canyon','colnago'}.issubset(crawlers))
+        # The user has now authorized scoped apparel/accessory collection. It must
+        # provide exact observations rather than promote the old reference rows.
+        for row in offers:
+            if row.source_code in codes:
+                self.assertEqual(row.data_kind, 'live_snapshot')
+                self.assertTrue(row.identity.size)
+                self.assertIsNotNone(row.fetched_at)
+                self.assertTrue(row.collection_url)
         # Fixed FX fixture: the repository may contain the older provider-cache format.
         fixed = json.loads((ROOT/'tests/fixtures/browse-catalog-2026-10-15.json').read_text())
         catalog = ComparisonCatalog(offers, FxSnapshot.model_validate(fixed['fx']))
