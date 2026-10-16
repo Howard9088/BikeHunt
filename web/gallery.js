@@ -340,7 +340,7 @@ function updateGalleryVerificationMetadata(verification){
   }
   updateVerifiedDetailMetadata(currentProduct,verification);
   updateVerifiedFxMetadata(fx,verification.fx);updateFxLabel();
-  const byId=new Map(items.map(card=>[card.product_id,activeSource?channelCard(card,activeSource):card]));
+  const byId=new Map(items.map(card=>[card.product_id,typeof activeSource!=='undefined'&&activeSource?channelCard(card,activeSource):card]));
   for(const node of gallery.querySelectorAll('.card')){
     const card=byId.get(node.dataset.id),label=node.querySelector('.data-time');
     if(card&&label)label.textContent=(card.fetched_at?'更新 '+timeText(card.fetched_at):timeText(null))+' · 原币价与人民币参考价';
