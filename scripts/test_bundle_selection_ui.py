@@ -73,6 +73,15 @@ def make_state():
         assert row['size'] == row['offer']['identity']['size']
         age = (when - datetime.fromisoformat(row['offer']['fetched_at'].replace('Z', '+00:00'))).total_seconds()
         assert 0 <= age <= 3600, 'Fixture clock must preserve the captured stock verification'
+    # Old captured catalog cards predate source-bound quote identities. Reuse
+    # the exact captured offer/variant from this fixture for the new channel
+    # visibility contract; do not manufacture prices, URLs or stock.
+    observed = next(row for row in bundle['variants']
+                    if row['offer']['offer_id'] == bundle['card']['reference_offer_id'])
+    assert observed['in_stock']
+    bundle['card'].update(reference_variant_id=observed['variant_id'],
+                          reference_url=observed['offer']['url'],
+                          reference_data_kind='live_snapshot')
     fallback = synthetic_product('unknown-bundle-format', 'Fallback unrecognized equipment bundle', [
         'Helmet collaboration edition (Size): M / Gloves winter team issue (Accessory size): 8 / Shoe covers racing edition (Size): L',
         'Helmet collaboration edition (Size): L / Gloves winter team issue (Accessory size): 9 / Shoe covers racing edition (Size): XL',
