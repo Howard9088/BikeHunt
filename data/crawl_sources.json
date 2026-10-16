@@ -341,7 +341,7 @@
       "https://www.kask.com/en-it/Utopia-Y/CHE00104-.html",
       "https://www.kask.com/en-it/Nirvana/CHE00109-.html"
     ],
-    "scope_note": "首批 7 款公路头盔；每款仅采集页面当前选中的颜色/认证/尺码，其余尺码与颜色未覆盖。",
+    "scope_note": "首批7款公路头盔；实际切换当前颜色/认证下的尺码，核对所选SKU返回的价格和可售状态；其他颜色和完整目录未覆盖。",
     "max_products": 7,
     "coverage_complete": false,
     "fetch_policy": {
@@ -349,7 +349,7 @@
       "wait_selector": ".product-detail [data-attr=\"size\"] button[data-attr-value]",
       "timeout_ms": 25000,
       "max_pages": 2,
-      "max_products": 10
+      "max_products": 7
     },
     "variant_profile": "kask"
   },
@@ -401,8 +401,8 @@
       "https://www.pissei.com/en/man/top/jackets/uae-team-emirates-xrg-2026-official-jacket-813272.html",
       "https://www.pissei.com/en/man/top/long-sleeve-jerseys/uae-team-emirates-xrg-2026-primapelle-official-long-sleeve-jersey-812975.html"
     ],
-    "scope_note": "首批 3 款 2026 UAE 官方服饰的商品级报价；未核实逐尺码库存或全目录。",
-    "max_products": 3,
+    "scope_note": "PISSEI官方UAE 2026分类最多10件商品；渲染尺码选项并核对逐SKU库存数量和显示价，未覆盖完整目录。",
+    "max_products": 10,
     "coverage_complete": false,
     "fetch_policy": {
       "mode": "dynamic",

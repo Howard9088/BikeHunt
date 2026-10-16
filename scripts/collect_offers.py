@@ -154,7 +154,7 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
             errors.append(error_record(url, exc))
     repository.save(code, rows, datetime.now(timezone.utc), errors, {
         "scope":"configured_product_pages", "scope_note":settings.get("scope_note", "指定商品页面，非完整目录"),
-        "collected_product_count":len({row.url.split("?",1)[0] for row in rows}),
+        "collected_product_count":len({(row.collection_url or row.url).split("?",1)[0] for row in rows}),
         "configured_page_count":len(urls), "fetch_mode":policy.mode,
         "dynamic_offer_count":sum(row.fetch_mode == "dynamic" for row in rows),
         "sized_offer_count":sum(bool(row.identity.size) for row in rows),
