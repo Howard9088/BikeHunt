@@ -11,6 +11,7 @@ from datetime import date, datetime
 from decimal import Decimal, ROUND_HALF_UP
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from app.catalog.models import (
     CostComponent, CostEvidence, Evidence, FxSnapshot, LandedCost, Money, Offer, TaxScenario,
@@ -19,6 +20,20 @@ from app.localization import category_of
 
 RULES_PATH = Path(__file__).resolve().parents[1] / "data" / "landed_cost_rules.json"
 CENT = Decimal("0.01")
+
+
+def is_domestic_official_offer(offer: Offer) -> bool:
+    """Only explicitly recorded mainland official offers, never CNY alone."""
+    try:
+        url = urlsplit(offer.url)
+        trusted_url = (url.scheme == "https" and url.hostname == "www.decathlon.com.cn"
+                       and url.username is None and url.password is None
+                       and url.port in (None, 443))
+    except ValueError:
+        return False
+    return bool(offer.source_code == "decathlon_cn" and trusted_url
+                and offer.sales_region == "中国大陆 CNY 报价"
+                and offer.price.currency == "CNY")
 
 
 def convert_money(value: Money | None, fx: FxSnapshot) -> Decimal | None:
@@ -86,6 +101,29 @@ def estimate_landed_cost(offer: Offer, fx: FxSnapshot, now: datetime) -> LandedC
                                    checked_on=offer.fetched_at.date().isoformat() if offer.fetched_at else None)])]
     if product is None:
         missing.append("商品币种汇率")
+
+    if is_domestic_official_offer(offer):
+        # A domestic storefront is not evidence of free shipping, card support,
+        # a confirmed checkout total, or the offer's stock freshness.
+        shipping_money = offer.shipping if offer.shipping_to_china.status != "no" else None
+        shipping = convert_money(shipping_money, fx)
+        components.append(CostComponent(
+            key="shipping", label="中国大陆境内运费",
+            original=shipping_money, cny=shipping,
+            status="unsupported" if offer.shipping_to_china.status == "no" else
+                   "quoted" if shipping_money is not None else "unknown",
+            note="境内运费以收货地址和结算页为准；未知不按免运费处理。",
+            evidence=_evidence(offer.shipping_to_china, "中国大陆配送依据")))
+        if shipping is None:
+            missing.append("中国大陆境内运费" if shipping_money is None else "运费币种汇率")
+        missing.append("结算总额")
+        known = product + shipping if product is not None and shipping is not None else product
+        return LandedCost(
+            components=components, known_subtotal_cny=known,
+            quoted_total_cny=None, complete=False, scenarios=[], missing=missing,
+            notes=["中国大陆官方渠道报价；不套用海外进口税或清关费用情景。",
+                   "已知金额仅为商品与已报价运费小计；配送、支付和最终总额仍须核实。"],
+            fx_snapshot_id=fx.snapshot_id)
 
     shipping_money = offer.shipping if offer.shipping_to_china.status != "no" else None
     shipping_status = "quoted" if shipping_money is not None else "unknown"

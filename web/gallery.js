@@ -129,6 +129,7 @@ function render(preserveId=null){
   if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款商品价较低的现货，折扣另行标注。<br>暂时没有符合条件的商品，请稍后再看。</div>':activeSource?'<div class="empty"><strong>该渠道暂无已核实有货的商品</strong>售罄或库存待确认的商品暂不展示，请稍后再看。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
   gallery.innerHTML=list.map((p,i)=>{
     const deal=featuredDeal(p),low=!deal?lowPrices.get(p.product_id):null,channel=featuredBrowse()&&!deal;
+    const domestic=p.source_codes?.includes('decathlon_cn')&&p.reference_source==='迪卡侬中国官网'&&p.reference_price?.currency==='CNY'&&safeUrl(p.reference_url).startsWith('https://www.decathlon.com.cn/');
     const stockVerified=p.stock_state==='in_stock'&&inventoryVerified(p)&&p.reference_collection_state!=='retained';
     const isVerified=stockVerified&&p.recommended_total_cny!=null;
     const expired=['库存核实已过期','库存待核实'].includes(p.status)||p.stock_state==='in_stock'&&!stockVerified;
@@ -140,7 +141,7 @@ function render(preserveId=null){
       '<div class="product-info"><div class="brand">'+e(p.brand)+'</div><h2>'+e(p.name_zh||p.name)+'</h2><div class="original-name">'+e(p.name)+'</div>'+
       '<div class="product-meta"><span>'+p.source_count+' 个渠道</span><span>'+(deal?e(catalogSizeLabel(p,true)):low||channel?e('参考规格 '+[compactVariantLabel(p.reference_size),p.reference_color].filter(Boolean).join(' / ')):stockVerified&&p.available_sizes?.length?e(catalogSizeLabel(p,false)):expired?'库存待核实':p.variant_count+' 个规格 · 库存待确认')+'</span>'+
       (sold?'<span class="sold">所示报价已售罄</span>':'')+'</div>'+
-      '<div class="buyline"><div class="price-label">'+(deal?'已核实折扣 · 商品价，不含运税':low||channel?'所示规格商品价 · 不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
+      '<div class="buyline"><div class="price-label">'+(domestic?'中国官网商品价 · 配送费用另核':deal?'已核实折扣 · 商品价，不含运税':low||channel?'所示规格商品价 · 不含运税':sold?'所示报价已售罄':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
       '<div class="best-price">'+e(cny(p.reference_cny))+(deal||low||channel?'':'<small> 起</small>')+'</div>'+
       '<div class="foreign-price">'+(deal?'<span class="original-price">商家原价 <s>'+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</s></span> · 现价 ':'')+e(money(p.reference_price.amount,p.reference_price.currency))+' · '+e(p.reference_source)+'</div>'+
       (deal?'<div class="deal-spec">未取得折扣结束时间</div>':channel?'<div class="deal-spec">从该渠道已采集现货中按商品价选择；不是同类比价或全网最低价。</div>':lowPriceMarkup(p,low))+'</div>'+ 
@@ -223,7 +224,7 @@ function landedCostMarkup(compared){
     (compared.total_cny!=null?cost('已报价费用合计',compared.total_cny,true):'')+'</dl>'+(scenarios.length?'</details>':'')+
     (originalShipping?.original?'<div class="offer-note">运费原币：'+e(money(originalShipping.original.amount,originalShipping.original.currency))+(landed.shipping_scope==='order'?' / 单；单件下单计整单运费，合单不能逐件相加。':'；订单计费范围仍需核实。')+'</div>':'')+
     (landed.missing?.length?'<div class="offer-note">仍待确认：'+landed.missing.map(e).join('、')+'。未知费用没有按 0 元计入。</div>':'')+
-    '<details><summary>查看运税假设、原币与官方依据</summary>'+
+    '<details><summary>'+(typeof routeDomesticChina==='function'&&routeDomesticChina(compared.offer)?'查看国内费用与官方依据':'查看运税假设、原币与官方依据')+'</summary>'+
     components.filter(c=>c.note).map(c=>'<p>'+e(c.label)+'：'+e(c.note)+'</p>').join('')+
     scenarios.flatMap(s=>s.assumptions||[]).concat(landed.notes||[]).map(note=>'<p>'+e(note)+'</p>').join('')+
     uniqueSources.map(source=>'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(source.url))+'">'+e(source.title)+'</a> · 核实 '+e(source.checked_on||'日期待确认')+'</p>').join('')+'</details>';
@@ -297,17 +298,17 @@ function referenceOffersMarkup(detail){
   return '<div class="reference-offers"><h4>库存待核实的报价参考</h4><p class="spec-note">历史报价仅供参考，库存待核实。官网链接不代表所示尺码可购买，请在商家页面重新选择并核对尺码、颜色、价格和库存。</p>'+quotes.map(q=>'<div class="reference-channel"><span>'+e(q.offer.source_name)+'</span>'+(typeof paymentFeasibilityMarkup==='function'?paymentFeasibilityMarkup(q.offer):'')+referenceLinkMarkup(q)+'</div>').join('')+'</div>';
 }
 function offerMarkup(compared){
-  const o=compared.offer;
+  const o=compared.offer,domestic=typeof routeDomesticChina==='function'&&routeDomesticChina(o);
   const available=offerAvailable(compared),stock=inventoryLabel(o),recommended=compared.eligible&&available;
   return '<div class="offer" data-source="'+e(o.source_code)+'"><div class="offer-top"><div class="source-name">'+e(o.source_name)+'</div><span class="tag '+(recommended?'ok':o.stock==='out_of_stock'?'no':'wait')+'">'+stock+'</span></div>'+
     '<div class="source-logistics">'+e(o.sales_region||'渠道报价')+' · 发货地：'+e(o.dispatch_origin||'尚待官方核实')+'</div>'+
     (o.purchase_requirements?.length?'<div class="offer-note">'+o.purchase_requirements.map(e).join(' · ')+'</div>':'')+
     '<div class="price">'+e(money(o.price.amount,o.price.currency))+' <span>≈ '+e(cny(compared.product_cny))+'</span></div>'+
-    '<p class="offer-note">先比较运输路线，再核对该路线的费用。未知运费、税费和银行卡费用不按 0 计算。</p>'+ 
-    (typeof paymentFeasibilityMarkup==='function'?paymentFeasibilityMarkup(o):'')+
+    '<p class="offer-note">'+(domestic?'中国官网商品价；请核对国内配送地址、运费和付款方式，未知费用不按 0 计算。':'先比较运输路线，再核对该路线的费用。未知运费、税费和银行卡费用不按 0 计算。')+'</p>'+ 
+    (domestic?'<p class="offer-note">请以中国官网结账页列出的付款方式为准，本站未验证本次交易。</p>':typeof paymentFeasibilityMarkup==='function'?paymentFeasibilityMarkup(o):'')+
     (compared.reasons.length?'<div class="offer-note">'+compared.reasons.map(e).join(' · ')+'</div>':'')+
     '<div class="source-time">'+(o.fetched_at?'更新 '+e(timeText(o.fetched_at)):e(timeText(null)))+'</div>'+
-    '<button class="go guide-start" type="button" data-offer="'+e(o.offer_id)+'" '+(!offerAvailable(compared)?'disabled':'')+'>比较运输路线 <span>→</span></button>'+
+    '<button class="go guide-start" type="button" data-offer="'+e(o.offer_id)+'" '+(!offerAvailable(compared)?'disabled':'')+'>'+(domestic?'确认国内配送':'比较运输路线')+' <span>→</span></button>'+
     (!available?referenceLinkMarkup(compared):'')+
     '<details><summary>来源与核实依据</summary><p>'+e(o.identity_evidence)+'</p>'+
     [o.shipping_to_china].filter(Boolean).map(check=>'<p>'+e(check.note)+(safeUrl(check.url)?' <a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(check.url))+'">查看依据</a>':'')+'</p>').join('')+(o.china_issued_card?.note?'<details class="legacy-payment-evidence"><summary>旧报价支付记录（不作为当前支持结论）</summary><p>以下支付说明可能已变更；请以上方支付方式说明及商店结账页面为准。</p><p>'+e(o.china_issued_card.note)+'</p></details>':'')+'</details></div>';
@@ -406,7 +407,8 @@ function renderProductDetail(detail,variantId,sequence,options={}){
   document.getElementById('sheetName').textContent=detail.name_zh||detail.name;
   const confirmedSoldOut=detail.offers.length>0&&detail.offers.every(q=>q.offer.stock==='out_of_stock');
   const inventoryExpired=detail.offers.some(q=>q.offer.stock==='in_stock'&&!inventoryVerified(q.offer));
-  const summary='<div class="summary-box"><h4>下一步：比较运输路线</h4><p>先选择具体商店报价，再比较直邮、转运和香港途径。费用、库存或中国发卡条件未齐时，仅供核实，不确认最低到手价。</p></div>';
+  const domesticOnly=detail.offers.length>0&&typeof routeDomesticChina==='function'&&detail.offers.every(q=>routeDomesticChina(q.offer));
+  const summary=domesticOnly?'<div class="summary-box"><h4>下一步：确认国内配送</h4><p>先选择具体尺码和商品报价，再到中国官网确认配送地址、运费、优惠券与付款方式。商品价不是完整到手价。</p></div>':'<div class="summary-box"><h4>下一步：比较运输路线</h4><p>先选择具体商店报价，再比较直邮、转运和香港途径。费用、库存或中国发卡条件未齐时，仅供核实，不确认最低到手价。</p></div>';
   const available=detail.variants.filter(v=>v.in_stock&&v.size&&(v.variant_id!==detail.variant_id||detail.offers.some(q=>offerAvailable(q))));
   // VariantChoice.in_stock comes from the server's exact-offer freshness check.
   // Recheck the loaded variant's quotes as well before allowing an action.

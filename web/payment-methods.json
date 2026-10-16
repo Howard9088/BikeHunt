@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-15-all-channels-v2-frozen",
+  "revision": "2026-10-16-decathlon-cn-unknown-payments",
   "checked_at": "2026-10-15",
   "payment_caveat": "仅官方公开资料核验，未注册、未提交个人或付款信息、未下单、未真实扣款。商家列出某支付方式或卡组织不等于中国发行卡或中国账户必然可用；发卡行境外电商授权、3DS、真实账单地址、账户地区和商家风控仍可能限制。付款能力与配送资格分别判断。",
   "coverage": {
-    "registered_sources": 28,
+    "registered_sources": 29,
     "additional_directory_entries": 7,
-    "total_entries": 35,
+    "total_entries": 36,
     "actual_payment_tests": 0
   },
   "research_metadata": {
@@ -11580,6 +11580,202 @@
         }
       ],
       "checked_at": "2026-10-15"
+    },
+    {
+      "source_code": "decathlon_cn",
+      "merchant_name": "迪卡侬中国官网",
+      "sales_region": "中国大陆 CNY 报价",
+      "merchant_hosts": [
+        "www.decathlon.com.cn",
+        "decathlon.com.cn"
+      ],
+      "scope": "market",
+      "scope_note": "仅适用于迪卡侬中国官网、中国大陆人民币报价。官方隐私政策用于确认网站身份，不证明任何付款方式可用；不沿用法国车队商城或其他国家商店的规则。",
+      "scope_evidence_urls": [
+        "https://www.decathlon.com.cn/",
+        "https://static-econnected.decathlon.com.cn/econnected/privacy.html"
+      ],
+      "merchant_evidence_status": "official_text",
+      "checked_at": "2026-10-16",
+      "methods": [
+        {
+          "method_key": "cards",
+          "name": "银行卡（信用卡/借记卡）",
+          "status": "unknown",
+          "note": "尚未确认中国站接受的信用卡、借记卡及卡组织清单。请在结账页查看可选银行卡方式。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null,
+          "card_networks": []
+        },
+        {
+          "method_key": "china_issued_cards",
+          "name": "中国大陆发行银行卡",
+          "status": "unknown",
+          "note": "尚未确认本订单支持哪些中国大陆发行银行卡。请核对结账入口及发卡行授权要求。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "paypal",
+          "name": "PayPal",
+          "status": "unknown",
+          "note": "中国站是否提供 PayPal 尚未确认，请以本订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "apple_pay",
+          "name": "Apple Pay",
+          "status": "unknown",
+          "note": "中国站是否提供 Apple Pay 尚未确认；请核对设备及绑定银行卡要求。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "google_pay",
+          "name": "Google Pay",
+          "status": "unknown",
+          "note": "中国站是否提供 Google Pay 尚未确认，请以本订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "alipay",
+          "name": "支付宝",
+          "status": "unknown",
+          "note": "中国站是否提供支付宝及适用账户范围尚未确认，不能仅凭国内商店身份判断。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "wechat_pay",
+          "name": "微信支付",
+          "status": "unknown",
+          "note": "中国站是否提供微信支付及适用账户范围尚未确认，请在结账页核对。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "unionpay",
+          "name": "银联 UnionPay",
+          "status": "unknown",
+          "note": "尚未确认中国站银联支付入口及信用卡、借记卡范围，请在结账页核对。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "bank_transfer_local",
+          "name": "银行转账/本地付款",
+          "status": "unknown",
+          "note": "中国站是否提供银行转账或其他本地付款方式尚未确认。仅按官方订单页面的收款指引付款。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "gift_cards",
+          "name": "礼品卡/购物余额",
+          "status": "unknown",
+          "note": "中国站礼品卡及购物余额的购买、兑换、适用商品和使用范围尚未确认，请先查看官方规则。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        },
+        {
+          "method_key": "instalments",
+          "name": "分期/先买后付",
+          "status": "unknown",
+          "note": "中国站是否提供分期、适用机构、费用及账户资格尚未确认。选择前请查看总费用。",
+          "china_applicability": {
+            "status": "unknown",
+            "evidence_class": "insufficient_evidence",
+            "note": "本订单的中国大陆银行卡或付款账户适用性尚未确认，以中国站结账页和支付机构授权为准。"
+          },
+          "account_region_constraints": "中国大陆站；账户、银行卡及地区限制尚未确认，不沿用海外商城的付款规则。",
+          "merchant_evidence_status": "unavailable",
+          "evidence_status": "insufficient_evidence",
+          "evidence_urls": [],
+          "checked_at": null
+        }
+      ]
     }
   ],
   "review_corrections": [

@@ -101,7 +101,7 @@ async function startGuide(detail,offerId){
   if(!publicProductVisible(detail))return;
   const quote=detail.offers.find(x=>x.offer.offer_id===offerId);if(!quote||!offerAvailable(quote))return;
   const saved=history.state?.bikehuntPurchase;
-  guideContext={detail,quote,book:null,route:saved?.productId===detail.product_id&&saved.variantId===detail.variant_id&&saved.offerId===offerId?saved.route:null,reference:false};openPanel('中文海淘指引','<p class="loading">读取中文配送与支付规则…</p>',true);const sequence=detailSequence;
+  guideContext={detail,quote,book:null,route:saved?.productId===detail.product_id&&saved.variantId===detail.variant_id&&saved.offerId===offerId?saved.route:null,reference:false};openPanel(typeof routeDomesticChina==='function'&&routeDomesticChina(quote.offer)?'中国官网购买指引':'中文海淘指引','<p class="loading">读取配送与支付说明…</p>',true);const sequence=detailSequence;
   try{const book=await getJson('/api/rules/'+encodeURIComponent(quote.offer.source_code));if(sequence!==detailSequence)return;if(!offerAvailable(quote)){showInventoryInvalidated(quote);return}guideContext={...guideContext,detail,quote,book};guideStep=0;renderGuide()}catch(error){if(sequence!==detailSequence)return;guideContext=null;document.getElementById('sheetBody').innerHTML='<p>暂时无法加载，请稍后重试。</p>'}
 }
 function renderGuide(){if(typeof renderRouteComparison==='function')renderRouteComparison()}

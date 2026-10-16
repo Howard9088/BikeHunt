@@ -1,0 +1,118 @@
+{
+  "checked_at": "2026-10-16T02:59:03Z",
+  "method": "Official rendered product pages in dot cloud browser; selected M size then read online stock DOM",
+  "source": {
+    "code": "decathlon_cn",
+    "market": "CN",
+    "currency": "CNY",
+    "url": "https://www.decathlon.com.cn/",
+    "type": "brand_official_online",
+    "official_proof": "https://static-econnected.decathlon.com.cn/econnected/privacy.html",
+    "priority": "china_official",
+    "separate_from": "decathlon (French team shop)"
+  },
+  "products": [
+    {
+      "name": "VAN RYSEL 男士骑行背带短裤 RCR-R 5 - 黑色",
+      "model_code": "8969603",
+      "dsm_code": "367685",
+      "url": "https://www.decathlon.com.cn/product-detail?dsm_code=367685&model_code=8969603",
+      "color": "烟熏黑",
+      "currency": "CNY",
+      "price": 399.9,
+      "conditional_price": 369.9,
+      "conditional_price_terms": "页面预估到手价，需领满300减30优惠券；资格及可用性未验证，不作无条件成交价",
+      "variant": "M - 180/80A",
+      "stock_checked_at": "2026-10-16T02:58:28Z",
+      "other_sizes": "unknown",
+      "image": "https://pixl.decathlon.com.cn/p3043223/k$4140c9f5c953c033f539ba057e40434c/content.jpg",
+      "displayed_online_stock": 444,
+      "stock_api_field": null,
+      "coupon_expiry": null,
+      "coupon_verified_applied": false,
+      "stock_evidence": {
+        "method": "Click exact visible M-size text, verify selected DOM class border-[#3643BA] font_maincolor, then read public visible stock label",
+        "raw_dom_stock_text": "线上库存 444",
+        "api_sku_id": null,
+        "raw_dom": "<span class=\"text-[#616161]\">线上库存 <span class=\"text-[#149B65]\">444</span></span><div data-v-8fc5153a=\"\" class=\"min-w-[40px] h-40 mr-10 mb-10 pt-2 sm:pt-2 box-border px-10 border-1 border-solid flex items-center justify-center text-14 cursor-pointer sm:min-w-[80px] sm:h-80 sm:mr-[17px] sm:mb-24 sm:text-28 sm:px-20 border-[#3643BA] font_maincolor  border-1 sm:font-medium sm:border-[4px]\">\n            M - 180/80A\n        </div>"
+      },
+      "stock_rechecked_at": "2026-10-16T03:03:20Z"
+    },
+    {
+      "name": "VAN RYSEL 男女同款迪卡侬 CMA CGM队版复刻版公路骑行服 RCR竞赛系列",
+      "model_code": "8987878",
+      "dsm_code": "355348",
+      "url": "https://www.decathlon.com.cn/product-detail?dsm_code=355348",
+      "color": "孔雀蓝",
+      "currency": "CNY",
+      "price": 399.9,
+      "conditional_price": 369.9,
+      "conditional_price_terms": "页面预估到手价，需领满300减30优惠券；资格及可用性未验证，不作无条件成交价",
+      "variant": "M",
+      "stock_checked_at": "2026-10-16T02:59:03Z",
+      "other_sizes": "unknown; initial default size was out of stock, do not generalize M stock",
+      "image": "https://pixl.decathlon.com.cn/p3154827/k$0847c4ceacd8c8f51fc26bdc6b51d0b8/content.jpg",
+      "comparison_warning": "Do not automatically match old AG2R team kit; verify exact model/year/color",
+      "displayed_online_stock": 5,
+      "stock_api_field": null,
+      "coupon_expiry": null,
+      "coupon_verified_applied": false,
+      "stock_evidence": {
+        "method": "Click exact visible M-size text, verify selected DOM class border-[#3643BA] font_maincolor, then read public visible stock label",
+        "raw_dom_stock_text": "线上库存 5",
+        "api_sku_id": null,
+        "raw_dom": "{\n  html: '<span class=\"text-[#616161]\">线上库存 <span class=\"text-[#149B65]\">5</span></span>',\n  parent: '<div class=\"flex items-center text-14 sm:text-28\"><span class=\"text-[#616161]\">线上库存 <span class=\"text-[#149B65]\">5</span></span> <!----></div>'\n}<div data-v-8fc5153a=\"\" class=\"min-w-[40px] h-40 mr-10 mb-10 pt-2 sm:pt-2 box-border px-10 border-1 border-solid flex items-center justify-center text-14 cursor-pointer sm:min-w-[80px] sm:h-80 sm:mr-[17px] sm:mb-24 sm:text-28 sm:px-20 border-[#3643BA] font_maincolor  border-1 sm:font-medium sm:border-[4px]\">\n            M\n        </div>"
+      },
+      "stock_rechecked_at": "2026-10-16T03:02:42Z"
+    }
+  ],
+  "shipping": {
+    "free_threshold_cny": 99,
+    "threshold_basis": "单笔订单实付",
+    "store_pickup": "免运费",
+    "condition": "具体配送条件以结算页面为准；未输入收货地址、未验证具体目的地或时效"
+  },
+  "other_official_channels": [
+    {
+      "code": "rapha_cn_shanghai",
+      "brand": "Rapha",
+      "market": "CN",
+      "type": "brand_official_physical_store",
+      "url": "https://content.rapha.cc/ap/en/clubhouses/shanghai",
+      "address": "20 Donghu Rd, Xuhui District, Shanghai, China, 200031",
+      "price": null,
+      "currency": null,
+      "stock": null,
+      "shipping": null
+    },
+    {
+      "code": "maap_cn_shanghai",
+      "brand": "MAAP",
+      "market": "CN",
+      "type": "brand_official_physical_store",
+      "url": "https://maap.cc/sg/lab-shanghai",
+      "address": "Room 108, Building C, No.18 Yongyuan Road, Jingan District, Shanghai",
+      "price": null,
+      "currency": null,
+      "stock": null,
+      "shipping": null,
+      "restriction": "maap.cc does not deliver to China; local partners exclusively",
+      "restriction_source": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU"
+    },
+    {
+      "code": "pns_cn_shanghai",
+      "brand": "Pas Normal Studios",
+      "market": "CN",
+      "type": "brand_official_physical_store",
+      "url": "https://pasnormalstudios.com/int/stores/shanghai",
+      "official_proof": "https://pasnormalstudios.com/int (Flagship Stores > Shanghai, Jing an)",
+      "price": null,
+      "currency": null,
+      "stock": null,
+      "shipping": null
+    }
+  ],
+  "collection_route": "Public rendered category UI https://www.decathlon.com.cn/product-list?category_id=644a1c540c5c730001d1e01f then click product and size. No documented public API identified; do not claim automatic feed/API integration from this manual check.",
+  "limitations": "Read-only research; no cart, purchase, signup, login or address submission. Existing repository source mapping relayed by sole writer; no repo edits performed. Domestic retail stock not transferable to team shop. Prices and stock are snapshots. No exact Tmall/JD storefront URL verified from brand own source. Stock quantities are the website's displayed selected-size online stock, not verified API availablequantity fields. No screenshot was captured on initial check.",
+  "automation_feasibility": "Repeatable public UI flow confirmed twice per product. Rendered DOM has size text choices with selected class and visible Chinese stock label. No documented public API or verified initial product JSON identified. Browser evaluate restricted to rendered DOM; no hidden-state or unknown API probes performed."
+}

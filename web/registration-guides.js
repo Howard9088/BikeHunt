@@ -82,6 +82,8 @@ function registrationWords(code,market){
 }
 function registrationSchematicMarkup(code,market){
   const escape=registrationEscape,words=registrationWords(code,market);
+  const publicAccount=registrationEntry(code,null,'public_account');
+  const coverageNote=publicAccount?.status==='verified'?'下方提供公开账户页图解，具体市场页面可能不同。':'本商家／市场暂时没有已核实的真实注册截图。';
   const extra=code==='rapha'?'Rapha 的普通账户、RCC 付费会员和邮件订阅不是同一种注册。':
     code==='decathlon'?'此处是 Decathlon CMA CGM 车队商城，不能预设迪卡侬零售账户通用。':
     String(code??'').startsWith('amazon_')?'Amazon 不同国家站要分别核对，不把一站的注册步骤当成其他站已核实。':
@@ -96,7 +98,7 @@ function registrationSchematicMarkup(code,market){
     '有账户直接登录；需要新账户时，再寻找注册入口。','只在官网填写资料，邮箱验证、密码及协议按实际要求办理。'];
   return '<section class="registration-schematic" aria-label="注册操作步骤示意，非官网截图">'+
     '<div class="registration-schematic-heading"><strong>3 步中文注册图解</strong><span>示意 · 非官网截图</span></div>'+
-    '<p class="registration-schematic-note">本商家／市场暂时没有已核实的真实注册截图。以下<strong>画面是辅助理解的示意图</strong>，外文只是可参考的常见按钮名称，不能当作原站实拍。</p>'+
+    '<p class="registration-schematic-note">'+coverageNote+'以下<strong>画面是辅助理解的示意图</strong>，外文只是可参考的常见按钮名称，不能当作原站实拍。</p>'+
     '<ol class="registration-schematic-steps">'+pictures.map((picture,i)=>
       '<li class="registration-schematic-step"><div class="registration-schematic-number">'+(i+1)+'</div><strong>'+titles[i]+'</strong>'+picture+'<p>'+help[i]+'</p></li>').join('')+'</ol>'+
     '<p class="registration-schematic-foot">'+extra+' 注册不证明中国银行卡可用或支持直邮中国，结账时仍要核实。</p></section>';

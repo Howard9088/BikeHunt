@@ -100,7 +100,7 @@ def main():
                         value = state['detail']
                         state['last_variant'] = parse_qs(parsed.query).get('variant_id', [None])[0]
                     elif parsed.path == '/api/directories':
-                        value = {'brands': [], 'teams': [{'code': 'visma', 'name': 'Visma', 'name_zh': 'Visma', 'official_url': 'https://www.teamvismaleaseabike.com/', 'shop_url': 'https://www.teamvismaleaseabike.com/shop/', 'status': 'verified_shop', 'shop_evidence_url': 'https://www.teamvismaleaseabike.com/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}]}
+                        value = {'brands': [{'code': 'decathlon_cn', 'name': 'Decathlon China', 'name_zh': '迪卡侬中国官网', 'official_url': 'https://www.decathlon.com.cn/', 'shop_url': 'https://www.decathlon.com.cn/', 'status': 'official_link_found', 'shop_evidence_url': 'https://www.decathlon.com.cn/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}], 'teams': [{'code': 'visma', 'name': 'Visma', 'name_zh': 'Visma', 'official_url': 'https://www.teamvismaleaseabike.com/', 'shop_url': 'https://www.teamvismaleaseabike.com/shop/', 'status': 'verified_shop', 'shop_evidence_url': 'https://www.teamvismaleaseabike.com/', 'offer_count': 1, 'product_count': 1, 'rule_count': 0}]}
                     elif parsed.path == '/api/updates':
                         value = {'items': [], 'cursor': 0, 'fx': state['catalog']['fx']}
                     elif parsed.path.startswith('/api/rules/'):
@@ -256,6 +256,71 @@ def main():
                 assert len(outbound) == 1
                 page.screenshot(path=str(OUT / f'purchase_registration_{mode}.png'))
                 checks.append(mode + ': compact payment after size; exact three routes; prohibited disabled/unknown planning; registration only after route; four numbered modal explanations and exact domain/labels; selected image and failure fallback; full disclosure; Escape/focus trap; stock and URL revalidation; same-tab exact URL; cancel/back/reload preserve source, offer, size and route; no standalone Amazon search module; stale stock reference stage; no early merchant request')
+
+                # Domestic official offers keep the same guarded exit and restore flow,
+                # without showing cross-border route choices or imported-cost estimates.
+                page.locator('#close').click()
+                domestic_detail = copy.deepcopy(baseline)
+                domestic_detail.update(variant_id='M')
+                domestic_detail['identity']['size'] = 'M'
+                domestic_detail['variants'] = [{'variant_id': 'M', 'size': 'M', 'in_stock': True,
+                                               'stock_state': 'in_stock', 'source_count': 1,
+                                               'product_cny_from': '399.90'}]
+                domestic_quote = copy.deepcopy(baseline['offers'][0])
+                domestic_target = 'https://www.decathlon.com.cn/p/test-domestic-jersey?size=M'
+                domestic_quote['offer']['identity'] = copy.deepcopy(domestic_detail['identity'])
+                domestic_quote['offer'].update(offer_id='offer-domestic-m', source_code='decathlon_cn',
+                    source_name='迪卡侬中国官网', sales_region='中国大陆 CNY 报价',
+                    url=domestic_target, price={'amount': '399.90', 'currency': 'CNY'},
+                    original_price=None, stock='in_stock')
+                domestic_quote.update(product_cny='399.90', shipping_cny=None, tax_cny=None, total_cny=None)
+                domestic_quote.pop('landed_cost', None)
+                domestic_detail['offers'] = [domestic_quote]
+                state['detail'] = domestic_detail
+                page.locator('.card .compare-button').first.click()
+                page.locator('[data-variant="M"]').click()
+                page.locator('[data-offer="offer-domestic-m"]').click()
+                panel = page.locator('#routeComparison')
+                expect(panel).to_be_visible()
+                expect(panel.locator('[data-route]')).to_have_count(1)
+                expect(panel.locator('[data-route="domestic"]')).to_have_attribute('data-route-status', 'conditional')
+                expect(panel).to_contain_text('399.90')
+                expect(panel).to_contain_text('尺码 M')
+                expect(panel.locator('.route-hk-notes,.route-budget,.route-policy')).to_have_count(0)
+                for absent in ['中国进口税', '清关', '海外转运', '香港']:
+                    expect(panel).not_to_contain_text(absent)
+                expect(page.locator('#routeContinue')).to_be_disabled()
+                select_route(page, 'domestic')
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                page.locator('#routeContinue').click()
+                expect(page.locator('#registrationInterstitial')).to_contain_text('登录或注册')
+                expect(page.locator('#registrationInterstitial')).not_to_contain_text('Account / Sign in')
+                page.locator('#registrationCancel').click()
+                expect(page.locator('[data-route-select="domestic"]')).to_have_attribute('aria-pressed', 'true')
+                page.locator('#routeContinue').click()
+                open_final_exit(page, domestic_target, official=True, image=selected_image)
+                page.evaluate("guideContext.quote.offer.sales_region = '其他市场'")
+                page.locator('#externalExitConfirm').click()
+                expect(page).to_have_url(base)
+                expect(page.locator('#externalExitError')).to_be_visible()
+                assert outbound == [target]
+                page.evaluate("guideContext.quote.offer.sales_region = '中国大陆 CNY 报价'")
+                cancel_exit_dialog(page)
+                page.locator('#routeContinue').click()
+                page.reload(wait_until='networkidle')
+                expect(page.locator('#registrationInterstitial')).to_be_visible()
+                assert page.evaluate('history.state.bikehuntPurchase.route') == 'domestic'
+                open_final_exit(page, domestic_target, official=True, image=selected_image)
+                confirm_exit_dialog(page, domestic_target, official=True)
+                expect(page).to_have_url(domestic_target)
+                assert outbound == [target, domestic_target] and len(context.pages) == 1
+                page.go_back(wait_until='networkidle')
+                expect(page.locator('[data-route-select="domestic"]')).to_have_attribute('aria-pressed', 'true')
+                expect(page.locator('#routeComparison')).to_contain_text('尺码 M')
+                page.locator('#routeBack').click()
+                expect(page.locator('[data-variant="M"]')).to_have_attribute('aria-pressed', 'true')
+                checks.append(mode + ': exact domestic China CNY route; no import estimates; unknown shipping; M size and original URL; market mutation blocks exit; same-tab exit and restore')
+
                 context.close()
             browser.close()
         assert errors == [], errors

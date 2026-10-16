@@ -1,0 +1,93 @@
+{
+  "source_code": "decathlon_cn",
+  "collected_at": "2026-10-16T02:59:03Z",
+  "verification_method": "manual_public_selected_variant",
+  "offers": [
+    {
+      "offer_id": "decathlon_cn-8969603-M",
+      "source_code": "decathlon_cn",
+      "source_name": "迪卡侬中国官网",
+      "identity": {
+        "brand": "VAN RYSEL",
+        "model": "VAN RYSEL 男士骑行背带短裤 RCR-R 5 - 黑色",
+        "mpn": "8969603",
+        "size": "M - 180/80A",
+        "color": "烟熏黑",
+        "gender": "male"
+      },
+      "name": "VAN RYSEL 男士骑行背带短裤 RCR-R 5 - 黑色",
+      "url": "https://www.decathlon.com.cn/product-detail?dsm_code=367685&model_code=8969603",
+      "image": "https://pixl.decathlon.com.cn/p3043223/k$4140c9f5c953c033f539ba057e40434c/content.jpg",
+      "price": {
+        "amount": "399.90",
+        "currency": "CNY"
+      },
+      "stock": "in_stock",
+      "fetched_at": "2026-10-16T02:58:28Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "中国大陆 CNY 报价",
+      "family_hint": "8969603",
+      "identity_evidence": "迪卡侬中国官网型号 8969603；公开页面明确选中 M - 180/80A 后读取线上库存，仅核实此规格。",
+      "purchase_requirements": [
+        "购买时请在官网重新选择 M - 180/80A / 烟熏黑；其他尺码库存未核实。",
+        "页面显示领券满300减30，预估券后369.90元；须自行领券并确认资格及有效期，未验证实际抵扣。",
+        "官方配送说明：非自行车订单实付满99元顺丰免运费；极速达等方式另计，具体地址及结账条件为准。官网库存可能有时差，请在下单前重新核对。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "scope": "site",
+        "url": "https://www.decathlon.com.cn/help/delivery-method",
+        "checked_at": "2026-10-16T03:09:00Z",
+        "note": "官网说明仅配送中国大陆；非自行车订单实付满99元顺丰免运费，其他配送方式条件不同。未核实具体收货地址，最终运费以结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "中国官网实际付款方式待结账确认。"
+      }
+    },
+    {
+      "offer_id": "decathlon_cn-8987878-M",
+      "source_code": "decathlon_cn",
+      "source_name": "迪卡侬中国官网",
+      "identity": {
+        "brand": "VAN RYSEL",
+        "model": "VAN RYSEL 男女同款迪卡侬 CMA CGM队版复刻版公路骑行服 RCR竞赛系列",
+        "mpn": "8987878",
+        "size": "M",
+        "color": "孔雀蓝",
+        "gender": "unisex"
+      },
+      "name": "VAN RYSEL 男女同款迪卡侬 CMA CGM队版复刻版公路骑行服 RCR竞赛系列",
+      "url": "https://www.decathlon.com.cn/product-detail?dsm_code=355348",
+      "image": "https://pixl.decathlon.com.cn/p3154827/k$0847c4ceacd8c8f51fc26bdc6b51d0b8/content.jpg",
+      "price": {
+        "amount": "399.90",
+        "currency": "CNY"
+      },
+      "stock": "in_stock",
+      "fetched_at": "2026-10-16T02:59:03Z",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "sales_region": "中国大陆 CNY 报价",
+      "family_hint": "8987878",
+      "identity_evidence": "迪卡侬中国官网型号 8987878；公开页面明确选中 M 后读取线上库存，仅核实此规格。",
+      "purchase_requirements": [
+        "购买时请在官网重新选择 M / 孔雀蓝；其他尺码库存未核实。",
+        "页面显示领券满300减30，预估券后369.90元；须自行领券并确认资格及有效期，未验证实际抵扣。",
+        "官方配送说明：非自行车订单实付满99元顺丰免运费；极速达等方式另计，具体地址及结账条件为准。官网库存可能有时差，请在下单前重新核对。"
+      ],
+      "shipping_to_china": {
+        "status": "unknown",
+        "scope": "site",
+        "url": "https://www.decathlon.com.cn/help/delivery-method",
+        "checked_at": "2026-10-16T03:09:00Z",
+        "note": "官网说明仅配送中国大陆；非自行车订单实付满99元顺丰免运费，其他配送方式条件不同。未核实具体收货地址，最终运费以结账为准。"
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "note": "中国官网实际付款方式待结账确认。"
+      }
+    }
+  ]
+}

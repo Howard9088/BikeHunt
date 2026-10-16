@@ -12,7 +12,29 @@ c.catalog=catalog;c.fixture=fixture;
 vm.runInContext('paymentChannels=validatePaymentChannels(catalog);paymentData=validatePaymentData(fixture,paymentChannels);paymentState="ready"',c);
 const clone=x=>JSON.parse(JSON.stringify(x));
 function offer(code,extra={}){const row=catalog.channels.find(x=>x.source_code===code),child=fixture.entries.find(x=>x.source_code===code)?.channels?.[0];return {source_code:code,source_name:row?.merchant_name,sales_region:row?.sales_regions[0],url:child?.scope_evidence_urls[0]||row?.base_url,china_issued_card:{status:'yes'},accepted_card_networks:['Legacy unsupported network'],...extra}}
-assert.equal(catalog.channels.length,35);
+assert.equal(catalog.channels.length,36);
+// The China official store is a separate exact market, never the French team shop.
+function assertChinaStore(data){
+ const channel=catalog.channels.find(r=>r.source_code==='decathlon_cn');
+ assert.deepEqual(channel.sales_regions,['中国大陆 CNY 报价']);
+ assert.deepEqual(channel.merchant_hosts,['www.decathlon.com.cn','decathlon.com.cn']);
+ assert.equal(channel.base_url,'https://www.decathlon.com.cn/');
+ const row=data.entries.find(r=>r.source_code==='decathlon_cn');assert.ok(row);
+ assert.equal(row.scope,'market');assert.equal(row.sales_region,'中国大陆 CNY 报价');
+ assert.deepEqual(row.merchant_hosts,channel.merchant_hosts);
+ assert.deepEqual(row.methods.map(m=>m.method_key).sort(),['cards','china_issued_cards','paypal','apple_pay','google_pay','alipay','wechat_pay','unionpay','bank_transfer_local','gift_cards','instalments'].sort());
+ for(const method of row.methods){
+  assert.equal(method.status,'unknown');assert.equal(method.china_applicability.status,'unknown');
+  assert.equal(method.merchant_evidence_status,'unavailable');assert.deepEqual(method.evidence_urls,[]);
+  assert.equal(method.checked_at,null);assert.ok(method.note.trim());assert.ok(method.account_region_constraints.trim());
+ }
+ assert.ok(data.entries.some(r=>r.source_code==='decathlon'),'The existing French team merchant remains separately covered');
+}
+assertChinaStore(fixture);
+assert.equal(c.paymentPolicy(offer('decathlon_cn')).source_code,'decathlon_cn');
+assert.equal(c.paymentPolicy(offer('decathlon_cn',{url:'https://shop.decathloncmacgmteam.com/'})),null);
+assert.equal(c.paymentPolicy(offer('decathlon_cn',{sales_region:'法国站 EUR 报价'})),null);
+
 for(const channel of catalog.channels){
  const o=offer(channel.source_code),before=JSON.stringify(o),html=c.paymentMethodsMarkup(o);
  assert.ok(c.paymentPolicy(o));assert.equal(c.paymentMethodsFor(o).length,11);
@@ -69,8 +91,8 @@ vm.runInContext('paymentData=null;paymentState="error"',c);html=c.paymentMethods
 // An unavailable payment matrix cannot alter established route restrictions.
 vm.runInContext(fs.readFileSync('web/purchase-readiness.js','utf8').replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.shipping=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));vm.runInContext('readinessData=validateReadinessData(shipping);readinessState="ready"',c);assert.ok(c.readinessContent(offer('maap')).includes('不直邮中国大陆'));assert.ok(!c.paymentFeasibilityMarkup(offer('maap')).includes('Legacy unsupported network'));
 if(!process.argv.includes('--fixtures-only')){
- const production=JSON.parse(fs.readFileSync('web/payment-methods.json','utf8'));c.validatePaymentData(production,catalog);
- assert.equal(production.entries.length,35,'Release must cover all 35 current channels, including zero-offer directories');
+ const production=JSON.parse(fs.readFileSync('web/payment-methods.json','utf8'));c.validatePaymentData(production,catalog);assertChinaStore(production);
+ assert.equal(production.entries.length,36,'Release must cover all 36 current channels, including zero-offer directories');
  for(const channel of catalog.channels)assert.ok(production.entries.some(r=>r.source_code===channel.source_code&&(r.scope==='merchant'||channel.sales_regions.includes(r.sales_region))));
 }
 

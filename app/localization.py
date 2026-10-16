@@ -61,11 +61,11 @@ def category_of(name: str) -> str:
         return "helmets"
     if "shoe" in text or "quoc" in text:
         return "shoes"
-    if "bib" in text:
+    if "bib" in text or "背带短裤" in text or "背带骑行裤" in text:
         return "bibs"
     if "jacket" in text or "vest" in text or "gilet" in text:
         return "jackets"
-    if "jersey" in text or "race suit" in text:
+    if "jersey" in text or "race suit" in text or "骑行服" in text:
         return "jerseys"
     return "accessories"
 

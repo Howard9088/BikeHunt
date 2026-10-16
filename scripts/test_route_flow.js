@@ -132,6 +132,34 @@ function testOfficialRouteHelpIsExactAndSameTab(){
  const h=harness();h.open();const links=h.nodes.filter(node=>node.dataset.routeHelp);assert.equal(links.length,4);
  for(const link of links){const event={target:{closest:()=>link},type:'click',button:0,preventDefault(){this.prevented=true}},url=link.getAttribute('href');h.setAnswer(false);h.c.guardRouteHelpExit(event);assert.ok(event.prevented);const before=h.navigated.length;h.setAnswer(true);h.c.guardRouteHelpExit({...event,type:'auxclick',button:1});assert.equal(h.navigated.length,before+1);assert.equal(h.navigated.at(-1),url);link.setAttribute('href',url+'?tracking=1');h.c.guardRouteHelpExit(event);assert.equal(h.navigated.length,before+1);link.setAttribute('href',url);h.setAnswer(()=>{link.setAttribute('href','https://evil.example/');return true});h.c.guardRouteHelpExit(event);assert.equal(h.navigated.length,before+1)}
 }
-async function main(){for(const test of [testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testSharedConfirmationOnlyAtFinalSameTabExit,testReferenceOnlyAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: eight production-JavaScript regression groups passed.');}
+
+function domesticQuote(){return quote('decathlon_cn',{source_name:'迪卡侬中国官网',sales_region:'中国大陆 CNY 报价',url:'https://www.decathlon.com.cn/p/test-jersey?size=M',price:{amount:'399.90',currency:'CNY'}})}
+async function testDomesticScopeCostsAndExit(){
+ const h=harness(),q=domesticQuote(),d=detail(q);d.identity.size='M';
+ assert.deepEqual(statuses(h,q),{domestic:'conditional'});assert.equal(h.c.routeOptions(q)[0].total,null);
+ assert.ok(h.c.routeOptions(q)[0].costs.some(([label,value])=>label==='国内运费'&&value==='待确认'));
+ assert.equal(h.c.routeOptions(quote('visma',{price:{amount:'399.90',currency:'CNY'}})).length,3,'CNY never means domestic');
+ for(const extra of [{sales_region:''},{sales_region:'海外 CNY 报价'},{price:{amount:399.90,currency:'USD'}},{price:{amount:null,currency:'CNY'}},
+   ...['https://www.decathlon.com.cn.evil.test/p','https://evil.test/p','http://www.decathlon.com.cn/p','https://user@www.decathlon.com.cn/p','https://www.decathlon.com.cn:444/p'].map(url=>({url}))]){
+   const bad=structuredClone(q);Object.assign(bad.offer,extra);assert.equal(h.c.routeOptions(bad).length,0);
+ }
+ h.open(d,{route:'direct'});assert.equal(h.c.guideContext.route,null);assert.equal(h.elements.get('routeContinue').disabled,true);
+ assert.equal((h.html.match(/class="route-card"/g)||[]).length,1);
+ for(const term of ['中国进口税','清关','海外转运','香港','landed-cost-fixture','route-hk-notes'])assert.ok(!h.html.includes(term),term);
+ assert.ok(h.html.includes('CNY 399.90'));assert.ok(h.html.includes('尺码 M'));
+ h.c.selectPurchaseRoute('direct');assert.equal(h.c.guideContext.route,null);
+ h.c.selectPurchaseRoute('domestic');h.c.continuePurchaseRoute();
+ assert.ok(h.html.includes('id="registrationInterstitial"'));assert.ok(h.html.includes('登录或注册'));assert.ok(!h.html.includes('Account / Sign in'));
+ const saved=structuredClone(h.c.history.state.bikehuntPurchase);assert.equal(saved.route,'domestic');
+ h.setAnswer(false);h.c.continueRegistrationExit();assert.equal(h.navigated.length,0);assert.equal(h.c.guideContext.route,'domestic');
+ h.c.continuePurchaseRoute();h.setAnswer(true);h.c.continueRegistrationExit();assert.deepEqual(h.navigated,[q.offer.url]);
+ const restored=harness();restored.c.history.state.bikehuntPurchase=saved;restored.setResult(structuredClone(d));await restored.c.restorePurchaseState();assert.equal(restored.c.guideContext.route,'domestic');assert.ok(restored.html.includes('registrationInterstitial'));
+ for(const mutate of [g=>g.quote.offer.sales_region='其他市场',g=>g.quote.offer.source_code='decathlon',g=>g.quote.offer.url='https://evil.test/p',g=>g.quote.offer.price.amount='400',g=>g.quote.offer.price.currency='USD',g=>g.quote.offer.stock='out_of_stock']){
+   const x=harness();x.open(detail(domesticQuote()));x.c.selectPurchaseRoute('domestic');x.c.continuePurchaseRoute();x.setAnswer(()=>{mutate(x.c.guideContext);return true});x.c.continueRegistrationExit();assert.equal(x.navigated.length,0);
+ }
+ const changed=harness();changed.c.history.state.bikehuntPurchase=saved;const changedDetail=structuredClone(d);changedDetail.offers[0].offer.sales_region='其他市场';changed.setResult(changedDetail);await changed.c.restorePurchaseState();assert.equal(changed.c.guideContext.invalidated,true);assert.equal(changed.elements.get('routeContinue').disabled,true);
+}
+
+async function main(){for(const test of [testDomesticScopeCostsAndExit,testThreeScopedRoutesAndHonestCosts,testRouteSelectionPrecedesRegistration,testSharedConfirmationOnlyAtFinalSameTabExit,testReferenceOnlyAndAmazonRegistration,testHistoryRestoresExactVerifiedSelection,testPublicationChangeDisablesBeforeRechecking,testObservedChangesCannotBeOverruledOrResurrectClosedStages,testOfficialRouteHelpIsExactAndSameTab]){await test();console.log('PASS '+test.name)}console.log('Ordered purchase flow: nine production-JavaScript regression groups passed.');}
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1});
 module.exports={harness,quote,detail,NOW};

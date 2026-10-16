@@ -614,5 +614,27 @@
       "status": "unknown",
       "note": "中国大陆发行信用卡可用性尚未核实。"
     }
+  },
+  {
+    "code": "decathlon_cn",
+    "name": "迪卡侬中国官网",
+    "brand": "VAN RYSEL",
+    "type": "brand_official",
+    "base_url": "https://www.decathlon.com.cn",
+    "currency": "CNY",
+    "market": "CN",
+    "sales_region": "中国大陆 CNY 报价",
+    "priority": 0,
+    "enabled": true,
+    "collection_strategy": "manual_verified_public_variant",
+    "official_evidence_url": "https://static-econnected.decathlon.com.cn/econnected/privacy.html",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "国内订单配送范围及运费以收货地址和结账页为准；未核实具体地址。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "实际可用付款方式请在中国官网结账页确认。"
+    }
   }
 ]

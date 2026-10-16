@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-15-source-market-audit",
+  "revision": "2026-10-16-decathlon-cn-market",
   "channels": [
     {
       "source_code": "maap",
@@ -748,6 +748,27 @@
       ],
       "base_url": "https://xds-astana.com/en/",
       "identity_note": "尚未发现可核实购买商城。官网入口尚非已核实交易商家。"
+    },
+    {
+      "source_code": "decathlon_cn",
+      "merchant_name": "迪卡侬中国官网",
+      "sales_regions": [
+        "中国大陆 CNY 报价"
+      ],
+      "merchant_hosts": [
+        "www.decathlon.com.cn",
+        "decathlon.com.cn"
+      ],
+      "reference_hosts": [
+        "www.decathlon.com.cn",
+        "decathlon.com.cn",
+        "static-econnected.decathlon.com.cn"
+      ],
+      "directory_codes": [
+        "decathlon_cn"
+      ],
+      "base_url": "https://www.decathlon.com.cn/",
+      "identity_note": "迪卡侬中国官网，官方隐私政策明确其中国网站身份。与 Decathlon CMA CGM 车队商城分开；付款方式请在中国站结账时确认。"
     }
   ]
 }

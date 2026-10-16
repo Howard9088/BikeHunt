@@ -107,6 +107,21 @@ assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.raph
 assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.rapha.cc',sourceLabel:'官网进入链接'},'castelli'),false);
 install(data);
 
+
+const maapCoverage=structuredClone(data);maapCoverage.entries=[structuredClone(data.entries.find(entry=>entry.sourceCode==='visma'))];maapCoverage.entries[0].sourceCode='maap';for(const frame of maapCoverage.entries[0].frames)frame.sourceUrl='https://maap.cc/';
+install(maapCoverage);
+const maapPublic=context.registrationEntry('maap',null,'public_account');
+assert.ok(maapPublic?.status==='verified');
+const maapGuide=context.registrationGuideMarkup('maap','US');
+assert.ok(maapGuide.includes('下方提供公开账户页图解，具体市场页面可能不同'));
+assert.ok(!maapGuide.includes('本商家／市场暂时没有已核实的真实注册截图'));
+assert.equal(context.registrationEntry('maap','US'),null,'Public-account coverage must not become verified market coverage');
+const withdrawnPublic=structuredClone(maapCoverage);const withdrawnMaap=withdrawnPublic.entries.find(entry=>entry.sourceCode==='maap'&&entry.scope==='public_account');
+withdrawnMaap.status='needs_review';withdrawnMaap.reviewReason='Layout changed';install(withdrawnPublic);
+assert.ok(context.registrationGuideMarkup('maap','US').includes('本商家／市场暂时没有已核实的真实注册截图'));
+assert.equal(context.registrationPublicAccountMarkup('maap'),'');
+install(data);
+
 (async()=>{
  response=data;await context.loadRegistrationGuides();assert.equal(requests.length,1);assert.equal(requests[0][1].cache,'no-store');assert.ok(requests[0][0].startsWith('https://bikehunt.example/BikeHunt/web/registration-guides.json?check='));
  assert.ok(context.registrationPublicAccountMarkup('visma').includes('<img'));

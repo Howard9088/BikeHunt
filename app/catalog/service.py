@@ -13,7 +13,7 @@ from app.browse_taxonomy import browse_classification
 from app.public_visibility import public_product
 from app.localization import category_of, title_zh
 from app.fit import garment_gender
-from app.landed import convert_money, estimate_landed_cost
+from app.landed import convert_money, estimate_landed_cost, is_domestic_official_offer
 
 QUOTE_MAX_AGE_SECONDS = 86400
 STOCK_MAX_AGE_SECONDS = 3600
@@ -65,10 +65,12 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
     """所有成本按传入的同一快照换算，缺项保持 None。"""
     landed = estimate_landed_cost(offer, fx, now)
     costs = {component.key: component for component in landed.components}
-    product, shipping, tax = (costs[key].cny for key in ("product", "shipping", "tax"))
+    product, shipping, tax = (costs[key].cny if key in costs else None
+                              for key in ("product", "shipping", "tax"))
+    domestic = is_domestic_official_offer(offer)
     total = landed.quoted_total_cny
     reasons: list[str] = []
-    for check, label in ((offer.shipping_to_china, "直邮中国"),):
+    for check, label in ((offer.shipping_to_china, "境内配送" if domestic else "直邮中国"),):
         if check.status != "yes":
             reasons.append(label + ("不支持" if check.status == "no" else "待核实"))
         elif not 0 <= _age(check.checked_at, now) <= EVIDENCE_MAX_AGE_SECONDS:
@@ -103,10 +105,12 @@ def compare_offer(offer: Offer, fx: FxSnapshot, now: datetime) -> ComparedOffer:
         reasons.append("商品币种汇率缺失")
     if shipping is None:
         reasons.append("中国运费待确认" if offer.shipping is None else "运费币种汇率缺失")
-    if tax is None:
+    if tax is None and not domestic:
         reasons.append("中国进口税包含／预缴依据待核实" if offer.import_tax_handling != "unknown"
                        else "税费待确认" if offer.tax is None else "税费币种汇率缺失")
-    if not landed.complete and all(value is not None for value in (product, shipping, tax)):
+    if domestic and not landed.complete:
+        reasons.append("境内配送与结算总额待确认")
+    if not domestic and not landed.complete and all(value is not None for value in (product, shipping, tax)):
         reasons.append("运费与清关等总费用待确认")
     if fx.stale:
         reasons.append("汇率为过期缓存")
@@ -207,7 +211,9 @@ class ComparisonCatalog:
         if selected is None:
             raise KeyError(variant_id)
         compared = [compare_offer(x, self.fx, self.now) for x in selected]
-        compared.sort(key=lambda x: (not x.eligible,
+        compared.sort(key=lambda x: (not self.available(x.offer),
+                                     not is_domestic_official_offer(x.offer),
+                                     not x.eligible,
                                      x.total_cny if x.eligible else Decimal("Infinity"),
                                      x.product_cny if x.product_cny is not None else Decimal("Infinity"),
                                      x.offer.source_code, x.offer.offer_id))
@@ -248,6 +254,11 @@ class ComparisonCatalog:
             discounted = [x for x in in_stock if self.discounted(x.offer)]
             reference = (min(discounted, key=lambda x: (x.product_cny if x.product_cny is not None else Decimal("Infinity"), x.offer.offer_id))
                          if discounted else recommended or min(references,key=lambda x: x.product_cny if x.product_cny is not None else Decimal("Infinity")))
+            domestic_references = [x for x in in_stock if is_domestic_official_offer(x.offer)]
+            if domestic_references:
+                reference = min(domestic_references, key=lambda x: (
+                    x.product_cny if x.product_cny is not None else Decimal("Infinity"),
+                    x.offer.offer_id))
             reference_variant = next(v for v in variants if any(x.offer_id == reference.offer.offer_id for x in v))
             sources = {x.source_code for v in variants for x in v}
             card = ProductCard(

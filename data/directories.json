@@ -1,6 +1,18 @@
 {
   "brands": [
     {
+      "code": "decathlon_cn",
+      "name": "Decathlon China / VAN RYSEL",
+      "name_zh": "迪卡侬中国官网 · VAN RYSEL",
+      "official_url": "https://www.decathlon.com.cn/",
+      "shop_url": "https://www.decathlon.com.cn/",
+      "status": "official_link_found",
+      "shop_evidence_url": "https://static-econnected.decathlon.com.cn/econnected/privacy.html",
+      "source_codes": [
+        "decathlon_cn"
+      ]
+    },
+    {
       "code": "maap",
       "name": "MAAP",
       "name_zh": "MAAP 骑行服",

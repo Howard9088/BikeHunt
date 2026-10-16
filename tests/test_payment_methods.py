@@ -15,19 +15,47 @@ class PaymentMethodsTests(unittest.TestCase):
         self.fixture = json.loads((ROOT / 'tests/fixtures/payment-methods.json').read_text())
 
     def test_fixture_and_full_source_registry(self):
-        self.assertEqual(len(self.catalog['channels']), 35)
+        self.assertEqual(len(self.catalog['channels']), 36)
         validate_payment_methods(self.fixture, self.catalog, require_complete=True)
         for row in self.fixture['entries']:
             self.assertTrue(REQUIRED_METHODS <= {x['method_key'] for x in row['methods']})
 
     def test_actual_release_covers_all_channels_and_every_required_category(self):
         data = read_payment_methods(ROOT)
-        self.assertEqual(len(data['entries']), 35)
+        self.assertEqual(len(data['entries']), 36)
         for row in data['entries']:
             self.assertTrue(REQUIRED_METHODS <= {m['method_key'] for m in row['methods']})
             for method in row['methods']:
                 self.assertTrue(method['note'].strip())
                 self.assertTrue(method['account_region_constraints'].strip())
+
+    def test_china_official_store_is_exact_and_payment_methods_remain_unknown(self):
+        channel = next(c for c in self.catalog['channels'] if c['source_code'] == 'decathlon_cn')
+        self.assertEqual(channel['sales_regions'], ['中国大陆 CNY 报价'])
+        self.assertEqual(channel['merchant_hosts'], ['www.decathlon.com.cn', 'decathlon.com.cn'])
+        self.assertEqual(channel['base_url'], 'https://www.decathlon.com.cn/')
+        for data in (self.fixture, read_payment_methods(ROOT)):
+            row = next(r for r in data['entries'] if r['source_code'] == 'decathlon_cn')
+            self.assertEqual(row['scope'], 'market')
+            self.assertEqual(row['sales_region'], '中国大陆 CNY 报价')
+            self.assertEqual(row['merchant_hosts'], channel['merchant_hosts'])
+            self.assertEqual(len(row['methods']), 11)
+            self.assertEqual({m['method_key'] for m in row['methods']}, REQUIRED_METHODS)
+            for method in row['methods']:
+                self.assertEqual(method['status'], 'unknown')
+                self.assertEqual(method['china_applicability']['status'], 'unknown')
+                self.assertEqual(method['merchant_evidence_status'], 'unavailable')
+                self.assertEqual(method['evidence_urls'], [])
+                self.assertIsNone(method['checked_at'])
+                self.assertTrue(method['note'].strip())
+                self.assertTrue(method['account_region_constraints'].strip())
+            self.assertTrue(any(r['source_code'] == 'decathlon' for r in data['entries']))
+        for changes in ({'merchant_hosts': ['shop.decathloncmacgmteam.com']},
+                        {'sales_region': '法国站 EUR 报价'}):
+            invalid = copy.deepcopy(self.fixture)
+            next(r for r in invalid['entries'] if r['source_code'] == 'decathlon_cn').update(changes)
+            with self.assertRaises(ValueError):
+                validate_payment_methods(invalid, self.catalog, require_complete=True)
 
     def test_missing_unknown_blank_and_undated_claims_are_rejected(self):
         for mutation in (
