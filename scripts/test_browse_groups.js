@@ -4,6 +4,7 @@ const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('we
 const data=JSON.parse(fs.readFileSync('data/road_equipment_references.json'));
 const groups=[['clothing','骑行服饰'],['cleat_shoes','锁鞋'],['helmets','头盔'],['other','配件与周边']].map(([code,name])=>({code,name}));
 function section(source,start,end){return source.slice(source.indexOf(start),end?source.indexOf(end,source.indexOf(start)):undefined)}
+function freshCard(row){return {stock_state:'in_stock',reference_stock:'in_stock',reference_collection_state:'current',reference_data_kind:'live_snapshot',fetched_at:new Date().toISOString(),reference_offer_id:'fixture-offer',reference_variant_id:'M',reference_source:'Fixture',reference_url:'https://merchant.example/item',reference_price:{amount:10,currency:'USD'},reference_cny:70,...row};}
 function harness(){
  const classes=()=>({values:new Set(),add(v){this.values.add(v)},remove(v){this.values.delete(v)},contains(v){return this.values.has(v)},toggle(v,on){if(on)this.add(v);else this.remove(v)}});
  const genderButtons=['all','male','female'].map(gender=>({dataset:{gender},setAttribute(k,v){this[k]=v}}));
@@ -13,6 +14,7 @@ function harness(){
  vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
  vm.runInContext(section(profile,'function profileMatches(','function saveProfile('),c);
  vm.runInContext(section(gallery,'const e=value','function cny('),c);
+ vm.runInContext(section(gallery,'function inventoryVerified(','function offerAvailable('),c);
  vm.runInContext(section(gallery,'function featuredBrowse(','function render('),c);
  vm.runInContext(section(flows,'function saveBrowseState(','function navigate('),c);
  vm.runInContext(section(flows,'function chooseCategory(','function renderDirectory('),c);
@@ -34,7 +36,7 @@ function testPublicProjectionRejectsOldPayload(){
  const malformed={id:4,event_key:'bad',category:'frames'};stale.updates.items=[null,malformed];c.applyPublicVisibility(stale);assert.equal(stale.updates.items.length,2,'Invalid event rows must reach the existing authoritative snapshot validator');assert.equal(stale.updates.items[0],null);assert.equal(stale.updates.items[1],malformed);stale.updates.items=null;c.applyPublicVisibility(stale);assert.equal(stale.updates.items,null,'Invalid snapshot shape is not repaired by visibility projection');
 }
 function testGroupLeafSourceSearchAndReset(){
- const {c,elem,groupButtons,productButton}=harness();c.items=[{name:'Jersey',brand:'Test',category:'jerseys',category_group:'clothing',source_codes:['team']},{name:'Bottle',brand:'Test',category:'accessories',category_group:'other',source_codes:['team']},{name:'Bottle',brand:'Other',category:'accessories',category_group:'other',source_codes:['other']}];
+ const {c,elem,groupButtons,productButton}=harness();c.items=[{name:'Jersey',brand:'Test',category:'jerseys',category_group:'clothing',source_codes:['team']},{name:'Bottle',brand:'Test',category:'accessories',category_group:'other',source_codes:['team']},{name:'Bottle',brand:'Other',category:'accessories',category_group:'other',source_codes:['other']}].map(freshCard);
  assert.equal(groups.length,4);assert.ok(!fs.readFileSync('web/index.html','utf8').includes('id="categoryNav"'));
  c.chooseCategoryGroup('road_equipment');assert.equal(c.activeCategoryGroup,null);assert.equal(c.activeSource,'team');assert.equal(c.visibleItems().length,2);assert.equal(elem('browseLabel').textContent,'车队');assert.ok(groupButtons.every(button=>button['aria-pressed']==='false')); 
  c.chooseCategoryGroup('other');assert.equal(c.visibleItems().length,1);assert.equal(elem('browseLabel').textContent,'车队 · 配件与周边');
@@ -66,7 +68,7 @@ function testResearchSeparationFilteringAndExactGuard(){
 }
 function testStalePayloadAndHiddenIdRejection(){
  const {c,elem}=harness();c.activeSource=null;c.activeCategoryGroup=null;
- c.items=[{product_id:'bike',name:'Road Bike',brand:'Test',category:'road_bikes',category_group:'road_equipment',source_codes:['canyon'],featured:true},{product_id:'frame',name:'Frameset',brand:'Test',category:'frames',category_group:'other',source_codes:['canyon'],featured:true},{product_id:'group-only',name:'Old model',brand:'Test',category:'accessories',category_group:'road_equipment',source_codes:['canyon'],featured:true},{product_id:'accessory',name:'Bag',brand:'Test',category:'accessories',category_group:'other',source_codes:['canyon'],featured:true}];
+ c.items=[{product_id:'bike',name:'Road Bike',brand:'Test',category:'road_bikes',category_group:'road_equipment',source_codes:['canyon'],featured:true},{product_id:'frame',name:'Frameset',brand:'Test',category:'frames',category_group:'other',source_codes:['canyon'],featured:true},{product_id:'group-only',name:'Old model',brand:'Test',category:'accessories',category_group:'road_equipment',source_codes:['canyon'],featured:true},{product_id:'accessory',name:'Bag',brand:'Test',category:'accessories',category_group:'other',source_codes:['canyon'],featured:true}].map(freshCard);
  for(const includeUnverified of [false,true])assert.deepEqual(Array.from(c.visibleItems(includeUnverified),row=>row.product_id),['accessory']);
  c.activeSource='canyon';elem('q').value='';assert.deepEqual(Array.from(c.visibleItems(),row=>row.product_id),['accessory']);elem('q').value='Road Bike';assert.equal(c.visibleItems(true).length,0);elem('q').value='';
  elem('roadReferenceInline').contains=()=>true;
@@ -81,15 +83,16 @@ function testStalePayloadAndHiddenIdRejection(){
 function testInlineFallbackFilteringAndLiveGuard(){
  const {c,elem}=harness();c.activeSource=null;c.activeCategoryGroup='other';
  assert.equal(c.renderEmptyReferences(),false,'Featured never falls back to unverified stock');
- c.activeSource='canyon';
+ c.activeSource='canyon';assert.equal(c.renderEmptyReferences(),false,'Channel pages never fall back to unverified stock');
+ c.activeSource=null;elem('q').value='Midloader';
  assert.equal(c.renderEmptyReferences(),true);let html=c.gallery.innerHTML;
  assert.equal((html.match(/data-road-reference-card=/g)||[]).length,1);assert.ok(html.includes('id="roadReferenceInline"'));
  assert.ok(html.indexOf('data-road-reference-card=')<html.indexOf('road-brand-entrances'));
  assert.ok(html.includes('价格观察时间未记录'));assert.ok(html.includes('记录现价'));assert.ok(html.includes('记录原价'));assert.ok(!html.includes('class="card'));
  assert.ok(c.gallery.classList.contains('reference-feed'));assert.ok(c.document.body.classList.contains('reference-feed-visible'));
- c.activeSource='team';c.renderEmptyReferences();assert.equal((c.gallery.innerHTML.match(/data-road-reference-card=/g)||[]).length,0,'Team source must not leak unrelated research');
- c.activeSource='canyon';c.renderEmptyReferences();assert.equal((c.gallery.innerHTML.match(/data-road-reference-card=/g)||[]).length,1);
- elem('q').value='Frameset';c.renderEmptyReferences();assert.equal((c.gallery.innerHTML.match(/data-road-reference-card=/g)||[]).length,0);
+ c.activeSource='team';assert.equal(c.renderEmptyReferences(),false,'Team source must not leak unrelated research');
+ c.activeSource=null;c.renderEmptyReferences();assert.equal((c.gallery.innerHTML.match(/data-road-reference-card=/g)||[]).length,1);
+ elem('q').value='Frameset';assert.equal(c.renderEmptyReferences(),true);assert.equal((c.gallery.innerHTML.match(/data-road-reference-card=/g)||[]).length,0);
  elem('q').value='Midloader';c.renderEmptyReferences();assert.equal((c.gallery.innerHTML.match(/data-road-reference-card=/g)||[]).length,1);
  elem('roadReferenceInline').contains=()=>true;
  const row=c.roadReferenceData.products.find(r=>r.id==='canyon-9102039'),link={isConnected:true,dataset:{roadReference:'product:'+row.id},getAttribute:()=>row.url};
@@ -100,7 +103,7 @@ function testInlineFallbackFilteringAndLiveGuard(){
  assert.ok(c.panel.includes('id="roadReferenceDetail"'));assert.ok(c.panel.includes('data-road-reference="product:'+row.id+'"'));
  assert.equal(c.allowedRoadReference(link),row,'Unknown stock allows a guarded reference visit after the guide');
  c.guardRoadReferenceExit({type:'click',target:{closest:()=>link},preventDefault(){}});assert.equal(c.exit.kind,'reference');assert.ok(c.exit.validate());
- c.exit.onConfirm();assert.equal(c.history.state.bikehuntBrowse.query,'Midloader');assert.equal(c.history.state.bikehuntBrowse.source,'canyon');assert.equal(c.history.state.bikehuntBrowse.categoryGroup,'other');
+ c.exit.onConfirm();assert.equal(c.history.state.bikehuntBrowse.query,'Midloader');assert.equal(c.history.state.bikehuntBrowse.source,null);assert.equal(c.history.state.bikehuntBrowse.categoryGroup,'other');
  row.stock='out_of_stock';assert.equal(c.exit.validate(),false,'Stock changes invalidate an already-open final gate');assert.ok(c.roadReferenceDetailMarkup(row).includes('已确认售罄'));assert.ok(!c.roadReferenceDetailMarkup(row).includes('data-road-reference="product:'+row.id+'"'));
  row.stock='unknown';assert.equal(c.allowedRoadReference(link),row);elem('q').value='different';assert.equal(c.allowedRoadReference(link),null,'Current filters revalidate the link');elem('q').value='Midloader';
  c.activeCategoryGroup='road_equipment';assert.equal(c.allowedRoadReference(link),null,'Accessory link cannot escape the current group');c.activeCategoryGroup='other';
@@ -140,5 +143,25 @@ function testNewBrandPaymentsStayUnknown(){
  c.channels=JSON.parse(fs.readFileSync('web/payment-channels.json'));c.payments=JSON.parse(fs.readFileSync('tests/fixtures/payment-methods.json'));vm.runInContext('paymentChannels=validatePaymentChannels(channels);paymentData=validatePaymentData(payments,paymentChannels);paymentState="ready"',c);
  for(const brand of data.brands){const offer={source_code:brand.code,url:brand.url,sales_region:'US',china_issued_card:{status:'yes'},accepted_card_networks:['Visa']};assert.equal(c.paymentPolicy(offer),null);assert.equal(c.paymentMethodsFor(offer).length,11);assert.ok(c.paymentMethodsFor(offer).every(row=>row.status==='unknown'));assert.equal(c.paymentSummary(offer).status,'unknown');const html=c.paymentDirectoryContent({...brand,name_zh:brand.name,official_url:brand.url});assert.ok(html.includes('这家商店的身份与支付方式尚未确认，请先向品牌核实。'));assert.ok(!html.includes('尚未绑定'));assert.ok(html.includes('中国发行卡：待核实'))}
 }
-for(const test of [testPublicProjectionRejectsOldPayload,testGroupLeafSourceSearchAndReset,testGroupHistoryAndOldState,testResearchSeparationFilteringAndExactGuard,testStalePayloadAndHiddenIdRejection,testInlineFallbackFilteringAndLiveGuard,testEquipmentGenderIndependence,testReferenceGuideAndCurrencySafety,testTrekAndSpecializedRestrictiveFallback,testNewBrandPaymentsStayUnknown]){test();console.log('PASS '+test.name)}
-console.log('Four public groups and accessory-reference tests: ten groups passed.');
+function testChannelDirectFreshStockWithoutFeaturedCap(){
+ const {c,elem}=harness();
+ c.items=[1,2,3].map(i=>freshCard({product_id:'fresh-'+i,name:'Jersey '+i,brand:'Test',category:'jerseys',category_group:'clothing',source_codes:['team']}));
+ for(const [id,overrides] of [['unknown',{stock_state:'unknown'}],['sold',{stock_state:'out_of_stock'}],['expired',{fetched_at:'2000-01-01T00:00:00Z'}],['retained',{reference_collection_state:'retained'}]]){
+  c.items.push(freshCard({product_id:id,name:id,brand:'Test',category:'jerseys',category_group:'clothing',source_codes:['team'],...overrides}));
+ }
+ c.activeCategoryGroup='other';elem('q').value='old query';
+ vm.runInContext(section(flows,'function openSource(','async function startGuide('),c);
+ c.openSource('team');assert.equal(c.activeSource,'team');assert.equal(c.activeTab,'products');assert.equal(c.activeCategoryGroup,null);assert.equal(elem('q').value,'');assert.equal(c.panel,undefined,'Channel navigation never opens an interstitial');
+ assert.deepEqual(Array.from(c.visibleItems(),p=>p.product_id),['fresh-1','fresh-2','fresh-3'],'All fresh channel products are shown without the homepage cap');
+ assert.equal(c.renderEmptyReferences(),false,'No historical fallback on a channel');
+ const shared=freshCard({product_id:'shared',name:'Shared Jersey',brand:'Test',source_codes:['team','other'],channel_quotes:{}});
+ const own=freshCard({...shared,reference_source:'Team shop',reference_offer_id:'team-offer',reference_price:{amount:50,currency:'USD'},reference_cny:350,channel_quotes:{}});
+ shared.channel_quotes.team=own;
+ assert.equal(c.channelCard(shared,'team').reference_cny,350,'Source price is not the global cheapest quote');
+ assert.equal(c.channelCard(shared,'other'),null,'Another shop stocking a product never proves this shop has it');
+ assert.equal(c.channelCard({...shared,channel_quotes:undefined},'team'),null,'Old ambiguous multi-source cards fail closed');
+
+ assert.match(fs.readFileSync('web/index.html','utf8'),/<details id="channelInfo" class="channel-info" hidden>/);
+}
+for(const test of [testChannelDirectFreshStockWithoutFeaturedCap,testPublicProjectionRejectsOldPayload,testGroupLeafSourceSearchAndReset,testGroupHistoryAndOldState,testResearchSeparationFilteringAndExactGuard,testStalePayloadAndHiddenIdRejection,testInlineFallbackFilteringAndLiveGuard,testEquipmentGenderIndependence,testReferenceGuideAndCurrencySafety,testTrekAndSpecializedRestrictiveFallback,testNewBrandPaymentsStayUnknown]){test();console.log('PASS '+test.name)}
+console.log('Four public groups and accessory-reference tests: eleven groups passed.');

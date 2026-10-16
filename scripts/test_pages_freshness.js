@@ -965,8 +965,35 @@ async function testSchema2HungStatusSharesInflightAndStillExpires() {
   assert.equal(h.events.length, 3);
 }
 
+async function testSourceQuotesBindIdentityAndExpire(){
+ const payload=snapshot();
+ for(const card of payload.catalog.items){
+  const family=payload.details[card.product_id],detail=family.variants[family.default],q=detail.offers[0],o=q.offer;
+  Object.assign(o,{source_code:'merchant',source_name:'Merchant',collection_state:'current',data_kind:'live_snapshot',price:{amount:'10',currency:'EUR'},original_price:null,identity:{size:'M',color:'Red'}});
+  q.product_cny='75.00';
+  Object.assign(card,{source_codes:['merchant'],reference_offer_id:o.offer_id,reference_variant_id:detail.variant_id,
+   reference_price:o.price,reference_original_price:null,reference_cny:q.product_cny,reference_source:o.source_name,
+   reference_url:o.url,reference_size:'M',reference_color:'Red',reference_price_valid_until:null,
+   reference_data_kind:'live_snapshot',reference_collection_state:'current',reference_stock:'in_stock',fetched_at:o.fetched_at});
+  card.channel_quotes={merchant:{...card,channel_quotes:{}}};
+ }
+ const release=v2Publication(payload),h=await harness(payload,{release});
+ let catalog=await h.request('/api/catalog');
+ assert.equal(catalog.items[0].channel_quotes.merchant.reference_stock,'in_stock');
+ h.setRelease(heartbeat(release,START+60000));h.setNow(START+60000);await h.poll();
+ catalog=await h.request('/api/catalog');
+ assert.equal(catalog.items[0].channel_quotes.merchant.fetched_at,new Date(START+60000).toISOString());
+ h.setOffline(true);h.setNow(START+3660001);await h.poll();catalog=await h.request('/api/catalog');
+ assert.equal(catalog.items[0].channel_quotes.merchant.reference_stock,'unknown');
+ assert.equal(catalog.items[0].channel_quotes.merchant.available_sizes.length,0);
+ const wrong=structuredClone(payload);wrong.catalog.items[0].source_codes.push('wrong');
+ wrong.catalog.items[0].channel_quotes.wrong=wrong.catalog.items[0].channel_quotes.merchant;
+ const invalid=await harness(wrong,{release:v2Publication(wrong),expectInitialFailure:true});
+ assert.ok(invalid.initialError,'A source mapping cannot reuse another merchant offer');
+}
+
 async function main() {
-  const tests = [testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
+  const tests = [testSourceQuotesBindIdentityAndExpire,testInitialSnapshotBypassesBrowserCache, testCachedApiRechecksFxAndEligibility, testFxAgeDateAndTimezoneBoundaries,
     testInventoryAndColorsExpireTogether, testSamePublicationNotifiesOnFreshnessChanges,
     testPublicationCursorNeverMovesBackwards, testSoldOutAndFailedRefreshInvalidateActions,
     testStockTimestampBoundariesFailClosed, testOfflinePollStillExpiresStock,

@@ -372,9 +372,9 @@ def check_browse_state(page):
     expect(page.locator('[data-category-group=other]')).to_have_attribute('aria-pressed', 'true')
     expect(page.locator('[data-category]')).to_have_count(0)
     assert page.evaluate("activeCategory === 'all'")
-    expect(page.locator('#browseLabel')).to_contain_text('Canyon')
+    expect(page.locator('#browseLabel')).to_contain_text('搜索结果')
     inline_cards(page, 1)
-    assert page.evaluate("activeSource === 'canyon' && activeTab === 'products'")
+    assert page.evaluate("activeSource === null && activeTab === 'products'")
 
 
 def main():
@@ -443,11 +443,18 @@ def main():
                 page.locator('[data-category-group=other]').click()
                 expect(page.locator('#grid .card')).to_have_count(0)
                 expect(page.locator('#grid')).not_to_contain_text('Stamp Hoodie')
-                # Hoodies belong to clothing; browse research in its merchant scope.
+                # A channel without verified stock must not fall back to research references.
                 page.locator('[data-tab=brands]').click()
                 page.locator('[data-source=canyon]').click()
-                page.locator('#sourceProducts').click()
-                expect(page.locator('[data-category-group=other]')).to_have_attribute('aria-pressed', 'true')
+                expect(page.locator('#grid .card,#roadReferenceInline')).to_have_count(0)
+                expect(page.locator('#grid')).to_contain_text('该渠道暂无已核实有货的商品')
+                expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
+                expect(page.locator('#channelInfo')).to_be_visible()
+                assert not page.locator('#channelInfo').evaluate('el => el.open')
+                # Historical URL, FX and purchase safety remain tested via explicit global research.
+                page.locator('[data-tab=products]').click()
+                page.locator('[data-category-group=other]').click()
+                page.locator('#q').fill('Midloader')
                 inline = inline_cards(page, 1)
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
                 expect(inline).to_contain_text('Canyon Midloader')
@@ -485,20 +492,24 @@ def main():
                 page.locator('#q').fill('no matching reference')
                 inline_cards(page, 0)
                 page.locator('#clear').click()
+                expect(page.locator('#roadReferenceInline,#historicalDiscountReferences')).to_have_count(0)
+                page.locator('#q').fill('Midloader')
                 inline_cards(page, 1)
                 expect(page.locator('[data-category]')).to_have_count(0)
                 check_fx_states(page, state)
                 check_language_help(page)
 
-                # Canyon opens its accessory reference directly; bike-only brands stay hidden.
+                # Canyon opens an honest empty channel; bike-only brands stay hidden.
                 page.locator('[data-tab=brands]').click()
                 for hidden in ['trek', 'specialized', 'colnago']:
                     expect(page.locator(f'[data-source={hidden}]')).to_have_count(0)
                 expect(page.locator('[data-source=canyon]')).to_contain_text('配件')
                 page.locator('[data-source=canyon]').click()
-                page.locator('#sourceProducts').click()
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-                inline_cards(page, 1)
+                expect(page.locator('#grid .card,#roadReferenceInline')).to_have_count(0)
+                expect(page.locator('#grid')).to_contain_text('该渠道暂无已核实有货的商品')
+                page.locator('[data-tab=products]').click()
+                page.locator('[data-category-group=other]').click()
                 expect(page.locator('[data-category-group=other]')).to_have_attribute('aria-pressed', 'true')
                 page.locator('#q').fill('Midloader')
                 inline_cards(page, 1)
@@ -542,6 +553,8 @@ def main():
                 page.reload(wait_until='networkidle')
                 check_browse_state(page)
                 page.locator('#clear').click()
+                expect(page.locator('#roadReferenceInline,#historicalDiscountReferences')).to_have_count(0)
+                page.locator('#q').fill('Midloader')
                 inline_cards(page, 1)
                 page.evaluate("chooseCategoryGroup('road_equipment')")
                 assert page.evaluate('activeCategoryGroup === null')
@@ -553,7 +566,6 @@ def main():
                 for tab, source in [('brands', 'brand'), ('teams', 'team')]:
                     page.locator(f'[data-tab={tab}]').click()
                     page.locator(f'[data-source={source}]').click()
-                    page.locator('#sourceProducts').click()
                     # This source may have ordinary accessory products; it must not inherit global references.
                     expect(page.locator('#grid [data-road-reference-card]')).to_have_count(0)
                     expect(page.locator('#grid a[data-road-reference]')).to_have_count(0)

@@ -54,6 +54,8 @@ def semantic_projection(payload: dict) -> dict:
     result["catalog"]["items"].sort(key=lambda card: card["product_id"])
     for card in result["catalog"]["items"]:
         card.pop("fetched_at", None)
+        for channel in card.get("channel_quotes", {}).values():
+            channel.pop("fetched_at", None)
     for family in result["details"].values():
         for detail in family["variants"].values():
             detail["fx"].pop("fetched_at", None)
@@ -104,10 +106,11 @@ def reusable_observations(cached: dict, current: dict) -> bool:
         return False
     if cached["updates"]["fx"].get("fetched_at") != old_fx.get("fetched_at"):
         return False
-    for card in cached["catalog"]["items"]:
-        reference = previous[card["reference_offer_id"]]
-        if card.get("fetched_at") != reference.get("fetched_at"):
-            return False
+    for parent in cached["catalog"]["items"]:
+        for card in [parent, *parent.get("channel_quotes", {}).values()]:
+            reference = previous[card["reference_offer_id"]]
+            if card.get("fetched_at") != reference.get("fetched_at"):
+                return False
     for family in cached["details"].values():
         for detail in family["variants"].values():
             if detail["fx"].get("fetched_at") != old_fx.get("fetched_at"):

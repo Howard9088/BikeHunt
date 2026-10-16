@@ -31,6 +31,16 @@ function refreshPublicInventory(data){
     }
   }
   for(const card of data.catalog.items){const family=data.details[card.product_id],detail=family.variants[family.default];card.available_sizes=detail.variants.filter(v=>v.in_stock&&v.size).map(v=>v.size);const allOffers=Object.values(family.variants).flatMap(d=>d.offers);card.stock_state=Object.values(familyAvailability[card.product_id]).some(Boolean)?'in_stock':allOffers.length&&allOffers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';if(!detail.recommended_offer_id){card.recommended_total_cny=null;card.status=card.stock_state==='unknown'&&allOffers.some(q=>q.offer.stock==='in_stock'&&!stockFresh(q.offer,now))?'库存核实已过期':'渠道待核实';}const reference=allOffers.find(q=>q.offer.offer_id===card.reference_offer_id)?.offer;if(reference){card.reference_collection_state=reference.collection_state;card.reference_stock=publishedOfferAvailable(reference,now)?reference.stock:reference.stock==='out_of_stock'?'out_of_stock':'unknown'}else if(card.reference_stock==='in_stock'&&(!stockFresh(card,now)||card.reference_collection_state==='retained'))card.reference_stock='unknown';}
+  for(const parent of data.catalog.items)for(const [source,card] of Object.entries(parent.channel_quotes||{})){
+    const family=data.details[parent.product_id],detail=family.variants[family.default];
+    const offers=Object.values(family.variants).flatMap(d=>d.offers).filter(q=>q.offer.source_code===source);
+    const available=offers.filter(q=>publishedOfferAvailable(q.offer,now));
+    card.stock_state=available.length?'in_stock':offers.length&&offers.every(q=>q.offer.stock==='out_of_stock')?'out_of_stock':'unknown';
+    card.available_sizes=detail.variants.filter(v=>v.size&&family.variants[v.variant_id]?.offers.some(q=>q.offer.source_code===source&&publishedOfferAvailable(q.offer,now))).map(v=>v.size);
+    const reference=offers.find(q=>q.offer.offer_id===card.reference_offer_id);
+    if(reference){card.reference_collection_state=reference.offer.collection_state;card.reference_stock=publishedOfferAvailable(reference.offer,now)?'in_stock':reference.offer.stock==='out_of_stock'?'out_of_stock':'unknown';if(!reference.eligible)card.recommended_total_cny=null;}
+    else{card.reference_stock='unknown';card.recommended_total_cny=null;}
+  }
 }
 function publishedUrl(path,version){const url=new URL(path,publicRoot);url.searchParams.set('release',pageRelease);url.searchParams.set('v',String(Date.now()));if(version)url.searchParams.set('version',version);return url}
 function isRecord(value){return !!value&&typeof value==='object'&&!Array.isArray(value)}
@@ -83,13 +93,22 @@ function publishedOfferIndex(data){
   }
   return offers;
 }
+function publishedCatalogCards(data){return data.catalog.items.flatMap(card=>[card,...Object.values(card.channel_quotes||{})])}
 function validateCatalogIdentities(data){
   const offers=publishedOfferIndex(data),identities=data.verification_identities;
   if(!isRecord(identities)||Object.keys(identities).length!==offers.size||
     [...offers].some(([id,offer])=>!validDigest(identities[id])||!['current','retained'].includes(offer.collection_state)||
       offer.fetched_at!==null&&(!validTimestamp(offer.fetched_at)||Date.parse(offer.fetched_at)>Date.parse(data.generated_at))))
     throw publicationMismatch('商品核实身份缺失或不一致；保留上次核实的数据');
-  for(const card of data.catalog.items){
+  for(const parent of data.catalog.items){
+    if(parent.channel_quotes!==undefined&&!isRecord(parent.channel_quotes))throw publicationMismatch('渠道报价无效');
+    for(const [source,card] of Object.entries(parent.channel_quotes||{})){
+      const quote=data.details[parent.product_id]?.variants[card?.reference_variant_id]?.offers.find(q=>q.offer.offer_id===card.reference_offer_id);
+      if(!isRecord(card)||card.product_id!==parent.product_id||!parent.source_codes?.includes(source)||quote?.offer.source_code!==source||
+         Object.keys(card.channel_quotes||{}).length)throw publicationMismatch('渠道报价与商品不一致');
+    }
+  }
+  for(const card of publishedCatalogCards(data)){
     const family=data.details[card.product_id];
     if(!family||typeof card.reference_offer_id!=='string'||
       !Object.values(family.variants).some(detail=>detail.offers.some(q=>q.offer.offer_id===card.reference_offer_id)))
@@ -172,7 +191,7 @@ function applyPublishedStatus(base,status){
     for(const component of quote.landed_cost?.components||[])if(component.key==='product')
       for(const evidence of component.evidence||[])evidence.checked_on=observation.fetched_at?.slice(0,10)||null;
   }
-  for(const card of data.catalog.items){card.fetched_at=status.offers[card.reference_offer_id].fetched_at;card.reference_verification_identity=status.offers[card.reference_offer_id].content_sha256;}
+  for(const card of publishedCatalogCards(data)){card.fetched_at=status.offers[card.reference_offer_id].fetched_at;card.reference_verification_identity=status.offers[card.reference_offer_id].content_sha256;}
   for(const fx of publicFxSnapshots(data))if(fx.snapshot_id===status.fx.snapshot_id)fx.fetched_at=status.fx.fetched_at;
   data.collection_status=clonePublished(status.collection_status);
   return data;

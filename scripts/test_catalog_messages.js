@@ -7,6 +7,7 @@ assert.match(home, /id="wechatCommunity" class="community-primary">加入骑游�
 assert.ok(home.indexOf('id="wechatCommunity"') < home.indexOf('</header>'), 'Community entry stays prominently in the header');
 assert.ok(home.includes('id="priceMessages"'));assert.ok(home.includes('id="amazonChannels"'));
 function section(source,start,end){return source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)))}
+function freshCard(row){return {product_id:row.name+'-'+row.brand,stock_state:'in_stock',reference_stock:'in_stock',reference_collection_state:'current',reference_data_kind:'live_snapshot',fetched_at:new Date().toISOString(),reference_offer_id:'fixture-offer',reference_variant_id:'M',reference_source:'Fixture',reference_url:'https://merchant.example/item',reference_price:{amount:10,currency:'USD'},reference_cny:70,...row};}
 function harness(saved=null){
  const storage=new Map(saved?[['bikehuntMessagesReadCursor',saved]]:[]),badge={setAttribute(k,v){this[k]=v}},refs=new Map(),links=[];
  const c=vm.createContext({Date,URL,Number,Map,Set,JSON,activeCategoryGroup:null,activeTab:'products',categories:[{code:'all'},{code:'jerseys'},{code:'bibs'}],categoryGroups:[],roadReferenceData:{brands:[],products:[]},syncBrowseControls(){},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{addEventListener(){},body:{classList:{toggle(){}}},getElementById:()=>badge,querySelectorAll:()=>links},referenceOffers:refs,showExternalExit:()=>{throw Error('Purchase entrances must open local stages before confirmation')},window:{confirm:()=>{throw Error('No native exit prompt')}},guideContext:null,saveBrowseState:()=>{},PURCHASE_DISCLAIMER:'disclaimer',timeText:x=>x,money:(v,c)=>c+v,cny:v=>'CNY'+v});
@@ -58,13 +59,13 @@ function testXssAndUrlGuards(){
 }
 function testCategoryScopeAndExplicitGlobalReset(){
  const h=harness(),categoryButtons=['all','jerseys','bibs'].map(category=>({dataset:{category},setAttribute(){}})),productButton={dataset:{tab:'products'}};
- Object.assign(h.c,{activeSource:'bahrain',activeCategory:'all',directoryData:{brands:[],teams:[{code:'bahrain',name_zh:'巴林车队'}]},navigate:()=>{},profileMatches:()=>true,items:[{source_codes:['bahrain'],category:'jerseys',stock_state:'unknown',brand:'Ale',name:'Jersey'},{source_codes:['other'],category:'jerseys',stock_state:'in_stock',brand:'Other',name:'Jersey'}]});
+ Object.assign(h.c,{activeSource:'bahrain',activeCategory:'all',directoryData:{brands:[],teams:[{code:'bahrain',name_zh:'巴林车队'}]},navigate:()=>{},profileMatches:()=>true,items:[{source_codes:['bahrain'],category:'jerseys',stock_state:'in_stock',brand:'Ale',name:'Jersey'},{source_codes:['other'],category:'jerseys',stock_state:'in_stock',brand:'Other',name:'Jersey'}].map(freshCard)});
  h.c.document.querySelectorAll=selector=>selector==='[data-category]'?categoryButtons:selector==='[data-tab]'?[productButton]:[];h.badge.value='';
  vm.runInContext(section(flows,'function chooseCategory(','function renderDirectory('),h.c);
  vm.runInContext(section(gallery,'function featuredBrowse(','function render('),h.c);
  h.c.chooseCategory('jerseys');assert.equal(h.c.activeSource,'bahrain');assert.equal(h.badge.textContent,'巴林车队');assert.equal(h.c.visibleItems().length,1);
  h.c.chooseCategory('all');assert.equal(h.c.activeSource,'bahrain');
- vm.runInContext(section(flows,"document.querySelectorAll('[data-tab]').forEach(b=>b.onclick",'const panelError='),h.c);productButton.onclick();assert.equal(h.c.activeSource,null);assert.equal(h.badge.textContent,'精选好价');assert.equal(h.c.visibleItems().length,0,'Default feed excludes ordinary reference cards');
+ vm.runInContext(section(flows,"document.querySelectorAll('[data-tab]').forEach(b=>b.onclick",'const panelError='),h.c);productButton.onclick();assert.equal(h.c.activeSource,null);assert.equal(h.badge.textContent,'精选好价');assert.equal(h.c.visibleItems().length,2,'Reset restores fresh channel selections from both sources');
 }
 async function testDismissedMessagesDoNotReopenOrReadUnseenRows(){
  const h=harness();let resolve;Object.assign(h.c,{messagesOpen:false,detailSequence:0,sheet:{classList:{contains:()=>true}},openPanel(){h.c.detailSequence++},getJson:()=>new Promise(done=>{resolve=done})});
@@ -77,7 +78,7 @@ function testHistoryScopeValidationAndBackPollingRestart(){
  vm.runInContext(section(flows,'function saveBrowseState(','function navigate('),h.c);
  h.c.saveBrowseState();assert.equal(h.c.history.state.other,'preserved');assert.equal(h.c.history.state.bikehuntBrowse.source,'bahrain');assert.equal(h.c.history.state.bikehuntBrowse.query,'Stamp Hoodie');
  h.c.activeSource=null;h.c.activeCategory='all';input.value='';h.c.restoreBrowseState();assert.equal(h.c.activeSource,'bahrain');assert.equal(h.c.activeCategory,'all');assert.equal(input.value,'Stamp Hoodie');
- Object.assign(h.c,{profileMatches:()=>true,items:[{brand:'Test',name:'Stamp Hoodie',category:'jerseys',source_codes:['bahrain']},{brand:'Test',name:'Other jersey',category:'jerseys',source_codes:['bahrain']}]});
+ Object.assign(h.c,{profileMatches:()=>true,items:[{brand:'Test',name:'Stamp Hoodie',category:'jerseys',source_codes:['bahrain']},{brand:'Test',name:'Other jersey',category:'jerseys',source_codes:['bahrain']}].map(freshCard)});
  vm.runInContext(section(gallery,'function featuredBrowse(','function render('),h.c);assert.equal(h.c.visibleItems().length,1,'Restoring text restores the actual filter, not only the input appearance');
  for(const query of [undefined,null,42,{},[],['Stamp Hoodie'],'x'.repeat(201)]){
   h.c.history.state.bikehuntBrowse.query=query;input.value='old';h.c.restoreBrowseState();assert.equal(input.value,'','Invalid or oversized history query is discarded');assert.equal(h.c.visibleItems().length,2);

@@ -250,7 +250,7 @@ class ComparisonCatalog:
                          if discounted else recommended or min(references,key=lambda x: x.product_cny if x.product_cny is not None else Decimal("Infinity")))
             reference_variant = next(v for v in variants if any(x.offer_id == reference.offer.offer_id for x in v))
             sources = {x.source_code for v in variants for x in v}
-            cards.append(ProductCard(
+            card = ProductCard(
                 product_id=product_id, name=detail.name, brand=detail.identity.brand,
                 name_zh=detail.name_zh, category=detail.category,
                 category_group=detail.category_group,
@@ -275,7 +275,43 @@ class ComparisonCatalog:
                 available_sizes=[v.size for v in detail.variants if v.in_stock and v.size],
                 stock_state="in_stock" if in_stock else "out_of_stock" if all(x.offer.stock=="out_of_stock" for x in all_compared) else "unknown",
                 purchase_requirements=sorted({r for v in variants for x in v for r in x.purchase_requirements}),
-            ))
+            )
+            for source in sorted(sources):
+                pool = [x for x in in_stock if x.offer.source_code == source
+                        and x.offer.data_kind == "live_snapshot"]
+                if not pool:
+                    continue
+                sale = [x for x in pool if self.discounted(x.offer)]
+                chosen = min(sale or pool, key=lambda x: (
+                    x.product_cny if x.product_cny is not None else Decimal("Infinity"), x.offer.offer_id))
+                selected_variant = next(v for v in variants
+                                        if any(x.offer_id == chosen.offer.offer_id for x in v))
+                sizes = {x.offer.identity.size for x in pool if x.offer.identity.size}
+                card.channel_quotes[source] = card.model_copy(update={
+                    "channel_quotes": {},
+                    "reference_price": chosen.offer.price,
+                    "reference_cny": chosen.product_cny,
+                    "reference_source": chosen.offer.source_name,
+                    "reference_url": chosen.offer.url,
+                    "reference_offer_id": chosen.offer.offer_id,
+                    "reference_original_price": chosen.offer.original_price,
+                    "reference_variant_id": self._variant_id(selected_variant),
+                    "reference_size": chosen.offer.identity.size,
+                    "reference_color": chosen.offer.identity.color,
+                    "reference_price_valid_until": chosen.offer.price_valid_until,
+                    "reference_data_kind": chosen.offer.data_kind,
+                    "reference_stock": "in_stock",
+                    "reference_collection_state": chosen.offer.collection_state,
+                    "fetched_at": chosen.offer.fetched_at,
+                    "discount_pct": chosen.discount_pct,
+                    "recommended_total_cny": chosen.total_cny if chosen.eligible else None,
+                    "status": "渠道现货",
+                    "purchase_requirements": list(chosen.offer.purchase_requirements),
+                    "stock_state": "in_stock",
+                    "available_sizes": list(dict.fromkeys(v.size for v in detail.variants if v.size in sizes)),
+                    "image": chosen.offer.image or card.image,
+                })
+            cards.append(card)
         cards.sort(key=lambda x: (x.stock_state != "in_stock", -(x.fetched_at.timestamp() if x.fetched_at else 0),
                                   -x.source_count, normalized(x.name), x.product_id))
         return cards

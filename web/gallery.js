@@ -94,13 +94,22 @@ function channelSelections(products,now=Date.now()){
   }
   const result=[];for(let round=0;round<2;round++)for(const [,pool] of groups)if(pool[round])result.push(pool[round]);return result;
 }
-function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(!featuredBrowse()||includeUnverified)return scoped;return channelSelections(scoped)}
+function channelCard(card,source){
+  if(card.channel_quotes&&typeof card.channel_quotes==='object'){
+    const scoped=card.channel_quotes[source];
+    return scoped&&scoped.product_id===card.product_id&&channelOfferEligible(scoped)?scoped:null;
+  }
+  // Older single-source payloads are unambiguous. Multi-source stock is not.
+  return card.source_codes?.length===1&&card.source_codes[0]===source&&channelOfferEligible(card)?card:null;
+}
+function visibleItems(includeUnverified=false){const scoped=scopedCatalogItems();if(activeSource)return scoped.map(p=>channelCard(p,activeSource)).filter(Boolean);if(!featuredBrowse()||includeUnverified)return scoped;return channelSelections(scoped)}
 function lowPriceMarkup(card,basis){
   if(!basis)return '';
   const verified=card.reference_stock==='in_stock'&&card.reference_collection_state==='current'&&inventoryVerified(card);
   return '<details class="deal-spec low-price-basis"><summary>'+e(basis.label)+' · '+basis.count+' 款中第 '+basis.rank+' 低</summary><div>仅比较本站已采集的不同型号，取最低约四分之一（至少 1 款），每品牌每组最多 2 款。不同商家／市场的所示规格人民币商品价，不含运税；支付、配送另核实，历史报价可能已变化。不是全尺码价格、全网最低或品质比较。</div></details>'+(!verified?'<div class="deal-spec">历史价格与库存待重新核实 · '+e(timeText(card.fetched_at))+'</div>':'');
 }
 function render(preserveId=null){
+  if(typeof syncChannelInfo==='function')syncChannelInfo();
   if(observer)observer.disconnect();
   if(typeof resetReferenceFeed==='function')resetReferenceFeed();
   if(typeof updateBrowseLabel==='function'&&activeTab==='products')updateBrowseLabel();
@@ -110,7 +119,7 @@ function render(preserveId=null){
   document.getElementById('count').textContent=featuredBrowse()&&list.length?list.length+' 件渠道精选 · '+verifiedCount+' 件有折扣':list.length+' 件商品';
   document.getElementById('sourceCount').textContent=sourceCount+' 个购买渠道';
   if(!list.length&&typeof renderEmptyReferences==='function'&&renderEmptyReferences()){updatePosition(0,0);return}
-  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款商品价较低的现货，折扣另行标注；暂未核实的商品可在渠道目录查看。<br>可搜索商品，或前往品牌官网、世巡车队浏览完整目录。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
+  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款商品价较低的现货，折扣另行标注。<br>暂时没有符合条件的商品，请稍后再看。</div>':activeSource?'<div class="empty"><strong>该渠道暂无已核实有货的商品</strong>售罄或库存待确认的商品暂不展示，请稍后再看。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
   gallery.innerHTML=list.map((p,i)=>{
     const deal=featuredDeal(p),low=!deal?lowPrices.get(p.product_id):null,channel=featuredBrowse()&&!deal;
     const stockVerified=p.stock_state==='in_stock'&&inventoryVerified(p)&&p.reference_collection_state!=='retained';
@@ -322,7 +331,7 @@ function updateVerifiedDetailMetadata(detail,verification){
 }
 function updateGalleryVerificationMetadata(verification){
   if(!verification?.offers)return;
-  for(const card of items){
+  for(const card of items.flatMap(p=>[p,...Object.values(p.channel_quotes||{})])){
     const observation=verification.offers[card.reference_offer_id];
     if(observation&&card.reference_verification_identity&&card.reference_verification_identity===observation.content_sha256&&
       card.reference_collection_state===observation.collection_state&&card.reference_stock===observation.stock&&
@@ -331,7 +340,7 @@ function updateGalleryVerificationMetadata(verification){
   }
   updateVerifiedDetailMetadata(currentProduct,verification);
   updateVerifiedFxMetadata(fx,verification.fx);updateFxLabel();
-  const byId=new Map(items.map(card=>[card.product_id,card]));
+  const byId=new Map(items.map(card=>[card.product_id,activeSource?channelCard(card,activeSource):card]));
   for(const node of gallery.querySelectorAll('.card')){
     const card=byId.get(node.dataset.id),label=node.querySelector('.data-time');
     if(card&&label)label.textContent=(card.fetched_at?'更新 '+timeText(card.fetched_at):timeText(null))+' · 原币价与人民币参考价';

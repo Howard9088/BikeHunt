@@ -40,7 +40,7 @@ function restoreBrowseState(){
   syncBrowseControls();updateBrowseLabel();navigate(['products','brands','teams'].includes(saved.tab)?saved.tab:'products');
 }
 function browseQuery(value){return typeof value==='string'&&value.length<=200?value:''}
-function navigate(tab){activeTab=tab;saveBrowseState();document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryGroupNav').hidden=tab!=='products';syncBrowseControls();document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}}
+function navigate(tab){activeTab=tab;saveBrowseState();document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryGroupNav').hidden=tab!=='products';syncBrowseControls();document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}if(typeof syncChannelInfo==='function')syncChannelInfo()}
 function chooseCategory(code){activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
 function chooseCategoryGroup(code){if(!publicCategoryGroupVisible(code))code=null;activeCategoryGroup=activeCategoryGroup===code?null:categoryGroups.some(c=>c.code===code)?code:null;activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
 function syncBrowseControls(){
@@ -53,11 +53,12 @@ function syncBrowseControls(){
   document.body.classList.toggle('road-reference-visible',visible);
 }
 function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);const label=activeSource?(entry?.name_zh||entry?.name||activeSource):document.getElementById('q').value.trim()?'搜索结果':'精选好价';const group=categoryGroups.find(c=>c.code===activeCategoryGroup);document.getElementById('browseLabel').textContent=label+(group?' · '+group.name:'')}
+function channelProductCount(code){return items.filter(p=>p.source_codes?.includes(code)&&channelCard(p,code)).length}
 function renderDirectory(section){
   directoryData=publicDirectoryData(directoryData,roadReferenceData);
   const entries=directoryData[section]||[];document.getElementById('browseLabel').textContent=section==='brands'?'品牌官网':'世巡车队';document.getElementById('count').textContent=entries.length+' 个入口';
   const ranking=section==='teams'?directoryData.team_ranking:null;
-  directoryPage.innerHTML='<div class="directory-intro"><h2>'+(section==='brands'?'从品牌发现装备':'世巡车队装备，一处查看')+'</h2><p>'+(ranking?e(ranking.season)+' 年 '+e(ranking.title_zh)+' · '+e(ranking.ranking_date)+'<br>':'')+'先看本地商品和中文规则，再决定前往哪个渠道。</p></div><div class="directory-grid">'+entries.map(item=>'<button class="directory-card" data-source="'+e(item.code)+'">'+(item.world_rank?'<span class="team-rank">UCI 第 '+e(item.world_rank)+' 名</span>':'')+directoryLogo(item)+'<strong>'+e(item.name_zh)+'</strong><span>'+e(item.name)+'</span><div class="directory-count">'+(item.product_count??0)+' 款商品 · '+item.offer_count+' 个规格 · '+e(item.catalog_note||'部分目录')+'</div><div class="directory-link">查看商品与中文规则 →</div></button>').join('')+'</div>';
+  directoryPage.innerHTML='<div class="directory-intro"><h2>'+(section==='brands'?'从品牌发现装备':'世巡车队装备，一处查看')+'</h2><p>'+(ranking?e(ranking.season)+' 年 '+e(ranking.title_zh)+' · '+e(ranking.ranking_date)+'<br>':'')+'查看各渠道的现货商品，购买说明可展开查看。</p></div><div class="directory-grid">'+entries.map(item=>'<button class="directory-card" data-source="'+e(item.code)+'">'+(item.world_rank?'<span class="team-rank">UCI 第 '+e(item.world_rank)+' 名</span>':'')+directoryLogo(item)+'<strong>'+e(item.name_zh)+'</strong><span>'+e(item.name)+'</span><div class="directory-count">'+channelProductCount(item.code)+' 款现货'+(item.catalog_note?' · '+e(item.catalog_note):'')+'</div><div class="directory-link">查看现货商品 →</div></button>').join('')+'</div>';
   bindDirectoryLogos(directoryPage);
   directoryPage.querySelectorAll('[data-source]').forEach(b=>b.onclick=()=>openSource(b.dataset.source));
 }
@@ -65,10 +66,36 @@ function ruleMarkup(book){
   if(!book.documents.length)return '<div class="summary-box"><h4>购买条件暂未确认</h4><p>请在商店结账前确认配送范围、付款方式和税费。</p></div>';
   return '<div class="rule-meta">购买条件更新 '+e(timeText(book.checked_at))+'</div>'+book.documents.map(doc=>'<section class="rule-section"><h4>'+e(doc.title_zh)+'</h4>'+(doc.state==='translated'?'<ul>'+doc.summary_zh.map(t=>'<li>'+e(t)+'</li>').join('')+'</ul>':'<p class="offer-note">'+(doc.state==='changed'?'官方原文已有变化，最新中文规则正在复核。':'请查看商店最新配送、付款与退换货说明。')+'</p>')+'<details><summary>核对来源</summary><a class="source-original" target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(doc.url))+'">查看官方原文（核对用） ↗</a></details></section>').join('');
 }
-async function openSource(code){
+function channelInfoMarkup(entry,book){
+  return '<div class="source-overview">'+(entry.logo_images?.length?directoryLogo(entry):'')+'<strong>'+e(entry.name_zh)+'</strong></div>'+
+    (entry.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+ruleMarkup(book)+
+    (entry.official_url?'<details class="official-entrances"><summary>官网与官方商城入口</summary><p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.official_url))+'">品牌或车队官网 ↗</a></p>'+
+      (entry.shop_url?'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.shop_url))+'">官方公布的商城入口 ↗</a></p>':'')+
+      '<p>购买前请核对商品规格、配送地区和最终结账金额。</p></details>':'');
+}
+function syncChannelInfo(){
+  const panel=document.getElementById('channelInfo');if(!panel)return;
+  const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);
+  panel.hidden=activeTab!=='products'||!entry;
+  if(panel.dataset.source===activeSource)return;
+  panel.open=false;panel.dataset.source=activeSource||'';
+  const body=panel.querySelector('.channel-info-body');body.innerHTML='';delete panel.dataset.loaded;
+  panel.ontoggle=async()=>{
+    if(!panel.open||panel.dataset.loaded||!entry)return;
+    const code=entry.code;panel.dataset.loaded='loading';body.innerHTML='<p>正在加载购买说明…</p>';
+    try{const book=await getJson('/api/rules/'+encodeURIComponent(code));
+      if(activeSource!==code||panel.dataset.source!==code)return;
+      body.innerHTML=channelInfoMarkup(entry,book);panel.dataset.loaded='yes';bindDirectoryLogos(body);
+    }catch{if(activeSource!==code)return;delete panel.dataset.loaded;body.innerHTML='<p>购买说明暂时无法加载，请稍后重新展开。</p>'}
+  };
+}
+function openSource(code){
   directoryData=publicDirectoryData(directoryData,roadReferenceData);if(!publicSourceVisible(code,directoryData))return;
-  const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===code);openPanel(entry?.name_zh||'中文规则','<p class="loading">正在读取已保存的中文规则…</p>');
-  try{const book=await getJson('/api/rules/'+encodeURIComponent(code));document.getElementById('sheetBody').innerHTML=(entry?'<div class="source-overview">'+(entry.logo_images?.length?directoryLogo(entry):'')+'<strong>'+e(entry.name_zh)+'</strong><p>'+entry.offer_count+' 个商品报价 · '+entry.rule_count+' 项中文规则</p><button id="sourceProducts" class="compare-button" '+(!entry.offer_count&&!entry.road_reference?'disabled':'')+'>'+(entry.offer_count?'查看该来源商品 →':entry.road_reference?'查看官网参考 →':'暂无可选商品')+'</button></div>':'')+(entry?.reference_note?'<p class="road-warning">'+e(entry.reference_note)+'</p>':'')+(entry&&typeof paymentDirectoryMarkup==='function'?paymentDirectoryMarkup(entry):'')+ruleMarkup(book)+(entry?.official_url?'<details class="official-entrances"><summary>官网与官方商城入口</summary><p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.official_url))+'">品牌或车队官网 ↗</a></p>'+(entry.shop_url?'<p><a target="_blank" rel="noopener noreferrer" href="'+e(safeUrl(entry.shop_url))+'">官方公布的商城入口 ↗</a></p>':'')+'<p>入口已找到不代表中国配送、库存或到手费用已核实。</p></details>':'')+'<div class="service-note">规则按原文变化更新；未核实的条件会明确标记。</div>';bindDirectoryLogos(document.getElementById('sheetBody'));const button=document.getElementById('sourceProducts');if(button)button.onclick=()=>{activeCategory='all';activeSource=code;if(entry.road_reference)activeCategoryGroup=entry.reference_category_group||'road_equipment';document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category==='all')));document.getElementById('browseLabel').textContent=entry.name_zh;closeSheet();navigate('products')}}catch(error){document.getElementById('sheetBody').innerHTML='<p>暂时无法加载，请稍后重试。</p>'}
+  activeSource=code;activeCategory='all';activeCategoryGroup=null;
+  const info=document.getElementById('channelInfo');if(info)info.open=false;
+  document.getElementById('q').value='';
+  if(sheet.classList.contains('open'))closeSheet();
+  navigate('products');document.getElementById('grid').focus();
 }
 async function startGuide(detail,offerId){
   if(!publicProductVisible(detail))return;
@@ -408,7 +435,7 @@ function roadReferenceMarkup(inline=false){
 function resetReferenceFeed(){gallery.classList.remove('reference-feed');document.body.classList.remove('reference-feed-visible')}
 function historicalDiscountMarkup(products){products=products.filter(publicProductVisible);return '<section id="historicalDiscountReferences"><h2>历史折扣参考 · '+products.length+' 件</h2><p class="road-reference-intro">库存与价格待重新核实，不计入已核实折扣。记录优惠不代表仍在促销。</p><div class="road-reference-grid">'+products.map(p=>'<article class="historical-reference-card" data-history-product="'+e(p.product_id)+'"><div class="brand">'+e(p.brand)+'</div>'+referenceImageMarkup(p.image,p.name_zh||p.name)+'<h3>'+e(p.name_zh||p.name)+'</h3><p class="road-price">记录现价 '+e(money(p.reference_price.amount,p.reference_price.currency))+'<br><small>同规格记录原价 '+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</small></p><p class="road-stock">库存待核实 · '+e(p.reference_source)+'</p><p class="road-reference-date">记录规格：'+e([p.reference_size,p.reference_color].filter(Boolean).join(' / ')||'见商品详情')+'<br>'+(p.fetched_at?'上次更新 '+e(p.fetched_at):'更新时间未记录')+'<br>'+ (p.reference_price_valid_until?'记录有效期至 '+e(p.reference_price_valid_until)+'；请在原站重新核实':'未取得折扣结束时间')+'</p><button type="button" data-history-open="'+e(p.product_id)+'" data-history-variant="'+e(p.reference_variant_id)+'">查看历史报价与官网核实入口 →</button></article>').join('')+'</div></section>'}
 function renderEmptyReferences(){
-  if(featuredBrowse())return false; // Home only shows fresh verified stock, never history cards.
+  if(featuredBrowse()||activeSource)return false; // Home only shows fresh verified stock, never history cards.
   const road=publicCategoryGroupVisible(activeCategoryGroup)&&['road_equipment','other'].includes(activeCategoryGroup),historical=featuredBrowse()?historicalDiscountItems():[];
   if(!road&&!historical.length)return false;
   // Reference records never enter visibleItems(), the verified count or feed paging.

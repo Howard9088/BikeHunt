@@ -211,6 +211,8 @@ class ProductCard(Record):
     source_count: int
     variant_count: int
     source_codes: list[str] = Field(default_factory=list)
+    # Fresh source-bound cards prevent another merchant's stock/price leaking into a channel.
+    channel_quotes: dict[str, ProductCard] = Field(default_factory=dict)
     reference_price: Money
     reference_cny: Decimal | None
     reference_source: str

@@ -208,7 +208,6 @@ def open_bundle(page, state, scoped=False):
     if scoped:
         page.locator('[data-tab="teams"]').click()
         page.locator('.directory-card[data-source="soudal"]').click()
-        page.locator('#sourceProducts').click()
     page.locator('#q').fill('Cycling outfit')
     page.locator('.card[data-id="' + state['bundle']['product_id'] + '"] .compare-button').click()
     assert_bundle_shell(page)
