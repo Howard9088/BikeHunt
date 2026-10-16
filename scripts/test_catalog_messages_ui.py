@@ -45,7 +45,7 @@ def fixture():
             'color': '白色', 'image': 'https://merchant.example/product.svg', 'source_count': 1,
             'source_codes': ['maap'], 'variant_count': 3, 'available_sizes': ['S'],
             'reference_price': {'amount': '225', 'currency': 'AUD'}, 'reference_cny': '1080',
-            'reference_source': 'MAAP', 'recommended_total_cny': None, 'discount_pct': 40,
+            'reference_source': 'MAAP', 'reference_url': 'https://merchant.example/bib?variant=S', 'recommended_total_cny': None, 'discount_pct': 40,
             'reference_original_price': {'amount': '375', 'currency': 'AUD'},
             'reference_offer_id': 'offer-s', 'reference_variant_id': 'S', 'reference_size': 'S',
             'reference_color': '白色', 'reference_stock': 'in_stock', 'reference_collection_state': 'current',
@@ -387,10 +387,10 @@ def main():
                 state['events'][0]['product'].update(product_id=None,variant_id=None)
                 basecard=state['catalog']['items'][0]
                 state['catalog']['items'] += [
-                    {**basecard, 'product_id': 'maap-jersey', 'category': 'jerseys'},
-                    {**basecard, 'product_id': 'other-jersey', 'category': 'jerseys', 'source_codes': ['other']},
+                    {**basecard, 'product_id': 'maap-jersey', 'name': 'MAAP Jersey Fixture', 'category': 'jerseys'},
+                    {**basecard, 'product_id': 'other-jersey', 'name': 'Other Jersey Fixture', 'reference_source': 'Other', 'category': 'jerseys', 'source_codes': ['other']},
                     {**basecard, 'product_id': 'maap-helmet', 'category': 'helmets', 'category_group': 'helmets', 'name': 'Scope Helmet'},
-                    {**basecard, 'product_id': 'other-helmet', 'category': 'helmets', 'category_group': 'helmets', 'name': 'Scope Helmet', 'source_codes': ['other']},
+                    {**basecard, 'product_id': 'other-helmet', 'reference_source': 'Other', 'category': 'helmets', 'category_group': 'helmets', 'name': 'Scope Helmet', 'source_codes': ['other']},
                 ]
                 state['catalog']['categories'].append({'code':'jerseys','name':'骑行上衣'})
                 context=browser.new_context(viewport=viewport,is_mobile=mode=='mobile',has_touch=mode=='mobile')
