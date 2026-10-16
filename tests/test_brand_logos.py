@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SVG_NS = 'http://www.w3.org/2000/svg'
-EXPECTED_BRANDS = {'maap', 'rapha', 'assos', 'castelli', 'santini', 'pns', 'poc', 'kask', 'fizik', 'oakley', 'trek', 'specialized', 'canyon', 'colnago', 'decathlon_cn'}
+EXPECTED_BRANDS = {'maap', 'rapha', 'assos', 'castelli', 'santini', 'pns', 'poc', 'kask', 'fizik', 'oakley', 'trek', 'specialized', 'canyon', 'colnago', 'decathlon_cn', 'decathlon_overseas'}
 # Hashes are of official source artwork, not a recreation in a substitute font.
 ASSETS = {
     'maap': ('664e49fc71db5831e45e76d7f3cc071d61e26d1e3d27cdf6bf2b8bcf4a30d279', '0 0 76 20', 'maap.cc'),
@@ -43,6 +43,14 @@ class BrandLogoTests(unittest.TestCase):
         self.assertEqual(china['shop_url'], 'https://www.decathlon.com.cn/')
         self.assertEqual(china['shop_evidence_url'], 'https://static-econnected.decathlon.com.cn/econnected/privacy.html')
         self.assertNotEqual(china['code'], 'decathlon')
+        overseas = self.brands['decathlon_overseas']
+        self.assertEqual(overseas['name_zh'], '迪卡侬海外官方车队商城')
+        self.assertEqual(overseas['source_codes'], ['decathlon'])
+        self.assertEqual(overseas['shop_url'], 'https://shop.decathloncmacgmteam.com/en/collections/collection-2026')
+        self.assertEqual(overseas['official_url'], 'https://decathloncmacgmteam.com/')
+        codes = [entry['code'] for entry in self.directory['brands']]
+        self.assertEqual(codes.index('decathlon_overseas'), codes.index('decathlon_cn') + 1)
+        self.assertTrue(any(entry['code'] == 'decathlon' for entry in self.directory['teams']))
 
     def test_seven_official_assets_have_local_paths_and_source_metadata(self):
         for code, (_, _, host) in ASSETS.items():

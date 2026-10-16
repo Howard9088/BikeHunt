@@ -626,6 +626,52 @@ def main():
                 page.locator('[data-source=brand]').click()
                 expect(page.locator('#grid .card[data-id^="ef-alias-"]')).to_have_count(0)
                 checks.append(mode + ': EF directory alias resolves only its declared shop source; exact URL/currency/offer retained; sold and unknown stock excluded; unrelated brand isolation')
+                # Separate China and overseas brand entries share no stock or currency.
+                page.evaluate("""() => {
+                    const seed=items.find(card=>channelOfferEligible(card));
+                    const make=(id,source,stock,currency,amount,url)=>{
+                        const quote={...seed,product_id:id,brand:'Decathlon',
+                            name:'Decathlon Alias '+id,name_zh:'迪卡侬渠道测试 '+id,
+                            source_codes:[source],source_count:1,
+                            reference_source:source==='decathlon_cn'?'迪卡侬中国官网':'迪卡侬海外官方车队商城',
+                            reference_offer_id:'offer-'+id,reference_variant_id:'size-M',
+                            reference_url:url,reference_price:{amount,currency},reference_cny:currency==='CNY'?amount:'720',
+                            stock_state:stock,reference_stock:stock,reference_collection_state:'current',
+                            reference_data_kind:'live_snapshot'};
+                        delete quote.channel_quotes;
+                        return {...quote,channel_quotes:{[source]:quote}};
+                    };
+                    items.push(make('dec-cn-live','decathlon_cn','in_stock','CNY','399.90','https://www.decathlon.com.cn/product-detail?dsm_code=fixture'),
+                        make('dec-eu-live','decathlon','in_stock','EUR','90','https://shop.decathloncmacgmteam.com/products/fixture?variant=M'),
+                        make('dec-eu-sold','decathlon','out_of_stock','EUR','90','https://shop.decathloncmacgmteam.com/products/sold'),
+                        make('dec-eu-unknown','decathlon','unknown','EUR','90','https://shop.decathloncmacgmteam.com/products/unknown'));
+                    directoryData.brands.push(
+                        {code:'decathlon_cn',name:'Decathlon China',name_zh:'迪卡侬中国官网',source_codes:['decathlon_cn']},
+                        {code:'decathlon_overseas',name:'Decathlon Overseas',name_zh:'迪卡侬海外官方车队商城',source_codes:['decathlon']});
+                    directoryData.teams.push({code:'decathlon',name:'Decathlon Team',name_zh:'迪卡侬车队',source_codes:['decathlon']});
+                }""")
+                for tab, code, ident, currency, amount, url in [
+                    ('brands', 'decathlon_overseas', 'dec-eu-live', 'EUR', '90', 'https://shop.decathloncmacgmteam.com/products/fixture?variant=M'),
+                    ('brands', 'decathlon_cn', 'dec-cn-live', 'CNY', '399.90', 'https://www.decathlon.com.cn/product-detail?dsm_code=fixture'),
+                    ('teams', 'decathlon', 'dec-eu-live', 'EUR', '90', 'https://shop.decathloncmacgmteam.com/products/fixture?variant=M'),
+                    ('brands', 'decathlon_overseas', 'dec-eu-live', 'EUR', '90', 'https://shop.decathloncmacgmteam.com/products/fixture?variant=M'),
+                ]:
+                    page.locator(f'[data-tab={tab}]').click()
+                    page.locator(f'[data-source={code}]').click()
+                    expect(page.locator('#grid .card')).to_have_count(1)
+                    expect(page.locator('#grid .card')).to_have_attribute('data-id', ident)
+                    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
+                    assert not page.locator('#channelInfo').evaluate('el => el.open')
+                    assert page.evaluate('(code) => activeSource === code', code)
+                    actual = page.evaluate("""() => {
+                        const card=visibleItems()[0];
+                        return {currency:card.reference_price.currency,amount:card.reference_price.amount,url:card.reference_url};
+                    }""")
+                    assert actual == {'currency': currency, 'amount': amount, 'url': url}
+                    expect(page.locator('#grid')).not_to_contain_text('dec-eu-sold')
+                    expect(page.locator('#grid')).not_to_contain_text('dec-eu-unknown')
+                expect(page.locator('#browseLabel')).to_have_text('迪卡侬海外官方车队商城')
+                checks.append(mode + ': China CNY and overseas EUR aliases stay isolated; overseas brand and retained team share only declared fresh stock; return to brands and re-entry preserves exact quote')
                 checks.append(mode + ': four one-level public groups; old five-group payload, bike/frame cards, hidden sources, IDs and history rejected; clothing-only gender with persisted residue clearing; reference list to internal detail to exact guarded same-tab exit; original/current currency and CNY item-only with current/stale/missing FX; read-only displayed options and practical purchase steps; exact/missing/failed images; brand direct guard; honest zero verified count; mobile price/layout and native scroll; group/source/query migration; stock/DOM/URL/filter mutation gates; cancel and list-return focus; merchant Back/reload scope; global reset')
                 context.close()
             browser.close()

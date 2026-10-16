@@ -13,6 +13,26 @@
       ]
     },
     {
+      "code": "decathlon_overseas",
+      "name": "Decathlon Overseas Official Team Store",
+      "name_zh": "迪卡侬海外官方车队商城",
+      "official_url": "https://decathloncmacgmteam.com/",
+      "shop_url": "https://shop.decathloncmacgmteam.com/en/collections/collection-2026",
+      "status": "official_link_found",
+      "shop_evidence_url": "https://decathloncmacgmteam.com/",
+      "source_codes": [
+        "decathlon"
+      ],
+      "logo_images": [
+        "/web/assets/teams/decathlon_0_f4ca638bc1.webp"
+      ],
+      "logo_theme": "light",
+      "logo_source_urls": [
+        "https://decathloncmacgmteam.com/wp-content/uploads/2025/12/DCT_RVB_WT_Couleurs1.png"
+      ],
+      "logo_checked_at": "2026-10-14T09:52:38.384063+00:00"
+    },
+    {
       "code": "maap",
       "name": "MAAP",
       "name_zh": "MAAP 骑行服",
