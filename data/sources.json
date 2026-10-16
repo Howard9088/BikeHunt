@@ -662,9 +662,9 @@
     "brand": "MAAP",
     "type": "team_official",
     "base_url": "https://maap.cc",
-    "sales_region": "台湾市场 TWD 报价；以当前商品市场为准",
+    "sales_region": "MAAP国际站；以逐规格实际币种报价为准，配送另核",
     "enabled": true,
-    "official_evidence_url": "https://maap.cc/tw/greenedge-cycling",
+    "official_evidence_url": "https://maap.cc/greenedge-cycling",
     "collection_strategy": "public_official_supplier_exact_variants",
     "china_shipping": {
       "status": "unknown",

@@ -505,9 +505,9 @@
     "urls": [],
     "discovery": {
       "catalog_urls": [
-        "https://maap.cc/tw/greenedge-cycling"
+        "https://maap.cc/greenedge-cycling"
       ],
-      "product_link_pattern": "^/tw/products/(?:womens-)?greenedge-26-[^/]+$"
+      "product_link_pattern": "^/products/(?:womens-)?greenedge-26-[^/]+$"
     },
     "fetch_policy": {
       "mode": "auto",
@@ -515,7 +515,7 @@
       "max_pages": 1,
       "max_products": 10
     },
-    "scope_note": "MAAP 官方 GreenEDGE 2026 专区的有界商品样本，实际台湾市场 TWD 报价。"
+    "scope_note": "MAAP国际站官方GreenEDGE 2026专区的有界商品样本，价格与库存只代表实际采集市场。"
   },
   {
     "code": "movistar",
