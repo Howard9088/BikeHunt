@@ -317,7 +317,16 @@ def main():
                 expect(channel.locator('.domestic-shopping-help')).to_contain_text('有效购买凭证')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 assert outbound == [target]
+                assert channel.evaluate("""el => {
+                    const summary = el.querySelector(':scope > summary');
+                    const button = summary.getBoundingClientRect();
+                    const panel = el.querySelector('.channel-info-body').getBoundingClientRect();
+                    const hit = document.elementFromPoint(button.x + button.width / 2, button.y + button.height / 2);
+                    return panel.top >= button.bottom && panel.left >= 0 && panel.right <= innerWidth
+                        && panel.bottom <= innerHeight && (hit === summary || summary.contains(hit));
+                }"""), 'Channel popup must stay below its unobstructed close toggle and inside the viewport'
                 channel.locator(':scope > summary').click()
+                assert channel.get_attribute('open') is None
                 page.locator('.card[data-id="domestic-m"] .compare-button').click()
                 page.locator('[data-variant="M"]').click()
                 assert state['last_variant'] == 'M'
