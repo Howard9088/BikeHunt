@@ -185,162 +185,23 @@ def cancel_purchase_to_detail(page):
     expect(page.locator('#routeComparison,#registrationInterstitial')).to_have_count(0)
 
 
-def exercise_amazon_searches(page, context, base, mode, return_label, checks):
-    """No Amazon traffic: intercept every official search and validate each exit."""
+def assert_no_amazon_search_module(page, context, base, mode, return_label, checks):
+    """Amazon is a verified product channel only; no standalone search navigation."""
     saved_read = page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')")
     initial_badge = page.locator('#messageBadge').inner_text()
-    page.locator('#amazonChannels').click()
-    expect(page.locator('#sheetName')).to_have_text('Amazon购买途径')
-    expect(page.locator('[data-amazon-search-link]')).to_have_count(8)
-    expect(page.locator('[data-purchase-link],[data-reference-link]')).to_have_count(0)
-    expect(page.locator('.amazon-market .registration-help,.amazon-market .purchase-readiness')).to_have_count(0)
-    for text in ['搜索入口，非商品实时报价', '未核实搜索结果中的卖家、价格或库存', '第三方卖家', '不等于 Amazon 自营', '中国大陆', '进口税费', '结账页']:
-        expect(page.locator('#sheetBody')).to_contain_text(text)
-    logos = page.locator('.amazon-channel-logo')
-    expect(logos).to_have_count(4)
-    for index, country in enumerate(['美国站', '英国站', '德国站', '日本站']):
-        logo = logos.nth(index)
-        expect(logo).to_be_visible()
-        expect(logo).to_have_attribute('alt', 'Amazon')
-        assert logo.evaluate('(img) => img.complete && img.naturalWidth === 6110 && img.naturalHeight === 2047')
-        assert logo.evaluate('(img) => new URL(img.currentSrc).origin === location.origin')
-        assert logo.evaluate('(img) => Math.abs(img.getBoundingClientRect().width / img.getBoundingClientRect().height - 6110 / 2047) < 0.02')
-        expect(page.locator('.amazon-country').nth(index)).to_have_text(country)
-        expect(page.locator('.amazon-market').nth(index).get_by_role('heading', name='Amazon '+country)).to_be_visible()
-    expect(page.locator('.amazon-channel-fallback:visible')).to_have_count(0)
-    expect(page.locator('.amazon-brand-note')).to_contain_text('BikeHunt 与 Amazon 无合作或隶属关系')
-    assert page.locator('#sheetBody').evaluate('(el) => el.scrollWidth <= el.clientWidth')
-    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-    page.screenshot(path=str(OUT/f'amazon_searches_{mode}.png'))
-    # A failed image leaves ordinary Amazon text plus country, host and working links.
-    failed_logo_url = logos.first.get_attribute('src') + '?simulate-image-failure'
-    page.route(failed_logo_url, lambda route: route.abort())
-    logos.evaluate_all('(images, src) => images.forEach(img => { img.src = src; })', failed_logo_url)
-    expect(page.locator('.amazon-channel-logo:visible')).to_have_count(0)
-    expect(page.locator('.amazon-channel-fallback:visible')).to_have_count(4)
-    expect(page.locator('[data-amazon-search-link]')).to_have_count(8)
-    assert page.locator('#sheetBody').evaluate('(el) => el.scrollWidth <= el.clientWidth')
-    page.screenshot(path=str(OUT/f'amazon_logo_fallback_{mode}.png'))
-    page.locator('#close').click(); page.locator('#amazonChannels').click()
-    expect(page.locator('.amazon-channel-logo:visible')).to_have_count(4)
-    expect(page.locator('.amazon-channel-fallback:visible')).to_have_count(0)
-    checks.append(mode+': four unchanged official Amazon marks load locally, proportional size, country labels and accessible headings, clean fallback on failed image, restored after reopen; no affiliation claim')
-    # Native accordion remains usable with keyboard and touch; it never collects data.
-    expect(page.locator('.amazon-guide-step')).to_have_count(8)
-    expect(page.locator('.amazon-guide-step[open]')).to_have_count(1)
-    expect(page.locator('.amazon-import-guide form, .amazon-import-guide input, .amazon-import-guide select, .amazon-import-guide iframe')).to_have_count(0)
-    for step, text in [('market', '最终扣款币种'), ('address', 'China（中国）'), ('size', 'Size chart'), ('seller', '不等于 Amazon 自营'), ('delivery', '都不保证这件商品能直邮中国'), ('fees', '没有列出进口费用，不代表免税或全部税费已预付'), ('payment', '跨境退货运费由谁承担'), ('aftercare', 'Your Orders')]:
-        detail = page.locator(f'[data-amazon-step="{step}"]')
-        if detail.get_attribute('open') is None:
-            summary = detail.locator('summary')
-            summary.focus(); page.keyboard.press('Enter')
-        expect(detail).to_have_attribute('open', '')
-        expect(detail.locator('.amazon-step-body')).to_be_visible()
-        expect(detail.locator('.amazon-step-body')).to_contain_text(text)
-        expect(page.locator('.amazon-guide-step[open]')).to_have_count(1)
-        assert page.locator('#sheetBody').evaluate('(el) => el.scrollWidth <= el.clientWidth')
-        if step == 'fees':
-            detail.scroll_into_view_if_needed()
-            page.screenshot(path=str(OUT/f'amazon_import_fees_{mode}.png'))
-    page.locator('.amazon-help-sources summary').click()
-    expect(page.locator('.amazon-help-sources')).to_contain_text('美国、德国、日本站具体帮助本次未能完成核验')
-    expect(page.locator('[data-amazon-help-link]')).to_have_count(4)
-    for key, href in AMAZON_HELP.items():
-        help_link = page.locator(f'[data-amazon-help-link="{key}"]')
-        expect(help_link).to_have_attribute('href', href)
-        expect(help_link).to_have_attribute('target', '_self')
-    help_link = page.locator('[data-amazon-help-link="seller"]')
-    help_link.click()
-    assert_exit_dialog(page, AMAZON_HELP['seller'], official=False)
-    cancel_exit_dialog(page)
-    expect(help_link).to_be_focused()
+    expect(page.locator('#amazonChannels,.amazon-market,[data-amazon-search-link]')).to_have_count(0)
     expect(page).to_have_url(base)
-    help_link.click(button='middle')
-    confirm_exit_dialog(page, AMAZON_HELP['seller'], official=False)
-    expect(page).to_have_url(AMAZON_HELP['seller']); assert len(context.pages) == 1
-    page.go_back(wait_until='networkidle')
-    expect(page.locator('#q')).to_have_value('Stamp Hoodie')
-    assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
-    page.locator('#amazonChannels').click()
-    checks.append(mode+': eight-step Amazon import accordion supports keyboard and touch, narrow layouts, specific item/address checks, FBA distinction, unprepaid tax warning, payment and returns checklist; verified UK source scope and same-tab help Cancel/Continue; no personal-data form')
-    page.keyboard.press('Escape')
-    expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-    expect(page.locator('#amazonChannels')).to_be_focused()
-    page.locator('#amazonChannels').click()
-    # Wrong domains, credentials, affiliate parameters and altered search queries never prompt or navigate.
-    link = page.locator('[data-amazon-search-link]').first
-    original_url = link.get_attribute('href')
-    dialogs = []
-    def reject_unexpected(dialog):
-        dialogs.append(dialog.message)
-        dialog.dismiss()
-    page.on('dialog', reject_unexpected)
-    for bad in ['https://www.amazon.com.evil.example/s?k=road', 'https://www.amazon.com@evil.example/s?k=road', original_url+'&tag=affiliate-20', original_url+'&k=other', 'javascript:alert(1)']:
-        link.evaluate('(el, href) => el.setAttribute("href", href)', bad)
-        link.click()
-        expect(page).to_have_url(base)
-        expect(page.locator('#registrationInterstitial')).to_have_count(0)
-        assert_exit_closed(page)
-    link.evaluate('(el, href) => el.setAttribute("href", href)', original_url)
-    page.remove_listener('dialog', reject_unexpected)
-    assert not dialogs, dialogs
-    for market_index, (code, host, queries) in enumerate(AMAZON_SEARCHES):
-        for category_index, (category, query) in enumerate(zip(['jerseys', 'bibs'], queries)):
-            link = page.locator(f'[data-amazon-search-link="{code}_{category}"]')
-            href = link.get_attribute('href')
-            parsed = urlparse(href)
-            assert parsed.scheme == 'https' and parsed.netloc == host and parsed.path == '/s'
-            assert parse_qs(parsed.query) == {'k': [query]} and not parsed.fragment
-            expect(link).to_have_attribute('target', '_self')
-            if market_index == 0 and category_index == 0:
-                link.click(modifiers=['Control'])
-            elif market_index == 0 and category_index == 1:
-                link.click(button='middle')
-            elif market_index == 1 and category_index == 0:
-                link.focus(); page.keyboard.press('Enter')
-            else:
-                link.click()
-            expect(page).to_have_url(base)
-            expect(page.locator('#registrationInterstitial')).to_be_visible()
-            expect(page.locator('#registrationInterstitial [data-registration-source]')).to_have_attribute('data-registration-source', code)
-            assert len(context.pages) == 1
-            page.locator('#registrationCancel').click()
-            expect(page.locator('.amazon-market')).to_have_count(4)
-            expect(page.locator('#registrationInterstitial')).to_have_count(0)
-            page.locator(f'[data-amazon-search-link="{code}_{category}"]').click()
-            open_final_exit(page, href, official=True)
-            cancel_exit_dialog(page)
-            expect(page).to_have_url(base)
-            expect(page.locator('.amazon-market')).to_have_count(4)
-            page.locator(f'[data-amazon-search-link="{code}_{category}"]').click()
-            open_final_exit(page, href, official=True)
-            confirm_exit_dialog(page, href, official=True)
-            expect(page).to_have_url(href)
-            assert len(context.pages) == 1
-            page.go_back(wait_until='networkidle')
-            expect(page).to_have_url(base)
-            expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-            if market_index == 0 and category_index == 0:
-                page.reload(wait_until='networkidle')
-                expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-            expect(page.locator('#q')).to_have_value('Stamp Hoodie')
-            expect(page.locator('#browseLabel')).to_have_text(return_label)
-            expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
-            expect(page.locator('.card')).to_have_count(1)
-            expect(page.locator('#messageBadge')).to_have_text(initial_badge)
-            assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
-            page.locator('#amazonChannels').click()
-            expect(page.locator('.amazon-market')).to_have_count(4)
-    page.locator('#close').click()
-    expect(page.locator('#amazonChannels')).to_be_focused()
+    assert len(context.pages) == 1
+    assert_exit_closed(page)
     page.reload(wait_until='networkidle')
+    expect(page.locator('#amazonChannels,.amazon-market,[data-amazon-search-link]')).to_have_count(0)
     expect(page.locator('#q')).to_have_value('Stamp Hoodie')
     expect(page.locator('#browseLabel')).to_have_text(return_label)
     expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
     expect(page.locator('.card')).to_have_count(1)
     expect(page.locator('#messageBadge')).to_have_text(initial_badge)
     assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == saved_read
-    checks.append(mode+': Amazon four official sites/eight category searches; accurate disclosure; exact allowlist rejects tampering; full disclaimer Cancel/Continue; click/modifier/middle/keyboard same-tab; Back/reload retains source/category/query/read state; Close/Escape restores focus')
+    checks.append(mode+': no standalone Amazon navigation/search cards before or after reload; product scope and read state preserved')
 
 
 def exercise_group_entry(page, context, base, mode, return_label, checks):
@@ -533,7 +394,7 @@ def main():
                 cancel_purchase_to_detail(page)
                 expect(page.locator('[data-variant=S]')).to_have_attribute('aria-pressed','true')
                 page.locator('#close').click()
-                exercise_amazon_searches(page, context, base, mode, return_label, checks)
+                assert_no_amazon_search_module(page, context, base, mode, return_label, checks)
                 exercise_group_entry(page, context, base, mode, return_label, checks)
                 page.locator('#clear').click();expect(page.locator('#q')).to_have_value('');assert_card_ids(page, scoped_ids + ['search-other'])
                 checks.append(mode+': search Stamp Hoodie narrows the clothing/source scope to one exact product; explicit route and registration Cancel/Continue use exact same-tab URL; Back/reload restores selected route, query/results, source/size/read state and working clear control')

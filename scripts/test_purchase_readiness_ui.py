@@ -72,17 +72,10 @@ def main():
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
                 assert_exit_closed(page)
-                page.locator('#amazonChannels').click()
-                assert_exit_closed(page)
-                expect(page.locator('.amazon-market .payment-feasibility')).to_have_count(4)
-                expect(page.locator('.amazon-market .purchase-readiness,.amazon-market .registration-help')).to_have_count(0)
-                expect(page.locator('.amazon-market [data-china-card-status=unknown]')).to_have_count(4)
-                for card in page.locator('.amazon-market').all():
-                    expect(card.locator('.payment-feasibility')).to_contain_text('中国发行卡')
-                    expect(card.locator('.payment-feasibility')).to_contain_text('不保证')
-                for country in ['德国站', '日本站']:
-                    expect(page.locator('.amazon-market').filter(has=page.locator('.amazon-country', has_text=country)).locator('.payment-feasibility')).to_contain_text('历史资料，当前待核实')
+                expect(page.locator('#amazonChannels,.amazon-market,[data-amazon-search-link]')).to_have_count(0)
                 assert external == []
+                # Isolated retained help component: no public Amazon entry is restored.
+                page.evaluate("openPanel('转运费用说明', forwardingExplainerMarkup())")
                 explain = page.locator('.forwarding-explainer')
                 explain.locator('>summary').focus()
                 page.keyboard.press('Enter')
@@ -186,7 +179,7 @@ def main():
                 assert json.dumps(state['detail']['offers'], sort_keys=True) == unchanged
                 page.keyboard.press('Escape')
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
-                checks.append(mode + ': four compact Amazon payment strips, historical evidence, no early registration, China-card caveats, route-scoped EUR shipping and prohibited direct/forwarding choices, retailer isolation, forwarding costs, four numbered explanations with exact domain and target label, text fallback, internal navigation without prompts, keyboard focus trap and Escape, no overflow at 320px, live href tamper blocks confirmation, guarded same-tab Cancel/Continue/Back and unchanged offers')
+                checks.append(mode + ': no standalone Amazon search module; isolated forwarding-help safety component, no early registration, China-card caveats, route-scoped EUR shipping and prohibited direct/forwarding choices, retailer isolation, forwarding costs, four numbered explanations with exact domain and target label, text fallback, internal navigation without prompts, keyboard focus trap and Escape, no overflow at 320px, live href tamper blocks confirmation, guarded same-tab Cancel/Continue/Back and unchanged offers')
                 context.close()
             browser.close()
         assert not errors, errors

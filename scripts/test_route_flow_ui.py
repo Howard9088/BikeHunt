@@ -240,23 +240,9 @@ def main():
                 # Fresh stock metadata remains untouched by choosing a route.
                 assert state['detail'] == baseline
                 page.locator('#close').click()
-                page.locator('#amazonChannels').click()
-                assert_no_early_registration(page)
-                page.locator('[data-amazon-search-link="amazon_jp_jerseys"]').click()
-                expect(page.locator('#registrationInterstitial')).to_be_visible()
-                expect(page.locator('[data-registration-source="amazon_jp"][data-registration-market="日本站"]')).to_have_count(1)
-                expect(page.locator('[data-registration-source="amazon_us"]')).to_have_count(0)
-                assert_exit_closed(page)
-                # The actual encoded URL comes from the trusted search fixture.
-                amazon_target = page.evaluate('registrationExitContext.url')
-                open_final_exit(page, amazon_target, official=True)
-                expect(page.locator('#externalExitImage')).to_have_attribute('src', page.evaluate('AMAZON_CHANNEL_LOGO_URL'))
-                cancel_exit_dialog(page, escape=True)
-                expect(page.locator('[data-amazon-search-link="amazon_jp_jerseys"]')).to_be_focused()
-                expect(page.locator('.amazon-market')).to_have_count(4)
+                expect(page.locator('#amazonChannels,.amazon-market,[data-amazon-search-link]')).to_have_count(0)
                 assert_no_early_registration(page)
                 # Stale stock can only plan a route, then recheck at the exact official page.
-                page.locator('#close').click()
                 state['detail']['offers'][0]['offer']['fetched_at'] = '2000-01-01T00:00:00Z'
                 page.locator('.card .compare-button').first.click()
                 page.locator('[data-variant="S"]').click()
@@ -269,7 +255,7 @@ def main():
                 expect(page.locator('#registrationInterstitial')).to_be_visible()
                 assert len(outbound) == 1
                 page.screenshot(path=str(OUT / f'purchase_registration_{mode}.png'))
-                checks.append(mode + ': compact payment after size; exact three routes; prohibited disabled/unknown planning; registration only after route; four numbered modal explanations and exact domain/labels; selected image and failure fallback; full disclosure; Escape/focus trap; stock and URL revalidation; same-tab exact URL; cancel/back/reload preserve source, offer, size and route; Amazon scope; stale stock reference stage; no early merchant request')
+                checks.append(mode + ': compact payment after size; exact three routes; prohibited disabled/unknown planning; registration only after route; four numbered modal explanations and exact domain/labels; selected image and failure fallback; full disclosure; Escape/focus trap; stock and URL revalidation; same-tab exact URL; cancel/back/reload preserve source, offer, size and route; no standalone Amazon search module; stale stock reference stage; no early merchant request')
                 context.close()
             browser.close()
         assert errors == [], errors

@@ -5,7 +5,7 @@ const home=fs.readFileSync('web/index.html','utf8');
 assert.ok(!home.includes('wechatReminder'));assert.ok(!flows.includes('showWechat'));
 assert.match(home, /id="wechatCommunity" class="community-primary">加入骑游海淘交流群<\/button>/);
 assert.ok(home.indexOf('id="wechatCommunity"') < home.indexOf('</header>'), 'Community entry stays prominently in the header');
-assert.ok(home.includes('id="priceMessages"'));assert.ok(home.includes('id="amazonChannels"'));
+assert.ok(home.includes('id="priceMessages"'));assert.ok(!home.includes('id="amazonChannels"'),'Marketplaces are product purchase channels, not standalone search navigation');
 function section(source,start,end){return source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)))}
 function freshCard(row){return {product_id:row.name+'-'+row.brand,stock_state:'in_stock',reference_stock:'in_stock',reference_collection_state:'current',reference_data_kind:'live_snapshot',fetched_at:new Date().toISOString(),reference_offer_id:'fixture-offer',reference_variant_id:'M',reference_source:'Fixture',reference_url:'https://merchant.example/item',reference_price:{amount:10,currency:'USD'},reference_cny:70,...row};}
 function harness(saved=null){

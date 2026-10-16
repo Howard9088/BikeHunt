@@ -323,7 +323,7 @@ function guardAmazonSearchExit(event){
   const search=allowedAmazonSearch(link);if(!search)return;
   if(typeof openAmazonRegistration==='function')openAmazonRegistration(search);
 }
-document.getElementById('amazonChannels').onclick=showAmazonChannels;
+// Standalone marketplace search navigation is retired; retained helpers are not public entrances.
 document.addEventListener('click',guardAmazonSearchExit);
 document.addEventListener('auxclick',guardAmazonSearchExit);
 document.addEventListener('click',guardAmazonHelpExit);

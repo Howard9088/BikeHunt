@@ -29,7 +29,7 @@ ctx.guideContext=null;ctx.guardPurchaseExit(event);assert.equal(prevented,2);ass
 console.log('Safety regression: fresh/expired/soldout/unknown/retained guards, intercepted staged purchase, logo and labels passed');
 
 // Amazon entrances must be exact fixed searches, not catalogue offers.
-const amazonSource=flows.slice(flows.indexOf('const AMAZON_SEARCH_MARKETS='),flows.indexOf("document.getElementById('amazonChannels').onclick"));
+const amazonSource=flows.slice(flows.indexOf('const AMAZON_SEARCH_MARKETS='),flows.indexOf("// Standalone marketplace search navigation is retired;"));
 let amazonSaved=0,amazonPrevented=0,amazonPanel='',amazonNavigated=[],amazonStages=[],amazonOpen=true,amazonConnected=true;
 const amazonSheet={classList:{contains:()=>amazonOpen}},amazonBody={querySelectorAll:()=>[],contains:()=>amazonConnected};
 const amazonContext={URL,URLSearchParams,sheet:amazonSheet,document:{currentScript:{src:'https://bikehunt.example/BikeHunt/web/flows.js?v=release'},getElementById:id=>id==='sheet'?amazonSheet:amazonBody},PURCHASE_DISCLAIMER:'full disclaimer sentinel',e:value=>String(value),
@@ -81,7 +81,8 @@ for(const country of ['美国站','英国站','德国站','日本站'])assert.ok
 assert.equal((amazonPanel.match(/class="amazon-channel-fallback">Amazon/g)||[]).length,4);
 assert.ok(amazonPanel.includes('BikeHunt 与 Amazon 无合作或隶属关系'));
 assert.ok(!/<a[^>]*>\s*(?:<span[^>]*>\s*)?<img[^>]*amazon-channel-logo/.test(amazonPanel));
-assert.ok(index.includes('id="amazonChannels">Amazon购买途径</button>'));
+assert.ok(!index.includes('id="amazonChannels"'),'No standalone Amazon search entrance');
+assert.ok(!flows.includes("getElementById('amazonChannels')"),'No obsolete navigation binding');
 console.log('Amazon safety: eight fixed official category searches, honest labels, exact allowlist, URL/key tampering, registration-first dispatch for click/modifier/middle and no premature navigation passed');
 
 // The guide is educational content only. References have a separate exact allowlist.

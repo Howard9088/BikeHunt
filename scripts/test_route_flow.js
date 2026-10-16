@@ -37,7 +37,7 @@ function harness(){
  vm.runInContext(fs.readFileSync('web/public-visibility.js','utf8'),c);
  vm.runInContext(slice(gallery,'function inventoryVerified(','function offerMarkup('),c);
  vm.runInContext(readiness.replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.input=policy;vm.runInContext('readinessData=validateReadinessData(input);readinessState="ready"',c);
- vm.runInContext(slice(flows,'const AMAZON_SEARCH_MARKETS=',"document.getElementById('amazonChannels').onclick"),c);
+ vm.runInContext(slice(flows,'const AMAZON_SEARCH_MARKETS=',"// Standalone marketplace search navigation is retired;"),c);
  vm.runInContext(slice(flows,'async function startGuide(','function updateGuideVerificationMetadata('),c);
  vm.runInContext(source,c);
  return {c,elements,nodes,navigated,prompts,requested,loaded,historyCalls,get html(){return html},get title(){return title},get saved(){return saved},get focused(){return focused},setNow:value=>now=value,setAnswer:value=>exit.setAnswer(value),setResult:value=>loadResult=value,get reg(){return vm.runInContext('registrationExitContext',c)},open(d=detail(),options={}){c.currentProduct=d;c.guideContext={detail:d,quote:d.offers[0],route:null,reference:false,book:{documents:[]},...options};c.renderRouteComparison();return c.guideContext},close(){open=false;c.clearPurchaseState();render('')}};
