@@ -61,6 +61,37 @@ function registrationEntry(sourceCode,salesRegion,scope='market'){
   return registrationData.entries.find(entry=>registrationKey(entry.sourceCode,entry.salesRegion,entry.scope)===key)||null;
 }
 function registrationScopeLabel(salesRegion,scope){return scope==='public_account'?'账户注册':registrationText(salesRegion)?salesRegion:'账户注册'}
+
+/* Untested markets keep a clearly labeled, read-only illustration, never a fake screenshot. */
+function registrationWords(code,market){
+  const region=String(market??'');
+  if(code==='amazon_jp'||(code==='rapha'&&/日本|Japan/i.test(region)))return ['Account / アカウント','Sign in / サインイン','Create account / 新規登録'];
+  if(code==='amazon_de')return ['Konto / Account','Anmelden / Sign in','Konto erstellen / 注册'];
+  if(code==='rapha_kr'||/韩国|Korea|한국/.test(region))return ['Account / 계정','로그인 / Sign in','회원가입 / Register'];
+  return ['Account / 账户','Sign in / 登录','Create account / Register'];
+}
+function registrationSchematicMarkup(code,market){
+  const escape=registrationEscape,words=registrationWords(code,market);
+  const extra=code==='rapha'?'Rapha 的普通账户、RCC 付费会员和邮件订阅不是同一种注册。':
+    code==='decathlon'?'此处是 Decathlon CMA CGM 车队商城，不能预设迪卡侬零售账户通用。':
+    String(code??'').startsWith('amazon_')?'Amazon 不同国家站要分别核对，不把一站的注册步骤当成其他站已核实。':
+    '若商家提供游客结账，不必为了购买强制注册。';
+  const pictures=[
+    '<div class="registration-demo-window"><div class="registration-demo-bar"><span>官网导航 · 示意</span><span>☰</span></div><div class="registration-demo-ghost"></div><div class="registration-demo-target">'+escape(words[0])+'<span>①</span></div><div class="registration-demo-muted">商品 · 购物车 · 账户</div></div>',
+    '<div class="registration-demo-window"><div class="registration-demo-bar"><span>账户页面 · 示意</span><span>×</span></div><div class="registration-demo-subtle">'+escape(words[1])+'</div><div class="registration-demo-muted">已有账户可直接登录</div><div class="registration-demo-target">'+escape(words[2])+'<span>②</span></div></div>',
+    '<div class="registration-demo-window"><div class="registration-demo-bar"><span>新用户页面 · 示意</span><span>×</span></div><div class="registration-demo-field">Email / 邮箱</div><div class="registration-demo-field">Name / 姓名（如要求）</div><div class="registration-demo-field">Password / 验证（如要求）</div><div class="registration-demo-target">继续 / Continue<span>③</span></div></div>'
+  ];
+  const titles=['找到账户入口','选择新用户注册','核对资料与验证'];
+  const help=['在原站页头或菜单中寻找账户／登录入口，位置以该站当前页面为准。',
+    '有账户直接登录；需要新账户时，再寻找注册入口。','只在官网填写资料，邮箱验证、密码及协议按实际要求办理。'];
+  return '<section class="registration-schematic" aria-label="注册操作步骤示意，非官网截图">'+
+    '<div class="registration-schematic-heading"><strong>3 步中文注册图解</strong><span>示意 · 非官网截图</span></div>'+
+    '<p class="registration-schematic-note">本商家／市场暂时没有已核实的真实注册截图。以下<strong>画面是辅助理解的示意图</strong>，外文只是可参考的常见按钮名称，不能当作原站实拍。</p>'+
+    '<ol class="registration-schematic-steps">'+pictures.map((picture,i)=>
+      '<li class="registration-schematic-step"><div class="registration-schematic-number">'+(i+1)+'</div><strong>'+titles[i]+'</strong>'+picture+'<p>'+help[i]+'</p></li>').join('')+'</ol>'+
+    '<p class="registration-schematic-foot">'+extra+' 注册不证明中国银行卡可用或支持直邮中国，结账时仍要核实。</p></section>';
+}
+
 function registrationImageMarkup(frame){
   const escape=registrationEscape;
   return '<div class="registration-image-wrap"><img data-registration-image src="'+escape(new URL(frame.asset,REGISTRATION_BASE).href)+'" alt="'+escape(frame.alt)+'" loading="lazy" decoding="async">'+frame.annotations.map((note,index)=>'<span class="registration-annotation" aria-hidden="true" style="left:'+note.x+'%;top:'+note.y+'%;width:'+note.width+'%;height:'+note.height+'%"><span>'+(index+1)+'</span></span>').join('')+'</div><p class="registration-image-error" role="status" hidden>图片暂时无法显示，请参考下方注册步骤。</p>';
@@ -75,14 +106,14 @@ function closeRegistrationZoom(event){
 }
 function registrationContent(sourceCode,salesRegion,scope='market'){
   const escape=registrationEscape,scopeLabel=registrationScopeLabel(salesRegion,scope),entry=registrationEntry(sourceCode,salesRegion,scope);
-  if(!entry||entry.status!=='verified')return '';
+  if(!entry||entry.status!=='verified')return scope==='market'?registrationSchematicMarkup(sourceCode,salesRegion):'';
   return '<p class="registration-scope">'+escape(scopeLabel)+(scope!=='public_account'&&entry.marketLabel!==scopeLabel?' · '+escape(entry.marketLabel):'')+'</p>'+
     '<p>'+(scope==='public_account'?'以下图解介绍商家账户注册。配送地区与购买条件请在结账时确认。':'请按所选商店及地区的页面操作。')+'页面可能更新，请以商家当前页面为准。</p>'+
     entry.frames.map(frame=>'<figure class="registration-figure"><figcaption>'+escape(frame.caption)+'</figcaption>'+registrationFrameMarkup(frame)+'<ol class="registration-annotation-list">'+frame.annotations.map(note=>'<li><strong>'+escape(note.label)+'</strong>：'+escape(note.description)+'</li>').join('')+'</ol><p class="registration-meta">更新于 '+escape(frame.verifiedAt.slice(0,10))+'</p><p class="registration-source">图片来源：'+escape(frame.sourceUrl)+'</p></figure>').join('');
 }
 function registrationGuideMarkup(sourceCode,salesRegion,scope='market'){
   const escape=registrationEscape,market=typeof salesRegion==='string'?salesRegion:'',entry=registrationEntry(sourceCode,scope==='public_account'?null:market,scope);
-  return '<details'+(!entry||entry.status!=='verified'?' hidden':'')+' class="registration-guide" data-registration-source="'+escape(sourceCode)+'" data-registration-market="'+escape(market)+'" data-registration-scope="'+escape(scope)+'"><summary>'+(scope==='public_account'?'账户注册图解':'注册图解 · '+escape(registrationScopeLabel(market,scope)))+'</summary><div class="registration-content">'+registrationContent(sourceCode,scope==='public_account'?null:market,scope)+'</div></details>';
+  return '<details'+(scope==='public_account'&&(!entry||entry.status!=='verified')?' hidden':'')+' class="registration-guide" data-registration-source="'+escape(sourceCode)+'" data-registration-market="'+escape(market)+'" data-registration-scope="'+escape(scope)+'"><summary>'+(scope==='public_account'?'账户注册图解':'注册图解 · '+escape(registrationScopeLabel(market,scope)))+'</summary><div class="registration-content">'+registrationContent(sourceCode,scope==='public_account'?null:market,scope)+'</div></details>';
 }
 function registrationPublicAccountMarkup(sourceCode){
   // This is an explicitly separate section, never an exact-market fallback.
@@ -95,7 +126,7 @@ function registrationHelpMarkup(sourceCode,salesRegion){
 function refreshRegistrationGuides(){
   document.querySelectorAll('.registration-guide').forEach(node=>{
     const scope=node.dataset.registrationScope,market=scope==='public_account'?null:node.dataset.registrationMarket;
-    const entry=registrationEntry(node.dataset.registrationSource,market,scope);node.hidden=!entry||entry.status!=='verified';
+    const entry=registrationEntry(node.dataset.registrationSource,market,scope);node.hidden=scope==='public_account'&&(!entry||entry.status!=='verified');
     const content=node.querySelector('.registration-content');if(content)content.innerHTML=registrationContent(node.dataset.registrationSource,market,scope);
   });
   document.querySelectorAll('[data-registration-help]').forEach(node=>{
