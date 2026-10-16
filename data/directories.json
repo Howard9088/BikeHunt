@@ -212,7 +212,10 @@
       "status": "official_link_found",
       "shop_evidence_url": "https://www.specialized.com/us/en/shop/sale",
       "road_reference": true,
-      "reference_note": "美国站仅寄美国住宅或美国零售店，不支持直接寄中国；库存、支付和完整费用待核实。"
+      "reference_note": "美国站仅寄美国住宅或美国零售店，不支持直接寄中国；库存、支付和完整费用待核实。",
+      "source_codes": [
+        "specialized"
+      ]
     },
     {
       "code": "canyon",
@@ -223,7 +226,10 @@
       "status": "official_link_found",
       "shop_evidence_url": "https://www.canyon.com/en-us/outlet-bikes/",
       "road_reference": true,
-      "reference_note": "美国站报价；中国直邮和转运许可均待核实。美国本土运费不能当作中国运费。Outlet 退货条件有冲突，请逐款确认。"
+      "reference_note": "美国站报价；中国直邮和转运许可均待核实。美国本土运费不能当作中国运费。Outlet 退货条件有冲突，请逐款确认。",
+      "source_codes": [
+        "canyon"
+      ]
     },
     {
       "code": "colnago",
@@ -234,7 +240,10 @@
       "status": "official_link_found",
       "shop_evidence_url": "https://www.colnago.com/en-us/collections/bikes",
       "road_reference": true,
-      "reference_note": "未找到已核实的原价／现价折扣对。美国路径页面的地区提示不一致，实际市场与币种仍需核实。"
+      "reference_note": "未找到已核实的原价／现价折扣对。美国路径页面的地区提示不一致，实际市场与币种仍需核实。",
+      "source_codes": [
+        "colnago"
+      ]
     }
   ],
   "teams": [

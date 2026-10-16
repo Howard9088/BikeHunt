@@ -12,7 +12,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from app.collectors.remaining import parse_redbull_product, parse_topfanz
+from app.collectors.remaining import (
+    parse_redbull_product,
+    parse_topfanz,
+    parse_canyon_product,
+    parse_colnago_product,
+)
 from test_saved_team_catalogs import pack
 from app.catalog.storage import OfferRepository, atomic_json
 from app.promotion import safe_https
@@ -101,6 +106,81 @@ def top_html(edit=None):
 
 
 class RemainingTests(unittest.TestCase):
+    def test_canyon_capacity_variants_bind_query_sku_and_market(self):
+        url = "https://www.canyon.com/en-us/gear/accessories/bags/mock/9102039.html"
+        target = url + "?dwvar_9102039_pv_volumen=1.90%20l"
+        group = {
+            "@type": "ProductGroup",
+            "url": url,
+            "name": "Canyon Mock Bag",
+            "brand": {"name": "Canyon"},
+            "productGroupID": "9102039",
+            "hasVariant": [
+                {
+                    "@type": "Product",
+                    "name": "Canyon Mock Bag",
+                    "sku": "10011121",
+                    "url": target,
+                    "additionalProperty": [{"name": "Volume", "value": "1,90 l"}],
+                    "offers": {
+                        "url": target,
+                        "price": "48.95",
+                        "priceCurrency": "USD",
+                        "availability": "https://schema.org/InStock",
+                    },
+                }
+            ],
+        }
+
+        def html():
+            return '<script type="application/ld+json">' + json.dumps(group) + "</script>"
+
+        source = {"code": "canyon", "name": "Canyon", "brand": "Canyon"}
+        row = parse_canyon_product(html(), source, url, NOW)[0]
+        self.assertEqual(row.identity.size, "容量 1,90 l")
+        self.assertEqual(row.stock, "in_stock")
+        self.assertIsNone(row.stock_quantity)
+        group["hasVariant"][0]["additionalProperty"][0]["value"] = "2,30 l"
+        self.assertEqual(parse_canyon_product(html(), source, url, NOW), [])
+
+    def test_colnago_case_sensitive_official_size_urls_and_missing_sku(self):
+        url = "https://www.colnago.com/en-us/products/mock-jersey"
+        product = {
+            "@type": "Product",
+            "url": url,
+            "name": "Mock Jersey",
+            "brand": {"name": "Colnago"},
+            "offers": [
+                {
+                    "sku": "000059670",
+                    "url": url + "?Size=XS",
+                    "price": 207,
+                    "priceCurrency": "USD",
+                    "availability": "https://schema.org/InStock",
+                },
+                {
+                    "sku": "000059671",
+                    "url": url + "?Size=S",
+                    "price": 207,
+                    "priceCurrency": "USD",
+                    "availability": "https://schema.org/OutOfStock",
+                },
+            ],
+        }
+
+        def html():
+            return '<script type="application/ld+json">' + json.dumps(product) + "</script>"
+
+        source = {"code": "colnago", "name": "Colnago"}
+        rows = parse_colnago_product(html(), source, url, NOW)
+        self.assertEqual(
+            [(r.identity.size, r.stock) for r in rows], [("XS", "in_stock"), ("S", "out_of_stock")]
+        )
+        product["offers"][0]["url"] = url + "?size=XS"
+        self.assertEqual(len(parse_colnago_product(html(), source, url, NOW)), 2)
+        product["offers"][1].pop("sku")
+        self.assertEqual(parse_colnago_product(html(), source, url, NOW), [])
+
     def test_legacy_category_quote_is_replaced_only_by_its_exact_product_refresh(self):
         row = parse_redbull_product(red_html(), SOURCE, RED_URL, NOW)[0]
         category = "https://www.redbullshop.com/en-jp/c/redbullborahansgrohe/"

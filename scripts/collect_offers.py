@@ -31,6 +31,8 @@ from app.collectors.discovery import SourceSpec, discover
 from app.collectors.rendered import collect_variants, kask_page_action, parse_pissei, parse_kask_rendered
 from app.collectors.rendered import parse_unox
 from app.collectors.remaining import parse_redbull_product, parse_topfanz, topfanz_page_action
+from app.collectors.remaining import parse_canyon_product, parse_colnago_product
+from app.collectors.specialized import parse_specialized
 from scrapling.fetchers import FetcherSession
 from app.collectors.transport import certificate_bundle
 
@@ -124,7 +126,7 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
             raw_path = ROOT / "data" / "raw" / (code + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + ".html")
             raw_path.parent.mkdir(exist_ok=True)
             raw_path.write_bytes(response.body)
-            parse = {"redbull_product":parse_redbull_product,"topfanz":parse_topfanz,"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
+            parse = {"specialized":parse_specialized,"colnago":parse_colnago_product,"canyon":parse_canyon_product,"redbull_product":parse_redbull_product,"topfanz":parse_topfanz,"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
             parsed = collect_variants(response, source, parse)
             if not parsed and policy.mode == "auto" and response.fetch_mode == "static":
                 response = fetcher.fetch(url, policy=policy.model_copy(update={"mode": "dynamic"}))

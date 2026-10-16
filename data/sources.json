@@ -733,5 +733,56 @@
       "note": "中国发行卡支付条件待核实。"
     },
     "collection_strategy": "rendered_actual_size_selections"
+  },
+  {
+    "code": "colnago",
+    "name": "Colnago 官方商城",
+    "brand": "Colnago",
+    "type": "brand_official",
+    "base_url": "https://www.colnago.com",
+    "enabled": true,
+    "sales_region": "官网实际页面市场及币种；配送另核",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送和费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支付条件待核实。"
+    }
+  },
+  {
+    "code": "canyon",
+    "name": "Canyon 官方商城",
+    "brand": "Canyon",
+    "type": "brand_official",
+    "base_url": "https://www.canyon.com",
+    "enabled": true,
+    "sales_region": "官网实际页面市场及币种；配送另核",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送和费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支付条件待核实。"
+    }
+  },
+  {
+    "code": "specialized",
+    "name": "Specialized 美国官方商城",
+    "brand": "Specialized",
+    "type": "brand_official",
+    "base_url": "https://www.specialized.com",
+    "enabled": true,
+    "sales_region": "US 市场 · USD 商品报价；配送另核",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国大陆配送与费用待核实。"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行卡支付条件待核实。"
+    }
   }
 ]

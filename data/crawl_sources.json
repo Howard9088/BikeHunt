@@ -573,5 +573,61 @@
       "max_products": 3
     },
     "scope_note": "官方车队链接的Topfanz三款骑行袜；实际切换尺码核对独立GTIN、价格和库存数；不代表完整队服目录。"
+  },
+  {
+    "code": "colnago",
+    "domains": [
+      "www.colnago.com"
+    ],
+    "parser": "colnago",
+    "urls": [],
+    "max_products": 8,
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 1,
+      "max_products": 8
+    },
+    "scope_note": "官网男款骑行服饰系列7个已确认型号、最多8件；不采集整车，不代表完整品牌目录。",
+    "discovery": {
+      "catalog_urls": [
+        "https://www.colnago.com/en-us/collections/cycling-apparel-for-men"
+      ],
+      "product_link_pattern": "^/en-us/products/(?:colnago-aerodynamic-ace-(?:jersey|bib-short)|cycling-(?:winter-jacket|long-sleeves-jersey|bib-tights)|colnago-eroica-wool-jersey|white-cycling-socks)$"
+    }
+  },
+  {
+    "code": "canyon",
+    "domains": [
+      "www.canyon.com"
+    ],
+    "parser": "canyon",
+    "urls": [
+      "https://www.canyon.com/en-us/gear/accessories/bags/bikepacking-bikebags-and-panniers/canyon-midloader/9102039.html"
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 1,
+      "max_products": 1
+    },
+    "scope_note": "官网Midloader车包的独立容量规格、SKU、价格和可售状态；不采集整车，不代表完整品牌目录。"
+  },
+  {
+    "code": "specialized",
+    "domains": [
+      "www.specialized.com"
+    ],
+    "parser": "specialized",
+    "urls": [
+      "https://www.specialized.com/us/en/womens-prime-lightweight-short-sleeve-jersey/p/1000097850?color=1000196880-1000097850"
+    ],
+    "fetch_policy": {
+      "mode": "auto",
+      "timeout_ms": 25000,
+      "max_pages": 1,
+      "max_products": 1
+    },
+    "scope_note": "官网特价页的一款Prime女款骑行上衣，两种配色逐尺码SKU、现价原价及独立在线库存数据；不代表完整品牌目录。"
   }
 ]

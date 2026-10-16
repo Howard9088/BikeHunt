@@ -130,6 +130,154 @@ def topfanz_page_action(captures: list[bytes], max_variants: int = 12) -> Callab
     return action
 
 
+def parse_canyon_product(
+    html: str, source: dict, page_url: str, fetched_at: datetime
+) -> list[Offer]:
+    """Keep explicit accessory volumes as separate variants, bound to the official page."""
+    split = urlsplit(page_url)
+    if (
+        split.scheme != "https"
+        or split.hostname != "www.canyon.com"
+        or not split.path.startswith("/en-us/gear/accessories/")
+    ):
+        return []
+    page = Selector(html)
+    groups = []
+    for block in page.css('script[type="application/ld+json"]::text').getall():
+        try:
+            value = json.loads(block)
+            if isinstance(value, dict) and value.get("@type") == "ProductGroup":
+                groups.append(value)
+        except (ValueError, TypeError):
+            continue
+    if len(groups) != 1:
+        return []
+    group = groups[0]
+    base = group.get("productGroupID")
+    if (
+        group.get("url") != page_url.split("?", 1)[0]
+        or (group.get("brand") or {}).get("name") != "Canyon"
+        or not isinstance(base, str)
+        or not re.fullmatch(r"\d+", base)
+        or not split.path.endswith("/" + base + ".html")
+    ):
+        return []
+    variants = group.get("hasVariant")
+    if not isinstance(variants, list) or not 1 <= len(variants) <= 20:
+        return []
+    result = []
+    for variant in variants:
+        props = variant.get("additionalProperty", [])
+        volumes = [p.get("value") for p in props if p.get("name") == "Volume"]
+        if len(volumes) != 1 or not isinstance(volumes[0], str):
+            continue
+        volume = volumes[0]
+        quoted = variant.get("offers") or {}
+        variant_url = variant.get("url", "")
+        target = urlsplit(variant_url)
+        query = parse_qs(target.query)
+        key = "dwvar_" + base + "_pv_volumen"
+        if (
+            target.hostname != split.hostname
+            or target.scheme != "https"
+            or target.path != split.path
+            or set(query) != {key}
+            or query[key] != [volume.replace(",", ".")]
+            or quoted.get("url") != variant_url
+            or not re.fullmatch(r"\d+", str(variant.get("sku", "")))
+        ):
+            continue
+        wrapped = '<script type="application/ld+json">' + json.dumps(variant) + "</script>"
+        rows = parse_jsonld(wrapped, source, page_url, fetched_at)
+        if len(rows) != 1 or rows[0].price.currency != "USD":
+            continue
+        row = rows[0]
+        result.append(
+            row.model_copy(
+                update={
+                    "offer_id": offer_id(source["code"], page_url, variant["sku"]),
+                    "identity": ProductIdentity(
+                        brand="Canyon", model=group["name"], size="容量 " + volume
+                    ),
+                    "name": group["name"],
+                    "family_hint": page_url.split("?", 1)[0],
+                    "sales_region": "US 市场 · " + row.price.currency + " 商品报价；配送另核",
+                    "identity_evidence": "Canyon官方配件ProductGroup；逐SKU、容量选项、规格URL与独立价格和可售状态；不推断库存数量",
+                }
+            )
+        )
+    return result
+
+
+def parse_colnago_product(
+    html: str, source: dict, page_url: str, fetched_at: datetime
+) -> list[Offer]:
+    """Use each public offer's exact case-sensitive size URL and SKU, never a range price."""
+    split = urlsplit(page_url)
+    if (
+        split.scheme != "https"
+        or split.hostname != "www.colnago.com"
+        or not split.path.startswith("/en-us/products/")
+    ):
+        return []
+    page = Selector(html)
+    products = []
+    for text in page.css('script[type="application/ld+json"]::text').getall():
+        try:
+            products.extend(p for p, _ in _nodes(json.loads(text)))
+        except (ValueError, TypeError):
+            continue
+    if (
+        len(products) != 1
+        or products[0].get("url") != page_url.split("?", 1)[0]
+        or (products[0].get("brand") or {}).get("name")
+        not in {"Colnago", "COLNAGO ERNESTO E C. SRL"}
+    ):
+        return []
+    quotes = products[0].get("offers")
+    if not isinstance(quotes, list) or not 1 <= len(quotes) <= 40:
+        return []
+    valid_urls = [
+        q.get("url")
+        for q in quotes
+        if isinstance(q, dict) and re.fullmatch(r"\d{4,20}", str(q.get("sku", "")))
+    ]
+    if len(set(valid_urls)) != len(quotes):
+        return []
+    rows = parse_jsonld(html, source, page_url, fetched_at)
+    result = []
+    for row in rows:
+        target = urlsplit(row.url)
+        query = parse_qs(target.query)
+        size_key = next(iter(query), "")
+        size = query.get(size_key, [])
+        if (
+            target.scheme != "https"
+            or target.hostname != split.hostname
+            or row.url not in valid_urls
+            or target.path != split.path
+            or len(query) != 1
+            or size_key not in {"Size", "size"}
+            or len(size) != 1
+            or not re.fullmatch(r"[A-Za-z0-9 .-]{1,30}", size[0])
+            or row.price.currency != "USD"
+        ):
+            continue
+        result.append(
+            row.model_copy(
+                update={
+                    "identity": row.identity.model_copy(
+                        update={"brand": "Colnago", "size": size[0], "mpn": None}
+                    ),
+                    "family_hint": page_url.split("?", 1)[0],
+                    "sales_region": "US 市场 · USD 商品报价；配送另核",
+                    "identity_evidence": "Colnago官方商品JSON-LD；独立Offer的SKU、Size规格URL、价格和可售状态分别核对；不推断库存数量",
+                }
+            )
+        )
+    return result
+
+
 def _redbull_product(page: Selector) -> dict | None:
     """Decode only the published, anonymous product cache; never execute script."""
     scripts = page.css("script#state-body::text").getall()
