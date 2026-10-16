@@ -2,6 +2,7 @@
 // Dated, read-only policy summaries. These never alter an offer or cost estimate.
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
+  kask:['www.kask.com'],teamcycles:['www.teamcycles.com'],unox:['internshop.no'],canyon:['www.canyon.com'],specialized:['www.specialized.com'],rapha:['support.rapha.cc'],rapha_kr:['support.rapha.cc'],
   redbull:['customerservice.redbullshop.com'],picnic:['teampicnicpostnl.store'],pns:['pasnormalstudios.com'],assos:['www.assos.com'],
   movistar:['gobik.com'],bahrain:['alecycling.com'],
   uae:['www.pissei.com'],fizik:['www.fizik.com','www.iubenda.com'],santini:['www.santinicycling.com'],lidl_trek:['www.santinicycling.com'],
@@ -12,6 +13,14 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  kask:["market", "意大利站 EUR 报价", ["www.kask.com"]],
+  teamcycles:["merchant", null, ["www.teamcycles.com"]],
+  unox:["market", "挪威商城 / NOK 报价", ["internshop.no"]],
+  canyon:["market", "US 市场 · USD 商品报价；配送另核", ["www.canyon.com"]],
+  specialized:["market", "US 市场 · USD 商品报价；配送另核", ["www.specialized.com"]],
+  rapha:["market", "日本站报价", ["www.rapha.cc"]],
+  rapha_kr:["market", "韩国站报价", ["www.rapha.cc"]],
+
   redbull:["market", "日本市场 JPY 报价", ["www.redbullshop.com"]],
   picnic:["market", "US 市场 · EUR 报价；未验证其他市场库存", ["teampicnicpostnl.store"]],
   pns:["market", "欧洲站 EUR 报价", ["pasnormalstudios.com"]],
@@ -181,6 +190,7 @@ function paymentFeasibilityMarkup(offer={}){
   const key=String(++readinessSequence);readinessContexts.set(key,offer);
   return '<div class="payment-feasibility" data-feasibility-context="'+key+'">'+paymentFeasibilityContent(offer)+'</div>';
 }
+
 
 
 

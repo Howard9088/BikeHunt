@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-16-verified-channel-policies-batch4",
+  "revision": "2026-10-16-verified-channel-policies-batch5",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -747,6 +747,224 @@
         "https://www.assos.com/int/customer-service/?section=terms-and-conditions",
         "https://www.assos.com/int/customer-service/?section=shipping",
         "https://www.assos.com/it/customer-service/?section=returns"
+      ]
+    },
+    {
+      "sourceCode": "kask",
+      "scope": "market",
+      "salesRegion": "意大利站 EUR 报价",
+      "merchantHosts": [
+        "www.kask.com"
+      ],
+      "label": "KASK 意大利站",
+      "policyScope": "当前意大利站 EUR 报价；商品及目的地条件须分别核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "意大利站条款列 Visa、Mastercard、American Express、Maestro、验证 PayPal 及 Klarna；中国发行卡授权仍未保证，具体付款资格须结账确认。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "意大利站官方可配送国家名单仅列欧洲地区，并说明未列国家不能配送；中国大陆和香港均不在该站支持范围。该结论限当前意大利站欧元报价，不替其他地区官网作判断。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查意大利站配送及条款，未找到明确商业转运许可；不能把其他欧洲收货地址视为已获准转运。"
+      },
+      "sourceLimitations": "官方条款对支持配送的部分非欧盟目的地写 DDP，但不代表不在配送名单内的中国大陆或香港包税可买。条款允许游客下单。撤回权为收货后 14 天通知，另有 14 天寄回期限；退货费用及安排按国家核对，不能用欧洲规则承诺中国跨境退货免费。商品、地址、支付资格和最终费用仍须符合所选站点规定。",
+      "sources": [
+        "https://www.kask.com/en-it/shipping-countries.html",
+        "https://www.kask.com/en-it/terms-and-conditions.html"
+      ]
+    },
+    {
+      "sourceCode": "teamcycles",
+      "scope": "merchant",
+      "salesRegion": null,
+      "merchantHosts": [
+        "www.teamcycles.com"
+      ],
+      "label": "Teamcycles 英国商店",
+      "policyScope": "英国 Teamcycles 商店政策；商品报价未记录精确市场；商品及目的地条件须分别核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已查条款确认卡支付，但未取得可靠卡组织清单或中国发行卡承诺；付款资格须在实际订单确认。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "官方配送页及 FAQ 仅列英国配送，only UK 声明位于自行车配送部分；当前骑行服报价没有记录精确市场，不能因此推断所有骑行服全球禁寄。中国大陆及香港地址尚未确认，须先询问商家，不能以英镑价格视为海外可购买。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查配送、FAQ 及条款，未找到英国商业转运地址的明确许可；国内配送范围不等于允许转运。"
+      },
+      "sourceLimitations": "FAQ 写满 £100 免邮，配送表多数标准小件写 £150，免邮门槛存在差异，不能给统一金额。收货后 30 天可申请退未使用且原包装标签齐全商品，买家安排并支付退邮，定制品不可退；同一退货页对不换货与只换同款说法不同，具体换货需先确认，可按退后重买安排。融资页面资料也有差异，不能承诺融资资格。中国发行卡、注册资格、强制注册及海外税费已查未找到适用明确说明；尚无中国订单完整费用。",
+      "sources": [
+        "https://www.teamcycles.com/pages/delivery/",
+        "https://www.teamcycles.com/pages/faqs/",
+        "https://www.teamcycles.com/pages/returns/"
+      ]
+    },
+    {
+      "sourceCode": "unox",
+      "scope": "market",
+      "salesRegion": "挪威商城 / NOK 报价",
+      "merchantHosts": [
+        "internshop.no"
+      ],
+      "label": "Uno-X · Internshop 挪威商城",
+      "policyScope": "当前挪威商城 / NOK 报价；商品及目的地条件须分别核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "条款提及卡支付，未确认卡组织或中国发行卡资格；账户及购买资格需要注册码核验。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "官方购买条款明确只在挪威配送，因此当前挪威商城报价不支持中国大陆或香港直邮。账户注册表要求必填注册码，尚未验证中国用户是否能取得有效代码及购买资格。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查购买条款，未找到明确商业转运许可；只在挪威配送不代表允许把订单经第三方转运。"
+      },
+      "sourceLimitations": "官方条款对普通商品列 14 天退货、未使用及原包装要求，购买及退回运费由买家承担；但带 logo 或特殊设计的商品明确不可退换，内衣也不可退。Uno-X 队服不能笼统承诺 14 天可退，须按实际商品确认。公开俱乐部入口可能需要登录及注册码，这属于账户和购买资格条件，不代表已获得购买权限。税费及中国相关成本没有适用明确承诺；未注册、未使用代码或完成结账。",
+      "sources": [
+        "https://internshop.no/kjopsvilkar/",
+        "https://internshop.no/?klubb=109"
+      ]
+    },
+    {
+      "sourceCode": "canyon",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 商品报价；配送另核",
+      "merchantHosts": [
+        "www.canyon.com"
+      ],
+      "label": "Canyon 美国站",
+      "policyScope": "当前US 市场 · USD 商品报价；配送另核；商品及目的地条件须分别核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "美国条款部分付款描述混有欧元及英镑适用条件，不能据此保证当前美元订单的支付方式；中国发行卡支持仍须核实。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "美国站配送范围限美国相关地区，不支持中国大陆或香港直邮。FAQ 与新配送页对阿拉斯加、夏威夷及波多黎各等范围有差异，但均不证明中国地址可用；当前美国美元报价不能当中国订单报价。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "尚未确认本人自购后商业转运的许可。美国条款对通过代购、中间商及进出口商购买自行车的保修和退货权益有限制；这是自行车特定范围的风险提示，不能直接当作当前车包转运已获准或一律禁止。"
+      },
+      "sourceLimitations": "美国本地税费与运费仍需实际地址结账。曾核对的美国 Outlet 页面写 final sale 不可退，同时存在 30 天试用等通用提示，退货条件有冲突；这些 Outlet/自行车说明不能自动套用当前采集的 Midloader 车包。须按实际车包商品页及订单确认退货期限、费用和资格，不能承诺一律 30 天可退，也不认定当前车包必然不可退。账户规则不等于所有订单必须注册；其他车架商品的会员提示不能用于当前车包。",
+      "sources": [
+        "https://www.canyon.com/en-us/customer-service/faq/?fdid=sf-shipping-pickup",
+        "https://www.canyon.com/en-us/customer-service/shipping-delivery/shipping.html",
+        "https://www.canyon.com/en-us/outlet-bikes/?srule=sort_last_added",
+        "https://www.canyon.com/en-us/about-content/terms-conditions.html"
+      ]
+    },
+    {
+      "sourceCode": "specialized",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 商品报价；配送另核",
+      "merchantHosts": [
+        "www.specialized.com"
+      ],
+      "label": "Specialized 美国站",
+      "policyScope": "当前US 市场 · USD 商品报价；配送另核；商品及目的地条件须分别核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "美国站 FAQ 说明通常接受美国发行的主要信用卡，且要求美国账单与配送地址；另列 PayPal、Apple Pay，完整选项以结账为准。未保证中国发行卡可用，也不据通常条件断言每张中国卡一定拒付。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "美国站仅送美国住宅邮寄地址或美国零售商，不支持中国大陆及香港直邮。当前美国商品报价不能用于保证其他国家官网的库存、价格或配送资格。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "官网排除 APO/FPO、邮政信箱及类似 mail center 地址；商业转运仓的具体许可未证实，不能认为美国地址都可收货或绕过地址限制。"
+      },
+      "sourceLimitations": "美国站付款条件包含美国发行卡及美国账单、配送地址，钱包出现也不消除资格核验。价格一般不含适用税及运费，结账加收相应费用，不能编作中国进口包税。美国线上订单可于收货后 30 天内发起免费退货，须全新未用、原包装附件标签齐全；个性化、水壶及 final sale 商品通常不退，制造缺陷另论。不直接换货，美国免费退货不可外推中国跨境回邮。已查 FAQ 和条款，未找到必须注册或明确游客购买资格的说明。",
+      "sources": [
+        "https://www.specialized.com/us/en/faq",
+        "https://www.specialized.com/us/en/terms-of-use",
+        "https://www.specialized.com/us/en/returns-policy"
+      ]
+    },
+    {
+      "sourceCode": "rapha",
+      "scope": "market",
+      "salesRegion": "日本站报价",
+      "merchantHosts": [
+        "www.rapha.cc"
+      ],
+      "label": "Rapha 日本站",
+      "policyScope": "当前日本站报价；商品及目的地条件须分别核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "官方付款帮助列主要卡组织，银联仅信用卡；完整逐市场方式仍须结账确认，账单资料须匹配银行记录，不保证中国发行卡或大陆账户授权成功。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官方亚太配送资料列香港路线，但未单独明确中国大陆；Rest of Asia 不能代替大陆地址验证。当前日本或韩国站报价不能按原价视为香港或中国大陆订单，须切换目标地区重新核对。"
+      },
+      "forwarding": {
+        "status": "prohibited",
+        "note": "官方明确不寄货运转运商、储物柜、仓库、邮政信箱、军事基地及类似第三方地址，相关订单可能取消退款；不建议通过这些地址绕过地区限制。"
+      },
+      "sourceLimitations": "日本及韩国订单最终篮价按官方说明包含关税、税费及代理费，此安排不等于中国或香港包税。香港独立表列标准运费 £15、满 £200 免标准运费，快递 £25；可产生由收件人承担的进口税，不能套用日韩报价币种或税费安排。官方德文同篇退货说明写收货后 14 天、发起后一个月内寄回、全新未穿未洗、按门户办理及不直接换货；但日本及韩国本地回邮安排尚未核实，不能保证当前订单或中国跨境免费退。已查公开帮助，未确认所有购买必须注册，也不能自动推定需要 RCC 会员资格。",
+      "sources": [
+        "https://support.rapha.cc/ja/articles/516-checkout-and-payment-support",
+        "https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options",
+        "https://support.rapha.cc/ja/articles/51",
+        "https://support.rapha.cc/de/articles/51"
+      ]
+    },
+    {
+      "sourceCode": "rapha_kr",
+      "scope": "market",
+      "salesRegion": "韩国站报价",
+      "merchantHosts": [
+        "www.rapha.cc"
+      ],
+      "label": "Rapha 韩国站",
+      "policyScope": "当前韩国站报价；商品及目的地条件须分别核对",
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "官方付款帮助列主要卡组织，银联仅信用卡；完整逐市场方式仍须结账确认，账单资料须匹配银行记录，不保证中国发行卡或大陆账户授权成功。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官方亚太配送资料列香港路线，但未单独明确中国大陆；Rest of Asia 不能代替大陆地址验证。当前日本或韩国站报价不能按原价视为香港或中国大陆订单，须切换目标地区重新核对。"
+      },
+      "forwarding": {
+        "status": "prohibited",
+        "note": "官方明确不寄货运转运商、储物柜、仓库、邮政信箱、军事基地及类似第三方地址，相关订单可能取消退款；不建议通过这些地址绕过地区限制。"
+      },
+      "sourceLimitations": "日本及韩国订单最终篮价按官方说明包含关税、税费及代理费，此安排不等于中国或香港包税。香港独立表列标准运费 £15、满 £200 免标准运费，快递 £25；可产生由收件人承担的进口税，不能套用日韩报价币种或税费安排。官方德文同篇退货说明写收货后 14 天、发起后一个月内寄回、全新未穿未洗、按门户办理及不直接换货；但日本及韩国本地回邮安排尚未核实，不能保证当前订单或中国跨境免费退。已查公开帮助，未确认所有购买必须注册，也不能自动推定需要 RCC 会员资格。",
+      "sources": [
+        "https://support.rapha.cc/ko/articles/516-checkout-and-payment-support",
+        "https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options",
+        "https://support.rapha.cc/ko/articles/51",
+        "https://support.rapha.cc/de/articles/51"
       ]
     }
   ],

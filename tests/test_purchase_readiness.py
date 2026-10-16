@@ -24,7 +24,14 @@ class PurchaseReadinessTests(unittest.TestCase):
             self.assertEqual(self.rows[code]['scope'], 'market')
             self.assertEqual(self.rows[code]['salesRegion'], market)
         self.assertEqual(self.rows['poc']['salesRegion'], 'Global EN')
-        self.assertNotIn('teamcycles', self.rows)
+        teamcycles = self.rows['teamcycles']
+        self.assertEqual(teamcycles['scope'], 'merchant')
+        self.assertIsNone(teamcycles['salesRegion'])
+        self.assertEqual(teamcycles['merchantHosts'], ['www.teamcycles.com'])
+        self.assertEqual(teamcycles['payment']['chinaIssuedCard'], 'unknown')
+        self.assertEqual(teamcycles['directChina']['status'], 'unknown')
+        self.assertIn('自行车配送部分', teamcycles['directChina']['note'])
+        self.assertIn('不能因此推断所有骑行服', teamcycles['directChina']['note'])
         self.assertNotIn('sigmasports', self.rows)
         self.assertNotIn('decathlon', self.rows)
 

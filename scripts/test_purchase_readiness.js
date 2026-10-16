@@ -15,7 +15,7 @@ const visma=context.readinessContent({...offer('visma','US 市场报价（USD）
 const maap=context.readinessContent(offer('maap','','https://maap.cc/products/item'));assert.ok(maap.includes('不直邮中国大陆'));assert.ok(maap.includes('优先寻找经官网验证的本地授权渠道'));
 const poc=context.readinessContent(offer('poc','Global EN','https://poc.com/en/item'));assert.ok(poc.includes('package forwarding services'));
 const pocUS=context.readinessContent(offer('poc','美国站报价','https://poc.com/en-us/item'));assert.ok(pocUS.includes('其他范围的官方参考'));assert.ok(!pocUS.includes('data-readiness-link="myus"'));
-for(const code of ['teamcycles','sigmasports','decathlon','rapha_kr','__proto__']){const html=context.readinessContent(offer(code,'中国'));assert.ok(!html.includes('不直邮中国大陆'));assert.ok(!html.includes('EUR 47.95'));assert.ok(!html.includes('data-readiness-link='))}
+for(const code of ['unmapped_shop','sigmasports','decathlon','__proto__']){const html=context.readinessContent(offer(code,'中国'));assert.ok(!html.includes('不直邮中国大陆'));assert.ok(!html.includes('EUR 47.95'));assert.ok(!html.includes('data-readiness-link='))}
 assert.ok(context.readinessContent(offer('other')).includes('运费待确认'));
 assert.ok(context.readinessContent({...offer('visma'),shipping_to_china:{note:'配送原文已变化，正在复核'}}).includes('报价规则待复核'));
 // Card-only fields cannot revive stale, incomplete, or another market's payment claims.
@@ -170,3 +170,25 @@ const assosIntl=context.readinessPolicy(offer('assos','国际站 USD 报价','ht
 console.log('Fourth batch passed: scoped Red Bull/Picnic/PNS/ASSOS evidence, mainland exclusions versus unknowns, international-page limits and no cost/card upgrades.');
 
 for(const code of ['redbull','picnic','assos']){const row=data.entries.find(r=>r.sourceCode===code);assert.ok(!/GET|缓存|脚本|读取工具|支付矩阵/.test(JSON.stringify(row)));}
+
+// Destination restrictions stay limited to the exact store/market and product scope.
+for(const [code,market,host,status,words] of [
+ ['kask','意大利站 EUR 报价','www.kask.com','prohibited',['中国大陆和香港均不在','限当前意大利站','14 天']],
+ ['teamcycles','','www.teamcycles.com','unknown',['自行车配送部分','不能因此推断所有骑行服','£100','£150']],
+ ['unox','挪威商城 / NOK 报价','internshop.no','prohibited',['必填注册码','带 logo 或特殊设计','不能笼统承诺 14 天可退']],
+ ['canyon','US 市场 · USD 商品报价；配送另核','www.canyon.com','prohibited',['不支持中国大陆或香港直邮','不能自动套用当前采集的 Midloader 车包','退货条件有冲突']],
+ ['specialized','US 市场 · USD 商品报价；配送另核','www.specialized.com','prohibited',['美国发行卡及美国账单','中国跨境回邮','mail center']],
+ ['rapha','日本站报价','www.rapha.cc','conditional_checkout',['明确不寄货运转运商','日本及韩国本地回邮安排尚未核实','未单独明确中国大陆']],
+ ['rapha_kr','韩国站报价','www.rapha.cc','conditional_checkout',['明确不寄货运转运商','日本及韩国本地回邮安排尚未核实','£15']]
+]){
+ const quote=offer(code,market,'https://'+host+'/item'),before=JSON.stringify(quote),row=context.readinessPolicy(quote);
+ assert.ok(row);assert.equal(row.checkedAt,'2026-10-16');assert.equal(row.directChina.status,status);assert.equal(row.directChina.shippingAmount,undefined);assert.equal(row.payment.chinaIssuedCard,'unknown');
+ if(code!=='teamcycles'){assert.equal(row.scope,'market');assert.equal(context.readinessPolicy({...quote,sales_region:'other market'}),null)}else{assert.equal(row.scope,'merchant');assert.equal(row.salesRegion,null)}
+ assert.equal(context.readinessPolicy({...quote,url:'https://other.example/item'}),null);
+ const html=context.readinessContent(quote),directory=context.readinessDirectoryMarkup({code,shop_url:'https://'+host+'/'});
+ for(const word of words){assert.ok(html.includes(word),code+': '+word);assert.ok(directory.includes(word))}
+ assert.ok(html.includes('data-china-card-status="unknown"'));assert.equal(JSON.stringify(quote),before);for(const url of row.sources)assert.equal(context.readinessUrl(url,code),true);
+ assert.ok(!/GET|缓存|脚本|读取工具|支付矩阵/.test(JSON.stringify(row)));
+ if(code.startsWith('rapha'))assert.equal(row.forwarding.status,'prohibited');
+}
+console.log('Fifth batch passed: regional exclusions, Teamcycles apparel uncertainty, Uno-X eligibility, Canyon product boundaries and Rapha forwarding prohibition.');
