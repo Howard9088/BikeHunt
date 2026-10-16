@@ -348,7 +348,7 @@ def check_exit_mutations(page, base, expected_url):
     for mutate, restore in [
         ("document.getElementById('q').value = 'different product'", "document.getElementById('q').value = 'Midloader'"),
         ("activeCategoryGroup = 'road_equipment'", "activeCategoryGroup = 'other'"),
-        ("activeSource = 'specialized'", "activeSource = 'canyon'"),
+        ("activeSource = 'specialized'", "activeSource = null"),
         ("activeTab = 'brands'", "activeTab = 'products'"),
     ]:
         open_reference(page)
