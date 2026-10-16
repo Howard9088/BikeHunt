@@ -95,7 +95,7 @@ def parse_topfanz(html: str, source: dict, page_url: str, fetched_at: datetime) 
                 "offer_id": offer_id(source["code"], canonical, match[1]),
                 "url": url,
                 "image": image,
-                "identity": parent.identity.model_copy(update={"size": size}),
+                "identity": parent.identity.model_copy(update={"size": size, "mpn": None}),
                 "price": price,
                 "original_price": None,
                 "stock_quantity": quantity,

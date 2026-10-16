@@ -176,6 +176,14 @@ class RemainingTests(unittest.TestCase):
         self.assertEqual(row.identity.size, "S")
         self.assertEqual(row.stock_quantity, 3)
         self.assertEqual(row.url, TOP_URL + "?id=123456")
+        # The shop's size-specific merchandise code is not a shared model number.
+        other = parse_topfanz(
+            top_html(lambda ld: ld.update(mpn="SHOP-S")),
+            {"code": "alpecin", "name": "Mock"},
+            TOP_URL,
+            NOW,
+        )[0]
+        self.assertIsNone(other.identity.mpn)
 
     def test_topfanz_conflicts_and_foreign_forms_rejected(self):
         for html in [
