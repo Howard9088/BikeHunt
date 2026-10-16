@@ -43,7 +43,7 @@ for(const channel of catalog.channels){
  const o=offer(channel.source_code),before=JSON.stringify(o),html=c.paymentMethodsMarkup(o);
  assert.ok(c.paymentPolicy(o));assert.equal(c.paymentMethodsFor(o).length,11);
  for(const name of ['PayPal','Apple Pay','Google Pay','支付宝','微信','银联','礼品卡','分期'])assert.ok(html.includes(name),channel.source_code+' '+name);
- assert.ok(html.includes('中国发行卡：待核实'));assert.ok(html.includes('不保证'));assert.ok(!html.includes('Legacy unsupported network'));
+ assert.ok(html.includes(channel.source_code==='decathlon_cn'?'中国发行卡：有条件，先核对发卡与账户限制':'中国发行卡：待核实'));assert.ok(html.includes('不保证'));assert.ok(!html.includes('Legacy unsupported network'));
  assert.equal(JSON.stringify(o),before,'No source offer or eligibility mutations');
  assert.equal(c.paymentPolicy({...o,sales_region:'another market'}),null);assert.equal(c.paymentPolicy({...o,url:'https://wrong.example/product'}),null);assert.equal(c.paymentPolicy({...o,url:undefined}),null);
 }
