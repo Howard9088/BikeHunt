@@ -4154,11 +4154,11 @@
     },
     {
       "source_code": "movistar",
-      "merchant_name": "Movistar Team",
-      "sales_region": "未核实",
+      "merchant_name": "Movistar · Gobik 官方队服",
+      "sales_region": "US 市场 · EUR 报价；未验证其他市场库存",
       "merchant_hosts": [
-        "tradeinn.com",
-        "www.tradeinn.com"
+        "gobik.com",
+        "www.gobik.com"
       ],
       "scope": "market",
       "scope_note": "自动化测试专用范围说明，不是商家真实政策。",
@@ -4279,10 +4279,11 @@
     },
     {
       "source_code": "jayco",
-      "merchant_name": "Team Jayco AlUla",
-      "sales_region": "未核实",
+      "merchant_name": "Jayco / Liv AlUla · MAAP 官方队服",
+      "sales_region": "MAAP国际站；以逐规格实际币种报价为准，配送另核",
       "merchant_hosts": [
-        "shop.greenedgecycling.com"
+        "maap.cc",
+        "www.maap.cc"
       ],
       "scope": "market",
       "scope_note": "自动化测试专用范围说明，不是商家真实政策。",
@@ -4857,6 +4858,131 @@
           "evidence_status": "insufficient_evidence",
           "evidence_urls": [],
           "checked_at": null
+        }
+      ]
+    },
+    {
+      "source_code": "colnago",
+      "merchant_name": "Colnago 官方商城",
+      "sales_region": "US 市场 · USD 商品报价；配送另核",
+      "merchant_hosts": [
+        "www.colnago.com",
+        "colnago.com"
+      ],
+      "scope": "market",
+      "scope_note": "自动化测试专用范围说明，不是商家真实政策。",
+      "scope_evidence_urls": [],
+      "merchant_evidence_status": "official_text",
+      "methods": [
+        {
+          "method_key": "cards",
+          "name": "银行卡／卡组织",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "china_issued_cards",
+          "name": "中国大陆发行卡",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "paypal",
+          "name": "PayPal",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "apple_pay",
+          "name": "Apple Pay",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "google_pay",
+          "name": "Google Pay",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "alipay",
+          "name": "支付宝 Alipay",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "wechat_pay",
+          "name": "微信支付 WeChat Pay",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "unionpay",
+          "name": "银联 UnionPay",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "bank_transfer_local",
+          "name": "银行转账／本地支付",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "gift_cards",
+          "name": "礼品卡",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "instalments",
+          "name": "分期付款",
+          "status": "unknown",
+          "note": "界面回归测试：本项尚未取得充分资料，不是商家真实政策。",
+          "china_applicability": "unknown",
+          "account_region_constraints": "测试：账户地区、发卡地与居民条件待核实。",
+          "evidence_urls": [],
+          "checked_at": "2026-10-15"
         }
       ]
     }

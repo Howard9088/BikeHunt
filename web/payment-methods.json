@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-16-decathlon-cn-official-help-payments",
+  "revision": "2026-10-16-exact-team-merchants",
   "checked_at": "2026-10-15",
   "payment_caveat": "仅官方公开资料核验，未注册、未提交个人或付款信息、未下单、未真实扣款。商家列出某支付方式或卡组织不等于中国发行卡或中国账户必然可用；发卡行境外电商授权、3DS、真实账单地址、账户地区和商家风控仍可能限制。付款能力与配送资格分别判断。",
   "coverage": {
-    "registered_sources": 29,
-    "additional_directory_entries": 7,
-    "total_entries": 36,
+    "registered_sources": 32,
+    "additional_directory_entries": 5,
+    "total_entries": 37,
     "actual_payment_tests": 0
   },
   "research_metadata": {
@@ -10697,23 +10697,222 @@
     },
     {
       "source_code": "movistar",
-      "sales_region": "未核实",
+      "merchant_name": "Movistar · Gobik 官方队服",
+      "sales_region": "US 市场 · EUR 报价；未验证其他市场库存",
       "merchant_hosts": [
-        "www.tradeinn.com"
+        "gobik.com",
+        "www.gobik.com"
       ],
       "scope": "market",
-      "scope_note": "目录链接为西班牙语分类入口，语言不等于收货市场；Tradeinn通用帮助确认方式，具体目的地可用方式未确认。",
-      "checked_at": "2026-10-15",
+      "scope_note": "当前实际销售渠道为 Gobik 官网。公开英文帮助说明 PayPal 订单金额限制；美国市场欧元报价的最终付款选项须以对应订单结账页为准，不能套用 Tradeinn 支付规则。",
+      "scope_evidence_urls": [
+        "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+      ],
+      "merchant_evidence_status": "official_text",
+      "methods": [
+        {
+          "method_key": "cards",
+          "name": "银行卡／卡组织",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "china_issued_cards",
+          "name": "中国大陆发行卡",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "paypal",
+          "name": "PayPal",
+          "status": "conditional",
+          "note": "官方帮助说明 PayPal 仅在订单总额低于 €150 时显示；须核对实际订单币种及结账选项，未验证中国账户付款。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "订单总额须低于 €150；PayPal 账户地区、余额/绑定方式和商家风控仍可能限制付款。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "apple_pay",
+          "name": "Apple Pay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "google_pay",
+          "name": "Google Pay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "alipay",
+          "name": "支付宝 Alipay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "wechat_pay",
+          "name": "微信支付 WeChat Pay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "unionpay",
+          "name": "银联 UnionPay",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "bank_transfer_local",
+          "name": "银行转账／本地支付",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "gift_cards",
+          "name": "礼品卡",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "instalments",
+          "name": "分期付款",
+          "status": "unknown",
+          "note": "已查 Gobik 官方公开帮助，尚未取得此方式在当前报价市场明确适用的证据；未列出不等于不支持。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "中国发行卡或中国账户可用性未获明确保证；以账户资格、结账页和支付授权为准。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "发卡地、账户地区及本订单适用条件尚未确认；不依据卡组织图标推定。",
+          "evidence_urls": [
+            "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+          ],
+          "checked_at": "2026-10-16"
+        }
+      ],
+      "sources": [
+        "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
+      ],
+      "checked_at": "2026-10-16"
+    },
+    {
+      "source_code": "jayco",
+      "sales_region": "MAAP国际站；以逐规格实际币种报价为准，配送另核",
+      "merchant_hosts": [
+        "maap.cc",
+        "www.maap.cc"
+      ],
+      "scope": "market",
+      "scope_note": "当前报价来自 MAAP 自营官网，适用其公开站级支付说明。逐规格实际报价市场仍需结账核对；不是 GreenEDGE 旧商城，也未验证中国卡或中国账户付款。",
+      "checked_at": "2026-10-16",
       "merchant_evidence_status": "official_text",
       "sources": [
-        "https://www.tradeinn.com/en/help/st"
+        "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "https://support.maap.cc/hc/en-us/articles/35251930269709-How-can-I-spot-a-fake-MAAP-online-store"
       ],
       "methods": [
         {
           "method_key": "cards",
           "name": "银行卡",
-          "status": "conditional",
-          "note": "官方付款及退款帮助列Visa、Mastercard、Maestro、American Express信用/借记卡。",
+          "status": "supported",
+          "note": "官方列Visa、Mastercard、American Express信用卡；借记卡未获明确说明。",
           "china_applicability": {
             "status": "unknown",
             "note": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
@@ -10721,31 +10920,32 @@
           },
           "account_region_constraints": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+            "https://support.maap.cc/hc/en-us/articles/35251930269709-How-can-I-spot-a-fake-MAAP-online-store"
           ],
           "checked_at": "2026-10-15"
         },
         {
           "method_key": "paypal",
           "name": "PayPal",
-          "status": "conditional",
-          "note": "官方列PayPal；普通付款与分期是不同产品。",
+          "status": "not_supported",
+          "note": "2026-02-27官方防伪页明确称官网不采用PayPal。仅限MAAP自营，不能套用授权零售商。",
           "china_applicability": {
-            "status": "unknown",
-            "note": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
+            "status": "not_supported",
+            "note": "官网明确不接受此方式，不因中国账户而变为支持。",
             "evidence_class": "insufficient_evidence"
           },
-          "account_region_constraints": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
+          "account_region_constraints": "官网明确不接受此方式，不因中国账户而变为支持。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/35251930269709-How-can-I-spot-a-fake-MAAP-online-store"
           ],
           "checked_at": "2026-10-15"
         },
         {
           "method_key": "apple_pay",
           "name": "Apple Pay",
-          "status": "conditional",
-          "note": "官方列Apple Pay；需兼容设备及卡组织。",
+          "status": "supported",
+          "note": "官方付款帮助明确列出；实际地区、设备与底层付款卡仍需核对。",
           "china_applicability": {
             "status": "unknown",
             "note": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
@@ -10753,15 +10953,15 @@
           },
           "account_region_constraints": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
           ],
           "checked_at": "2026-10-15"
         },
         {
           "method_key": "google_pay",
           "name": "Google Pay",
-          "status": "conditional",
-          "note": "官方列Google Pay；中国账户/设备的可用性仍需核对。",
+          "status": "supported",
+          "note": "官方付款帮助明确列出；实际地区、设备与底层付款卡仍需核对。",
           "china_applicability": {
             "status": "unknown",
             "note": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
@@ -10769,7 +10969,7 @@
           },
           "account_region_constraints": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
           ],
           "checked_at": "2026-10-15"
         },
@@ -10785,7 +10985,7 @@
           },
           "account_region_constraints": "未找到中国账户/中国发行地明确适用声明。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
           ],
           "checked_at": "2026-10-15"
         },
@@ -10801,7 +11001,7 @@
           },
           "account_region_constraints": "未找到中国账户/中国发行地明确适用声明。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
           ],
           "checked_at": "2026-10-15"
         },
@@ -10817,46 +11017,13 @@
           },
           "account_region_constraints": "未找到中国账户/中国发行地明确适用声明。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
           ],
           "checked_at": "2026-10-15"
         },
         {
           "method_key": "bank_transfer_local",
           "name": "银行转账/本地银行方式",
-          "status": "conditional",
-          "note": "帮助退款段出现EBANX本地转账/Pix等，不证明接受从中国银行汇款。Bizum需西班牙或安道尔IBAN及手机号。",
-          "china_applicability": {
-            "status": "unknown",
-            "note": "requires_eligible_foreign_account",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "不同本地方式限相应银行/地区；中国银行账户不能直接等同。",
-          "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st",
-            "https://bizum.com/es/en/blog/registration-en-bizum/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "instalments",
-          "name": "分期/先买后付",
-          "status": "conditional",
-          "note": "官方Klarna列表仅欧洲指定国家；PayPal分期依所在地及审核，均未证实中国账户资格。",
-          "china_applicability": {
-            "status": "unknown",
-            "note": "requires_eligible_foreign_account",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
-          "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "gift_cards",
-          "name": "礼品卡",
           "status": "unknown",
           "note": "已查官方支付资料未列此方式；未列出不等于明确不支持，当前市场结账未验证。",
           "china_applicability": {
@@ -10866,16 +11033,31 @@
           },
           "account_region_constraints": "未找到中国账户/中国发行地明确适用声明。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
           ],
           "checked_at": "2026-10-15"
         },
         {
-          "method_key": "revolut_pay",
-          "name": "revolut_pay",
-          "checked_at": "2026-10-15",
-          "status": "conditional",
-          "note": "官方列Revolut；具体账户资格和当前市场结账未核实。",
+          "method_key": "instalments",
+          "name": "分期/先买后付",
+          "status": "unknown",
+          "note": "已查官方支付资料未列此方式；未列出不等于明确不支持，当前市场结账未验证。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未找到中国账户/中国发行地明确适用声明。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "未找到中国账户/中国发行地明确适用声明。",
+          "evidence_urls": [
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept"
+          ],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "gift_cards",
+          "name": "礼品卡",
+          "status": "supported",
+          "note": "官方列MAAP礼卡；并非通用储值卡。中国地区兑换与余额限制未核实。",
           "china_applicability": {
             "status": "unknown",
             "note": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
@@ -10883,7 +11065,25 @@
           },
           "account_region_constraints": "中国发行卡/账户适用性未获商家明确保证，最终以市场、支付服务账户和发卡行授权为准。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+            "https://support.maap.cc/hc/en-us/articles/35251930269709-How-can-I-spot-a-fake-MAAP-online-store"
+          ],
+          "checked_at": "2026-10-15"
+        },
+        {
+          "method_key": "payid",
+          "name": "payid",
+          "checked_at": "2026-10-15",
+          "status": "not_supported",
+          "note": "官方防伪页明确不采用PayID；不建议向声称官网的收款方转账。",
+          "china_applicability": {
+            "status": "not_supported",
+            "note": "官网明确不接受此方式，不因中国账户而变为支持。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "官网明确不接受此方式，不因中国账户而变为支持。",
+          "evidence_urls": [
+            "https://support.maap.cc/hc/en-us/articles/35251930269709-How-can-I-spot-a-fake-MAAP-online-store"
           ]
         },
         {
@@ -10898,257 +11098,21 @@
           },
           "account_region_constraints": "须真实账单地址、发卡行境外电商授权及所需3DS验证；最终仍可能被支付网关或商家风控拒绝。",
           "evidence_urls": [
-            "https://www.tradeinn.com/en/help/st"
+            "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+            "https://support.maap.cc/hc/en-us/articles/35251930269709-How-can-I-spot-a-fake-MAAP-online-store"
           ],
           "checked_at": "2026-10-15"
         }
       ],
-      "directory_only": true,
-      "merchant_name": "Movistar / Tradeinn Bikeinn",
       "limitations": [
-        "未进入填写个人信息的结账，不把通用支付菜单标作中国目的地已验证。",
-        "银联、支付宝、微信、礼卡在所查支付清单未获确认，保留unknown。"
+        "该车队当前销售渠道为 MAAP 官网，不能套用 GreenEDGE 或其他车队商店政策。",
+        "仅官方公开帮助核验；未登录、注册、下单或实际付款。",
+        "中国大陆配送另行核实，支付方式与配送资格分别判断。"
       ],
+      "merchant_name": "Jayco / Liv AlUla · MAAP 官方队服",
       "scope_evidence_urls": [
-        "https://www.tradeinn.com/en/help/st"
-      ]
-    },
-    {
-      "source_code": "jayco",
-      "merchant_name": "Team Jayco AlUla / GreenEDGE 商城",
-      "sales_region": "未核实",
-      "merchant_hosts": [
-        "shop.greenedgecycling.com"
-      ],
-      "scope": "market",
-      "scope_note": "2026 年车队官网仍列有此商城，但商城页面暂时无法打开，当前无法确认可购买。",
-      "scope_evidence_urls": [
-        "https://greenedgecycling.com/2026/",
-        "https://shop.greenedgecycling.com/"
-      ],
-      "merchant_evidence_status": "unavailable",
-      "checked_at": "2026-10-15",
-      "methods": [
-        {
-          "method_key": "cards",
-          "name": "银行卡（信用卡/借记卡）",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "china_issued_cards",
-          "name": "中国大陆发行银行卡",
-          "status": "unknown",
-          "note": "未发现商家明确接受或排除中国大陆发行卡的官方规则；不据Visa/Mastercard/UnionPay图标或国际配送推定。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "paypal",
-          "name": "PayPal",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "apple_pay",
-          "name": "Apple Pay",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "google_pay",
-          "name": "Google Pay",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "alipay",
-          "name": "支付宝",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "wechat_pay",
-          "name": "微信支付",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "unionpay",
-          "name": "银联 UnionPay",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "bank_transfer_local",
-          "name": "银行转账/本地付款",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "gift_cards",
-          "name": "礼品卡/购物余额",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        },
-        {
-          "method_key": "instalments",
-          "name": "分期/先买后付",
-          "status": "unknown",
-          "note": "商城页面暂时无法打开，当前可用付款方式尚未确认。其他 Jayco 或 Alé 商店的规则可能不同。",
-          "china_applicability": {
-            "status": "unknown",
-            "evidence_status": "insufficient_evidence",
-            "note": "未核实中国大陆发行卡、账户注册地、账单地址与本订单的组合；卡种/钱包图标及跨境功能均不保证授权成功。",
-            "evidence_class": "insufficient_evidence"
-          },
-          "account_region_constraints": "尚无可核实的该商家/该市场账户地区规则。",
-          "merchant_evidence_status": "unavailable",
-          "evidence_status": "insufficient_evidence",
-          "evidence_urls": [
-            "https://greenedgecycling.com/2026/",
-            "https://shop.greenedgecycling.com/"
-          ],
-          "checked_at": "2026-10-15"
-        }
+        "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "https://support.maap.cc/hc/en-us/articles/35251930269709-How-can-I-spot-a-fake-MAAP-online-store"
       ]
     },
     {
@@ -11789,11 +11753,242 @@
           "checked_at": null
         }
       ]
+    },
+    {
+      "source_code": "colnago",
+      "merchant_name": "Colnago 官方商城",
+      "sales_region": "US 市场 · USD 商品报价；配送另核",
+      "merchant_hosts": [
+        "www.colnago.com",
+        "colnago.com"
+      ],
+      "scope": "market",
+      "scope_note": "仅绑定美国市场美元报价。已查官方国家选择、帮助和条款页面，尚未取得该市场明确支付方式清单；中国区页面不能作为美国市场付款承诺。",
+      "scope_evidence_urls": [
+        "https://www.colnago.com/countries",
+        "https://www.colnago.com/en-cn/products/colnago-atlas",
+        "https://www.colnago.com/en/legal-area/terms-conditions",
+        "https://www.colnago.com/en/legal-area/faq"
+      ],
+      "merchant_evidence_status": "unavailable",
+      "methods": [
+        {
+          "method_key": "cards",
+          "name": "银行卡／卡组织",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "china_issued_cards",
+          "name": "中国大陆发行卡",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "paypal",
+          "name": "PayPal",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "apple_pay",
+          "name": "Apple Pay",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "google_pay",
+          "name": "Google Pay",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "alipay",
+          "name": "支付宝 Alipay",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "wechat_pay",
+          "name": "微信支付 WeChat Pay",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "unionpay",
+          "name": "银联 UnionPay",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "bank_transfer_local",
+          "name": "银行转账／本地支付",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "gift_cards",
+          "name": "礼品卡",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        },
+        {
+          "method_key": "instalments",
+          "name": "分期付款",
+          "status": "unknown",
+          "note": "已查官方公开帮助与条款，尚未确认美国市场是否接受此付款方式；请以对应订单结账页为准。",
+          "china_applicability": {
+            "status": "unknown",
+            "note": "未取得中国发行卡或中国账户适用性明确保证；未实际付款验证。",
+            "evidence_class": "insufficient_evidence"
+          },
+          "account_region_constraints": "市场、发卡地区、账户地区及付款验证要求尚未确认，不据其他地区页面推定。",
+          "evidence_urls": [
+            "https://www.colnago.com/countries",
+            "https://www.colnago.com/en-cn/products/colnago-atlas",
+            "https://www.colnago.com/en/legal-area/terms-conditions",
+            "https://www.colnago.com/en/legal-area/faq"
+          ],
+          "checked_at": "2026-10-16"
+        }
+      ],
+      "checked_at": "2026-10-16"
     }
   ],
   "review_corrections": [
     "NSN cards/paypal降unknown：阿联酋目标市场不可读，其他市场不外推。",
     "移除INEOS/Picnic/UAE Klarna Ashley家具商店资格引用及其未经本市场核实的美国资格断言，保留独立商家官网文字/图标conditional证据。",
-    "递归归一china_applicability.evidence_class，保留原note及alias。"
+    "递归归一china_applicability.evidence_class，保留原note及alias。",
+    "2026-10-16：Movistar 当前 Gobik、Jayco 当前 MAAP 支付绑定替代旧 Tradeinn/GreenEDGE 映射。旧商家研究保留于版本 f6f015e，不适用于当前报价；其他渠道研究保持不变。"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "2026-10-16-decathlon-cn-market",
+  "revision": "2026-10-16-exact-team-merchants",
   "channels": [
     {
       "source_code": "maap",
@@ -668,45 +668,44 @@
     },
     {
       "source_code": "movistar",
-      "merchant_name": "Movistar Team",
+      "merchant_name": "Movistar · Gobik 官方队服",
       "sales_regions": [
-        "未核实"
+        "US 市场 · EUR 报价；未验证其他市场库存"
       ],
       "merchant_hosts": [
-        "tradeinn.com",
-        "www.tradeinn.com"
+        "gobik.com",
+        "www.gobik.com"
       ],
       "reference_hosts": [
-        "tradeinn.com",
-        "www.tradeinn.com",
-        "www.bikeinn.com",
-        "bikeinn.com",
-        "bizum.com"
+        "gobik.com",
+        "www.gobik.com"
       ],
       "directory_codes": [
         "movistar"
       ],
-      "base_url": "https://www.tradeinn.com/bikeinn/es/movistar_team",
-      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+      "base_url": "https://gobik.com/",
+      "identity_note": "支付说明按当前实际销售官网及所列市场绑定；车队其他商店的规则不适用。"
     },
     {
       "source_code": "jayco",
-      "merchant_name": "Team Jayco AlUla",
+      "merchant_name": "Jayco / Liv AlUla · MAAP 官方队服",
       "sales_regions": [
-        "未核实"
+        "MAAP国际站；以逐规格实际币种报价为准，配送另核"
       ],
       "merchant_hosts": [
-        "shop.greenedgecycling.com"
+        "maap.cc",
+        "www.maap.cc"
       ],
       "reference_hosts": [
-        "shop.greenedgecycling.com",
-        "greenedgecycling.com"
+        "maap.cc",
+        "www.maap.cc",
+        "support.maap.cc"
       ],
       "directory_codes": [
         "jayco"
       ],
-      "base_url": "https://shop.greenedgecycling.com/",
-      "identity_note": "目录入口已有，未接入商品支付摘要；需明确实际经营商家与市场。以所列商城身份核对，不套用车队或品牌其他渠道规则。"
+      "base_url": "https://maap.cc/",
+      "identity_note": "支付说明按当前实际销售官网及所列市场绑定；车队其他商店的规则不适用。"
     },
     {
       "source_code": "unox",
@@ -769,6 +768,26 @@
       ],
       "base_url": "https://www.decathlon.com.cn/",
       "identity_note": "迪卡侬中国官网，官方隐私政策明确其中国网站身份。与 Decathlon CMA CGM 车队商城分开；付款方式请在中国站结账时确认。"
+    },
+    {
+      "source_code": "colnago",
+      "merchant_name": "Colnago 官方商城",
+      "sales_regions": [
+        "US 市场 · USD 商品报价；配送另核"
+      ],
+      "merchant_hosts": [
+        "www.colnago.com",
+        "colnago.com"
+      ],
+      "reference_hosts": [
+        "www.colnago.com",
+        "colnago.com"
+      ],
+      "directory_codes": [
+        "colnago"
+      ],
+      "base_url": "https://www.colnago.com/en-us/",
+      "identity_note": "仅对应 Colnago 美国市场当前美元报价；中国地区页面不能证明本市场付款可用。"
     }
   ]
 }

@@ -6,7 +6,7 @@ const {installExternalExitStub}=require('./external_exit_test_helper');
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8');
 const source=fs.readFileSync('web/purchase-flow.js','utf8'),readiness=fs.readFileSync('web/purchase-readiness.js','utf8');
 const policy=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));
-const NOW=Date.parse('2026-10-15T12:00:00Z');
+const NOW=Date.parse('2026-10-16T08:00:00Z');
 function slice(text,start,end){const a=text.indexOf(start),b=text.indexOf(end,a);assert.ok(a>=0&&b>a,start);return text.slice(a,b)}
 function quote(code='visma',extra={}){return {eligible:false,reasons:[],product_cny:'700',offer:{offer_id:'offer-'+code,source_code:code,source_name:code,sales_region:code==='poc'?'Global EN':'US 市场报价（USD）',url:code==='maap'?'https://maap.cc/products/jersey?variant=M':code==='poc'?'https://poc.com/en/jersey?variant=M':code==='visma'?'https://www.teamvismaleaseabike.com/shop/jersey/?variant=M':'https://shop.example/jersey?variant=M',stock:'in_stock',collection_state:'current',fetched_at:new Date(NOW).toISOString(),price:{amount:'100',currency:'USD'},shipping_to_china:{status:'unknown'},china_issued_card:{status:'unknown'},accepted_card_networks:['Visa'],...extra}}}
 function detail(q=quote()){return {product_id:'jersey',variant_id:'variant-m',name:'Test jersey',name_zh:'骑行服测试',identity:{size:'M',color:'red'},variants:[{variant_id:'variant-m',in_stock:true}],offers:[q]}}

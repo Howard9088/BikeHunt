@@ -15,14 +15,14 @@ class PaymentMethodsTests(unittest.TestCase):
         self.fixture = json.loads((ROOT / 'tests/fixtures/payment-methods.json').read_text())
 
     def test_fixture_and_full_source_registry(self):
-        self.assertEqual(len(self.catalog['channels']), 36)
+        self.assertEqual(len(self.catalog['channels']), 37)
         validate_payment_methods(self.fixture, self.catalog, require_complete=True)
         for row in self.fixture['entries']:
             self.assertTrue(REQUIRED_METHODS <= {x['method_key'] for x in row['methods']})
 
     def test_actual_release_covers_all_channels_and_every_required_category(self):
         data = read_payment_methods(ROOT)
-        self.assertEqual(len(data['entries']), 36)
+        self.assertEqual(len(data['entries']), 37)
         for row in data['entries']:
             self.assertTrue(REQUIRED_METHODS <= {m['method_key'] for m in row['methods']})
             for method in row['methods']:
@@ -61,6 +61,33 @@ class PaymentMethodsTests(unittest.TestCase):
                         {'sales_region': '法国站 EUR 报价'}):
             invalid = copy.deepcopy(self.fixture)
             next(r for r in invalid['entries'] if r['source_code'] == 'decathlon_cn').update(changes)
+            with self.assertRaises(ValueError):
+                validate_payment_methods(invalid, self.catalog, require_complete=True)
+
+
+    def test_corrected_team_merchants_and_colnago_are_exact(self):
+        expected = {
+            'movistar': ('gobik.com', 'US 市场 · EUR 报价；未验证其他市场库存', 'www.tradeinn.com'),
+            'jayco': ('maap.cc', 'MAAP国际站；以逐规格实际币种报价为准，配送另核', 'shop.greenedgecycling.com'),
+            'colnago': ('www.colnago.com', 'US 市场 · USD 商品报价；配送另核', 'evil.example'),
+        }
+        for code, (host, market, wrong_host) in expected.items():
+            channel = next(c for c in self.catalog['channels'] if c['source_code'] == code)
+            self.assertEqual(channel['sales_regions'], [market])
+            self.assertIn(host, channel['merchant_hosts'])
+            self.assertNotIn(wrong_host, channel['merchant_hosts'])
+            for data in (self.fixture, read_payment_methods(ROOT)):
+                row = next(r for r in data['entries'] if r['source_code'] == code)
+                self.assertEqual(row['sales_region'], market)
+                self.assertEqual(row['scope'], 'market')
+                self.assertIn(host, row['merchant_hosts'])
+                self.assertTrue(REQUIRED_METHODS <= {m['method_key'] for m in row['methods']})
+                china = next(m for m in row['methods'] if m['method_key'] == 'china_issued_cards')
+                self.assertEqual(china['status'], 'unknown')
+                if code == 'colnago':
+                    self.assertTrue(all(m['status'] == 'unknown' for m in row['methods']))
+            invalid = copy.deepcopy(self.fixture)
+            next(r for r in invalid['entries'] if r['source_code'] == code)['merchant_hosts'] = [wrong_host]
             with self.assertRaises(ValueError):
                 validate_payment_methods(invalid, self.catalog, require_complete=True)
 

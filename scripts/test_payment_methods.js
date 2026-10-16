@@ -12,7 +12,7 @@ c.catalog=catalog;c.fixture=fixture;
 vm.runInContext('paymentChannels=validatePaymentChannels(catalog);paymentData=validatePaymentData(fixture,paymentChannels);paymentState="ready"',c);
 const clone=x=>JSON.parse(JSON.stringify(x));
 function offer(code,extra={}){const row=catalog.channels.find(x=>x.source_code===code),child=fixture.entries.find(x=>x.source_code===code)?.channels?.[0];return {source_code:code,source_name:row?.merchant_name,sales_region:row?.sales_regions[0],url:child?.scope_evidence_urls[0]||row?.base_url,china_issued_card:{status:'yes'},accepted_card_networks:['Legacy unsupported network'],...extra}}
-assert.equal(catalog.channels.length,36);
+assert.equal(catalog.channels.length,37);
 // The China official store is a separate exact market, never the French team shop.
 function assertChinaStore(data){
  const channel=catalog.channels.find(r=>r.source_code==='decathlon_cn');
@@ -35,6 +35,21 @@ function assertChinaStore(data){
  assert.ok(data.entries.some(r=>r.source_code==='decathlon'),'The existing French team merchant remains separately covered');
 }
 assertChinaStore(fixture);
+
+const correctedMerchants=[
+ ['movistar','gobik.com','US 市场 · EUR 报价；未验证其他市场库存','https://www.tradeinn.com/bikeinn/es/movistar_team'],
+ ['jayco','maap.cc','MAAP国际站；以逐规格实际币种报价为准，配送另核','https://shop.greenedgecycling.com/'],
+ ['colnago','www.colnago.com','US 市场 · USD 商品报价；配送另核','https://www.colnago.com/en-cn/']
+];
+for(const [code,host,market,oldUrl] of correctedMerchants){
+ const row=c.paymentPolicy(offer(code));assert.ok(row,code);
+ assert.equal(row.sales_region,market);assert.ok(row.merchant_hosts.includes(host));
+ assert.equal(c.paymentPolicy(offer(code,{sales_region:'unrelated market'})),null);
+ if(code!=='colnago')assert.equal(c.paymentPolicy(offer(code,{url:oldUrl})),null,'A team name cannot authorize the old retailer');
+ assert.equal(c.paymentPolicy(offer(code,{url:'https://'+host+'.evil.example/'})),null);
+ assert.equal(c.paymentMethodsFor(offer(code)).length,11);
+}
+
 assert.equal(c.paymentPolicy(offer('decathlon_cn')).source_code,'decathlon_cn');
 assert.equal(c.paymentPolicy(offer('decathlon_cn',{url:'https://shop.decathloncmacgmteam.com/'})),null);
 assert.equal(c.paymentPolicy(offer('decathlon_cn',{sales_region:'法国站 EUR 报价'})),null);
@@ -96,7 +111,7 @@ vm.runInContext('paymentData=null;paymentState="error"',c);html=c.paymentMethods
 vm.runInContext(fs.readFileSync('web/purchase-readiness.js','utf8').replace(/^loadPurchaseReadiness\(\);$/m,''),c);c.shipping=JSON.parse(fs.readFileSync('web/purchase-readiness.json','utf8'));vm.runInContext('readinessData=validateReadinessData(shipping);readinessState="ready"',c);assert.ok(c.readinessContent(offer('maap')).includes('不直邮中国大陆'));assert.ok(!c.paymentFeasibilityMarkup(offer('maap')).includes('Legacy unsupported network'));
 if(!process.argv.includes('--fixtures-only')){
  const production=JSON.parse(fs.readFileSync('web/payment-methods.json','utf8'));c.validatePaymentData(production,catalog);assertChinaStore(production);
- assert.equal(production.entries.length,36,'Release must cover all 36 current channels, including zero-offer directories');
+ assert.equal(production.entries.length,37,'Release must cover all 37 current channels, including zero-offer directories');
  for(const channel of catalog.channels)assert.ok(production.entries.some(r=>r.source_code===channel.source_code&&(r.scope==='merchant'||channel.sales_regions.includes(r.sales_region))));
 }
 

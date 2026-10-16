@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-10-15-purchase-readiness-1",
+  "revision": "2026-10-16-verified-channel-policies",
   "checkedAt": "2026-10-15",
   "verificationMethod": "只读官方网页及官方搜索索引；未注册、未输入个人资料、未绑定卡、未真实扣款或完成checkout。官网规则可变，具体订单以checkout为准。",
   "paymentCaveat": "支持Visa/Mastercard等卡组织，不等于保证接受每张中国发行卡。需发卡行允许境外线上及对应币种交易，账单信息真实匹配，并完成可能的3DS或风控核验。Apple Pay/Google Pay/PayPal出现与否仍取决于市场和账户；钱包不能保证底层卡成功。不要连续反复试付；先核对授权或扣款状态。",
@@ -214,7 +214,7 @@
       },
       "directChina": {
         "status": "prohibited",
-        "note": "官方配送帮助明确：中国与韩国由本地伙伴独家服务，maap.cc不向这两个国家配送。"
+        "note": "官网已明确：maap.cc 不配送中国大陆，由本地合作伙伴服务。香港列入第 2 配送区，仍须核对具体商品、地址与结账费用。"
       },
       "forwarding": {
         "status": "unknown",
@@ -222,10 +222,11 @@
       },
       "sources": [
         "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
-        "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-USA-UK-and-Europe",
+        "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
         "https://support.maap.cc/hc/en-us/articles/32246167138189-Why-did-MAAP-request-my-ID-and-payment-verification-details"
       ],
-      "sourceLimitations": ""
+      "sourceLimitations": "香港按第 2 区计费：普通配送订单低于 500 澳元收 25 澳元，高于 500 澳元免运；DHL 快递选项 60 澳元。刚好 500 澳元以结账为准。墨尔本仓发货，进口关税和当地税由收件人承担；这些费用规则不能用于中国大陆订单。",
+      "checkedAt": "2026-10-16"
     },
     {
       "sourceCode": "poc",
@@ -263,6 +264,108 @@
         "https://poc.com/en/terms-and-conditions"
       ],
       "sourceLimitations": ""
+    },
+    {
+      "sourceCode": "jayco",
+      "scope": "merchant",
+      "salesRegion": null,
+      "label": "Jayco / Liv AlUla · MAAP 官方队服",
+      "policyScope": "仅适用于 maap.cc 实际售卖的队服，复用同店公开政策；不适用于旧 GreenEDGE 商城",
+      "merchantHosts": [
+        "maap.cc",
+        "www.maap.cc"
+      ],
+      "payment": {
+        "status": "confirmed",
+        "methods": [
+          "Visa",
+          "Mastercard",
+          "American Express",
+          "Apple Pay",
+          "Google Pay",
+          "MAAP礼卡"
+        ],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "官方支付列表未列PayPal。Shop Pay异常风控可要求身份核实，不能验证会取消退款。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "官网已明确：maap.cc 不配送中国大陆，由本地合作伙伴服务。香港列入第 2 配送区，仍须核对具体商品、地址与结账费用。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未核实许可；不因不直邮就推荐绕道第三地。应优先寻找经官网验证的本地授权渠道。"
+      },
+      "sources": [
+        "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+        "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+        "https://support.maap.cc/hc/en-us/articles/32246167138189-Why-did-MAAP-request-my-ID-and-payment-verification-details"
+      ],
+      "sourceLimitations": "香港按第 2 区计费：普通配送订单低于 500 澳元收 25 澳元，高于 500 澳元免运；DHL 快递选项 60 澳元。刚好 500 澳元以结账为准。墨尔本仓发货，进口关税和当地税由收件人承担；这些费用规则不能用于中国大陆订单。",
+      "checkedAt": "2026-10-16"
+    },
+    {
+      "sourceCode": "decathlon_cn",
+      "scope": "market",
+      "salesRegion": "中国大陆 CNY 报价",
+      "label": "迪卡侬中国官网",
+      "policyScope": "中国官网人民币订单；与海外车队商城相互独立",
+      "merchantHosts": [
+        "www.decathlon.com.cn",
+        "decathlon.com.cn"
+      ],
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "conditional_checkout",
+        "methods": [],
+        "chinaIssuedCard": "conditional_checkout",
+        "note": "官方帮助已列支付方式；具体银行卡、账户及本订单选项以中国站结账页和支付机构授权为准。"
+      },
+      "directChina": {
+        "status": "confirmed",
+        "note": "官网明确仅配送中国大陆，港澳台与海外暂不配送。非自行车订单实付满 99 元顺丰免运费，未满 99 元收 8 元；极速达等方式另计。具体地址、商品数量和配送方式以结账为准。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查公开配送说明，未找到接受或禁止转运地址的明确条款。香港不是该中国官网的直邮目的地。"
+      },
+      "sources": [
+        "https://www.decathlon.com.cn/help/delivery-method",
+        "https://www.decathlon.com.cn/help/introduction"
+      ],
+      "sourceLimitations": "以上是国内配送规则，不套用海外车队商城的法国免邮、进口税或退货政策。公开帮助页未标更新日期，最终费用及可用方式须按本订单确认。"
+    },
+    {
+      "sourceCode": "colnago",
+      "scope": "market",
+      "salesRegion": "US 市场 · USD 商品报价；配送另核",
+      "label": "Colnago 官方商城",
+      "policyScope": "当前美国市场美元报价；中国与香港政策仅作为切换目标市场后的参考",
+      "merchantHosts": [
+        "www.colnago.com"
+      ],
+      "checkedAt": "2026-10-16",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "已查官网商品页、FAQ 与条款，未取得明确卡组织或中国发行卡适用清单；需在目标市场结账时核对。"
+      },
+      "directChina": {
+        "status": "conditional_checkout",
+        "note": "官网配送国家选择页列出中国大陆和香港。当前展示的是美国市场报价，不能据此保证该报价和规格可寄中国；须切换目标市场，重新确认商品、币种、价格与收货地址。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "已查公开配送退货页、FAQ 与条款，未找到明确转运地址规定；不能视为允许转运。"
+      },
+      "sources": [
+        "https://www.colnago.com/countries",
+        "https://www.colnago.com/en-cn/products/colnago-atlas",
+        "https://www.colnago.com/en/shipments-and-returns",
+        "https://www.colnago.com/en/legal-area/faq"
+      ],
+      "sourceLimitations": "中国区 Atlas 商品页写运费在结账计算，关税和清关费用由顾客承担，不能当作当前美国报价的完整到手价。退货总页写收货后 14 天，商品页写 15 天，存在口径冲突；期限及适用范围须购买前确认。普通退货运费由买家承担，定制自行车限制另列。未验证游客结账；中国及香港地区条款未能完整读取，部分页面来自搜索缓存。"
     }
   ],
   "forwardingExplainer": "转运像海外代收点：先取得自己名下的仓库收件编号，商家把货寄到仓库；仓库称重、可按要求合箱，再收国际运费寄中国。你仍需自行向商家付款；转运不解决中国银行卡拒付，也不自动提供商家售后。只在商家允许、承运商允许商品且进口手续满足时使用。",

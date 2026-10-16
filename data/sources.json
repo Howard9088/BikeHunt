@@ -628,8 +628,11 @@
     "collection_strategy": "manual_verified_public_variant",
     "official_evidence_url": "https://static-econnected.decathlon.com.cn/econnected/privacy.html",
     "china_shipping": {
-      "status": "unknown",
-      "note": "国内订单配送范围及运费以收货地址和结账页为准；未核实具体地址。"
+      "status": "yes",
+      "scope": "site",
+      "evidence_url": "https://www.decathlon.com.cn/help/delivery-method",
+      "checked_at": "2026-10-16T07:15:00+00:00",
+      "note": "官网仅向中国大陆提供配送，港澳台及海外地区不配送；具体地址可达性、配送方式和运费以结账页为准，不据此承诺免运费。"
     },
     "china_credit_card": {
       "status": "unknown",
@@ -667,14 +670,38 @@
     "official_evidence_url": "https://maap.cc/greenedge-cycling",
     "collection_strategy": "public_official_supplier_exact_variants",
     "china_shipping": {
-      "status": "unknown",
-      "note": "中国大陆配送及费用待核实。"
+      "status": "no",
+      "scope": "site",
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-USA-UK-and-Europe",
+      "checked_at": "2026-10-14T16:35:28.648316+00:00",
+      "note": "MAAP 当前国际官网不直邮中国大陆，由当地合作伙伴服务。"
     },
     "china_credit_card": {
       "status": "unknown",
       "note": "中国发行卡支持情况待核实。"
     },
-    "manufacturer_sku_scheme": "maap"
+    "manufacturer_sku_scheme": "maap",
+    "rules_code": "maap",
+    "accepted_card_networks": [
+      "Visa",
+      "Mastercard",
+      "American Express"
+    ],
+    "card_networks_evidence": {
+      "status": "yes",
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/360037452771-What-payment-types-do-you-accept",
+      "checked_at": "2026-10-14T08:54:29.513928+00:00",
+      "content_hash": "bec47589754492887360994bf56a772d128128f2c6246f2f2c44dc6fa28783b1",
+      "note": "官方公布接受的银行卡卡组织；中国发行的卡按卡种及境外支付功能核对，实际付款以银行授权为准。"
+    },
+    "dispatch_origin": "澳大利亚墨尔本仓库",
+    "dispatch_origin_evidence": {
+      "status": "yes",
+      "evidence_url": "https://support.maap.cc/hc/en-us/articles/4999469817613-Shipping-Information-all-countries-outside-Australia-NZ-USA-UK-and-the-EU",
+      "checked_at": "2026-10-14T08:54:28.748754+00:00",
+      "content_hash": "3a4193d6ffe2a447ad511c0d115453a4263b0a329305e01df015e89200da9266",
+      "note": "MAAP 官方配送规则明确列出 Melbourne warehouse。"
+    }
   },
   {
     "code": "movistar",
@@ -712,7 +739,16 @@
       "status": "unknown",
       "note": "中国发行卡支付条件待核实。"
     },
-    "collection_strategy": "scoped_shopify_feed_plus_product_page"
+    "collection_strategy": "scoped_shopify_feed_plus_product_page",
+    "rules_code": "santini",
+    "dispatch_origin": "意大利仓库",
+    "dispatch_origin_evidence": {
+      "status": "yes",
+      "scope": "site",
+      "evidence_url": "https://www.santinicycling.com/pages/faq",
+      "checked_at": "2026-10-16T07:24:50.745434+00:00",
+      "note": "Santini 同站官方 FAQ 明确所有订单从意大利仓库发出；这不代表已核实中国大陆配送、运费或进口税。"
+    }
   },
   {
     "code": "alpecin",

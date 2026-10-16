@@ -5,12 +5,15 @@ const READINESS_HOSTS=Object.freeze({
   amazon_us:['www.amazonforum.com','www.amazon.com'],amazon_uk:['www.aboutamazon.co.uk','sellercentral-europe.amazon.com','digprjsurvey.amazon.co.uk'],
   amazon_de:['www.aboutamazon.de'],amazon_jp:['press.aboutamazon.com','www.unionpayintl.com'],
   visma:['www.teamvismaleaseabike.com'],maap:['support.maap.cc'],poc:['poc.com'],
+  jayco:['support.maap.cc'],decathlon_cn:['www.decathlon.com.cn'],colnago:['www.colnago.com'],
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
   amazon_us:['market','美国站',['amazon.com','www.amazon.com']],amazon_uk:['market','英国站',['amazon.co.uk','www.amazon.co.uk']],
   amazon_de:['market','德国站',['amazon.de','www.amazon.de']],amazon_jp:['market','日本站',['amazon.co.jp','www.amazon.co.jp']],
-  visma:['merchant',null,['teamvismaleaseabike.com','www.teamvismaleaseabike.com']],maap:['merchant',null,['maap.cc','www.maap.cc']],poc:['market','Global EN',['poc.com','www.poc.com']]
+  visma:['merchant',null,['teamvismaleaseabike.com','www.teamvismaleaseabike.com']],maap:['merchant',null,['maap.cc','www.maap.cc']],poc:['market','Global EN',['poc.com','www.poc.com']],
+  jayco:['merchant',null,['maap.cc','www.maap.cc']],decathlon_cn:['market','中国大陆 CNY 报价',['www.decathlon.com.cn','decathlon.com.cn']],
+  colnago:['market','US 市场 · USD 商品报价；配送另核',['www.colnago.com']]
 });
 let readinessData=null,readinessState='loading',readinessSequence=0;
 const readinessContexts=new Map();
@@ -31,6 +34,7 @@ function validateReadinessData(data){
     const key=JSON.stringify([entry.sourceCode,entry.scope,entry.salesRegion]);
     if(!Object.prototype.hasOwnProperty.call(READINESS_HOSTS,entry.sourceCode)||!['market','merchant'].includes(entry.scope)||keys.has(key)||!readinessText(entry.label,100)||!readinessText(entry.policyScope,300)||(entry.scope==='market'?!readinessText(entry.salesRegion,200):entry.salesRegion!==null)||!Array.isArray(entry.merchantHosts)||!entry.merchantHosts.length||!entry.merchantHosts.every(x=>/^[a-z0-9.-]+$/.test(x))||!Array.isArray(entry.sources)||!entry.sources.length||!entry.sources.every(url=>readinessUrl(url,entry.sourceCode)))throw Error('Invalid purchase readiness scope');
     const scope=READINESS_SCOPES[entry.sourceCode];if(!scope||entry.scope!==scope[0]||entry.salesRegion!==scope[1]||entry.merchantHosts.length!==scope[2].length||!entry.merchantHosts.every(host=>scope[2].includes(host)))throw Error('Wrong merchant or market policy scope');
+    if(entry.checkedAt!==undefined&&!readinessDate(entry.checkedAt))throw Error('Invalid policy verification date');
     keys.add(key);
     for(const field of ['payment','directChina','forwarding'])if(!entry[field]||!states.includes(entry[field].status)||!readinessText(entry[field].note))throw Error('Invalid purchase readiness claim');
     if(!Array.isArray(entry.payment.methods)||!entry.payment.methods.every(x=>readinessText(x,100))||!['unknown','conditional_checkout'].includes(entry.payment.chinaIssuedCard))throw Error('No verified China-issued card transaction in this research');
@@ -60,14 +64,16 @@ function readinessEvidenceMarkup(offer){
 function readinessContent(offer){
   const esc=readinessEscape,row=readinessPolicy(offer),shipping=offer.shipping_to_china||{};
   const changed=/原文已变化|正在复核/.test(shipping.note||'');
-  let delivery=shipping.status==='no'?'报价证据：不直邮中国大陆':row?.directChina.status==='prohibited'?'官网规则：不直邮中国大陆':row?.directChina.status==='confirmed'?'官网列中国配送；本件商品、地址及最终费用仍须结账核对':row?.directChina.status==='conditional_checkout'?'部分合格商品可出口中国；逐商品、卖家和地址核对':'中国直邮待核实；先确认商品与地址，再决定注册';
+  const domestic=offer.source_code==='decathlon_cn'&&row?.salesRegion==='中国大陆 CNY 报价';
+  let delivery=shipping.status==='no'?'报价证据：不直邮中国大陆':row?.directChina.status==='prohibited'?'官网规则：不直邮中国大陆':row?.directChina.status==='confirmed'?'官网列中国配送；本件商品、地址及最终费用仍须结账核对':row?.directChina.status==='conditional_checkout'?'配送有市场或订单条件，需核对商品和收货地址':'中国直邮待核实；先确认商品与地址，再决定注册';
+  if(domestic)delivery='官网支持中国大陆配送；具体地址、商品与配送方式以结账为准';
   if(changed)delivery='报价规则待复核，暂不确认中国配送';
   const freight=changed?'运费规则待复核':row?.directChina.shippingAmount!==undefined?row.directChina.shippingCurrency+' '+row.directChina.shippingAmount.toFixed(2)+'（官网公布运费，独立于商品币种；非含税总价）':offer.shipping&&offer.shipping.amount!==null&&offer.shipping.amount!==undefined?String(offer.shipping.currency)+' '+String(offer.shipping.amount)+'（报价记录，结账再确认）':'运费待确认';
   const reference=readinessData?.entries.find(item=>item.sourceCode===offer.source_code&&item.scope==='market'&&item.salesRegion!==offer.sales_region&&!item.sourceCode.startsWith('amazon_'));
   const payment=typeof paymentMethodsMarkup==='function'?paymentMethodsMarkup(offer,false):'<p data-china-card-status="unknown">支付说明暂时无法加载。中国发行卡或其他支付方式是否可用，请在商家结账页确认。</p>';
-  return '<h4>注册前，先确认能不能买</h4><p class="readiness-scope">'+esc(offer.source_name||row?.label||offer.source_code||'当前商店')+' · '+esc(offer.sales_region||'报价市场未记录')+'</p>'+payment+'<dl class="readiness-checks"><div><dt>寄往中国</dt><dd>'+esc(delivery)+'</dd></div><div><dt>运费与税</dt><dd>'+esc(freight)+'；进口税、清关和银行卡费用未齐全不等于 0，不作为最终到手价。</dd></div></dl>'+
-    (row?'<p class="readiness-meta">配送资料核对：'+esc(readinessData.checkedAt)+' · '+esc(row.policyScope)+'</p><details class="readiness-evidence"><summary>配送与转运依据</summary><p>'+esc(row.directChina.note)+'</p><p>转运：'+esc(row.forwarding.note)+'</p>'+(row.sourceLimitations?'<p>'+esc(row.sourceLimitations)+'</p>':'')+'<p>这些说明仅适用于所列商店与地区。付款与配送以当前订单为准，未确认的费用不按 0 计算。</p>'+readinessEvidenceMarkup(offer)+'<ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.sourceCode,'官方来源 '+(i+1))+'</li>').join('')+'</ul></details>':'<p class="readiness-meta">'+(readinessState==='loading'?'正在加载配送说明，请稍候。':'这家商店当前地区的配送条件尚未确认，请先向商家咨询。')+'</p>'+
-      (reference?'<p class="readiness-warning">其他范围的官方参考（'+esc(reference.policyScope)+'，核对 '+esc(readinessData.checkedAt)+'）：'+esc(reference.directChina.note)+' 转运：'+esc(reference.forwarding.note)+' 这些条款不作为当前报价市场已核实的支付依据。</p>':'')+
+  return '<h4>注册前，先确认能不能买</h4><p class="readiness-scope">'+esc(offer.source_name||row?.label||offer.source_code||'当前商店')+' · '+esc(offer.sales_region||'报价市场未记录')+'</p>'+payment+'<dl class="readiness-checks"><div><dt>寄往中国</dt><dd>'+esc(delivery)+'</dd></div><div><dt>运费与税</dt><dd>'+esc(freight)+(domestic?'；国内订单按所选配送方式和实付金额计算，不套用境外进口税估算。':'；进口税、清关和银行卡费用未齐全不等于 0，不作为最终到手价。')+'</dd></div></dl>'+
+    (row?'<p class="readiness-meta">配送资料核对：'+esc(row.checkedAt||readinessData.checkedAt)+' · '+esc(row.policyScope)+'</p><details class="readiness-evidence"><summary>配送与转运依据</summary><p>'+esc(row.directChina.note)+'</p><p>转运：'+esc(row.forwarding.note)+'</p>'+(row.sourceLimitations?'<p>'+esc(row.sourceLimitations)+'</p>':'')+'<p>这些说明仅适用于所列商店与地区。付款与配送以当前订单为准，未确认的费用不按 0 计算。</p>'+readinessEvidenceMarkup(offer)+'<ul>'+row.sources.map((url,i)=>'<li>'+readinessLink(url,row.sourceCode,'官方来源 '+(i+1))+'</li>').join('')+'</ul></details>':'<p class="readiness-meta">'+(readinessState==='loading'?'正在加载配送说明，请稍候。':'这家商店当前地区的配送条件尚未确认，请先向商家咨询。')+'</p>'+
+      (reference?'<p class="readiness-warning">其他范围的官方参考（'+esc(reference.policyScope)+'，核对 '+esc(reference.checkedAt||readinessData.checkedAt)+'）：'+esc(reference.directChina.note)+' 转运：'+esc(reference.forwarding.note)+' 这些条款不作为当前报价市场已核实的支付依据。</p>':'')+
       '<details class="readiness-evidence"><summary>查看现有配送证据</summary>'+ (readinessEvidenceMarkup(offer)||'<p>配送来源与核对日期待补齐。</p>')+(reference?reference.sources.map((url,i)=>readinessLink(url,reference.sourceCode,'范围参考来源 '+(i+1))).join(''):'')+'</details>');
 }
 function purchaseReadinessMarkup(offer){
@@ -92,11 +98,16 @@ function allowedReadinessLink(link){
   const links=readinessData.entries.filter(row=>row.sourceCode===code).flatMap(row=>row.sources).concat(readinessData.forwarders.filter(row=>row.id===code).flatMap(row=>[row.calculator,...row.sources]));
   return readinessUrl(url,code)&&links.includes(url)?url:null;
 }
+function readinessSourceDate(code,url){
+  const rows=readinessData?.entries.filter(row=>row.sourceCode===code&&row.sources.includes(url))||[];
+  const dates=[...new Set(rows.map(row=>row.checkedAt||readinessData.checkedAt))];
+  return dates.length?dates.join('、'):(readinessData?.checkedAt||'未记录');
+}
 function guardReadinessExit(event){
   const link=event.target.closest?.('a[data-readiness-link]');if(!link||(event.type==='auxclick'&&event.button!==1))return;
   event.preventDefault();const url=allowedReadinessLink(link);if(!url)return;
   showExternalExit({url,kind:'reference',label:link.textContent?.trim()||'规则与费用参考',trigger:link,
-    sourceNote:'本站保存了该规则或服务商资料，资料核对：'+readinessData.checkedAt+'；记录可能有市场、日期或历史资料限制，不等于本次服务已核验。',
+    sourceNote:'本站保存了该规则或服务商资料，资料核对：'+readinessSourceDate(link.dataset.readinessLink,url)+'；记录可能有市场、日期或历史资料限制，不等于本次服务已核验。',
     note:'即将打开官方规则或费用计算器，仅作资料核对，不代表商家允许转运、接受中国银行卡或保证总费用。请自行确认服务条款及费用后再使用。',
     validate:()=>allowedReadinessLink(link)===url,onConfirm:()=>{if(typeof saveBrowseState==='function')saveBrowseState()}});
 }
