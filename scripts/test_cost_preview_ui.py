@@ -137,8 +137,10 @@ def main():
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
-                expect(page.locator('.card')).to_have_count(0)
-                expect(page.locator('.empty')).to_contain_text('暂无符合条件的已核实折扣')
+                # Fresh, in-stock ordinary-price items are valid channel selections.
+                expect(page.locator('.card')).to_have_count(1)
+                expect(page.locator('.card')).to_contain_text('Stamp Hoodie')
+                expect(page.locator('.card .deal-badge')).to_have_count(0)
                 page.locator('#q').fill('Stamp Hoodie')
                 expect(page.locator('#browseLabel')).to_have_text('搜索结果')
                 expect(page.locator('.card')).to_have_count(1)
