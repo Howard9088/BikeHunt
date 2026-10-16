@@ -73,6 +73,32 @@ assert.equal(context.registrationLanguageMarkup('unknown','日本站'),'');
 assert.ok(context.registrationLanguageMarkup('maap','US').includes('免密码登录'));
 assert.ok(context.registrationLanguageMarkup('uae','US').includes('用户类型'));
 assert.ok(context.registrationHelpMarkup('rapha','日本站').includes('registration-language-guide'));
+
+for(const [code,origin,entryUrl] of [['rapha','https://auth.rapha.cc','https://www.rapha.cc/jp/ja'],['maap','https://shopify.com','https://maap.cc/'],['fizik','https://shopify.com','https://www.fizik.com/']]){
+  const provenance=structuredClone(data);provenance.entries=[structuredClone(data.entries.find(entry=>entry.sourceCode==='visma'))];
+  provenance.entries[0].sourceCode=code;
+  for(const frame of provenance.entries[0].frames)Object.assign(frame,{sourceUrl:entryUrl,screenshotOrigin:origin,sourceLabel:'官网进入链接'});
+  context.validateRegistrationData(provenance,now);install(provenance);
+  const rendered=context.registrationPublicAccountMarkup(code);
+  assert.ok(rendered.includes('实际截图来源：'+origin));assert.ok(rendered.includes('官网进入链接：'+entryUrl));assert.ok(!rendered.includes('href="'+origin));
+  for(const bad of [origin+'/',origin+'/login',origin+'?token=secret',origin+'#secret',origin.replace('https://','https://user@'),origin+':443',origin+'.evil.example','<script>',null]){
+    const invalid=structuredClone(provenance);invalid.entries[0].frames[0].screenshotOrigin=bad;assert.throws(()=>context.validateRegistrationData(invalid,now));
+  }
+  for(const change of ['missingOrigin','missingLabel','wrongLabel','wrongSource']){
+    const invalid=structuredClone(provenance),frame=invalid.entries[0].frames[0];
+    if(change==='missingOrigin')delete frame.screenshotOrigin;
+    if(change==='missingLabel')delete frame.sourceLabel;
+    if(change==='wrongLabel')frame.sourceLabel='<img src=x onerror=alert(1)>';
+    if(change==='wrongSource'){invalid.entries[0].sourceCode='visma';for(const f of invalid.entries[0].frames)f.sourceUrl='https://www.teamvismaleaseabike.com/register/';}
+    assert.throws(()=>context.validateRegistrationData(invalid,now));
+  }
+}
+assert.equal(context.registrationProvenance({screenshotOrigin:'https://shopify.com',sourceLabel:'官网进入链接'},'rapha'),false);
+assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.rapha.cc',sourceLabel:'官网进入链接'},'maap'),false);
+assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.rapha.cc',sourceLabel:'官网进入链接'},'rapha_kr'),false);
+assert.equal(context.registrationProvenance({screenshotOrigin:'https://auth.rapha.cc',sourceLabel:'官网进入链接'},'fizik'),false);
+install(data);
+
 (async()=>{
  response=data;await context.loadRegistrationGuides();assert.equal(requests.length,1);assert.equal(requests[0][1].cache,'no-store');assert.ok(requests[0][0].startsWith('https://bikehunt.example/BikeHunt/web/registration-guides.json?check='));
  assert.ok(context.registrationPublicAccountMarkup('visma').includes('<img'));

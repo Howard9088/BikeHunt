@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "registration-20261015-v1",
+  "revision": "registration-guides-20261016-real-accounts-v1",
   "entries": [
     {
       "sourceCode": "visma",
@@ -147,7 +147,7 @@
               "x": 44.4,
               "y": 51.7,
               "width": 48.4,
-              "height": 5.0
+              "height": 5
             },
             {
               "label": "Create account＝创建账户",
@@ -215,6 +215,638 @@
       "checkedAt": "2026-10-15",
       "reviewReason": "车队商城账户页尚待核实；未将迪卡侬零售商店的同名账户视为车队商城账户。",
       "frames": []
+    },
+    {
+      "sourceCode": "rapha",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "日本站入口；统一账户页本次显示繁体中文，未验证配送或付款市场",
+      "revision": "rapha-public-account-20261016-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:06:00Z",
+      "frames": [
+        {
+          "id": "rapha-jp-entry",
+          "asset": "assets/registration/rapha-jp-entry.jpg",
+          "sourceUrl": "https://www.rapha.cc/jp/ja",
+          "verifiedAt": "2026-10-16T02:06:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "1. 日本站的账户菜单：先选「登録」",
+          "alt": "Rapha日本站官方实拍，账户图标展开后有サイン イン和登録。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "アカウント＝账户",
+              "description": "在日本站右上角打开账户菜单。此图只核验入口，不代表日本市场付款或配送已验证。",
+              "x": 90.8,
+              "y": 7.7,
+              "width": 2.4,
+              "height": 5.2
+            },
+            {
+              "label": "サイン イン＝登录",
+              "description": "已有账户可选此项；不要把首页新闻邮件订阅当作账户注册。",
+              "x": 73.2,
+              "y": 13.3,
+              "width": 20,
+              "height": 6.7
+            },
+            {
+              "label": "登録＝注册",
+              "description": "新账户入口。本次点击后进入auth.rapha.cc统一账户页，实际语言为繁体中文。",
+              "x": 73.2,
+              "y": 20.2,
+              "width": 20,
+              "height": 6.7
+            }
+          ]
+        },
+        {
+          "id": "rapha-account-form-zh",
+          "asset": "assets/registration/rapha-account-form-zh.jpg",
+          "sourceUrl": "https://www.rapha.cc/jp/ja",
+          "verifiedAt": "2026-10-16T02:06:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "2. 从日本站进入的统一注册表：本次显示繁体中文",
+          "alt": "Rapha官方auth.rapha.cc空白账户表单：电子邮件地址、密码、继续。来源链接为日本站入口，认证会话链接不保存。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "電子郵件地址＝邮箱",
+              "description": "仅在Rapha原站填写自己的邮箱。本图来自auth.rapha.cc；下方来源链接是进入该表单的日本站入口。",
+              "x": 36.3,
+              "y": 40.5,
+              "width": 27.5,
+              "height": 8.6
+            },
+            {
+              "label": "密碼＝密码",
+              "description": "在原站自行设置密码，不向BikeHunt提供。未填写或提交，密码规则及后续验证未实测。",
+              "x": 36.3,
+              "y": 50.2,
+              "width": 27.5,
+              "height": 7.7
+            },
+            {
+              "label": "繼續＝继续",
+              "description": "提交前阅读原站条款。账户表本次为繁体中文，条款链接指ap/zh；不能据此推断购物市场或配送地区。",
+              "x": 36.3,
+              "y": 60.7,
+              "width": 27.5,
+              "height": 6.9
+            },
+            {
+              "label": "已有帳戶？登入",
+              "description": "已有账号使用登录入口，勿重复注册。",
+              "x": 36.3,
+              "y": 69.5,
+              "width": 12.5,
+              "height": 3.5
+            }
+          ],
+          "screenshotOrigin": "https://auth.rapha.cc",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "maap",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "从AU / AUD入口打开的公共账户首屏；其他市场购买条件未验证",
+      "revision": "maap-public-account-20261016-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:06:00Z",
+      "frames": [
+        {
+          "id": "maap-au-account-email",
+          "asset": "assets/registration/maap-au-account-email.jpg",
+          "sourceUrl": "https://maap.cc/",
+          "verifiedAt": "2026-10-16T02:06:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "1. MAAP账户邮箱入口：登录与创建账户共用首屏",
+          "alt": "从MAAP澳大利亚AU/AUD入口跳转至Shopify的官方账户首屏：邮箱、继续，以及默认勾选的营销邮件选项。来源链接为MAAP官网入口。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "Sign in or create an account＝登录或创建账户",
+              "description": "本次从AU / AUD入口进入，实际认证页由shopify.com承载；下方链接为MAAP官方入口，临时认证网址不保存。",
+              "x": 33.8,
+              "y": 30.5,
+              "width": 33,
+              "height": 7.7
+            },
+            {
+              "label": "Email＝邮箱；右箭头＝继续",
+              "description": "当前首屏没有密码框。自行在原站填邮箱并按实时提示操作；后续邮件验证界面未实测。",
+              "x": 33.7,
+              "y": 61.1,
+              "width": 32.7,
+              "height": 7.7
+            },
+            {
+              "label": "Email me with news and offers＝资讯及优惠邮件",
+              "description": "本次默认勾选。请自行判断是否保留；不想订阅应在原站取消勾选，注册与营销订阅分别处理。",
+              "x": 33.8,
+              "y": 69.5,
+              "width": 32,
+              "height": 3.6
+            },
+            {
+              "label": "Terms of service＝服务条款",
+              "description": "继续前阅读条款。不要将账户注册或营销订阅理解为已购买商品。",
+              "x": 38.7,
+              "y": 74.7,
+              "width": 22.5,
+              "height": 3.6
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
+    },
+    {
+      "sourceCode": "uae",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "PISSEI英文公开注册页；截图国家示例为United States，不代表配送已核验",
+      "revision": "uae-public-account-20261016-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:06:00Z",
+      "frames": [
+        {
+          "id": "pissei-us-form-top",
+          "asset": "assets/registration/pissei-us-form-top.jpg",
+          "sourceUrl": "https://www.pissei.com/en/registration",
+          "verifiedAt": "2026-10-16T02:06:00Z",
+          "viewport": {
+            "width": 1170,
+            "height": 751
+          },
+          "caption": "1. PISSEI注册表：对照资料字段，国家必须自行核对",
+          "alt": "PISSEI英文空白注册表，显示Private用户类型、姓名、国家、邮箱、密码、确认密码、生日及两个同意开关；国家当时为United States。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "USER TYPE / Private＝用户类型／个人",
+              "description": "按实际用户类型选择，不把个人用户与企业用户混用。",
+              "x": 19,
+              "y": 37.5,
+              "width": 29.5,
+              "height": 8.5
+            },
+            {
+              "label": "NAME＝名；SURNAME＝姓",
+              "description": "姓名分两栏；按真实资料填写。星号是页面必填标记。",
+              "x": 19,
+              "y": 48.2,
+              "width": 29.5,
+              "height": 18.4
+            },
+            {
+              "label": "COUNTRY＝国家",
+              "description": "截图当时为United States，可能随访问状态变化。请核对自己需要的国家；此选项不证明能配送或付款。",
+              "x": 19,
+              "y": 68.7,
+              "width": 29.5,
+              "height": 8.1
+            },
+            {
+              "label": "EMAIL ADDRESS＝邮箱",
+              "description": "只在PISSEI官网填写自己的邮箱。",
+              "x": 19,
+              "y": 78.9,
+              "width": 29.5,
+              "height": 8.5
+            },
+            {
+              "label": "PASSWORD / CONFIRM PASSWORD＝密码／确认密码",
+              "description": "上下两栏输入同一个自行设置的密码。密码要求以原站实时提示为准，本次未实测。",
+              "x": 50.7,
+              "y": 37.5,
+              "width": 29.4,
+              "height": 18.8
+            },
+            {
+              "label": "DATE OF BIRTH＝出生日期",
+              "description": "页面以星号标为必填。日期格式以原站选择器或提示为准。",
+              "x": 50.7,
+              "y": 58.2,
+              "width": 29.4,
+              "height": 8.5
+            }
+          ]
+        },
+        {
+          "id": "pissei-us-form-bottom",
+          "asset": "assets/registration/pissei-us-form-bottom.jpg",
+          "sourceUrl": "https://www.pissei.com/en/registration",
+          "verifiedAt": "2026-10-16T02:06:00Z",
+          "viewport": {
+            "width": 1170,
+            "height": 751
+          },
+          "caption": "2. 阅读数据处理与营销选项，再自行决定是否提交",
+          "alt": "PISSEI注册表下半部，数据处理与推广邮件为独立开关，按钮原文为sign in。本次未提交。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "数据处理同意",
+              "description": "先阅读原文及隐私说明，再决定是否同意资料处理。截图中开关未勾选。",
+              "x": 50.7,
+              "y": 34.6,
+              "width": 29.4,
+              "height": 11.5
+            },
+            {
+              "label": "商业或促销邮件同意",
+              "description": "这是另一项营销选择，与上一项分别判断。截图中开关未勾选。",
+              "x": 50.7,
+              "y": 47.7,
+              "width": 29.4,
+              "height": 7.8
+            },
+            {
+              "label": "sign in＝本注册表提交按钮原文",
+              "description": "本页标题为REGISTER，但底部按钮写sign in。核对全部资料和条款后自行决定；本次未提交，也未验证注册成功。",
+              "x": 41,
+              "y": 65.5,
+              "width": 17.2,
+              "height": 7.7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "assos",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：当前 US 英语界面；不代表其他市场配送或付款条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:20:00Z",
+      "frames": [
+        {
+          "id": "assos-us-register-top",
+          "asset": "assets/registration/assos-us-register-top.jpg",
+          "sourceUrl": "https://www.assos.com/us/",
+          "verifiedAt": "2026-10-16T02:20:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "从美国官网菜单进入 Log in / Register，再选择 REGISTER。实拍为空白注册表单上半部；未提交。",
+          "alt": "从美国官网菜单进入 Log in / Register，再选择 REGISTER。实拍为空白注册表单上半部；未提交。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "选择注册",
+              "description": "REGISTER＝注册；LOG IN＝已有账户登录。",
+              "x": 41,
+              "y": 0,
+              "width": 12,
+              "height": 4
+            },
+            {
+              "label": "姓名与邮箱",
+              "description": "First name＝名；Last name＝姓；Email＝邮箱。带星号为页面标注必填。",
+              "x": 14.8,
+              "y": 25,
+              "width": 68,
+              "height": 18
+            },
+            {
+              "label": "电话、生日与性别",
+              "description": "Phone＝电话；Date of Birth＝生日（日-月-年）；Gender＝性别。Undeclared＝不声明。电话和生日未显示星号。",
+              "x": 14.8,
+              "y": 44,
+              "width": 68,
+              "height": 19
+            },
+            {
+              "label": "密码填写两遍",
+              "description": "Password＝密码；Confirm Password＝再次输入密码。此处未测试密码规则。",
+              "x": 14.8,
+              "y": 67,
+              "width": 68,
+              "height": 7
+            },
+            {
+              "label": "骑行和版型偏好",
+              "description": "Road＝公路；Gravel＝砾石；MTB＝山地；Racing＝竞赛版型；Regular＝常规版型。",
+              "x": 14.8,
+              "y": 78,
+              "width": 68,
+              "height": 16
+            }
+          ]
+        },
+        {
+          "id": "assos-us-register-bottom",
+          "asset": "assets/registration/assos-us-register-bottom.jpg",
+          "sourceUrl": "https://www.assos.com/us/",
+          "verifiedAt": "2026-10-16T02:20:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "同一 REGISTER 表单下半部。品牌邮件/SMS 偏好和实际营销同意是分开的选项；未勾选同意、未创建账户。",
+          "alt": "同一 REGISTER 表单下半部。品牌邮件/SMS 偏好和实际营销同意是分开的选项；未勾选同意、未创建账户。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "品牌通讯偏好",
+              "description": "EMAIL＝邮件；SMS＝短信。画面中 ASSOS 品牌偏好已选，Outlet 未选，不等于已经同意营销。",
+              "x": 14.8,
+              "y": 26,
+              "width": 68,
+              "height": 13
+            },
+            {
+              "label": "隐私说明确认",
+              "description": "阅读隐私说明；理解后由你决定是否确认。",
+              "x": 14.8,
+              "y": 44,
+              "width": 68,
+              "height": 4
+            },
+            {
+              "label": "独立的营销选择",
+              "description": "Newsletters＝营销邮件；promotional SMS＝营销短信。实拍这两项均未勾选。",
+              "x": 14.8,
+              "y": 49,
+              "width": 68,
+              "height": 9
+            },
+            {
+              "label": "注册按钮",
+              "description": "REGISTER＝注册。提交会创建账户；本图解仅核验公开表单，未测试后续激活流程。",
+              "x": 14.8,
+              "y": 60,
+              "width": 68,
+              "height": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "santini",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：当前 IT / EUR，意大利语；不代表其他市场条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:20:00Z",
+      "frames": [
+        {
+          "id": "santini-it-account-email",
+          "asset": "assets/registration/santini-it-account-email.jpg",
+          "sourceUrl": "https://www.santinicycling.com/",
+          "verifiedAt": "2026-10-16T02:20:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "点击官网右上角账户图标打开同域弹层。当前页眉显示 EUR / IT；实拍仅邮箱起始屏，后续验证未测试。",
+          "alt": "点击官网右上角账户图标打开同域弹层。当前页眉显示 EUR / IT；实拍仅邮箱起始屏，后续验证未测试。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Accedi o crea un account＝登录或创建账户。",
+              "x": 68,
+              "y": 17,
+              "width": 29,
+              "height": 5
+            },
+            {
+              "label": "Shop 方式",
+              "description": "Accedi con Shop＝使用 Shop 登录，是另一种方式。本次未进入。",
+              "x": 68,
+              "y": 23,
+              "width": 29,
+              "height": 7
+            },
+            {
+              "label": "填写邮箱",
+              "description": "Email＝邮箱；右侧箭头继续。当前起始屏未要求密码，后续以官网提示为准。",
+              "x": 68,
+              "y": 34,
+              "width": 29,
+              "height": 8
+            },
+            {
+              "label": "营销邮件可单独选择",
+              "description": "Inviami email con notizie e offerte＝向我发送资讯和优惠邮件；实拍未勾选。",
+              "x": 68,
+              "y": 42,
+              "width": 29,
+              "height": 5
+            },
+            {
+              "label": "订单与资料",
+              "description": "Ordini＝订单；Profilo＝资料。这些入口不表示你已经完成注册。",
+              "x": 68,
+              "y": 47,
+              "width": 29,
+              "height": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "kask",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：当前 IT / EN，英语；不代表其他市场配送或付款条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:20:00Z",
+      "frames": [
+        {
+          "id": "kask-it-account-top",
+          "asset": "assets/registration/kask-it-account-top.jpg",
+          "sourceUrl": "https://www.kask.com/en-it/login",
+          "verifiedAt": "2026-10-16T02:20:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "官方账户页同时显示登录与注册。右侧 Create your account 才是新账户表单；当前页眉 Delivery to: IT / EN。",
+          "alt": "官方账户页同时显示登录与注册。右侧 Create your account 才是新账户表单；当前页眉 Delivery to: IT / EN。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "新用户看右侧",
+              "description": "Create your account＝创建账户；左侧 Login＝已有账户登录。",
+              "x": 50,
+              "y": 32,
+              "width": 37,
+              "height": 16
+            },
+            {
+              "label": "姓名",
+              "description": "First Name＝名；Last Name＝姓。星号表示页面标注必填。",
+              "x": 53,
+              "y": 50,
+              "width": 31,
+              "height": 12
+            },
+            {
+              "label": "电话和生日",
+              "description": "Phone＝电话；Birthday date＝生日日期；Birthday month＝月份。这里只显示日、月，不能当成完整出生年月日。",
+              "x": 53,
+              "y": 62.5,
+              "width": 31,
+              "height": 12
+            },
+            {
+              "label": "邮箱和密码均填两遍",
+              "description": "Email／Confirm Email＝邮箱／确认邮箱；Password／Confirm Password＝密码／确认密码。",
+              "x": 53,
+              "y": 75,
+              "width": 31,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "id": "kask-it-account-bottom",
+          "asset": "assets/registration/kask-it-account-bottom.jpg",
+          "sourceUrl": "https://www.kask.com/en-it/login",
+          "verifiedAt": "2026-10-16T02:20:00Z",
+          "viewport": {
+            "width": 1165,
+            "height": 747
+          },
+          "caption": "注册表单下半部。左侧 Check order 是查订单，不是注册步骤。页面含 reCAPTCHA 提示，未出现需完成的验证挑战。",
+          "alt": "注册表单下半部。左侧 Check order 是查订单，不是注册步骤。页面含 reCAPTCHA 提示，未出现需完成的验证挑战。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "隐私说明",
+              "description": "继续前阅读 Privacy Policy＝隐私政策；本次未提交。",
+              "x": 53,
+              "y": 28,
+              "width": 31,
+              "height": 5
+            },
+            {
+              "label": "营销同意",
+              "description": "I agree＝同意接收营销；I don’t agree＝不同意。实拍默认选中不同意。",
+              "x": 53,
+              "y": 35,
+              "width": 31,
+              "height": 9
+            },
+            {
+              "label": "喜爱的运动",
+              "description": "Cycling＝骑行；Snow Sports＝雪上运动；Horse Riding＝马术。实拍均未勾选。",
+              "x": 53,
+              "y": 56,
+              "width": 31,
+              "height": 15
+            },
+            {
+              "label": "创建账户",
+              "description": "CREATE ACCOUNT＝创建账户。未点击，后续激活或验证码流程未核验。",
+              "x": 53,
+              "y": 71.5,
+              "width": 11,
+              "height": 5.5
+            },
+            {
+              "label": "左侧不是注册",
+              "description": "Check order＝查询订单，需要订单号、订单邮箱、账单邮编；不要把这里当成账户资料。",
+              "x": 13.8,
+              "y": 23,
+              "width": 33,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceCode": "fizik",
+      "scope": "public_account",
+      "salesRegion": null,
+      "marketLabel": "公开账户页：官网当前 Japan (€)，英语认证页；不代表美国市场条件",
+      "revision": "public-account-20261016-real-v1",
+      "status": "verified",
+      "checkedAt": "2026-10-16T02:20:00Z",
+      "frames": [
+        {
+          "id": "fizik-jp-account-email",
+          "asset": "assets/registration/fizik-jp-account-email.jpg",
+          "sourceUrl": "https://www.fizik.com/",
+          "verifiedAt": "2026-10-16T02:20:00Z",
+          "viewport": {
+            "width": 1180,
+            "height": 757
+          },
+          "caption": "从官网账户图标进入 Shopify 托管认证页（shopify.com）。官网当时显示 Japan (€)，认证界面为英语；仅核验邮箱起始屏。",
+          "alt": "从官网账户图标进入 Shopify 托管认证页（shopify.com）。官网当时显示 Japan (€)，认证界面为英语；仅核验邮箱起始屏。",
+          "screenshotKind": "real",
+          "annotations": [
+            {
+              "label": "登录或创建账户",
+              "description": "Sign in or create an account＝登录或创建账户。",
+              "x": 33.8,
+              "y": 32,
+              "width": 33,
+              "height": 8
+            },
+            {
+              "label": "Shop 登录方式",
+              "description": "Continue with Shop＝使用 Shop 继续。与下方邮箱入口为不同选项，本次未点击。",
+              "x": 33.8,
+              "y": 42,
+              "width": 33,
+              "height": 7
+            },
+            {
+              "label": "邮箱入口",
+              "description": "Email＝邮箱；箭头继续。当前屏没有密码栏；未测试邮箱验证码或后续账户创建。",
+              "x": 33.8,
+              "y": 54.5,
+              "width": 33,
+              "height": 7.5
+            },
+            {
+              "label": "营销信息选择",
+              "description": "Stay updated…＝接收新闻、促销与营销信息。实拍未勾选。",
+              "x": 33.8,
+              "y": 63,
+              "width": 33,
+              "height": 5
+            },
+            {
+              "label": "继续前阅读条款",
+              "description": "By continuing…＝继续即同意服务条款；底部 Privacy policy＝隐私政策。",
+              "x": 33.8,
+              "y": 70.5,
+              "width": 33,
+              "height": 4
+            }
+          ],
+          "screenshotOrigin": "https://shopify.com",
+          "sourceLabel": "官网进入链接"
+        }
+      ]
     }
   ]
 }

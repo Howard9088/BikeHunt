@@ -21,6 +21,16 @@ function registrationSourceUrl(value,code){
   if(typeof value!=='string'||value.length>1500||!Object.prototype.hasOwnProperty.call(REGISTRATION_HOSTS,code))return false;
   try{const url=new URL(value);return url.href===value&&url.protocol==='https:'&&!url.username&&!url.password&&!url.port&&!url.search&&!url.hash&&REGISTRATION_HOSTS[code].includes(url.hostname)}catch{return false}
 }
+function registrationProvenance(frame,code){
+  const hasOrigin=Object.prototype.hasOwnProperty.call(frame,'screenshotOrigin'),hasLabel=Object.prototype.hasOwnProperty.call(frame,'sourceLabel');
+  if(!hasOrigin&&!hasLabel)return true;
+  const origins={rapha:'https://auth.rapha.cc',maap:'https://shopify.com',fizik:'https://shopify.com'};
+  return hasOrigin&&hasLabel&&Object.prototype.hasOwnProperty.call(origins,code)&&frame.screenshotOrigin===origins[code]&&frame.sourceLabel==='官网进入链接';
+}
+function registrationProvenanceMarkup(frame){
+  const escape=registrationEscape;
+  return frame.screenshotOrigin?'<p class="registration-source">实际截图来源：'+escape(frame.screenshotOrigin)+'</p><p class="registration-source">官网进入链接：'+escape(frame.sourceUrl)+'</p>':'<p class="registration-source">图片来源：'+escape(frame.sourceUrl)+'</p>';
+}
 function registrationTimestamp(value,now=Date.now()){
   if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}))?$/.test(value))return false;
   if(value.length>10&&(Number(value.slice(11,13))>23||Number(value.slice(14,16))>59||Number(value.slice(17,19))>59))return false;
@@ -41,7 +51,7 @@ function validateRegistrationData(data,now=Date.now()){
     const frames=new Set();
     for(const frame of entry.frames){
       if(!frame||!registrationText(frame.id,80)||frames.has(frame.id)||frame.screenshotKind!=='real'||!REGISTRATION_ASSET.test(frame.asset)||
-        !registrationSourceUrl(frame.sourceUrl,entry.sourceCode)||!registrationTimestamp(frame.verifiedAt,now)||
+        !registrationSourceUrl(frame.sourceUrl,entry.sourceCode)||!registrationProvenance(frame,entry.sourceCode)||!registrationTimestamp(frame.verifiedAt,now)||
         !registrationText(frame.caption,500)||!registrationText(frame.alt,500)||!frame.viewport||
         !['width','height'].every(key=>Number.isInteger(frame.viewport[key])&&frame.viewport[key]>=100&&frame.viewport[key]<=16000)||
         !Array.isArray(frame.annotations)||!frame.annotations.length||frame.annotations.length>12)throw Error('Invalid real screenshot');
@@ -109,7 +119,7 @@ function registrationContent(sourceCode,salesRegion,scope='market'){
   if(!entry||entry.status!=='verified')return scope==='market'?registrationSchematicMarkup(sourceCode,salesRegion):'';
   return '<p class="registration-scope">'+escape(scopeLabel)+(scope!=='public_account'&&entry.marketLabel!==scopeLabel?' · '+escape(entry.marketLabel):'')+'</p>'+
     '<p>'+(scope==='public_account'?'以下图解介绍商家账户注册。配送地区与购买条件请在结账时确认。':'请按所选商店及地区的页面操作。')+'页面可能更新，请以商家当前页面为准。</p>'+
-    entry.frames.map(frame=>'<figure class="registration-figure"><figcaption>'+escape(frame.caption)+'</figcaption>'+registrationFrameMarkup(frame)+'<ol class="registration-annotation-list">'+frame.annotations.map(note=>'<li><strong>'+escape(note.label)+'</strong>：'+escape(note.description)+'</li>').join('')+'</ol><p class="registration-meta">更新于 '+escape(frame.verifiedAt.slice(0,10))+'</p><p class="registration-source">图片来源：'+escape(frame.sourceUrl)+'</p></figure>').join('');
+    entry.frames.map(frame=>'<figure class="registration-figure"><figcaption>'+escape(frame.caption)+'</figcaption>'+registrationFrameMarkup(frame)+'<ol class="registration-annotation-list">'+frame.annotations.map(note=>'<li><strong>'+escape(note.label)+'</strong>：'+escape(note.description)+'</li>').join('')+'</ol><p class="registration-meta">更新于 '+escape(frame.verifiedAt.slice(0,10))+'</p>'+registrationProvenanceMarkup(frame)+'</figure>').join('');
 }
 function registrationGuideMarkup(sourceCode,salesRegion,scope='market'){
   const escape=registrationEscape,market=typeof salesRegion==='string'?salesRegion:'',entry=registrationEntry(sourceCode,scope==='public_account'?null:market,scope);

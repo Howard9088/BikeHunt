@@ -22,6 +22,41 @@ def fixture():
 
 
 class RegistrationGuideTests(unittest.TestCase):
+
+    def test_exact_optional_screenshot_origin_and_label(self):
+        for code, origin, entry_url in [('rapha', 'https://auth.rapha.cc', 'https://www.rapha.cc/jp/ja'),
+                                        ('maap', 'https://shopify.com', 'https://maap.cc/'),
+                                        ('fizik', 'https://shopify.com', 'https://www.fizik.com/')]:
+            data = fixture()
+            data['entries'][0]['sourceCode'] = code
+            for frame in data['entries'][0]['frames']:
+                frame.update(sourceUrl=entry_url, screenshotOrigin=origin, sourceLabel='官网进入链接')
+            validate_registration_guides(data, NOW)
+            for bad in [origin + '/', origin + '/login', origin + '?token=secret', origin + '#secret',
+                        origin.replace('https://', 'https://user@'), origin + ':443',
+                        origin + '.evil.example', '<script>', None]:
+                invalid = copy.deepcopy(data)
+                invalid['entries'][0]['frames'][0]['screenshotOrigin'] = bad
+                with self.subTest(code=code, bad=bad), self.assertRaises(ValueError):
+                    validate_registration_guides(invalid, NOW)
+            for change in ['missing_origin', 'missing_label', 'wrong_label', 'wrong_source', 'other_auth']:
+                invalid = copy.deepcopy(data)
+                frame = invalid['entries'][0]['frames'][0]
+                if change == 'missing_origin':
+                    del frame['screenshotOrigin']
+                elif change == 'missing_label':
+                    del frame['sourceLabel']
+                elif change == 'wrong_label':
+                    frame['sourceLabel'] = '<img src=x>'
+                elif change == 'other_auth':
+                    frame['screenshotOrigin'] = 'https://shopify.com' if code == 'rapha' else 'https://auth.rapha.cc'
+                else:
+                    invalid['entries'][0]['sourceCode'] = 'visma'
+                    for item in invalid['entries'][0]['frames']:
+                        item['sourceUrl'] = 'https://www.teamvismaleaseabike.com/register/'
+                with self.subTest(code=code, change=change), self.assertRaises(ValueError):
+                    validate_registration_guides(invalid, NOW)
+
     def test_current_configuration_and_any_active_images_are_valid(self):
         # Adding new markets or withdrawing every image remains a valid release.
         data = read_registration_guides(ROOT)

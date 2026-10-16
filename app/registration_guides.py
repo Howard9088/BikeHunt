@@ -35,6 +35,16 @@ def text(value, limit=300):
     return isinstance(value, str) and 0 < len(value.strip()) and len(value) <= limit
 
 
+def screenshot_provenance(frame, code):
+    has_origin, has_label = 'screenshotOrigin' in frame, 'sourceLabel' in frame
+    if not has_origin and not has_label:
+        return True
+    origins = {'rapha': 'https://auth.rapha.cc', 'maap': 'https://shopify.com', 'fizik': 'https://shopify.com'}
+    return (has_origin and has_label and code in origins
+            and frame['screenshotOrigin'] == origins[code]
+            and frame['sourceLabel'] == '官网进入链接')
+
+
 def timestamp(value, now):
     if not isinstance(value, str) or not TIMESTAMP.fullmatch(value):
         return False
@@ -93,6 +103,7 @@ def validate_registration_guides(data, now=None):
                     or frame.get('screenshotKind') != 'real'
                     or not isinstance(frame.get('asset'), str) or not ASSET.fullmatch(frame['asset'])
                     or not source_url(frame.get('sourceUrl'), code)
+                    or not screenshot_provenance(frame, code)
                     or not timestamp(frame.get('verifiedAt'), now)
                     or not text(frame.get('caption'), 500) or not text(frame.get('alt'), 500)
                     or not isinstance(viewport, dict)

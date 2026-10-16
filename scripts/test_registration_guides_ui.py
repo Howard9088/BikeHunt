@@ -17,9 +17,69 @@ from test_catalog_messages_ui import OUT, ROOT, QuietHandler, select_purchase_ro
 from test_merchant_guides_ui import guide_fixture, assert_no_overflow
 
 
+def exercise_published_screenshots(page, state, published, external_requests, mode, checks):
+    """Render actual shipped assets separately from synthetic failure-test images."""
+    entries = [entry for entry in published['entries']
+               if entry.get('scope') == 'public_account' and entry.get('status') == 'verified']
+    assert entries, 'Expected at least one published verified public-account guide'
+    for entry in entries:
+        assert entry['frames'], entry['sourceCode']
+        for frame in entry['frames']:
+            asset = (ROOT / 'web' / frame['asset']).resolve()
+            assert (ROOT / 'web' / 'assets' / 'registration').resolve() in asset.parents, asset
+            assert asset.is_file() and asset.stat().st_size > 0, asset
+    state['screenshots'] = copy.deepcopy(published)
+    state['real_assets'] = True
+    page.evaluate('async () => { await loadRegistrationGuides(); }')
+    page.wait_for_function("registrationLoadState === 'ready'")
+    for entry in entries:
+        code = entry['sourceCode']
+        page.evaluate("(code) => openPanel('账户图解展示测试', registrationPublicAccountMarkup(code))", code)
+        guide = page.locator('#sheetBody [data-registration-scope=public_account]')
+        expect(guide).to_have_count(1)
+        expect(guide).to_have_attribute('data-registration-source', code)
+        expect(page.locator('#sheetBody [data-registration-scope=market]')).to_have_count(0)
+        expect(guide.locator('form,input,select,textarea,iframe,a')).to_have_count(0)
+        guide.locator('>summary').click()
+        figures = guide.locator('.registration-figure')
+        expect(figures).to_have_count(len(entry['frames']))
+        for index, frame in enumerate(entry['frames']):
+            figure = figures.nth(index)
+            preview = figure.locator('.registration-preview img')
+            preview.scroll_into_view_if_needed()
+            expect(preview).to_be_visible()
+            assert preview.evaluate("""async img => {
+                await img.decode();
+                return img.complete && img.naturalWidth > 0 && img.naturalHeight > 0;
+            }"""), frame['asset']
+            assert preview.evaluate("img => new URL(img.currentSrc).origin === location.origin")
+            assert urlparse(preview.get_attribute('src')).path.endswith('/' + frame['asset'])
+            zoom = figure.locator('.registration-zoom')
+            zoom.locator('>summary').focus()
+            page.keyboard.press('Enter')
+            expect(zoom).to_have_attribute('open', '')
+            image = zoom.locator('img')
+            assert image.evaluate("""async img => {
+                await img.decode();
+                return img.naturalWidth > 0 && img.getBoundingClientRect().width === img.naturalWidth;
+            }"""), frame['asset']
+            assert_no_overflow(page)
+            zoom.locator('.registration-zoom-viewport').focus()
+            page.keyboard.press('Escape')
+            expect(zoom).not_to_have_attribute('open', '')
+            expect(zoom.locator('>summary')).to_be_focused()
+            expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'false')
+            assert_no_overflow(page)
+        page.screenshot(path=str(OUT / f'registration_real_{code}_{mode}.png'))
+        page.locator('#close').click()
+    assert external_requests == [], 'Real guide previews must load only shipped local assets'
+    checks.append(mode + ': actual published verified public-account assets decode, zoom and collapse without page overflow; source/scope isolated; no merchant requests')
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     config = json.loads((ROOT / 'tests/fixtures/registration-guides.json').read_text())
+    published = json.loads((ROOT / 'web/registration-guides.json').read_text())
     # Test-only image bytes: never added to the real screenshot configuration.
     def chunk(kind, value):
         return struct.pack('>I', len(value)) + kind + value + struct.pack('>I', zlib.crc32(kind + value) & 0xffffffff)
@@ -38,6 +98,7 @@ def main():
                     quote['offer']['sales_region'] = 'US 市场报价（USD）'
                 state['screenshots'] = copy.deepcopy(config)
                 state['config_failure'] = False
+                state['real_assets'] = False
                 external_requests = []
                 context = browser.new_context(viewport=viewport, is_mobile=mode != 'desktop', has_touch=mode != 'desktop')
                 context.set_default_timeout(7000)
@@ -55,6 +116,8 @@ def main():
                             return route.fulfill(status=503, body='Unavailable')
                         return route.fulfill(content_type='application/json', body=json.dumps(state['screenshots']))
                     if '/assets/registration/' in url.path:
+                        if state['real_assets']:
+                            return route.continue_()
                         return route.fulfill(content_type='image/png', body=image_fixture)
                     if not url.path.startswith('/api/'):
                         return route.continue_()
@@ -165,6 +228,7 @@ def main():
                 assert external_requests == [], 'Reading registration guidance never contacts merchant sites'
                 expect(page.locator('#sheet')).to_have_attribute('aria-hidden', 'true')
                 checks.append(mode + ': three real Visma images/notes with local original-resolution zoom, overlays, keyboard scroll and Escape focus return; unverified exact-market visual walkthrough available; optional keyboard details; source/date without diagnostics; no forms or merchant requests; disabled and failed-refresh withdrawal; no standalone Amazon navigation or search cards; no early registration; no overflow; safe route Back/Close')
+                exercise_published_screenshots(page, state, published, external_requests, mode, checks)
                 context.close()
             browser.close()
         assert errors == [], errors
