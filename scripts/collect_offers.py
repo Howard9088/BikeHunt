@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
@@ -18,7 +19,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 from loguru import logger
 
-from app.catalog.storage import OfferRepository
+from app.catalog.storage import OfferRepository, atomic_json
 from app.collectors.parsers import parse_jsonld, parse_teamcycles
 from app.collectors.variants import parse_rapha, parse_visma
 from app.collectors.woocommerce import parse_woocommerce
@@ -33,6 +34,8 @@ from app.collectors.rendered import parse_unox
 from app.collectors.remaining import parse_redbull_product, parse_topfanz, topfanz_page_action
 from app.collectors.remaining import parse_canyon_product, parse_colnago_product
 from app.collectors.specialized import parse_specialized
+from app.collectors.gobik import parse_gobik, preserve_gobik_identity
+from app.collectors.oakley import collect_oakley_product
 from scrapling.fetchers import FetcherSession
 from app.collectors.transport import certificate_bundle
 
@@ -42,9 +45,17 @@ def saved_deferrals(data_dir: Path, code: str, now: datetime) -> dict[str, Sourc
     try:
         status = json.loads((data_dir / "collection_status" / f"{code}.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        return {}
+        status = {}
+    try:
+        safe = json.loads((data_dir / "source_deferrals" / f"{code}.json").read_text())
+    except (OSError, ValueError):
+        safe = {}
+    errors = list(status.get("errors", []))
+    if isinstance(safe, dict):
+        errors.extend({"url": "https://" + host + "/", "retry_at": until}
+                      for host, until in safe.items() if isinstance(host, str) and re.fullmatch(r"[a-z0-9.-]+", host))
     pending = {}
-    for error in status.get("errors", []):
+    for error in errors:
         try:
             until = datetime.fromisoformat(error.get("retry_at", "").replace("Z", "+00:00"))
             host = urlsplit(error["url"]).hostname
@@ -57,8 +68,46 @@ def saved_deferrals(data_dir: Path, code: str, now: datetime) -> dict[str, Sourc
     return pending
 
 
+def persist_deferrals(data_dir: Path, code: str, errors: list[dict], now: datetime) -> None:
+    """Persist only host/retry times across CI; never raw errors or page evidence."""
+    safe = {}
+    for error in errors:
+        try:
+            host = urlsplit(error['url']).hostname
+            until = datetime.fromisoformat(error['retry_at'].replace('Z', '+00:00'))
+            if host and until.tzinfo is not None and until > now:
+                if host not in safe or until > datetime.fromisoformat(safe[host]):
+                    safe[host] = until.isoformat()
+        except (KeyError, ValueError, TypeError, AttributeError):
+            continue
+    atomic_json(data_dir / 'source_deferrals' / f'{code}.json', safe)
+
+
 def error_record(url: str, exc: Exception) -> dict:
     row = {"url": url, "error": str(exc)}
+    # A finite diagnostic vocabulary lets CI locate failures without exposing
+    # exception text, URLs, stock response bodies or other private evidence.
+    reasons = {
+        "Decathlon selected stock request failed": "stock_request_failed",
+        "Decathlon selected stock response is unverified": "stock_shape_unverified",
+        "Decathlon selected stock DOM did not settle": "stock_dom_mismatch",
+        "Decathlon selected size could not be verified": "selected_size_unverified",
+        "Decathlon exact size selector is ambiguous": "ambiguous_size_selector",
+        "Ambiguous or unsupported Decathlon size list": "size_list_unverified",
+        "Decathlon online stock access denied": "source_access_denied",
+        "No validated per-variant offers; snapshot not replaced": "no_validated_variants",
+        "Dynamic variant capture did not finish": "variant_capture_failed",
+    }
+    diagnostic, current, seen = [], exc, set()
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        if str(current) in reasons:
+            diagnostic.append(reasons[str(current)])
+        if type(current).__name__ == 'TimeoutError':
+            diagnostic.append('browser_timeout')
+        current = current.__cause__
+    if diagnostic:
+        row['diagnostics'] = list(dict.fromkeys(diagnostic))
     if isinstance(exc, SourceDeferred):
         row["retry_at"] = exc.retry_at.isoformat()
     return row
@@ -68,7 +117,15 @@ def print_public_collection_result(code: str, count: int, errors: list[dict]) ->
     # Diagnostics remain in local collection_status; CI console gets no body or URL.
     kinds = ['collection_deferred' if row.get('retry_at') else 'collection_failed'
              for row in errors]
-    print(json.dumps({'source': code, 'offers': count, 'errors': kinds}, ensure_ascii=True))
+    allowed = {'stock_request_failed', 'stock_shape_unverified', 'stock_dom_mismatch',
+               'selected_size_unverified', 'ambiguous_size_selector', 'size_list_unverified',
+               'source_access_denied', 'no_validated_variants', 'variant_capture_failed', 'browser_timeout'}
+    diagnostics = sorted({reason for row in errors for reason in row.get('diagnostics', [])
+                          if isinstance(reason, str) and reason in allowed})
+    result = {'source': code, 'offers': count, 'errors': kinds}
+    if diagnostics:
+        result['diagnostics'] = diagnostics
+    print(json.dumps(result, ensure_ascii=True))
 
 
 def source_groups(settings_list: list[dict]) -> list[list[dict]]:
@@ -107,9 +164,15 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
         fetcher.page_action = kask_page_action(fetcher.variant_pages)
     elif settings.get("variant_profile") == "topfanz":
         fetcher.page_action = topfanz_page_action(fetcher.variant_pages)
+    if settings.get("parser") == "decathlon_cn":
+        from app.collectors.decathlon_cn import decathlon_cn_page_action
+        fetcher.page_action = decathlon_cn_page_action(fetcher.variant_pages)
+    previous = [row for row in repository.load() if row.source_code == code] if code in {
+        'gobik', 'oakley', 'decathlon_cn'} else []
     fetcher.deferred.update(saved_deferrals(ROOT / "data", code, datetime.now(timezone.utc)))
     if settings.get("parser") == "shopify":
         result = collect_shopify_catalog(fetcher, settings, source, datetime.now(timezone.utc), ROOT / "data" / "raw")
+        persist_deferrals(ROOT / "data", code, result.errors, datetime.now(timezone.utc))
         repository.save(code, result.offers, datetime.now(timezone.utc), result.errors, result.coverage)
         print_public_collection_result(code, len(result.offers), result.errors)
         return
@@ -128,17 +191,36 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
             errors.append(error_record(discovery["catalog_urls"][0], exc))
     for url in urls:
         try:
+            if settings["parser"] == "oakley":
+                result = collect_oakley_product(fetcher, url, source, previous)
+                for request_url, capture in result.pages.items():
+                    raw_path = ROOT / 'data' / 'raw' / ('oakley_' + hashlib.sha256(request_url.encode()).hexdigest()[:16] + '.html')
+                    raw_path.parent.mkdir(exist_ok=True)
+                    raw_path.write_bytes(capture.body)
+                rows.extend(result.offers)
+                errors.extend(result.errors)
+                continue
             response = fetcher.fetch(url)
+            if code == "gobik" and response.url != url:
+                raise CollectionError("Gobik response changed the configured product or market URL")
             fetched_at = datetime.now(timezone.utc)
             raw_path = ROOT / "data" / "raw" / (code + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + ".html")
             raw_path.parent.mkdir(exist_ok=True)
             raw_path.write_bytes(response.body)
-            parse = {"specialized":parse_specialized,"colnago":parse_colnago_product,"canyon":parse_canyon_product,"redbull_product":parse_redbull_product,"topfanz":parse_topfanz,"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
+            parse = {"gobik":parse_gobik,"specialized":parse_specialized,"colnago":parse_colnago_product,"canyon":parse_canyon_product,"redbull_product":parse_redbull_product,"topfanz":parse_topfanz,"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
+            if settings["parser"] == "decathlon_cn":
+                from app.collectors.decathlon_cn import parse_decathlon_cn
+                parse = parse_decathlon_cn
             parsed = collect_variants(response, source, parse)
             if not parsed and policy.mode == "auto" and response.fetch_mode == "static":
                 response = fetcher.fetch(url, policy=policy.model_copy(update={"mode": "dynamic"}))
                 raw_path.write_bytes(response.body)
                 parsed = collect_variants(response, source, parse)
+            if code == 'gobik':
+                parsed = preserve_gobik_identity(parsed, previous)
+            elif code == 'decathlon_cn':
+                from app.collectors.decathlon_cn import preserve_decathlon_cn_identity
+                parsed = preserve_decathlon_cn_identity(parsed, previous)
             if not parsed:
                 raise CollectionError("No validated per-variant offers; snapshot not replaced")
             parsed = [row.model_copy(update={'collection_url':url}) for row in parsed]
@@ -164,9 +246,10 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
         except Exception as exc:
             logger.error("来源隔离 {} collection_failed", code)
             errors.append(error_record(url, exc))
+    persist_deferrals(ROOT / "data", code, errors, datetime.now(timezone.utc))
     repository.save(code, rows, datetime.now(timezone.utc), errors, {
         "scope":"configured_product_pages", "scope_note":settings.get("scope_note", "指定商品页面，非完整目录"),
-        "collected_product_count":len({(row.collection_url or row.url).split("?",1)[0] for row in rows}),
+        "collected_product_count":len({row.family_hint if code == "decathlon_cn" else (row.collection_url or row.url).split("?",1)[0] for row in rows}),
         "configured_page_count":len(urls), "fetch_mode":policy.mode,
         "dynamic_offer_count":sum(row.fetch_mode == "dynamic" for row in rows),
         "sized_offer_count":sum(bool(row.identity.size) for row in rows),

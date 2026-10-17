@@ -625,7 +625,7 @@
     "sales_region": "中国大陆 CNY 报价",
     "priority": 0,
     "enabled": true,
-    "collection_strategy": "manual_verified_public_variant",
+    "collection_strategy": "automatic_verified_public_variant",
     "official_evidence_url": "https://static-econnected.decathlon.com.cn/econnected/privacy.html",
     "china_shipping": {
       "status": "yes",
@@ -829,7 +829,7 @@
     "base_url": "https://www.oakley.com/en-us",
     "sales_region": "美国站 USD 报价",
     "enabled": true,
-    "collection_strategy": "manual_verified_public_variant",
+    "collection_strategy": "automatic_verified_public_variant",
     "official_evidence_url": "https://www.oakley.com/en-us/product/FOS902243",
     "china_shipping": {
       "status": "no",
@@ -850,7 +850,7 @@
     "base_url": "https://gobik.com",
     "sales_region": "西班牙站 EUR 报价",
     "enabled": true,
-    "collection_strategy": "manual_verified_public_variant",
+    "collection_strategy": "automatic_verified_public_variant",
     "official_evidence_url": "https://gobik.com/en/collections/gobik-factory-team",
     "china_shipping": {
       "status": "unknown",

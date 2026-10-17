@@ -31,20 +31,6 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-      - uses: actions/cache/restore@v6
-        with:
-          path: |
-            data/offers
-            data/rules
-            data/fx_latest.json
-            data/public_updates.json
-            data/publication_cache
-          key: bikehunt-public-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: bikehunt-public-data-v2-
-      - name: Restore committed manual source snapshots
-        # These manual sources retain their real committed observation times.
-        # Existing quote validation and last-known stock rules remain unchanged.
-        run: git restore --source=HEAD -- data/offers/decathlon_cn.json data/offers/oakley.json data/offers/gobik.json
       - name: Install crawler and test dependencies
         run: pip install -r requirements-dev.txt
       - name: Restore first public listing receipts
@@ -53,8 +39,6 @@ jobs:
           path: data/listing_receipts/ledger.json
           key: bikehunt-public-listings-v1-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: bikehunt-public-listings-v1-
-      - name: Restore public event cursor
-        run: python scripts/seed_updates.py
       - name: Validate core modules
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Validate published snapshot freshness
@@ -140,6 +124,19 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_bundle_selection_ui.py
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            data/offers
+            data/rules
+            data/fx_latest.json
+            data/public_updates.json
+            data/publication_cache
+            data/source_deferrals
+          key: bikehunt-public-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: bikehunt-public-data-v2-
+      - name: Restore public event cursor
+        run: python scripts/seed_updates.py
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
       - name: Check policy changes once daily
@@ -169,6 +166,7 @@ jobs:
             data/fx_latest.json
             data/public_updates.json
             data/publication_cache
+            data/source_deferrals
           key: bikehunt-public-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

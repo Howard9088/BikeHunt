@@ -1,5 +1,6 @@
 """Allowlisted public collection health, never exception text or response bodies."""
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -41,6 +42,13 @@ def public_collection_status(raw: dict, allowed_urls: set[str]) -> dict:
         for key in ['new_offer_count','retained_offer_count']:
             if type(row.get(key)) is int and row[key]>=0: entry[key]=row[key]
         if row.get('status') in ['success','partial','failed']: entry['status']=row['status']
+        observations = row.get('successful_offer_observations')
+        if isinstance(observations, dict):
+            safe_observations = {key: stamp for key, stamp in observations.items()
+                if isinstance(key, str) and re.fullmatch(r'[A-Za-z0-9_.:-]{1,160}', key)
+                and _time(stamp)}
+            if safe_observations: entry['successful_offer_observations'] = safe_observations
+
         coverage={}
         for key in ['collected_product_count','configured_page_count','dynamic_offer_count','sized_offer_count']:
             value=(row.get('coverage') or {}).get(key)

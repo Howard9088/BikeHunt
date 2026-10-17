@@ -6,6 +6,7 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from loguru import logger
 from pydantic import ValidationError
@@ -14,6 +15,50 @@ from app.catalog.models import Offer
 from app.collectors.parsers import (
     evidence, manufacturer_identity, money, offer_id, stock_status,
 )
+
+
+def collection_url_key(url: str) -> str:
+    """Keep identity-bearing public queries, discard only unrelated tracking."""
+    parsed = urlsplit(str(url or ""))
+    keys = ({"dsm_code", "model_code"} if parsed.hostname == "www.decathlon.com.cn"
+            and parsed.path == "/product-detail" else {"variant"}
+            if parsed.hostname == "www.oakley.com" and "/product/" in parsed.path else set())
+    query = urlencode(sorted((k, v) for k, v in parse_qsl(parsed.query, keep_blank_values=True) if k in keys))
+    return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, query, ""))
+
+
+def row_collection_key(row) -> str:
+    get = row.get if isinstance(row, dict) else lambda key, default=None: getattr(row, key, default)
+    return collection_url_key(get("collection_url") or get("url", ""))
+
+
+def row_collection_keys(row) -> set[str]:
+    get = row.get if isinstance(row, dict) else lambda key, default=None: getattr(row, key, default)
+    if get("source_code") in {"oakley", "decathlon_cn"}:
+        return {row_collection_key(row)}
+    return {collection_url_key(get("url", "")), row_collection_key(row)}
+
+
+def collection_failed(row, status: dict) -> bool:
+    """A failed sibling request never invalidates a successful exact observation."""
+    get = row.get if isinstance(row, dict) else lambda key, default=None: getattr(row, key, default)
+    stamp = get("fetched_at")
+    stamp = stamp.isoformat() if isinstance(stamp, datetime) else stamp
+    observations = status.get("successful_offer_observations")
+    success = observations.get(get("offer_id")) if isinstance(observations, dict) else None
+    if success and stamp:
+        try:
+            if datetime.fromisoformat(success.replace("Z", "+00:00")) == datetime.fromisoformat(stamp.replace("Z", "+00:00")):
+                return False
+        except (ValueError, TypeError):
+            pass
+    if status.get("status") == "failed":
+        return True
+    key = row_collection_key(row)
+    failed = {collection_url_key(error.get("url", "")) for error in status.get("errors", [])}
+    # A canonical product request can fail the old variants of that product;
+    # a query-specific request can only fail its own collection identity.
+    return bool(row_collection_keys(row) & failed) or key.split("?", 1)[0] in failed
 
 
 def atomic_json(path: Path, payload) -> None:
@@ -54,11 +99,7 @@ class OfferRepository:
                         try:
                             status = json.loads(status_path.read_text(encoding="utf-8"))
                             attempted = datetime.fromisoformat(status.get("attempted_at", ""))
-                            failed_urls = {str(error.get("url", "")).split("?", 1)[0]
-                                           for error in status.get("errors", [])}
-                            failed = (status.get("status") == "failed"
-                                      or row.url.split("?", 1)[0] in failed_urls
-                                      or (row.collection_url or '').split('?', 1)[0] in failed_urls)
+                            failed = collection_failed(row, status)
                             if failed and (row.fetched_at is None or attempted > row.fetched_at):
                                 row = row.model_copy(update={"collection_state": "retained"})
                         except (OSError, ValueError, TypeError):
@@ -108,18 +149,15 @@ class OfferRepository:
         """同页成功替换、失败页面保留旧数据；完全失败不覆盖有效快照。"""
         existing = [row for row in self.load() if row.source_code == code
                     and row.data_kind != "legacy_cache"]
-        success_urls = {url.split("?", 1)[0] for row in offers
-                        for url in (row.collection_url or row.url, row.url)}
+        success_urls = {key for row in offers for key in row_collection_keys(row)}
         previous = {row.offer_id: row for row in existing}
         # An unknown/omitted variant is not affirmative sold-out evidence.
         # Preserve the exact last-known record and its original observation time.
         incoming_ids = {row.offer_id for row in offers}
         merged = [row.model_copy(update={"collection_state": "retained"})
-                  if {(row.collection_url or row.url).split("?", 1)[0],
-                      row.url.split("?", 1)[0]} & success_urls else row
+                  if row_collection_keys(row) & success_urls else row
                   for row in existing if row.offer_id not in incoming_ids
-                  and (not {(row.collection_url or row.url).split("?", 1)[0],
-                            row.url.split("?", 1)[0]} & success_urls
+                  and (not row_collection_keys(row) & success_urls
                        or (row.stock == "in_stock" and row.fetched_at is not None
                            and row.fetched_at.tzinfo is not None and row.fetched_at <= fetched_at))]
         offers = [previous[row.offer_id].model_copy(update={"collection_state": "retained"})
@@ -144,6 +182,8 @@ class OfferRepository:
             UpdateStore(self.data_dir.parent).capture(existing, offers)
         atomic_json(self.data_dir / "collection_status" / f"{code}.json", {
             "source_code": code, "attempted_at": fetched_at.isoformat(),
+            "successful_offer_observations": {row.offer_id: row.fetched_at.isoformat()
+                for row in offers if row.fetched_at and row.collection_state == "current"},
             "new_offer_count": len(offers), "retained_offer_count": len(merged),
             "coverage": coverage,
             "errors": errors, "status": "success" if offers and not errors else

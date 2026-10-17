@@ -66,9 +66,9 @@ class GobikManualSnapshotTests(unittest.TestCase):
     def test_manual_only_registry_and_no_unrelated_policy_changes(self):
         self.assertEqual(self.payload['verification_method'],'manual_public_selected_variant')
         crawlers=json.loads((ROOT/'data/crawl_sources.json').read_text())
-        self.assertNotIn('gobik',{x['code'] for x in crawlers})
+        self.assertIn('gobik',{x['code'] for x in crawlers})
         sources={x['code']:x for x in json.loads((ROOT/'data/sources.json').read_text())}
-        self.assertEqual(sources['gobik']['collection_strategy'],'manual_verified_public_variant')
+        self.assertEqual(sources['gobik']['collection_strategy'],'automatic_verified_public_variant')
         self.assertEqual(sources['gobik']['china_credit_card']['status'],'unknown')
         self.assertEqual(sources['movistar']['base_url'],'https://gobik.com')
         directories=json.loads((ROOT/'data/directories.json').read_text())

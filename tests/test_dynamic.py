@@ -101,6 +101,48 @@ class DynamicTests(unittest.TestCase):
         with self.assertRaises(CollectionError):
             fetcher.fetch(URL, policy=FetchPolicy(mode="dynamic"))
 
+    def test_action_deferral_is_terminal_and_blocks_next_product(self):
+        for swallowed in [False, True]:
+            with self.subTest(swallowed=swallowed):
+                fetcher, _ = self.fetcher()
+                attempts = []
+                error = SourceDeferred('Rate limited stock response', NOW + timedelta(minutes=15))
+                def action(_):
+                    fetcher.variant_pages.append(b'partial')
+                    raise error
+                def browser(url, **kwargs):
+                    attempts.append(url)
+                    try:
+                        kwargs['page_action'](object())
+                    except SourceDeferred:
+                        if not swallowed:
+                            raise
+                    return response(url, 'initial')
+                fetcher.page_action = action
+                fetcher.browser_request = browser
+                with self.assertRaises(SourceDeferred):
+                    fetcher.fetch(URL, policy=FetchPolicy(mode='dynamic'))
+                with self.assertRaises(SourceDeferred):
+                    fetcher.fetch(URL + '-next', policy=FetchPolicy(mode='dynamic'))
+                self.assertEqual(attempts, [URL])
+                self.assertIs(fetcher.deferred['shop.example'], error)
+
+    def test_action_failure_is_terminal_and_discards_partial_capture(self):
+        fetcher, _ = self.fetcher()
+        attempts = []
+        def action(_):
+            fetcher.variant_pages.append(b'partial')
+            raise CollectionError('Selected response denied')
+        def browser(url, **kwargs):
+            attempts.append(url)
+            kwargs['page_action'](object())
+        fetcher.page_action = action
+        fetcher.browser_request = browser
+        with self.assertRaises(CollectionError):
+            fetcher.fetch(URL, policy=FetchPolicy(mode='dynamic'))
+        self.assertEqual(attempts, [URL])
+        self.assertEqual(fetcher.variant_pages, [])
+
     def test_browser_retry_discards_partial_variant_capture(self):
         fetcher, _ = self.fetcher()
         attempts = []

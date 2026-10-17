@@ -633,5 +633,99 @@
       "max_products": 1
     },
     "scope_note": "官网特价页的一款Prime女款骑行上衣，两种配色逐尺码SKU、现价原价及独立在线库存数据；不代表完整品牌目录。"
+  },
+  {
+    "code": "gobik",
+    "domains": [
+      "gobik.com"
+    ],
+    "parser": "gobik",
+    "urls": [
+      "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-gobik-factory-team-26",
+      "https://gobik.com/en/products/bib-short-x-men-gobik-factory-team-26-k10",
+      "https://gobik.com/en/products/bib-short-x-women-gobik-factory-team-26-k9",
+      "https://gobik.com/en/products/long-sleeve-jersey-hyder-men-hammock",
+      "https://gobik.com/en/products/long-sleeve-jersey-hyder-men-cortex",
+      "https://gobik.com/en/products/long-sleeve-jersey-vanquish-unisex-majesty",
+      "https://gobik.com/en/products/long-sleeve-jersey-vanquish-unisex-monarch",
+      "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-flank",
+      "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-grim",
+      "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-moss",
+      "https://gobik.com/en/products/short-sleeve-jersey-attitude-2-0-men-tetsu",
+      "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-almond",
+      "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-unisex-azalea",
+      "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-joint",
+      "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-magnolia",
+      "https://gobik.com/en/products/short-sleeve-jersey-cx-pro-4-0-unisex-violet",
+      "https://gobik.com/en/products/short-sleeve-jersey-reactive-unisex-bush",
+      "https://gobik.com/en/products/short-sleeve-jersey-stark-men-blackcurrant",
+      "https://gobik.com/en/products/short-sleeve-jersey-stark-men-gerbera"
+    ],
+    "scope_note": "已上架商品的官方当前颜色及明确逐尺码证据，非完整目录",
+    "fetch_policy": {
+      "mode": "static",
+      "timeout_ms": 30000,
+      "max_pages": 2,
+      "max_products": 19
+    }
+  },
+  {
+    "code": "oakley",
+    "domains": [
+      "www.oakley.com"
+    ],
+    "parser": "oakley",
+    "urls": [
+      "https://www.oakley.com/en-us/product/FOS900925",
+      "https://www.oakley.com/en-us/product/FOS900927",
+      "https://www.oakley.com/en-us/product/FOS900928",
+      "https://www.oakley.com/en-us/product/FOS901112",
+      "https://www.oakley.com/en-us/product/FOS901113",
+      "https://www.oakley.com/en-us/product/FOS901114",
+      "https://www.oakley.com/en-us/product/FOS901116",
+      "https://www.oakley.com/en-us/product/FOS901117",
+      "https://www.oakley.com/en-us/product/FOS901248",
+      "https://www.oakley.com/en-us/product/FOS901249",
+      "https://www.oakley.com/en-us/product/FOS901511",
+      "https://www.oakley.com/en-us/product/FOS901523",
+      "https://www.oakley.com/en-us/product/FOS901772",
+      "https://www.oakley.com/en-us/product/FOS901800",
+      "https://www.oakley.com/en-us/product/FOS902123",
+      "https://www.oakley.com/en-us/product/FOS902226",
+      "https://www.oakley.com/en-us/product/FOS902243",
+      "https://www.oakley.com/en-us/product/FOS902248",
+      "https://www.oakley.com/en-us/product/GFOS902243",
+      "https://www.oakley.com/en-us/product/ITFOS901302",
+      "https://www.oakley.com/en-us/product/FOA407902",
+      "https://www.oakley.com/en-us/product/FOA406782",
+      "https://www.oakley.com/en-us/product/FOS901803",
+      "https://www.oakley.com/en-us/product/FOS902106"
+    ],
+    "scope_note": "已上架商品的官方当前颜色及明确逐尺码证据，非完整目录",
+    "fetch_policy": {
+      "mode": "static",
+      "timeout_ms": 30000,
+      "max_pages": 2,
+      "max_products": 24
+    }
+  },
+  {
+    "code": "decathlon_cn",
+    "domains": [
+      "www.decathlon.com.cn"
+    ],
+    "parser": "decathlon_cn",
+    "urls": [
+      "https://www.decathlon.com.cn/product-detail?dsm_code=367685&model_code=8969603",
+      "https://www.decathlon.com.cn/product-detail?dsm_code=355348"
+    ],
+    "scope_note": "已上架商品的官方当前颜色及明确逐尺码证据，非完整目录",
+    "fetch_policy": {
+      "mode": "dynamic",
+      "timeout_ms": 60000,
+      "max_pages": 2,
+      "max_products": 2,
+      "wait_selector": "#product-right-content .sku-size .size-list > div"
+    }
   }
 ]

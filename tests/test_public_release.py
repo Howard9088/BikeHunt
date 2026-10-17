@@ -292,7 +292,7 @@ class PublicReleaseTests(unittest.TestCase):
                 patch.object(verifier, 'verify_public_release', return_value=receipt) as verify, \
                 patch('sys.stdout', new_callable=io.StringIO) as output:
             verifier.main([])
-        verify.assert_called_once_with(BASE, COMMIT)
+        verify.assert_called_once_with(BASE, COMMIT, expected_run_id=None, expected_run_attempt=None)
         self.assertEqual(json.loads(output.getvalue()), receipt)
 
 class SplitPublicReleaseTests(unittest.TestCase):
@@ -319,6 +319,23 @@ class SplitPublicReleaseTests(unittest.TestCase):
         self.assertEqual(receipt['verification'], status)
         self.assertEqual(receipt['collection_status'], status['collection_status'])
         self.assertNotEqual(receipt['generated_at'], receipt['snapshot_generated_at'])
+
+    def test_exact_run_and_attempt_reject_same_commit_previous_publication(self):
+        manifest, raw, status_raw, html = split_release()
+        status = json.loads(status_raw)
+        status.update(run_id='1234', run_attempt='2')
+        status_raw = rehash_status(manifest, status)
+        for expected_run, expected_attempt, valid in [('1234', '2', True), ('1233', '2', False), ('1234', '1', False)]:
+            with self.subTest(run=expected_run, attempt=expected_attempt), patch.object(
+                    verifier, 'fetch_bytes', side_effect=[json.dumps(manifest).encode(), raw, status_raw, html]):
+                if valid:
+                    receipt = verifier.verify_public_release(BASE, COMMIT, attempts=1,
+                        expected_run_id=expected_run, expected_run_attempt=expected_attempt)
+                    self.assertEqual(receipt['verification']['run_id'], '1234')
+                else:
+                    with self.assertRaisesRegex(RuntimeError, 'different workflow'):
+                        verifier.verify_public_release(BASE, COMMIT, attempts=1,
+                            expected_run_id=expected_run, expected_run_attempt=expected_attempt)
 
     def test_split_accepts_older_catalog_identity_and_exact_reused_bytes(self):
         first, raw, _, _ = split_release()

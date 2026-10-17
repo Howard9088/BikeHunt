@@ -15,6 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.publication import digest, offer_identity, offers_by_id, semantic_projection
+from app.catalog.storage import collection_failed
 
 DEFAULT_PUBLIC_URL = 'https://howard9088.github.io/BikeHunt/'
 
@@ -256,8 +257,7 @@ def verify_status(manifest: dict, status_bytes: bytes, data: dict,
         errors = source.get('errors') or []
         require(isinstance(errors, list) and all(isinstance(error, dict) for error in errors),
                 'Invalid source collection errors')
-        failed_urls = {str(error.get('url', '')).split('?', 1)[0] for error in errors}
-        failed = source.get('status') == 'failed' or offer.get('url', '').split('?', 1)[0] in failed_urls
+        failed = collection_failed(offer, source)
         if failed:
             attempted_at = validate_timestamp(source.get('attempted_at'), 'Source attempted_at')
             require(attempted_at <= published_at, 'Source attempted_at is newer than status')
@@ -322,7 +322,9 @@ def fetch_bytes(url: str) -> bytes:
         return response.read()
 
 
-def verify_release_once(base: str, expected_commit: str, attempt: int = 0) -> dict:
+def verify_release_once(base: str, expected_commit: str, attempt: int = 0, *,
+                        expected_run_id: str | None = None,
+                        expected_run_attempt: str | None = None) -> dict:
     base = base.rstrip('/') + '/'
     query = {'release': expected_commit, 'attempt': attempt}
     suffix = '?' + urllib.parse.urlencode(query)
@@ -336,6 +338,12 @@ def verify_release_once(base: str, expected_commit: str, attempt: int = 0) -> di
     if manifest['schema_version'] == 2:
         status_bytes = fetch_bytes(base + manifest['status']['path'] + snapshot_suffix)
         status = verify_status(manifest, status_bytes, data, expected_commit)
+    if expected_run_id is not None:
+        require(status is not None and str(status.get('run_id')) == str(expected_run_id),
+                'CDN still serving a different workflow run')
+    if expected_run_attempt is not None:
+        require(status is not None and str(status.get('run_attempt')) == str(expected_run_attempt),
+                'CDN still serving a different workflow attempt')
     current_data = {**data, 'collection_status': status['collection_status']} if status else data
     validate_offer_labels(current_data)
     html = fetch_bytes(base + suffix).decode('utf-8')
@@ -358,12 +366,15 @@ def verify_release_once(base: str, expected_commit: str, attempt: int = 0) -> di
 
 
 def verify_public_release(base: str, expected_commit: str, attempts: int = 18,
-                          retry_delay: float = 10) -> dict:
+                          retry_delay: float = 10, *, expected_run_id: str | None = None,
+                          expected_run_attempt: str | None = None) -> dict:
     if attempts < 1:
         raise ValueError('At least one verification attempt is required')
     for attempt in range(attempts):
         try:
-            return verify_release_once(base, expected_commit, attempt)
+            return verify_release_once(base, expected_commit, attempt,
+                **({'expected_run_id': expected_run_id, 'expected_run_attempt': expected_run_attempt}
+                   if expected_run_id is not None or expected_run_attempt is not None else {}))
         except Exception as exc:
             # Manifest, catalog, status and HTML can propagate through the CDN separately.
             if attempt == attempts - 1:
@@ -399,7 +410,9 @@ def main(argv=None) -> None:
         print(json.dumps(validate_local_release(args.local_dir, os.environ['GITHUB_SHA'])))
         return
     receipt = verify_public_release(os.environ.get('BIKEHUNT_PUBLIC_URL', DEFAULT_PUBLIC_URL),
-                                    os.environ['GITHUB_SHA'])
+                                    os.environ['GITHUB_SHA'],
+                                    expected_run_id=os.environ.get('GITHUB_RUN_ID'),
+                                    expected_run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'))
     history = receipt.pop('listing_history', None)
     if args.record_listings and history is not None:
         from app.catalog.storage import atomic_json

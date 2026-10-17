@@ -32,9 +32,9 @@ class ChinaOfficialSnapshotTests(unittest.TestCase):
             self.assertIn("满300减30", " ".join(offer.purchase_requirements))
             self.assertIn("未验证实际抵扣", " ".join(offer.purchase_requirements))
 
-    def test_manual_snapshot_is_not_refreshed_by_crawler(self):
+    def test_historical_snapshot_bootstraps_automatic_collection(self):
         settings = json.loads((ROOT / "data/crawl_sources.json").read_text())
-        self.assertNotIn("decathlon_cn", {row["code"] for row in settings})
+        self.assertIn("decathlon_cn", {row["code"] for row in settings})
         self.assertEqual(self.payload["verification_method"], "manual_public_selected_variant")
         for offer in self.offers:
             self.assertIsNotNone(offer.fetched_at)

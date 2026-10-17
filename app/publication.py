@@ -173,6 +173,7 @@ def build_publication(payload: dict, output: Path, cache: Path, *, allowed_statu
         "schema_version": 1, "version": version, "generated_at": generated_at,
         "commit": commit, "snapshot_sha256": catalog_hash,
         "run_id": payload["publication"].get("run_id"),
+        "run_attempt": payload["publication"].get("run_attempt"),
         "trigger": payload["publication"].get("trigger"),
         "offers": {identifier: {
             "content_sha256": payload["verification_identities"][identifier],

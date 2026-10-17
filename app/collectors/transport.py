@@ -125,6 +125,8 @@ class PublicPageFetcher:
                                  for name, value in self.public_cookies.get(host, {}).items()],
                     )
                     if action_errors:
+                        if isinstance(action_errors[0], SourceDeferred):
+                            raise action_errors[0]
                         raise CollectionError("Dynamic variant capture did not finish") from action_errors[0]
                 else:
                     response = self.request(
@@ -149,9 +151,17 @@ class PublicPageFetcher:
                 if response.status == 408 or response.status >= 500:
                     raise CollectionError(f"Retryable HTTP {response.status}")
                 return response
-            except SourceDeferred:
+            except SourceDeferred as exc:
+                if dynamic:
+                    self.variant_pages.clear()
+                self.deferred[host] = exc
                 raise
             except Exception as exc:
+                # An action error may follow a denial or partially selected
+                # product. Never repeat the browser selection sequence blindly.
+                if dynamic and action_errors:
+                    self.variant_pages.clear()
+                    raise CollectionError("Dynamic variant capture did not finish") from action_errors[0]
                 logger.warning("请求失败 collection_request_failed attempt={}/3", attempt + 1)
                 if attempt == 2:
                     raise CollectionError(f"Source request failed: {url}") from exc

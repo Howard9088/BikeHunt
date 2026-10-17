@@ -124,7 +124,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     publish_registration_guides(root, output, registration)
     from app.public_status import public_collection_status, public_urls
     payload = {"generated_at":datetime.now(timezone.utc).isoformat(), "mode":"published_snapshot",
-               "publication":{"commit":os.environ.get("GITHUB_SHA"), "run_id":os.environ.get("GITHUB_RUN_ID"), "trigger":os.environ.get("GITHUB_EVENT_NAME")},
+               "publication":{"commit":os.environ.get("GITHUB_SHA"), "run_id":os.environ.get("GITHUB_RUN_ID"), "run_attempt":os.environ.get("GITHUB_RUN_ATTEMPT"), "trigger":os.environ.get("GITHUB_EVENT_NAME")},
                "collection_status":public_collection_status({p.stem:json.loads(p.read_text(encoding="utf-8")) for p in (root/"data/collection_status").glob("*.json")}, public_urls(root)),
                "listing_history":listings, "catalog":catalog, "details":details, "directories":directory, "rules":rules,
                "updates":{"items":events, "cursor":max(UpdateStore(root).cursor(), max((row["id"] for row in events), default=0)),
