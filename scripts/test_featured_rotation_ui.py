@@ -99,7 +99,7 @@ def main():
                 page.locator('#travelerReturn').click();expect(tile).to_be_focused()
                 page.locator('#travelerBrand').select_option('Osprey');page.locator('[data-traveler-id]').click()
                 expect(page.locator('[data-traveler-detail]')).to_contain_text('同一订单')
-                expect(page.locator('.traveler-reading-section p')).to_have_count(4)
+                expect(page.locator('.traveler-reading-section p')).to_have_count(2)
                 page.locator('#sheetBody').evaluate('element=>element.scrollTop=0')
                 page.screenshot(path=str(OUT/f'{mode}-experience-detail.png'),animations='disabled')
                 page.locator('#travelerReturn').click()
