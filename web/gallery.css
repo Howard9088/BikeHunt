@@ -88,3 +88,13 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
 @media(max-width:600px){.topnav .why-overseas-link{font-size:11px}.topnav .nav-tools{gap:9px}}
 
 .toolbar-title{flex-wrap:wrap;gap:4px 12px}.toolbar-title .featured-schedule{font-size:11px;color:var(--muted)}.directory-mode .featured-schedule{display:none}
+
+/* Mobile product photographs must not shrink when price/date copy grows.
+   Let each product continue below the viewport; desktop keeps its full-screen feed. */
+@media(max-width:600px){
+ body:not(.grid-mode):not(.directory-mode) .gallery{touch-action:pan-y pinch-zoom;scroll-snap-type:y proximity}
+ body:not(.grid-mode) .gallery .card{height:auto;min-height:100%;scroll-snap-stop:normal}
+ body:not(.grid-mode) .gallery .card-inner{height:auto;min-height:100%}
+ body:not(.grid-mode) .gallery .card .product-visual{flex:none;height:clamp(300px,48vh,480px);height:clamp(300px,48dvh,480px);min-height:300px}
+ body:not(.grid-mode) .gallery .card .product-info{flex:none}
+}

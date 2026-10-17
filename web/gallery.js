@@ -520,7 +520,17 @@ document.getElementById('q').addEventListener('input',()=>{render();if(typeof sa
 document.getElementById('prev').onclick=()=>move(-1);document.getElementById('next').onclick=()=>move(1);
 document.getElementById('close').onclick=closeSheet;document.getElementById('overlay').onclick=closeSheet;
 window.addEventListener('resize',positionHint);
+// Mobile large-image cards can extend beyond one viewport: preserve native scrolling.
+function naturalProductScroll(){return window.matchMedia('(max-width:600px)').matches}
+gallery.addEventListener('scroll',()=>{
+  if(!naturalProductScroll()||viewMode!=='feed'||gallery.classList.contains('reference-feed'))return;
+  const cards=[...gallery.querySelectorAll('.card')];if(!cards.length)return;
+  const anchor=gallery.scrollTop+Math.min(80,gallery.clientHeight/4);
+  const index=cards.findIndex(card=>card.offsetTop+card.offsetHeight>anchor);
+  if(index>=0){currentIndex=index;updatePosition(index,cards.length);if(index>0)document.getElementById('scrollHint').classList.add('hidden')}
+},{passive:true});
 gallery.addEventListener('touchstart',event=>{
+  if(naturalProductScroll())return;
   if(event.target.closest?.('.low-price-basis')||viewMode!=='feed'||gallery.classList.contains('reference-feed')||event.touches.length!==1||sheet.classList.contains('open'))return;
   cancelAnimationFrame(animationFrame);animationUntil=0;
   const cards=[...gallery.querySelectorAll('.card')];if(!cards.length)return;
@@ -544,13 +554,13 @@ function finishSwipe(cancelled=false){
 }
 gallery.addEventListener('touchend',event=>{if(swipe?.dragged)event.preventDefault();finishSwipe()},{passive:false});
 gallery.addEventListener('touchcancel',()=>finishSwipe(true),{passive:true});
-gallery.addEventListener('wheel',event=>{if(event.target.closest?.('.low-price-basis'))return;if(viewMode!=='feed'||gallery.classList.contains('reference-feed')||sheet.classList.contains('open')||Math.abs(event.deltaY)<8)return;event.preventDefault();clearTimeout(wheelUnlockTimer);wheelUnlockTimer=setTimeout(()=>{wheelLocked=false},200);if(wheelLocked)return;wheelLocked=true;move(event.deltaY>0?1:-1)},{passive:false});
+gallery.addEventListener('wheel',event=>{if(naturalProductScroll())return;if(event.target.closest?.('.low-price-basis'))return;if(viewMode!=='feed'||gallery.classList.contains('reference-feed')||sheet.classList.contains('open')||Math.abs(event.deltaY)<8)return;event.preventDefault();clearTimeout(wheelUnlockTimer);wheelUnlockTimer=setTimeout(()=>{wheelLocked=false},200);if(wheelLocked)return;wheelLocked=true;move(event.deltaY>0?1:-1)},{passive:false});
 document.addEventListener('keydown',event=>{
   if(sheet.classList.contains('open')){
     if(event.key==='Escape'){closeSheet();return}
     if(event.key==='Tab'){const focusable=[...sheet.querySelectorAll('button,a,select,summary,input,[tabindex="0"]')].filter(x=>!x.disabled&&x.getClientRects().length);const first=focusable[0],last=focusable.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}}return;
   }
-  if(['INPUT','SELECT','TEXTAREA','BUTTON','A'].includes(event.target.tagName)||viewMode!=='feed'||gallery.classList.contains('reference-feed'))return;
+  if(naturalProductScroll()||['INPUT','SELECT','TEXTAREA','BUTTON','A'].includes(event.target.tagName)||viewMode!=='feed'||gallery.classList.contains('reference-feed'))return;
   if(['ArrowDown','PageDown','ArrowUp','PageUp'].includes(event.key)){event.preventDefault();move(['ArrowDown','PageDown'].includes(event.key)?1:-1)}
 });
 init();
