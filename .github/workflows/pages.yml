@@ -41,6 +41,8 @@ jobs:
       - run: python -m playwright install --with-deps chromium
       - run: python scripts/build_pages.py
       - run: python scripts/test_why_overseas_ui.py
+      - run: node scripts/test_catalog_loading.js
+      - run: python scripts/test_catalog_loading_ui.py
   publish:
     needs: article-check
     runs-on: ubuntu-latest

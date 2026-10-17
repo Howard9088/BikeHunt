@@ -586,12 +586,12 @@ async function testInitialCdnRaceRecoversWithBoundedRetry() {
 
 async function testFailedUiBootResubscribesOnVerifiedPublication() {
   const flows = fs.readFileSync(path.join(__dirname, '../web/flows.js'), 'utf8');
-  const fragment = flows.slice(flows.indexOf('function startFlows('), flows.indexOf('const PURCHASE_DISCLAIMER='));
+  const fragment = flows.slice(flows.indexOf('let flowsStarted=false'), flows.indexOf('const PURCHASE_DISCLAIMER='));
   let listener, boots = 0, galleryInitializations = 0;
   const context = vm.createContext({
     window: {BIKEHUNT_PAGES: true, addEventListener(type, callback, options) {
       assert.equal(type, 'bikehunt-published'); assert.equal(options.once, true); listener = callback;
-    }},
+    }, removeEventListener(type, callback) { assert.equal(type, 'bikehunt-published'); assert.equal(callback, listener); listener = null; }},
     async bootFlows() { if (++boots === 1) throw new Error('Initial publication still propagating'); },
     init() { galleryInitializations++; },
   });

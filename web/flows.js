@@ -206,7 +206,7 @@ async function showMessages(){
   document.getElementById('sheetBody').querySelectorAll('.message-card[data-message-product]').forEach(card=>card.onclick=event=>{const target=event.target.closest('[data-message-product]');if(target)openMessageProduct(target.dataset.messageProduct,target.dataset.messageVariant)});
   markMessagesRead(rows);
 }
-async function refreshCatalogSilently(invalidateGuide=true){try{if(invalidateGuide&&guideContext){guideContext=null;closeSheet();}const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;const data=publicCatalogData(await getJson('/api/catalog'));items=data.items;if(currentProduct&&!publicProductVisible(currentProduct))closeSheet();fx=data.fx;roadReferenceData=data.road_equipment_references||{brands:[],products:[]};if(document.getElementById('roadReferencePanel')&&sheet.classList.contains('open'))document.getElementById('sheetBody').innerHTML=roadReferenceMarkup();updateFxLabel();sourceCount=data.source_count;if(activeTab==='products')render(active);refreshRoadReferenceDetail()}catch{}}
+async function refreshCatalogSilently(invalidateGuide=true){if(catalogLoadState!=='ready')return init();try{if(invalidateGuide&&guideContext){guideContext=null;closeSheet();}const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;const data=publicCatalogData(await getJson('/api/catalog'));items=data.items;if(currentProduct&&!publicProductVisible(currentProduct))closeSheet();fx=data.fx;roadReferenceData=data.road_equipment_references||{brands:[],products:[]};if(document.getElementById('roadReferencePanel')&&sheet.classList.contains('open'))document.getElementById('sheetBody').innerHTML=roadReferenceMarkup();updateFxLabel();sourceCount=data.source_count;if(activeTab==='products')render(active);refreshRoadReferenceDetail()}catch{}}
 async function bootFlows(){
   const data=publicCatalogData(await getJson('/api/catalog'));categories=data.categories||[];categoryGroups=data.category_groups||[];roadReferenceData=data.road_equipment_references||{brands:[],products:[]};
   document.getElementById('categoryGroupNav').innerHTML=categoryGroups.map(c=>'<button type="button" data-category-group="'+e(c.code)+'" aria-pressed="false" title="再次点击可取消这个分组">'+e(c.name)+'</button>').join('');
@@ -229,13 +229,23 @@ document.getElementById('browseSettings').onclick=browseSettings;document.getEle
 document.getElementById('refreshPrices').onclick=async()=>{const button=document.getElementById('refreshPrices');button.disabled=true;button.textContent='核对中…';const finish=()=>{button.disabled=false;button.textContent=window.BIKEHUNT_PAGES?'刷新价格':'核对最新价格'};try{await postJson('/api/refresh/prices');const poll=async()=>{try{const state=await getJson('/api/refresh/status');if(state.state==='running'){setTimeout(poll,3000);return}finish();await refreshCatalogSilently();if(state.state==='failed'||state.state==='partial'){openPanel('价格核对结果','<p>部分渠道未能取得新报价，已保留上一份有效数据。请查看各商品的更新时间。</p>')}}catch(error){finish();openPanel('价格核对失败','<p>暂时无法加载，请稍后重试。</p>')}};setTimeout(poll,3000)}catch(error){finish();openPanel('价格核对失败','<p>暂时无法加载，请稍后重试。</p>')}};
 document.getElementById('close').addEventListener('click',()=>{document.getElementById('sheetImg').style.display=''});
 document.body.addEventListener('touchend',event=>{if(event.touches.length>0)return;const touch=event.changedTouches[0];if(!touch)return;const now=performance.now();const previous=document.body._lastTap;if(previous&&now-previous.time<330&&Math.abs(touch.clientX-previous.x)<25&&Math.abs(touch.clientY-previous.y)<25){if(event.cancelable)event.preventDefault()}document.body._lastTap={time:now,x:touch.clientX,y:touch.clientY}},{passive:false});
+let flowsStarted=false,flowsStartPromise=null,flowsRecoveryListener=null;
 function startFlows(){
-  return bootFlows().catch(()=>{
-    // A failed initial publication must not permanently prevent UI subscriptions.
-    // Wait for a verified publication; recovery does not start extra downloads.
-    if(window.BIKEHUNT_PAGES)window.addEventListener('bikehunt-published',()=>{init();startFlows();},{once:true});
-  });
+  if(flowsStarted)return Promise.resolve();
+  if(flowsStartPromise)return flowsStartPromise;
+  flowsStartPromise=bootFlows().then(()=>{
+    flowsStarted=true;
+    if(flowsRecoveryListener){window.removeEventListener('bikehunt-published',flowsRecoveryListener);flowsRecoveryListener=null}
+  }).catch(()=>{
+    // One recovery listener, shared by automatic publication and manual retry.
+    if(window.BIKEHUNT_PAGES&&!flowsRecoveryListener){
+      flowsRecoveryListener=()=>{window.removeEventListener('bikehunt-published',flowsRecoveryListener);flowsRecoveryListener=null;init();startFlows()};
+      window.addEventListener('bikehunt-published',flowsRecoveryListener,{once:true});
+    }
+  }).finally(()=>{flowsStartPromise=null});
+  return flowsStartPromise;
 }
+
 startFlows();
 
 const PURCHASE_DISCLAIMER="本站仅提供商品与优惠信息，不参与交易。价格、库存、尺码及折扣可能变化，信息不保证完全准确，请以实际商家页面及结算信息为准，并在购买前自行核实。购买、付款、配送、退换货，以及买错商品或尺码不合适等问题，请直接联系实际商家。法律规定本站应承担的责任除外。";

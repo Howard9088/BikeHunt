@@ -1,6 +1,7 @@
 'use strict';
 let items=[],fx={},currentIndex=0,currentProduct=null,detailSequence=0,lastFocus=null,sourceCount=0;
 let observer=null,viewMode='feed',currentBundleSelection=null;
+let catalogLoadState='loading',catalogLoadPromise=null;
 const referenceOffers=new Map();
 let activeCategory='all',activeCategoryGroup=null,activeSource=null,activeTab='products';
 let swipe=null,animationFrame=0,animationUntil=0,wheelLocked=false,wheelUnlockTimer=0;
@@ -124,7 +125,18 @@ function lowPriceMarkup(card,basis){
   const verified=card.reference_stock==='in_stock'&&card.reference_collection_state==='current'&&inventoryVerified(card);
   return '<details class="deal-spec low-price-basis"><summary>'+e(basis.label)+' · '+basis.count+' 款中第 '+basis.rank+' 低</summary><div>仅比较本站已采集的不同型号，取最低约四分之一（至少 1 款），每品牌每组最多 2 款。不同商家／市场的所示规格人民币商品价，不含运税；支付、配送另核实，历史报价可能已变化。不是全尺码价格、全网最低或品质比较。</div></details>'+(!verified?'<div class="deal-spec">历史价格与库存待重新核实 · '+e(timeText(card.fetched_at))+'</div>':'');
 }
+function renderCatalogLoadState(){
+  if(catalogLoadState==='ready')return false;
+  if(observer)observer.disconnect();
+  document.getElementById('count').textContent=catalogLoadState==='error'?'商品加载失败':'正在读取商品…';
+  document.getElementById('sourceCount').textContent='购买渠道待加载';
+  gallery.innerHTML=catalogLoadState==='error'?'<div class="empty" role="status"><strong>商品暂时无法加载</strong>请稍后重试，或到商店查看。<br><button id="retry" type="button">重新加载</button></div>':'<div class="empty loading" role="status"><strong>正在整理骑行好价</strong>读取商品与人民币参考价…</div>';
+  if(catalogLoadState==='error')document.getElementById('retry').onclick=init;
+  updatePosition(0,0);
+  return true;
+}
 function render(preserveId=null){
+  if(renderCatalogLoadState())return;
   if(typeof syncChannelInfo==='function')syncChannelInfo();
   if(observer)observer.disconnect();
   if(typeof resetReferenceFeed==='function')resetReferenceFeed();
@@ -479,14 +491,23 @@ function openProduct(id,variantId=null,allowSoldOut=false){
   document.getElementById('overlay').classList.add('open');sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.getElementById('close').focus();loadDetail(id,variantId);
 }
 function closeSheet(){if(typeof roadDetailContext!=='undefined')roadDetailContext=null;currentBundleSelection=null;if(typeof clearPurchaseState==='function')clearPurchaseState();referenceOffers.clear();if(typeof merchantGuideSource!=='undefined')merchantGuideSource=null;if(typeof messagesOpen!=='undefined')messagesOpen=false;if(typeof guideContext!=='undefined')guideContext=null;++detailSequence;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');sheet.inert=true;document.getElementById('overlay').classList.remove('open');gallery.inert=false;document.getElementById('directoryPage').inert=false;currentProduct=null;lastFocus?.focus()}
-async function init(){
-  gallery.innerHTML='<div class="empty loading" role="status"><strong>正在整理骑行好价</strong>读取商品与人民币参考价…</div>';
-  try{
-    const data=publicCatalogData(await getJson('/api/catalog'));items=data.items;fx=data.fx;sourceCount=data.source_count;
-    updateFxLabel();
-    try{viewMode=localStorage.getItem('bikehuntView')||'feed'}catch{viewMode='feed'}setView(viewMode,false);
-    document.getElementById('sourceCount').textContent=data.source_count+' 个购买渠道';
-  }catch(error){gallery.innerHTML='<div class="empty"><strong>商品暂时无法加载</strong>请稍后重试，或到商店查看。<br><button id="retry" type="button">重新加载</button></div>';document.getElementById('retry').onclick=init}
+function init(){
+  if(catalogLoadPromise)return catalogLoadPromise;
+  // Keep an already verified catalog visible if a later read fails.
+  const hadCatalog=catalogLoadState==='ready';
+  if(!hadCatalog){catalogLoadState='loading';renderCatalogLoadState()}
+  catalogLoadPromise=(async()=>{
+    try{
+      const data=publicCatalogData(await getJson('/api/catalog'));
+      items=data.items;fx=data.fx;sourceCount=data.source_count;catalogLoadState='ready';
+      updateFxLabel();
+      try{viewMode=localStorage.getItem('bikehuntView')||'feed'}catch{viewMode='feed'}setView(viewMode,false);
+      document.getElementById('sourceCount').textContent=data.source_count+' 个购买渠道';
+      if(typeof startFlows==='function')startFlows();
+    }catch(error){if(!hadCatalog){catalogLoadState='error';renderCatalogLoadState()}}
+    finally{catalogLoadPromise=null}
+  })();
+  return catalogLoadPromise;
 }
 document.addEventListener('input',updateShippingBudget);
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
