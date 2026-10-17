@@ -48,8 +48,9 @@
       const seen=new Set(),models=[];
       for(const card of pool.sort((a,b)=>cmp(a,b)||stableID(a,b))){const key=modelKey(card);if(!seen.has(key)){seen.add(key);models.push(card);}}
       if(!rotate||models.length<=2){chosen.push(...models.slice(0,2));continue;}
-      // Real first publications get priority for 24h, up to the channel cap.
-      const fresh=models.filter(card=>{const stamp=listingTime(card,now);return stamp!==null&&now-stamp<86400000}).slice(0,2);
+      // Keep the newest real publication for 24h, leaving the second slot free
+      // to rotate even when many first-listing receipts arrive together.
+      const fresh=models.filter(card=>{const stamp=listingTime(card,now);return stamp!==null&&now-stamp<86400000}).slice(0,1);
       const rest=models.filter(card=>!fresh.includes(card)),take=2-fresh.length;
       const offset=((homeSlot(now).index%rest.length)+rest.length)%rest.length;
       chosen.push(...fresh,...Array.from({length:take},(_,i)=>rest[(offset+i)%rest.length]));

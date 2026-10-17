@@ -14,6 +14,9 @@ assert.equal(JSON.stringify(cards),original,'Never modify image, stock, price or
 for(const count of [0,1,2])assert.equal(ids(cards.slice(0,count),noon).length,count);
 const fresh={...cards[6],first_listed_at:'2026-10-17T03:00:00Z'};
 for(const now of [noon,evening])assert.equal(api.selectHome([...cards.slice(0,6),fresh],{...opts,now})[0],fresh);
+const newest={...cards[5],first_listed_at:'2026-10-17T03:20:00Z'},manyNew=[...cards.slice(0,5),newest,fresh];
+assert.notDeepEqual(ids(manyNew,noon),ids(manyNew,evening),'Multiple new receipts must not freeze both featured slots for a whole day');
+for(const now of [noon,evening])assert.equal(api.selectHome(manyNew,{...opts,now})[0],newest);
 const sold={...cards[0],stock_state:'out_of_stock'};
 assert.ok(!ids([sold,...cards.slice(1)],noon).includes(sold.product_id));
 assert.equal(api.selectHome([...cards,...cards.map(p=>({...p,product_id:p.product_id+'-color'}))],{...opts,now:noon}).length,2);
