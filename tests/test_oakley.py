@@ -210,6 +210,78 @@ class OakleyParserTests(unittest.TestCase):
                                          SOURCE, URL, NOW, diagnostics=diagnostics)), 1)
         self.assertEqual(diagnostics, [])
 
+    def test_http200_explicit_cdn_block_and_body_restrictions_are_terminal(self):
+        cases = [
+            '<title>ERROR: The request could not be satisfied</title><h1>403 ERROR</h1>'
+            '<h2>The request could not be satisfied.</h2><p>Request blocked.</p>',
+            '<title>Error 403</title><p>PRIVATE_REQUEST_SENTINEL</p>',
+            '<p>You don’t have permission to access PRIVATE_URL_SENTINEL on this server.</p>',
+            '<p>This request has been blocked. PRIVATE_IP_SENTINEL</p>',
+        ]
+        for body in cases:
+            diagnostics = []
+            body = '<html><head></head><body>' + body + '</body></html>'
+            self.assertFalse(parse_oakley(body, SOURCE, URL, NOW, diagnostics=diagnostics))
+            self.assertEqual(diagnostics[0], "oakley_access_denied")
+            self.assertTrue(set(diagnostics) <= PUBLIC_DIAGNOSTICS)
+            self.assertNotIn("PRIVATE", json.dumps(diagnostics))
+            fetcher = FakeFetcher({URL: page(body)})
+            collect_oakley_product(fetcher, URL, SOURCE)
+            result = collect_oakley_product(fetcher, URL, SOURCE)
+            self.assertEqual(fetcher.calls, [URL])
+            self.assertTrue(result.coverage["source_stopped"])
+
+    def test_non_product_notices_never_follow_redirect_or_infer_product_evidence(self):
+        cases = [
+            ('<meta http-equiv="refresh" content="0; url=https://PRIVATE_HOST_SENTINEL.test/">', "response_meta_refresh"),
+            ('<title>Redirecting...</title><a href="https://PRIVATE_HOST_SENTINEL.test/">Continue</a>', "response_redirect_notice"),
+            ('<title>ERROR: The request could not be satisfied</title>', "response_request_error"),
+            ('<h1>503 Service Unavailable</h1>', "response_server_error"),
+            ('<p>We are currently under maintenance. PRIVATE_SENTINEL</p>', "response_maintenance"),
+            ('<h1>404 Not Found</h1>', "response_not_found"),
+            ('<p>This service is not available in your region.</p>', "response_region_unavailable"),
+            ('<h1>Select your country</h1><a href="https://PRIVATE_HOST_SENTINEL.test/">US</a>', "response_country_selection"),
+            ('<p>Please enable cookies to continue.</p>', "response_cookie_requirement"),
+            ('<h1>Your browser is not supported</h1>', "response_browser_unsupported"),
+            ('<form action="/PRIVATE_ACTION_SENTINEL"><input type="password"></form>', "response_login_form"),
+            ('<title>PRIVATE_TITLE_SENTINEL</title><script src="/PRIVATE_SCRIPT_SENTINEL"></script>', "response_title_only_script_shell"),
+        ]
+        for fragment, code in cases:
+            body = '<html>' + fragment + '</html>'
+            fetcher = FakeFetcher({URL: page(body)})
+            result = collect_oakley_product(fetcher, URL, SOURCE)
+            self.assertFalse(result.offers)
+            self.assertEqual(fetcher.calls, [URL])
+            self.assertEqual(result.errors[0]["diagnostics"][:2], ["oakley_canonical_missing", "oakley_" + code])
+            self.assertTrue(set(result.errors[0]["diagnostics"]) <= PUBLIC_DIAGNOSTICS)
+            self.assertNotIn("PRIVATE", json.dumps(result.errors))
+            self.assertNotIn("source_stopped", result.coverage)
+
+    def test_observed_country_chooser_requires_both_exact_official_us_controls(self):
+        chooser = ('<div id="choose-country-wrapper"><select id="countries-select">'
+                   '<option value="https://www.oakley.com/en-us?cs">United States</option></select>'
+                   '<a class="cs-country-info" data-country="us" href="https://www.oakley.com/en-us?cs">US</a></div>')
+        for body, expected in [
+            (chooser, "response_country_chooser_us_link"),
+            (chooser.replace('data-country="us"', 'data-country="ca"'), "response_html_text"),
+            (chooser.replace("https://www.oakley.com/en-us?cs", "https://PRIVATE_HOST_SENTINEL.test/en-us?cs"), "response_html_text"),
+        ]:
+            result = collect_oakley_product(FakeFetcher({URL: page('<html>' + body + '</html>')}), URL, SOURCE)
+            self.assertFalse(result.offers)
+            self.assertEqual(result.errors[0]["diagnostics"][1], "oakley_" + expected)
+            self.assertNotIn("PRIVATE", json.dumps(result.errors))
+        # Official product pages normally include the chooser; it is not denial
+        # and must not replace the already sufficient exact-product evidence.
+        self.assertEqual(len(self.parse(document().replace('</body>', chooser + '</body>'))), 1)
+
+    def test_error_text_in_scripts_and_product_content_does_not_classify_as_denial(self):
+        script = '<script>var message="Request blocked. The request could not be satisfied. Select your country";</script>'
+        diagnostics = []
+        body = '<html><title>PRIVATE_TITLE_SENTINEL</title>' + script + '</html>'
+        self.assertFalse(parse_oakley(body, SOURCE, URL, NOW, diagnostics=diagnostics))
+        self.assertEqual(diagnostics[1], "oakley_response_title_only_script_shell")
+        self.assertEqual(len(self.parse(document().replace('</body>', script + '</body>'))), 1)
+
     def test_exact_selected_variant_price_stock_and_observation_time(self):
         row, = self.parse()
         self.assertEqual(row.identity.size, "L")

@@ -41,6 +41,11 @@ OAKLEY_DIAGNOSTICS = frozenset({
     "response_empty", "response_gzip", "response_utf16", "response_json",
     "response_escaped_html", "response_non_html", "response_html_text",
     "response_script_shell", "response_html_empty", "response_hydration_marker",
+    "response_title_only_script_shell", "response_meta_refresh", "response_redirect_notice",
+    "response_request_error", "response_server_error", "response_maintenance",
+    "response_not_found", "response_region_unavailable", "response_country_selection",
+    "response_country_chooser_us_link",
+    "response_cookie_requirement", "response_browser_unsupported", "response_login_form",
     "response_javascript_required", "response_under_1k_chars", "response_1k_10k_chars",
     "response_10k_100k_chars", "response_over_100k_chars",
     "access_denied", "human_verification", "captcha_challenge", "source_access_stopped",
@@ -246,6 +251,25 @@ def _access_restriction(page: Selector) -> str | None:
         return "access_denied"
     if headings & verification:
         return "human_verification"
+    # CDN error templates can return HTTP 200 while explicitly declaring 403 or
+    # blocking in their document. Only inspect bounded non-script page content.
+    messages = titles | headings
+    if any(re.fullmatch(r"(?:error\s*:?\s*)?403(?:\s+(?:error|forbidden))?|forbidden\s*403", text)
+           for text in messages):
+        return "access_denied"
+    visible = _visible_excerpt(page)
+    if any(phrase in visible for phrase in (
+        "you don't have permission to access", "you do not have permission to access",
+        "your request has been blocked", "this request has been blocked",
+        "the request was blocked", "request blocked.", "access to this resource is denied",
+    )):
+        return "access_denied"
+    if any(phrase in visible for phrase in (
+        "please verify you are a human", "please verify that you are a human",
+        "confirm that you are human", "please complete the security check",
+        "verify that you are not a robot", "verify you are not a robot",
+    )):
+        return "human_verification"
     # Explicit challenge UI/path only. Do not match generic Akamai/bot cookies,
     # analytics strings, vendor names, or JavaScript found on ordinary pages.
     if page.css('#challenge-form, #cf-challenge-running, iframe[src*="challenges.cloudflare.com/"], '
@@ -254,6 +278,74 @@ def _access_restriction(page: Selector) -> str | None:
     if page.css('form[action*="/captcha"], .g-recaptcha, .h-captcha, '
                 'iframe[src*="/recaptcha/"], iframe[src*="hcaptcha.com/captcha"]'):
         return "captcha_challenge"
+    return None
+
+
+def _visible_excerpt(page: Selector, *, body_only: bool = False) -> str:
+    """Bounded diagnostic input; no extracted strings leave this module."""
+    root = "//body" if body_only else "/"
+    values = page.xpath(root + '/descendant-or-self::text()[not(ancestor::script) and not(ancestor::style) '
+                        'and not(ancestor::template)]').getall()[:96]
+    return _text(" ".join(value[:4096] for value in values))[:8192].casefold().replace("’", "'")
+
+
+def _non_product_notice(page: Selector) -> str | None:
+    """Classify only explicit notice text/structure; never follow a link or form.
+
+    These codes explain unusable evidence, not proof of a permitted alternate
+    route. A country chooser, consent form or refresh target still needs its own
+    actual exact-US evidence before any follow-up action can be implemented.
+    """
+    if page.css('meta[http-equiv="refresh"], meta[http-equiv="Refresh"]'):
+        return "response_meta_refresh"
+    if page.css('form input[type="password"]'):
+        return "response_login_form"
+    # These are the exact public chooser controls present in retained official
+    # US HTML. Their presence on a failed page is diagnostic only: the link is
+    # the US home page, not proof of the requested product/variant or a redirect.
+    chooser = page.css('#choose-country-wrapper')
+    if (chooser.css('#countries-select option[value="https://www.oakley.com/en-us?cs"]')
+            and chooser.css('a.cs-country-info[data-country="us"][href="https://www.oakley.com/en-us?cs"]')):
+        return "response_country_chooser_us_link"
+    visible = _visible_excerpt(page)
+    headings = {_text(str(node.get_all_text(strip=True))).casefold().rstrip(".!?")
+                for node in page.css('title, h1, h2, h3')[:12]}
+    if "the request could not be satisfied" in visible:
+        return "response_request_error"
+    if any(phrase in visible for phrase in (
+        "under maintenance", "scheduled maintenance", "temporarily unavailable",
+        "be back soon", "down for maintenance",
+    )):
+        return "response_maintenance"
+    if any(re.fullmatch(r"(?:error\s*:?\s*)?(?:500|502|503|504)(?:\s+.*)?", text)
+           or text in {"internal server error", "bad gateway", "service unavailable", "gateway timeout"}
+           for text in headings):
+        return "response_server_error"
+    if any(re.fullmatch(r"(?:error\s*:?\s*)?404(?:\s+.*)?", text)
+           or text in {"page not found", "page cannot be found", "this page doesn't exist"}
+           for text in headings):
+        return "response_not_found"
+    if any(phrase in visible for phrase in (
+        "not available in your country", "not available in your region",
+        "not supported in your country", "not supported in your region",
+    )):
+        return "response_region_unavailable"
+    if any(phrase in visible for phrase in (
+        "select your country", "choose your country", "select your region", "choose your region",
+    )):
+        return "response_country_selection"
+    if any(phrase in visible for phrase in (
+        "please enable cookies", "cookies must be enabled", "cookies are required",
+    )):
+        return "response_cookie_requirement"
+    if any(phrase in visible for phrase in (
+        "browser is not supported", "unsupported browser", "browser is out of date",
+        "browser is outdated",
+    )):
+        return "response_browser_unsupported"
+    if any(text in {"redirecting", "redirecting you", "please wait while we redirect you"}
+           for text in headings):
+        return "response_redirect_notice"
     return None
 
 
@@ -276,14 +368,19 @@ def _response_shape(html: str, page: Selector) -> str:
         return "response_escaped_html"
     if not re.search(r"<(?:!doctype|html|head|body|script|div|p|title)\b", html[:4096], re.I):
         return "response_non_html"
+    notice = _non_product_notice(page)
+    if notice:
+        return notice
     if page.css('script#__NEXT_DATA__, script#__NUXT_DATA__, script#ng-state'):
         return "response_hydration_marker"
     # Inspect a small sample of non-script text only, never publish its contents.
-    visible = _text(" ".join(page.xpath('//text()[not(ancestor::script) and not(ancestor::style)]').getall()[:64]))[:4096].casefold()
+    visible = _visible_excerpt(page)
     if any(phrase in visible for phrase in ("enable javascript", "javascript is required", "turn on javascript")):
         return "response_javascript_required"
     if not visible:
         return "response_script_shell" if page.css("script") else "response_html_empty"
+    if not _visible_excerpt(page, body_only=True) and page.css("script"):
+        return "response_title_only_script_shell"
     return "response_html_text"
 
 
