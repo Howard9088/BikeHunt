@@ -49,7 +49,7 @@ def document(size="L", *, status="Available", price="340.00", full="340.00",
     stock_fields = '' if sold else f'<input name="hiddenAvailability" value="Available"><button data-test="Add_To_Cart_Button" data-isdisabled="false"></button>'
     return f'''<html><head><title>{html.escape(f"Oakley {model} in {color} | Oakley® US")}</title>
     <link rel="canonical" href="{URL}"><meta property="og:image" content="https://assets2.oakley.com/product.png">
-    <script>var utag_data={script};</script></head><body>
+    <script>var utag_data={script};</script><script>var ACC={{config:{{}}}};var Oakley={{languageCountry:"en_US"}};</script></head><body>
     <h1 data-test="product-name">{html.escape(model)}</h1>
     <form class="pdhero-form"><input name="selectedColor" value="{html.escape(color, quote=True)}">
     <input name="selectedSize" value="{size}"><input name="productCodePost" value="{'' if sold else upc}">
@@ -89,12 +89,13 @@ class OakleyParserTests(unittest.TestCase):
             (document().replace('"site_currency": "USD"', '"site_currency": "PRIVATE_CURRENCY_SENTINEL"'), "oakley_site_currency"),
             (document().replace('Oakley VELO MACH MIPS in', 'PRIVATE_TITLE_SENTINEL in'), "oakley_page_title"),
             (document().replace('data-isdisabled="false"', 'data-isdisabled="true"'), "oakley_stock_cart"),
-            ('<html><p>PRIVATE_BODY_SENTINEL</p></html>', "oakley_canonical_url"),
+            ('<html><p>PRIVATE_BODY_SENTINEL</p></html>', "oakley_canonical_missing"),
         ]
         for body, expected in cases:
             diagnostics = []
             self.assertEqual(parse_oakley(body, SOURCE, URL, NOW, diagnostics=diagnostics), [])
-            self.assertEqual(diagnostics, [expected])
+            self.assertEqual(diagnostics[0], expected)
+            self.assertLessEqual(len(diagnostics), 3)
             self.assertTrue(set(diagnostics) <= PUBLIC_DIAGNOSTICS)
             self.assertNotIn("PRIVATE", json.dumps(diagnostics))
         diagnostics = []
@@ -102,6 +103,61 @@ class OakleyParserTests(unittest.TestCase):
         self.assertEqual(diagnostics, [])
         self.assertTrue(all(code.startswith("oakley_") and code.replace("_", "").isalnum()
                             and len(code) < 64 for code in PUBLIC_DIAGNOSTICS))
+
+    def test_rejected_canonical_shapes_are_distinguished_without_being_accepted(self):
+        cases = [
+            ("", "canonical_blank"),
+            (URL + "?variant=" + UPCS["L"], "canonical_same_product_selected_upc"),
+            (URL + "?variant=" + UPCS["S"], "canonical_same_product_other_upc"),
+            (URL + "?private=PRIVATE_QUERY_SENTINEL", "canonical_same_product_other_query"),
+            (URL + "/", "canonical_same_product_trailing_slash"),
+            (URL + "#PRIVATE_FRAGMENT_SENTINEL", "canonical_same_product_fragment"),
+            (URL.replace("https:", "http:"), "canonical_same_product_non_https"),
+            (URL.replace("www.oakley.com", "oakley.com"), "canonical_same_product_origin_variant"),
+            (URL.replace("www.oakley.com", "www.oakley.com:443"), "canonical_same_product_origin_variant"),
+            (URL.replace("https://www.oakley.com", ""), "canonical_relative_same_product"),
+            (URL.replace("https:", ""), "canonical_protocol_relative_same_product"),
+            (URL.replace("/en-us/", "/en-ca/"), "canonical_other_market"),
+            (URL.replace("FOS902243", "FOS902123"), "canonical_other_product"),
+            (URL.replace("www.oakley.com", "PRIVATE_HOST_SENTINEL.test"), "canonical_external_origin"),
+            ("https://www.oakley.com/en-us", "canonical_other_path"),
+            ("https://user:PRIVATE_PASSWORD_SENTINEL@www.oakley.com/en-us/product/FOS902243", "canonical_invalid"),
+        ]
+        for canonical, expected in cases:
+            with self.subTest(shape=expected):
+                body = document().replace(f'<link rel="canonical" href="{URL}">',
+                                          f'<link rel="canonical" href="{html.escape(canonical, quote=True)}">')
+                diagnostics = []
+                self.assertEqual(parse_oakley(body, SOURCE, URL, NOW, diagnostics=diagnostics), [])
+                self.assertEqual(diagnostics, ["oakley_" + expected, "oakley_canonical_analytics_us", "oakley_canonical_locale_en_us"])
+                self.assertTrue(set(diagnostics) <= PUBLIC_DIAGNOSTICS)
+                self.assertNotIn("PRIVATE", json.dumps(diagnostics))
+
+    def test_missing_conflicting_and_rel_token_canonical_diagnostics(self):
+        original = f'<link rel="canonical" href="{URL}">'
+        cases = [
+            ("", "canonical_missing_product_layout"),
+            (original + '<link rel="canonical" href="https://www.oakley.com/en-ca/product/FOS902243">', "canonical_conflicting"),
+            (original.replace('rel="canonical"', 'rel="Canonical"'), "canonical_rel_token_variant"),
+            (original.replace('rel="canonical"', 'rel="canonical alternate"'), "canonical_rel_token_variant"),
+        ]
+        for replacement, code in cases:
+            diagnostics = []
+            self.assertEqual(parse_oakley(document().replace(original, replacement), SOURCE, URL, NOW,
+                                          diagnostics=diagnostics), [])
+            self.assertEqual(diagnostics, ["oakley_" + code, "oakley_canonical_analytics_us", "oakley_canonical_locale_en_us"])
+
+    def test_canonical_context_only_reports_finite_market_flags(self):
+        body = document().replace(f'<link rel="canonical" href="{URL}">', "")
+        body = body.replace('"Page_Country": "US"', '"Page_Country": "PRIVATE_COUNTRY_SENTINEL"')
+        body = body.replace('languageCountry:"en_US"', 'languageCountry:"en_CA"')
+        diagnostics = []
+        self.assertFalse(parse_oakley(body, SOURCE, URL, NOW, diagnostics=diagnostics))
+        self.assertEqual(diagnostics, ["oakley_canonical_missing_product_layout",
+                                     "oakley_canonical_analytics_other_country", "oakley_canonical_locale_other"])
+        self.assertNotIn("PRIVATE", json.dumps(diagnostics))
+        result = collect_oakley_product(FakeFetcher({URL: page(body)}), URL, SOURCE)
+        self.assertEqual(result.errors[0]["diagnostics"], diagnostics)
 
     def test_exact_selected_variant_price_stock_and_observation_time(self):
         row, = self.parse()

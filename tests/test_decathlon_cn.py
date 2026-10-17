@@ -122,6 +122,25 @@ class ParserTests(unittest.TestCase):
         for payload in [{"code": 1, "data": [{"quantity": 443}]}, [{"quantity": True}], [{"quantity": -1}], [{"quantity": "443"}], [{"quantity": 0}, {"quantity": 443}], [{"item_code": "other", "quantity": 443}]]:
             self.assertIsNone(_stock_quantity(payload, "1234567"))
 
+    def test_opaque_code_is_not_success_evidence_without_exact_stock_contract(self):
+        row = {"item_code": "1234567", "quantity": 443}
+        # Deliberately fictional opaque marker: no guessed vendor success code.
+        payload = {"code": "opaque-envelope-marker", "data": [row]}
+        self.assertEqual(_stock_quantity(payload, "1234567"), 443)
+        self.assertEqual(_stock_quantity(dict(payload, data=[dict(row, quantity=0)]), "1234567"), 0)
+        for bad_row in [dict(row, item_code="7654321"), {"quantity": 443}, {"item_code": "1234567"},
+                        dict(row, quantity=-1), dict(row, quantity=1.5), dict(row, quantity=443.0),
+                        dict(row, quantity="443"), dict(row, quantity=True), dict(row, errors=["failure"])]:
+            self.assertIsNone(_stock_quantity(dict(payload, data=[bad_row]), "1234567"))
+        for update in [{"data": [row, row]}, {"data": []}, {"data": row}, {"error": "failure"},
+                       {"errors": [{"message": "failure"}]}, {"success": False}, {"ok": False},
+                       {"success": "false"}, {"success": 0}, {"ok": " false "}, {"ok": 0},
+                       {"status": False}, {"status": "false"}, {"code": "invalid"},
+                       {"status": "failed"}, {"status_code": 403}, {"statusCode": "500"},
+                       {"msg": "request failed"}, {"message": "库存请求错误"},
+                       {"code": "ERROR"}, {"code": "E08-2201"}, {"code": ""}, {"code": False}]:
+            self.assertIsNone(_stock_quantity(dict(payload, **update), "1234567"))
+
     def test_shape_diagnostics_never_leak_body_keys_values_or_credentials(self):
         payload = {"code": "private-token-value", "credential-secret-key": "private-token-value",
                    "data": [{"item_code": "7654321", "quantity": "443", "extra-private-key": "private-token-value"}]}
@@ -141,45 +160,74 @@ class FakeLocator:
         self.page, self.kind, self.pattern = page, kind, pattern
     def evaluate_all(self, script): return ["S - 175/76A", "M - 180/80A"]
     def inner_html(self): return dom(self.page.size, self.page.quantity)
-    def evaluate(self, script): return dom(self.page.size, self.page.quantity)
+    def evaluate(self, script):
+        if self.page.late_competing:
+            self.page.emit("request", FakeRequest(self.page, FakeResponse()))
+        return dom(self.page.size, self.page.quantity)
     def filter(self, has_text): return FakeLocator(self.page, "size", has_text)
     def count(self): return 1
     def click(self):
         self.page.size = next(s for s in ["S - 175/76A", "M - 180/80A"] if self.pattern.fullmatch(s))
         self.page.clicked.append(self.page.size)
         # Selection changes before stock. Keep preceding quantity until wait.
+        request = FakeRequest(self.page, self.page.response)
+        self.page.current_request = request
+        self.page.emit("request", request)
+        if self.page.competing:
+            self.page.emit("request", FakeRequest(self.page, FakeResponse()))
 
 
 class FakeResponse:
-    request = SimpleNamespace(method="GET")
     url, status, headers = STOCK_URL, 200, {}
-    def finished(self): return None
-    def json(self): return [{"quantity": 443}]
+    def finished(self):
+        self.request.page.emit("requestfinished", self.request)
+        return None
+    def json(self): return {"code": "opaque-envelope-marker", "data": [{"item_code": _stock_request(self.url), "quantity": 443}]}
+
+
+class FakeRequest:
+    method = "GET"
+    def __init__(self, page, response):
+        self.page, self._response = page, response
+        code = "1234567" if page.size == "M - 180/80A" or page.repeat_item else "7654321"
+        self.url = STOCK_URL.replace("1234567", code)
+        response.url, response.request = self.url, self
+    def response(self): return self._response
 
 
 class FakePending:
-    def __init__(self, response): self.value = response
+    def __init__(self, page, predicate): self.page, self.predicate = page, predicate
+    @property
+    def value(self): return self.page.current_request
     def __enter__(self): return self
-    def __exit__(self, *args): pass
+    def __exit__(self, *args): assert self.predicate(self.value)
 
 
 class FakePage:
     url = URL
-    def __init__(self, response=None, fail_settle=False):
+    def __init__(self, response=None, fail_settle=False, competing=False, late_competing=False,
+                 previous_inflight=False, changed_size=False, repeat_item=False):
         self.response = response or FakeResponse()
         self.size, self.quantity = "S - 175/76A", 123
         self.clicked, self.waits = [], []
         self.fail_settle = fail_settle
+        self.competing, self.late_competing = competing, late_competing
+        self.previous_inflight, self.changed_size, self.repeat_item = previous_inflight, changed_size, repeat_item
+        self.listeners = {}
+    def on(self, event, callback): self.listeners.setdefault(event, []).append(callback)
+    def remove_listener(self, event, callback): self.listeners[event].remove(callback)
+    def emit(self, event, value):
+        for callback in self.listeners.get(event, []): callback(value)
     def wait_for_selector(self, *args, **kwargs): pass
-    def wait_for_load_state(self, *args, **kwargs): pass
+    def wait_for_load_state(self, *args, **kwargs):
+        if self.previous_inflight: self.emit("request", FakeRequest(self, FakeResponse()))
     def locator(self, selector): return FakeLocator(self)
-    def expect_response(self, predicate, **kwargs):
-        assert predicate(self.response)
-        return FakePending(self.response)
+    def expect_request(self, predicate, **kwargs): return FakePending(self, predicate)
     def wait_for_function(self, script, arg, **kwargs):
         self.waits.append((self.quantity, arg["quantity"]))
         if self.fail_settle: raise TimeoutError("previous stock stayed visible")
         self.quantity = arg["quantity"]
+        if self.changed_size: self.size = "S - 175/76A"
 
 
 class ActionTests(unittest.TestCase):
@@ -191,6 +239,18 @@ class ActionTests(unittest.TestCase):
         self.assertEqual(pauses, [1, 1])
         self.assertEqual(len(captures), 2)
         self.assertTrue(all(parse_decathlon_cn(c.decode(), SOURCE, URL, NOW) for c in captures))
+        self.assertTrue(all(not callbacks for callbacks in page.listeners.values()))
+
+    def test_equal_quantities_cannot_hide_competing_requests_or_changed_size(self):
+        for changes in [{"competing": True}, {"late_competing": True}, {"previous_inflight": True},
+                        {"changed_size": True}, {"repeat_item": True}]:
+            with self.subTest(changes=changes):
+                page, captures = FakePage(**changes), []
+                page.quantity = 443  # Both sizes deliberately have equal stock.
+                with self.assertRaises(CollectionError):
+                    decathlon_cn_page_action(captures, utcnow=lambda: NOW, sleep=lambda _: None)(page)
+                self.assertEqual(captures, [])
+                self.assertTrue(all(not callbacks for callbacks in page.listeners.values()))
 
     def test_failed_settle_or_failed_response_never_yields_partial_snapshot(self):
         captures = []

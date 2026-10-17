@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
+import secrets
 import sys
 import tempfile
 import time
@@ -10,7 +12,7 @@ from collections.abc import Callable
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 from urllib.robotparser import RobotFileParser
 
 from loguru import logger
@@ -72,9 +74,14 @@ class PublicPageFetcher:
                  utcnow: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
                  policy: FetchPolicy | None = None,
                  browser_request: Callable | None = None,
-                 page_action: Callable | None = None) -> None:
+                 page_action: Callable | None = None,
+                 post_request: Callable | None = None) -> None:
         self.domains = domains
         self.request = request or Fetcher.get
+        # The caller can use one public session for both verbs. No user/login
+        # state is imported; default requests share only our first-party jar.
+        session = getattr(self.request, '__self__', None)
+        self.post_request = post_request or getattr(session, 'post', None) or Fetcher.post
         self.sleep = sleep
         self.clock = clock
         self.utcnow = utcnow
@@ -90,14 +97,17 @@ class PublicPageFetcher:
         # user's browser/login state or persist cookies in the public snapshot.
         self.public_cookies: dict[str, dict[str, str]] = {}
 
-    def _request(self, url: str, dynamic: bool = False, policy: FetchPolicy | None = None):
+    def _request(self, url: str, dynamic: bool = False, policy: FetchPolicy | None = None,
+                 form_data: dict[str, str] | None = None):
         policy = policy or self.policy
         host = urlsplit(url).hostname or ""
         if urlsplit(url).scheme != "https" or host not in self.domains:
             raise CollectionError("URL outside configured HTTPS source domains")
         if host in self.deferred:
             raise self.deferred[host]
-        for attempt in range(3):
+        # An uncertain form submission must never be automatically repeated.
+        attempts = 1 if form_data is not None else 3
+        for attempt in range(attempts):
             pause = 1 - (self.clock() - self.last_request.get(host, -1000))
             if pause > 0:
                 self.sleep(pause)
@@ -128,6 +138,20 @@ class PublicPageFetcher:
                         if isinstance(action_errors[0], SourceDeferred):
                             raise action_errors[0]
                         raise CollectionError("Dynamic variant capture did not finish") from action_errors[0]
+                elif form_data is not None:
+                    boundary = 'bikehunt-' + secrets.token_hex(16)
+                    body = ''.join('--' + boundary + '\r\nContent-Disposition: form-data; name="'
+                        + name + '"\r\n\r\n' + value + '\r\n' for name, value in form_data.items())
+                    body += '--' + boundary + '--\r\n'
+                    response = self.post_request(
+                        url, timeout=20, retries=1, stealthy_headers=False,
+                        verify=certificate_bundle(), follow_redirects=False, max_redirects=0,
+                        headers={"User-Agent": USER_AGENT,
+                                 "Content-Type": "multipart/form-data; boundary=" + boundary},
+                        cookies=self.public_cookies.get(host, {}), data=body.encode('utf-8'),
+                    )
+                    if str(getattr(response, 'url', url)) != url:
+                        raise CollectionError('Public localization unexpectedly followed a redirect')
                 else:
                     response = self.request(
                         url, timeout=20, retries=1, stealthy_headers=False,
@@ -162,18 +186,17 @@ class PublicPageFetcher:
                 if dynamic and action_errors:
                     self.variant_pages.clear()
                     raise CollectionError("Dynamic variant capture did not finish") from action_errors[0]
-                logger.warning("请求失败 collection_request_failed attempt={}/3", attempt + 1)
-                if attempt == 2:
+                logger.warning("请求失败 collection_request_failed attempt={}/{}", attempt + 1, attempts)
+                if attempt == attempts - 1:
                     raise CollectionError(f"Source request failed: {url}") from exc
                 self.sleep(2 ** attempt)
         raise CollectionError("Request attempts exhausted")
 
-    def fetch(self, url: str, dynamic: bool = False,
-              policy: FetchPolicy | None = None) -> CapturedPage:
-        """返回公开网页 Response；禁止或无法核实 robots 时抛出 CollectionError。"""
-        policy = policy or self.policy
-        dynamic = dynamic or policy.mode == "dynamic"
+    def _check_robots(self, url: str) -> None:
+        """Check permission and the same per-origin crawl delay for either verb."""
         split = urlsplit(url)
+        if split.scheme != 'https' or split.hostname not in self.domains:
+            raise CollectionError('URL outside configured HTTPS source domains')
         origin = f"{split.scheme}://{split.netloc}"
         if origin in self.robots_failures:
             raise self.robots_failures[origin]
@@ -203,6 +226,53 @@ class PublicPageFetcher:
         pause = crawl_delay - (self.clock() - self.last_request.get(host, -1000))
         if pause > 0:
             self.sleep(pause)
+
+    def submit_public_localization(self, url: str, fields: dict[str, str],
+                                   return_url: str) -> CapturedPage:
+        """Submit one observed Shopify country form, then fetch its exact return.
+
+        Only non-sensitive localization fields are accepted. The source adapter
+        must verify the exposed form/option first. No user credentials, cookie
+        presets, arbitrary POST endpoints or automatic redirects are supported.
+        """
+        action, target = urlsplit(url), urlsplit(return_url)
+        expected = {'form_type', 'utf8', '_method', 'return_to', 'country_code'}
+        if (action.scheme != 'https' or action.hostname not in self.domains
+                or action.netloc != target.netloc or target.scheme != 'https'
+                or action.username or action.password or action.port is not None
+                or action.query or action.fragment or target.query or target.fragment
+                or not re.fullmatch(r'/(?:[a-z]{2}(?:-[a-z]{2})?/)?localization', action.path)
+                or not isinstance(fields, dict) or set(fields) != expected
+                or any(not isinstance(value, str) or len(value) > 512 or '\r' in value or '\n' in value
+                       for value in fields.values())
+                or fields.get('form_type') != 'localization' or fields.get('utf8') != '✓'
+                or fields.get('_method') != 'put' or fields.get('return_to') != target.path
+                or not re.fullmatch(r'[A-Z]{2}', fields.get('country_code', ''))):
+            raise CollectionError('Unsupported public localization form')
+        # Check both paths before sending. A form must not cause a navigation
+        # to a disallowed product even when its POST endpoint itself is allowed.
+        self._check_robots(return_url)
+        self._check_robots(url)
+        response = self._request(url, form_data=fields)
+        if response.status not in (200, 204, 302, 303):
+            raise CollectionError('Public localization response was not successful')
+        headers = getattr(response, 'headers', {}) or {}
+        location = next((str(value) for key, value in headers.items() if key.casefold() == 'location'), None)
+        if response.status in (302, 303) and not location:
+            raise CollectionError('Public localization redirect is missing')
+        if location is not None and urljoin(url, location) != return_url:
+            raise CollectionError('Public localization redirect changed the exact product')
+        capture = self.fetch(return_url, policy=FetchPolicy(mode='static'))
+        if capture.url != return_url:
+            raise CollectionError('Public localization return changed the exact product')
+        return capture
+
+    def fetch(self, url: str, dynamic: bool = False,
+              policy: FetchPolicy | None = None) -> CapturedPage:
+        """返回公开网页 Response；禁止或无法核实 robots 时抛出 CollectionError。"""
+        policy = policy or self.policy
+        dynamic = dynamic or policy.mode == "dynamic"
+        self._check_robots(url)
         self.variant_pages.clear()
         response = self._request(url, dynamic, policy)
         if response.status != 200:

@@ -125,20 +125,56 @@ def _stock_request(url: str) -> str | None:
     return values[0]
 
 
+def _stock_endpoint(url: str) -> bool:
+    parsed = urlsplit(url)
+    return parsed.scheme == "https" and parsed.hostname in STOCK_HOSTS and parsed.path == STOCK_PATH
+
+
 def _stock_quantity(payload: object, item_code: str) -> int | None:
-    # The public PDP accesses response[0].quantity. Fail closed on unknown or
-    # application-error envelopes even if the HTTP request itself succeeded.
+    # The served official HTTP interceptor unwraps data on HTTP 200/201 when
+    # code exists (0 OR a truthy value). The stock view consumes [0].quantity
+    # without interpreting code. Treat that code as opaque, never as proof of
+    # success: HTTP200, exact item identity and settled selected DOM must also
+    # be joined by the caller. CI observed a nonempty string code, singleton
+    # data array, explicit matching item_code and integer quantity.
     if isinstance(payload, dict):
-        if type(payload.get("code")) is not int or payload["code"] != 0:
+        code = payload.get("code")
+        if (_explicit_stock_error(payload)
+                or not (type(code) is int and code == 0 or isinstance(code, str) and code.strip())):
             return None
         payload = payload.get("data")
     if not isinstance(payload, list) or len(payload) != 1 or not isinstance(payload[0], dict):
         return None
     row = payload[0]
-    if "item_code" in row and str(row["item_code"]) != item_code:
+    if _explicit_stock_error(row) or "item_code" not in row or str(row["item_code"]) != item_code:
         return None
     quantity = row.get("quantity")
     return quantity if type(quantity) is int and 0 <= quantity <= 10_000_000 else None
+
+
+def _explicit_stock_error(value: dict) -> bool:
+    """Reject explicit failures, even if they carry a stale-looking data row."""
+    if any(value.get(key) not in (None, "", False, [], {}) for key in ("error", "errors")):
+        return True
+    if any(value.get(key) is False or type(value.get(key)) is int and value[key] == 0
+           or isinstance(value.get(key), str) and value[key].strip().casefold() == "false"
+           for key in ("success", "ok")):
+        return True
+    if any(isinstance(value.get(key), str) and re.search(
+            r"\b(?:error|failed|failure|forbidden|unauthorized|denied|invalid)\b|失败|错误|无权限|未授权|拒绝|异常",
+            value[key], flags=re.I) for key in ("message", "msg")):
+        return True
+    for key in ("code", "status", "status_code", "statusCode"):
+        status = value.get(key)
+        if key != "code" and (status is False or isinstance(status, str) and status.strip().casefold() == "false"):
+            return True
+        if type(status) is int and 400 <= status <= 599:
+            return True
+        if isinstance(status, str) and re.fullmatch(
+                r"(?:error|fail|failed|failure|invalid|invalid_request|forbidden|unauthorized|denied|[45]\d{2}|E\d{2}-[A-Z0-9-]+|SB_\d+)",
+                status.strip(), flags=re.I):
+            return True
+    return False
 
 
 def _dom_stock(panel: Selector) -> int | None:
@@ -241,67 +277,107 @@ def decathlon_cn_page_action(captures: list[bytes], max_variants: int = 20,
     evidence. We require the size-control request and its matching quantity.
     """
     def action(page) -> None:
-        if not _canonical(page.url):
-            raise CollectionError("Unexpected Decathlon China product URL")
-        page.wait_for_selector(SIZES, state="visible", timeout=30000)
-        page.wait_for_load_state("networkidle", timeout=30000)
-        sizes = page.locator(SIZES).evaluate_all("nodes => nodes.map(n => n.textContent.trim().replace(/\\s+/g, ' '))")
-        if not 2 <= len(sizes) <= max_variants or len(set(sizes)) != len(sizes) or any(not s for s in sizes):
-            raise CollectionError("Ambiguous or unsupported Decathlon size list")
-        initial = _selected_size(Selector(page.locator(PANEL).inner_html()))
-        # Start with another size so every saved variant has a fresh request;
-        # never accept the unobserved initial/default stock, including zero.
-        ordered = [size for size in sizes if size != initial] + ([initial] if initial in sizes else [])
-        staged: list[bytes] = []
-        for size in ordered:
-            # Same domain, sequential selections, at least one second apart.
-            # PublicPageFetcher separately handles robots and document limits.
-            sleep(1)
-            button = page.locator(SIZES).filter(has_text=re.compile(r"^\s*" + re.escape(size) + r"\s*$"))
-            if button.count() != 1:
-                raise CollectionError("Decathlon exact size selector is ambiguous")
-            try:
-                with page.expect_response(lambda response: response.request.method == "GET" and _stock_request(response.url), timeout=20000) as pending:
-                    button.click()
-                response = pending.value
-                if response.status == 429 or (response.status == 503 and any(
-                        key.casefold() == "retry-after" for key in response.headers)):
-                    raise SourceDeferred("Decathlon online stock temporarily deferred", retry_after(response, utcnow()))
-                if response.status in (401, 403):
-                    raise DecathlonAccessDenied("Decathlon online stock access denied")
-                if response.status != 200 or response.finished():
-                    raise CollectionError("Decathlon selected stock request failed")
-                item_code = _stock_request(response.url)
-                payload = response.json()
-                quantity = _stock_quantity(payload, item_code)
-                if quantity is None:
-                    raise DecathlonStockShapeUnverified(payload, item_code)
-                # Response body completion precedes Vue's DOM update. Wait for
-                # both selected size and displayed stock to equal THIS response.
-                page.wait_for_function("""({size, quantity}) => {
-                  const root = document.querySelector('#product-right-content');
-                  if (!root) return false;
-                  const selected = [...root.querySelectorAll('.sku-size .size-list > div')]
-                    .filter(n => n.classList.contains('font_maincolor') && n.classList.contains('border-[#3643BA]'));
-                  if (selected.length !== 1 || selected[0].textContent.trim().replace(/\\s+/g, ' ') !== size) return false;
-                  const labels = [...root.querySelectorAll('span')].map(n => n.textContent.trim().replace(/\\s+/g, ' '));
-                  return quantity > 0 ? labels.filter(s => /^线上库存\\s*\\d+$/.test(s)).length === 1 && labels.includes('线上库存 ' + quantity)
-                    : labels.filter(s => s === '缺货').length === 1 || labels.includes('线上库存 0');
-                }""", arg={"size": size, "quantity": quantity}, timeout=15000)
-                panel = page.locator(PANEL).evaluate("node => node.outerHTML.replace(/src=\"data:[^\"]+\"/g, 'src=\"\"')")
-                if _selected_size(Selector(panel)) != size or _dom_stock(Selector(panel)) != quantity:
-                    raise CollectionError("Decathlon selected stock DOM did not settle")
-                staged.append(json.dumps({"schema": SCHEMA, "url": page.url,
-                    "observed_at": utcnow().isoformat(), "selected_size": size,
-                    "item_code": item_code, "quantity": quantity,
-                    "stock_response_status": 200, "html": panel}, ensure_ascii=False).encode())
-            except CollectionError:
-                raise
-            except Exception as exc:
-                raise CollectionError("Decathlon selected size could not be verified") from exc
-        # All-or-nothing within a model: a failed later selection cannot leak a
-        # partially updated model, nor an unverified raw final page.
-        captures.extend(staged)
+        inflight, transaction, active = set(), [], [False]
+
+        def started(request):
+            if _stock_endpoint(request.url):
+                inflight.add(request)
+                if active[0]:
+                    transaction.append(request)
+
+        def finished(request):
+            inflight.discard(request)
+
+        listeners = (("request", started), ("requestfinished", finished), ("requestfailed", finished))
+        for event, listener in listeners:
+            page.on(event, listener)
+        try:
+            if not _canonical(page.url):
+                raise CollectionError("Unexpected Decathlon China product URL")
+            page.wait_for_selector(SIZES, state="visible", timeout=30000)
+            page.wait_for_load_state("networkidle", timeout=30000)
+            sizes = page.locator(SIZES).evaluate_all("nodes => nodes.map(n => n.textContent.trim().replace(/\\s+/g, ' '))")
+            if not 2 <= len(sizes) <= max_variants or len(set(sizes)) != len(sizes) or any(not s for s in sizes):
+                raise CollectionError("Ambiguous or unsupported Decathlon size list")
+            initial = _selected_size(Selector(page.locator(PANEL).inner_html()))
+            # Start with another size so every saved variant has a fresh request;
+            # never accept the unobserved initial/default stock, including zero.
+            ordered = [size for size in sizes if size != initial] + ([initial] if initial in sizes else [])
+            staged: list[bytes] = []
+            seen_items: set[str] = set()
+            for size in ordered:
+                # Same domain, sequential selections, at least one second apart.
+                # PublicPageFetcher separately handles robots and document limits.
+                sleep(1)
+                button = page.locator(SIZES).filter(has_text=re.compile(r"^\s*" + re.escape(size) + r"\s*$"))
+                if button.count() != 1:
+                    raise CollectionError("Decathlon exact size selector is ambiguous")
+                try:
+                    before = _selected_size(Selector(page.locator(PANEL).inner_html()))
+                    if before == size or inflight:
+                        raise CollectionError("Decathlon stock selection is not isolated")
+                    transaction.clear()
+                    active[0] = True
+                    with page.expect_request(lambda request: _stock_endpoint(request.url), timeout=20000) as pending:
+                        button.click()
+                    request = pending.value
+                    if (len(transaction) != 1 or transaction[0] != request
+                            or request.method != "GET" or not _stock_request(request.url)):
+                        raise CollectionError("Decathlon stock request is not uniquely tied to selection")
+                    response = request.response()
+                    if response is None or response.request != request:
+                        raise CollectionError("Decathlon selected stock response is missing")
+                    if response.status == 429 or (response.status == 503 and any(
+                            key.casefold() == "retry-after" for key in response.headers)):
+                        raise SourceDeferred("Decathlon online stock temporarily deferred", retry_after(response, utcnow()))
+                    if response.status in (401, 403):
+                        raise DecathlonAccessDenied("Decathlon online stock access denied")
+                    if response.status != 200 or response.finished():
+                        raise CollectionError("Decathlon selected stock request failed")
+                    item_code = _stock_request(response.url)
+                    if item_code in seen_items:
+                        raise CollectionError("Decathlon item code repeated across different sizes")
+                    payload = response.json()
+                    quantity = _stock_quantity(payload, item_code)
+                    if quantity is None:
+                        raise DecathlonStockShapeUnverified(payload, item_code)
+                    # Response body completion precedes Vue's DOM update. Wait for
+                    # both selected size and displayed stock to equal THIS response.
+                    page.wait_for_function("""({size, quantity}) => {
+                      const root = document.querySelector('#product-right-content');
+                      if (!root) return false;
+                      const selected = [...root.querySelectorAll('.sku-size .size-list > div')]
+                        .filter(n => n.classList.contains('font_maincolor') && n.classList.contains('border-[#3643BA]'));
+                      if (selected.length !== 1 || selected[0].textContent.trim().replace(/\\s+/g, ' ') !== size) return false;
+                      const labels = [...root.querySelectorAll('span')].map(n => n.textContent.trim().replace(/\\s+/g, ' '));
+                      return quantity > 0 ? labels.filter(s => /^线上库存\\s*\\d+$/.test(s)).length === 1 && labels.includes('线上库存 ' + quantity)
+                        : labels.filter(s => s === '缺货').length === 1 || labels.includes('线上库存 0');
+                    }""", arg={"size": size, "quantity": quantity}, timeout=15000)
+                    panel = page.locator(PANEL).evaluate("node => node.outerHTML.replace(/src=\"data:[^\"]+\"/g, 'src=\"\"')")
+                    if _selected_size(Selector(panel)) != size or _dom_stock(Selector(panel)) != quantity:
+                        raise CollectionError("Decathlon selected stock DOM did not settle")
+                    # Recheck AFTER reading the panel: same-quantity variants must
+                    # not hide a second or previously in-flight stock response.
+                    if len(transaction) != 1 or transaction[0] != request or inflight:
+                        raise CollectionError("Decathlon stock request competed with another selection")
+                    active[0] = False
+                    seen_items.add(item_code)
+                    staged.append(json.dumps({"schema": SCHEMA, "url": page.url,
+                        "observed_at": utcnow().isoformat(), "selected_size": size,
+                        "item_code": item_code, "quantity": quantity,
+                        "stock_response_status": 200, "html": panel}, ensure_ascii=False).encode())
+                except CollectionError:
+                    raise
+                except Exception as exc:
+                    raise CollectionError("Decathlon selected size could not be verified") from exc
+            # All-or-nothing within a model: a failed later selection cannot leak a
+            # partially updated model, nor an unverified raw final page.
+            captures.extend(staged)
+        finally:
+            active[0] = False
+            for event, listener in listeners:
+                page.remove_listener(event, listener)
+
     return action
 
 

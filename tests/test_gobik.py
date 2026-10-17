@@ -15,8 +15,9 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.collectors.gobik import (collect_gobik_catalog, parse_gobik,
                                   preserve_gobik_identity, GobikCollectionError,
-                                  PUBLIC_DIAGNOSTICS)
-from app.collectors.transport import CollectionError, PublicPageFetcher
+                                  PUBLIC_DIAGNOSTICS, fetch_gobik_product,
+                                  _spain_localization_form)
+from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
 from app.catalog.models import FxSnapshot
 from app.catalog.service import ComparisonCatalog
 from app.catalog.listings import bootstrap_legacy, family_records, prepare_listing_history
@@ -79,6 +80,111 @@ def old_row():
     return row.model_copy(update={"offer_id": "gobik-manual-stable", "identity": identity,
         "name": identity.model, "url": URL, "family_hint": URL,
         "stock_quantity": 9, "purchase_requirements": ["manual only; no auto refresh"]})
+
+
+def localization_form():
+    return ('<form action="/en/localization" method="post" enctype="multipart/form-data">'
+        '<input type="hidden" name="form_type" value="localization">'
+        '<input type="hidden" name="utf8" value="✓">'
+        '<input type="hidden" name="_method" value="put">'
+        f'<input type="hidden" name="return_to" value="{URL.removeprefix("https://gobik.com")}">'
+        '<input type="hidden" name="country_code" value="US">'
+        '<a data-value="ES">EUR € | Spain</a></form>')
+
+
+class GobikLocalizationTests(unittest.TestCase):
+    def fetcher(self, *, initial='US', final='ES', form=None, currency='EUR', post_status=302, fail_post=False):
+        calls = []; clock = iter([NOW, NOW + timedelta(seconds=2), NOW + timedelta(seconds=4), NOW + timedelta(seconds=6)])
+        def get(url, **kwargs):
+            calls.append(('GET', url))
+            if url.endswith('/robots.txt'):
+                return SimpleNamespace(status=200, body=b'User-agent: *\nAllow: /', headers={}, url=url)
+            country = final if kwargs.get('cookies', {}).get('localization') == 'server-session' else initial
+            html = page().replace('"ES"', json.dumps(country)).replace('"active":"EUR"', '"active":' + json.dumps(currency))
+            html += localization_form() if form is None else form
+            return SimpleNamespace(status=200, body=html.encode(), headers={}, url=url)
+        def post(url, **kwargs):
+            calls.append(('POST', url))
+            if fail_post:
+                raise OSError('uncertain submission')
+            return SimpleNamespace(status=post_status, body=b'', headers={'Location':URL, 'Retry-After':'3600'},
+                                   cookies={'localization':'server-session'}, url=url)
+        fetcher = PublicPageFetcher({'gobik.com'}, request=get, post_request=post,
+                                    sleep=lambda _: None, utcnow=lambda:next(clock))
+        return fetcher, calls
+
+    def test_official_spain_form_once_and_only_after_explicit_country_mismatch(self):
+        fetcher, calls = self.fetcher()
+        capture = fetch_gobik_product(fetcher, URL)
+        self.assertEqual(capture.observed_at, NOW + timedelta(seconds=2))
+        self.assertEqual(len(parse_gobik(capture.body.decode(), SOURCE, URL, capture.observed_at)), 2)
+        fetch_gobik_product(fetcher, URL)
+        self.assertEqual(calls.count(('POST','https://gobik.com/en/localization')), 1)
+        self.assertEqual(calls.count(('GET',URL)), 3)
+
+    def test_already_spain_requires_no_form_post(self):
+        fetcher, calls = self.fetcher(initial='ES', form='')
+        fetch_gobik_product(fetcher, URL)
+        self.assertFalse(any(method == 'POST' for method, _ in calls))
+
+    def test_missing_or_wrong_official_form_fails_without_post_and_is_remembered(self):
+        for form in ['', localization_form().replace('Spain', 'France'),
+                     localization_form().replace('/en/localization', 'https://other.example/localization'),
+                     localization_form().replace('name="return_to"', 'name="unexpected"'),
+                     localization_form().replace('value="put"', 'value="delete"')]:
+            fetcher, calls = self.fetcher(form=form)
+            with self.assertRaises(GobikCollectionError) as raised:
+                fetch_gobik_product(fetcher, URL)
+            self.assertEqual(raised.exception.diagnostics, ['gobik_localization_form_unverified'])
+            count = len(calls)
+            with self.assertRaises(GobikCollectionError):
+                fetch_gobik_product(fetcher, URL)
+            self.assertEqual(len(calls), count)
+            self.assertFalse(any(method == 'POST' for method, _ in calls))
+
+    def test_changed_currency_is_not_relabelled_or_localized(self):
+        fetcher, calls = self.fetcher(currency='USD')
+        with self.assertRaises(GobikCollectionError) as raised:
+            fetch_gobik_product(fetcher, URL)
+        self.assertEqual(raised.exception.diagnostics, ['gobik_market_currency_mismatch'])
+        self.assertFalse(any(method == 'POST' for method, _ in calls))
+
+    def test_selection_must_really_return_spain_and_never_retries_failed_post(self):
+        for kwargs in [{'final':'US'}, {'fail_post':True}, {'post_status':403}]:
+            fetcher, calls = self.fetcher(**kwargs)
+            with self.assertRaises(CollectionError):
+                fetch_gobik_product(fetcher, URL)
+            count = len(calls)
+            with self.assertRaises(CollectionError):
+                fetch_gobik_product(fetcher, URL)
+            self.assertEqual(len(calls), count)
+            self.assertEqual(calls.count(('POST','https://gobik.com/en/localization')), 1)
+
+    def test_rate_limit_remains_source_deferred_and_does_not_repeat_form(self):
+        fetcher, calls = self.fetcher(post_status=429)
+        with self.assertRaises(SourceDeferred):
+            fetch_gobik_product(fetcher, URL)
+        count = len(calls)
+        with self.assertRaises(SourceDeferred):
+            fetch_gobik_product(fetcher, URL)
+        self.assertEqual(len(calls), count)
+
+    def test_duplicate_identical_visible_forms_are_safe_but_extra_fields_are_not(self):
+        action, fields = _spain_localization_form(localization_form() * 2, URL)
+        self.assertEqual(action, 'https://gobik.com/en/localization')
+        self.assertEqual(fields['country_code'], 'ES')
+        with self.assertRaises(GobikCollectionError):
+            _spain_localization_form(localization_form().replace('</form>',
+                '<input type="hidden" name="token" value="never-submit"></form>'), URL)
+
+    def test_cookie_loss_after_success_is_not_a_second_localization_attempt(self):
+        fetcher, calls = self.fetcher()
+        fetch_gobik_product(fetcher, URL)
+        fetcher.public_cookies.clear()
+        with self.assertRaises(GobikCollectionError) as raised:
+            fetch_gobik_product(fetcher, URL)
+        self.assertEqual(raised.exception.diagnostics, ['gobik_localization_not_persistent'])
+        self.assertEqual(calls.count(('POST','https://gobik.com/en/localization')), 1)
 
 
 class GobikParserTests(unittest.TestCase):

@@ -34,7 +34,7 @@ from app.collectors.rendered import parse_unox
 from app.collectors.remaining import parse_redbull_product, parse_topfanz, topfanz_page_action
 from app.collectors.remaining import parse_canyon_product, parse_colnago_product
 from app.collectors.specialized import parse_specialized
-from app.collectors.gobik import parse_gobik, preserve_gobik_identity
+from app.collectors.gobik import parse_gobik, preserve_gobik_identity, fetch_gobik_product
 from app.collectors.oakley import collect_oakley_product
 from scrapling.fetchers import FetcherSession
 from app.collectors.transport import certificate_bundle
@@ -99,6 +99,11 @@ def error_record(url: str, exc: Exception) -> dict:
         "Decathlon selected stock DOM did not settle": "stock_dom_mismatch",
         "Decathlon selected size could not be verified": "selected_size_unverified",
         "Decathlon exact size selector is ambiguous": "ambiguous_size_selector",
+        "Decathlon stock selection is not isolated": "decathlon_selection_not_isolated",
+        "Decathlon stock request is not uniquely tied to selection": "decathlon_request_not_unique",
+        "Decathlon selected stock response is missing": "decathlon_response_missing",
+        "Decathlon item code repeated across different sizes": "decathlon_repeated_item",
+        "Decathlon stock request competed with another selection": "decathlon_competing_request",
         "Ambiguous or unsupported Decathlon size list": "size_list_unverified",
         "Decathlon online stock access denied": "source_access_denied",
         "No validated per-variant offers; snapshot not replaced": "no_validated_variants",
@@ -129,7 +134,9 @@ def print_public_collection_result(code: str, count: int, errors: list[dict]) ->
              for row in errors]
     allowed = {'stock_request_failed', 'stock_shape_unverified', 'stock_dom_mismatch',
                'selected_size_unverified', 'ambiguous_size_selector', 'size_list_unverified',
-               'source_access_denied', 'no_validated_variants', 'variant_capture_failed', 'browser_timeout'} | public_diagnostic_codes()
+               'source_access_denied', 'no_validated_variants', 'variant_capture_failed', 'browser_timeout',
+               'decathlon_selection_not_isolated', 'decathlon_request_not_unique', 'decathlon_response_missing',
+               'decathlon_repeated_item', 'decathlon_competing_request'} | public_diagnostic_codes()
     diagnostics = sorted({reason for row in errors for reason in row.get('diagnostics', [])
                           if isinstance(reason, str) and reason in allowed})
     result = {'source': code, 'offers': count, 'errors': kinds}
@@ -210,7 +217,7 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
                 rows.extend(result.offers)
                 errors.extend(result.errors)
                 continue
-            response = fetcher.fetch(url)
+            response = fetch_gobik_product(fetcher, url) if code == "gobik" else fetcher.fetch(url)
             if code == "gobik" and response.url != url:
                 raise CollectionError("Gobik response changed the configured product or market URL")
             fetched_at = datetime.now(timezone.utc)

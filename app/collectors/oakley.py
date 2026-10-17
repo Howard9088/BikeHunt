@@ -27,7 +27,18 @@ PRODUCT_PATH = re.compile(r"/en-us/product/[A-Z0-9]+")
 AVAILABLE = {"Available", "Available-oneLeft", "Available-twoLeft", "Available-fewLeft"}
 # Public diagnostics are a closed vocabulary: never page text, data or exceptions.
 OAKLEY_DIAGNOSTICS = frozenset({
-    "request_scope", "canonical_url", "analytics_literal", "selected_controls",
+    "request_scope", "canonical_url", "canonical_missing", "canonical_blank",
+    "canonical_conflicting", "canonical_rel_token_variant", "canonical_missing_product_layout",
+    "canonical_relative_same_product", "canonical_protocol_relative_same_product",
+    "canonical_same_product_variant_query", "canonical_same_product_selected_upc",
+    "canonical_same_product_other_upc", "canonical_same_product_other_query",
+    "canonical_same_product_fragment", "canonical_same_product_trailing_slash",
+    "canonical_same_product_origin_variant", "canonical_same_product_non_https",
+    "canonical_other_market", "canonical_other_product", "canonical_external_origin",
+    "canonical_invalid", "canonical_other_path", "canonical_analytics_us",
+    "canonical_analytics_other_country", "canonical_analytics_missing",
+    "canonical_locale_en_us", "canonical_locale_other", "canonical_locale_missing",
+    "analytics_literal", "selected_controls",
     "requested_upc", "analytics_upc", "product_object", "market_country",
     "site_currency", "order_currency", "page_type", "selected_color",
     "selected_size", "product_heading", "dom_size", "analytics_size",
@@ -65,6 +76,70 @@ def _product_url(url: str) -> tuple[str, str | None] | None:
         return ORIGIN + parts.path, query.get("variant", [None])[0]
     except (ValueError, TypeError):
         return None
+
+
+def _canonical_failure(page: Selector, expected: str) -> str:
+    """Classify a rejected canonical shape; never return or accept its URL.
+
+    These distinctions help diagnose response-layout and geographic differences
+    without publishing arbitrary hrefs, query values, or HTML. They deliberately
+    do not normalize any new canonical representation into accepted evidence.
+    """
+    values = page.css('link[rel="canonical"]::attr(href)').getall()
+    if not values:
+        alternatives = [node for node in page.css('link[rel]')
+                        if "canonical" in node.attrib.get("rel", "").casefold().split()]
+        if alternatives:
+            return "canonical_rel_token_variant"
+        if page.css('form.pdhero-form') and page.css('[data-test="sizes-selection"]'):
+            return "canonical_missing_product_layout"
+        return "canonical_missing"
+    normalized = {_text(value) for value in values}
+    if "" in normalized:
+        return "canonical_blank"
+    if len(normalized) != 1:
+        return "canonical_conflicting"
+    value = next(iter(normalized))
+    try:
+        actual = urlsplit(value)
+        target = urlsplit(expected)
+        if actual.username or actual.password:
+            return "canonical_invalid"
+        # Resolve only to classify relative same-product links, never to accept.
+        if not actual.scheme and not actual.netloc:
+            resolved = urlsplit(urljoin(expected, value))
+            if resolved.hostname == target.hostname and resolved.path.rstrip("/") == target.path:
+                return "canonical_relative_same_product"
+            return "canonical_other_path"
+        if actual.hostname not in {"oakley.com", "www.oakley.com"}:
+            return "canonical_external_origin"
+        if re.match(r"/[a-z]{2}-[a-z]{2}/", actual.path, re.I) and not actual.path.startswith("/en-us/"):
+            return "canonical_other_market"
+        if actual.path.rstrip("/") == target.path:
+            if not actual.scheme:
+                return "canonical_protocol_relative_same_product"
+            if actual.scheme != "https":
+                return "canonical_same_product_non_https"
+            if actual.netloc != target.netloc:
+                return "canonical_same_product_origin_variant"
+            if actual.path != target.path:
+                return "canonical_same_product_trailing_slash"
+            if actual.fragment:
+                return "canonical_same_product_fragment"
+            if actual.query:
+                variant = _product_url(value)
+                if not variant:
+                    return "canonical_same_product_other_query"
+                selected = _selected(page)
+                if selected:
+                    return ("canonical_same_product_selected_upc" if variant[1] == selected[0]
+                            else "canonical_same_product_other_upc")
+                return "canonical_same_product_variant_query"
+        if PRODUCT_PATH.fullmatch(actual.path.rstrip("/")):
+            return "canonical_other_product"
+        return "canonical_other_path"
+    except (ValueError, TypeError):
+        return "canonical_invalid"
 
 
 def _pairs(pairs: list[tuple[str, object]]) -> dict:
@@ -116,6 +191,24 @@ def _utag(page: Selector) -> dict | None:
     return candidates[0] if len(candidates) == 1 else None
 
 
+def _canonical_context(page: Selector) -> tuple[str, str]:
+    """Finite, non-authorizing market signals accompanying a canonical rejection."""
+    data = _utag(page)
+    country = data.get("Page_Country") if data else None
+    market = ("canonical_analytics_us" if country == "US" else
+              "canonical_analytics_other_country" if isinstance(country, str) and country
+              else "canonical_analytics_missing")
+    locales = set()
+    for script in page.css("script::text").getall():
+        # Read only the merchant's observed public configuration script. This is
+        # diagnostic metadata, never permission or alternate product evidence.
+        if re.match(r"\s*var\s+ACC\s*=", script):
+            locales.update(re.findall(r'\blanguageCountry\s*:\s*"([A-Za-z]{2}_[A-Za-z]{2})"', script))
+    locale = ("canonical_locale_en_us" if locales == {"en_US"} else
+              "canonical_locale_other" if locales else "canonical_locale_missing")
+    return market, locale
+
+
 def _selected(page: Selector) -> tuple[str, str, str] | None:
     """Both duplicated desktop/mobile controls must select the same size/UPC."""
     selections = set()
@@ -143,11 +236,12 @@ def _selected(page: Selector) -> tuple[str, str, str] | None:
 def parse_oakley(html: str, source: dict, page_url: str,
                  fetched_at: datetime, *, diagnostics: list[str] | None = None) -> list[Offer]:
     """One selected variant; optional failures use a finite content-free vocabulary."""
-    def reject(code: str) -> list[Offer]:
-        if code not in OAKLEY_DIAGNOSTICS:
+    def reject(code: str, *context: str) -> list[Offer]:
+        codes = (code, *context)
+        if any(item not in OAKLEY_DIAGNOSTICS for item in codes):
             raise ValueError("Unknown Oakley diagnostic code")
         if diagnostics is not None:
-            diagnostics.append("oakley_" + code)
+            diagnostics.extend("oakley_" + item for item in codes)
         return []
 
     requested = _product_url(page_url)
@@ -157,7 +251,7 @@ def parse_oakley(html: str, source: dict, page_url: str,
     canonical, requested_upc = requested
     page = Selector(html)
     if _sole(page.css('link[rel="canonical"]::attr(href)').getall()) != canonical:
-        return reject("canonical_url")
+        return reject(_canonical_failure(page, canonical), *_canonical_context(page))
     data = _utag(page)
     selected = _selected(page)
     if not data:
@@ -414,7 +508,7 @@ def collect_oakley_product(fetcher: PublicPageFetcher, url: str, source: dict,
                 result.errors.append({
                     "url": request_url,
                     "error": "No validated selected Oakley variant; snapshot not refreshed",
-                    "diagnostics": diagnostics[:1] or ["oakley_no_selected_offer"],
+                    "diagnostics": diagnostics[:3] or ["oakley_no_selected_offer"],
                 })
                 if base_row is None:
                     break

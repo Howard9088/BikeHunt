@@ -20,7 +20,7 @@ from pydantic import ValidationError
 from scrapling.parser import Selector
 
 from app.catalog.models import Offer, ProductIdentity
-from app.collectors.fetch_policy import FetchPolicy
+from app.collectors.fetch_policy import CapturedPage, FetchPolicy
 from app.collectors.parsers import evidence, money, offer_id, stock_status
 from app.collectors.shopify import shopify_market_country, shopify_market_currency
 from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
@@ -36,6 +36,9 @@ _DIAGNOSTIC_MESSAGES = {
     "gobik_market_country_unverified": {"Gobik active market country is unverified"},
     "gobik_market_currency_mismatch": {"Gobik active market currency is not EUR"},
     "gobik_market_country_mismatch": {"Gobik active market country is not ES"},
+    "gobik_localization_form_unverified": {"Gobik official Spain localization form is missing or ambiguous"},
+    "gobik_localization_failed": {"Gobik official Spain localization failed"},
+    "gobik_localization_not_persistent": {"Gobik Spain localization did not persist"},
     "gobik_product_identity_unverified": {
         "Gobik requires an exact official English product URL",
         "Gobik canonical product identity is missing or different",
@@ -135,6 +138,94 @@ def _objects(value):
             yield from _objects(item)
 
 
+def _active_market(html: str) -> tuple[str, str]:
+    try:
+        currency = shopify_market_currency(html)
+    except CollectionError as exc:
+        raise GobikCollectionError("Gobik active market currency is unverified") from exc
+    try:
+        country = shopify_market_country(html)
+    except CollectionError as exc:
+        raise GobikCollectionError("Gobik active market country is unverified") from exc
+    if country is None:
+        raise GobikCollectionError("Gobik active market country is unverified")
+    return country, currency
+
+
+def _spain_localization_form(html: str, product_url: str) -> tuple[str, dict[str, str]]:
+    """Read the exposed Spain option; never construct cookies or guess a route."""
+    expected_action = 'https://gobik.com/en/localization'
+    required = {'form_type': 'localization', 'utf8': '✓', '_method': 'put',
+                'return_to': urlsplit(product_url).path, 'country_code': 'ES'}
+    candidates = []
+    for form in Selector(html).css('form[action]'):
+        if (urljoin(product_url, form.attrib.get('action', '')) != expected_action
+                or form.attrib.get('method', '').casefold() != 'post'
+                or form.attrib.get('enctype', '').casefold() != 'multipart/form-data'
+                or not form.css('[name="country_code"]')):
+            continue
+        choices = form.css('option[value="ES"], a[data-value="ES"]')
+        if not any(re.search(r'\bSpain\b', choice.get_all_text(strip=True), re.I)
+                   and re.search(r'\bEUR\b', choice.get_all_text(strip=True)) for choice in choices):
+            continue
+        fields = {}
+        invalid = False
+        for node in form.css('input[name]'):
+            key, value = node.attrib.get('name'), node.attrib.get('value', '')
+            if node.attrib.get('type', '').casefold() != 'hidden' or key in fields or key not in required:
+                invalid = True
+                break
+            fields[key] = value
+        # The only changed field is the exact published Spain country option.
+        fields['country_code'] = 'ES'
+        if not invalid and fields == required:
+            candidates.append((expected_action, fields))
+    signatures = {(action, tuple(sorted(fields.items()))) for action, fields in candidates}
+    if len(signatures) != 1:
+        raise GobikCollectionError('Gobik official Spain localization form is missing or ambiguous')
+    return candidates[0]
+
+
+def fetch_gobik_product(fetcher: PublicPageFetcher, url: str) -> CapturedPage:
+    """Select the exposed Spain market once, then return fresh ES/EUR evidence.
+
+    All requests, including the one public country form, use the same permitted
+    transport/session. A failed selection is remembered for this fetcher only;
+    no alternate route, cookie preset or repeated form submission is attempted.
+    """
+    _product_url(url, variant_allowed=False)
+    cached_error = getattr(fetcher, '_gobik_localization_error', None)
+    if cached_error is not None:
+        raise cached_error
+    capture = fetcher.fetch(url, policy=FetchPolicy(mode='static'))
+    if capture.url != url:
+        raise GobikCollectionError('Gobik product redirected outside the exact source/market path')
+    html = capture.body.decode('utf-8-sig', errors='replace')
+    country, currency = _active_market(html)
+    if currency != 'EUR':
+        raise GobikCollectionError('Gobik active market currency is not EUR')
+    if country == 'ES':
+        return capture
+    try:
+        if getattr(fetcher, '_gobik_localization_attempted', False):
+            raise GobikCollectionError('Gobik Spain localization did not persist')
+        action, fields = _spain_localization_form(html, url)
+        fetcher._gobik_localization_attempted = True
+        try:
+            selected = fetcher.submit_public_localization(action, fields, url)
+        except SourceDeferred:
+            raise
+        except CollectionError as exc:
+            raise GobikCollectionError('Gobik official Spain localization failed') from exc
+        selected_country, selected_currency = _active_market(selected.body.decode('utf-8-sig', errors='replace'))
+        if selected.url != url or selected_country != 'ES' or selected_currency != 'EUR':
+            raise GobikCollectionError('Gobik Spain localization did not persist')
+        return selected
+    except CollectionError as exc:
+        fetcher._gobik_localization_error = exc
+        raise
+
+
 def _product_data(page: Selector, url: str) -> dict:
     products = []
     for block in page.css('script[type="application/ld+json"]::text').getall():
@@ -168,16 +259,7 @@ def parse_gobik_product(html: str, source: dict, page_url: str,
         raise GobikCollectionError("Gobik parser requires the Gobik source")
     if fetched_at.tzinfo is None:
         raise GobikCollectionError("Gobik observation time requires a timezone")
-    try:
-        currency = shopify_market_currency(html)
-    except CollectionError as exc:
-        raise GobikCollectionError("Gobik active market currency is unverified") from exc
-    try:
-        country = shopify_market_country(html)
-    except CollectionError as exc:
-        raise GobikCollectionError("Gobik active market country is unverified") from exc
-    if country is None:
-        raise GobikCollectionError("Gobik active market country is unverified")
+    country, currency = _active_market(html)
     if currency != "EUR":
         raise GobikCollectionError("Gobik active market currency is not EUR")
     if country != "ES":
@@ -427,7 +509,7 @@ def collect_gobik_catalog(fetcher: PublicPageFetcher, settings: dict, source: di
         try:
             if url in settings.get("excluded_urls", []):
                 raise GobikCollectionError("Gobik product remains paused after an unresolved access failure")
-            capture = fetcher.fetch(url, policy=FetchPolicy(mode="static"))
+            capture = fetch_gobik_product(fetcher, url)
             if capture.url != url:
                 raise GobikCollectionError("Gobik product redirected outside the exact source/market path")
             if raw_dir is not None:
