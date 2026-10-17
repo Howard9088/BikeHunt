@@ -17,7 +17,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  article-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - uses: actions/cache/restore@v6
+        with:
+          path: |
+            data/offers
+            data/rules
+            data/fx_latest.json
+            data/public_updates.json
+            data/publication_cache
+            data/source_deferrals
+          key: bikehunt-public-data-v2-article-${{ github.run_id }}
+          restore-keys: bikehunt-public-data-v2-
+      - run: python -m playwright install --with-deps chromium
+      - run: python scripts/build_pages.py
+      - run: python scripts/test_why_overseas_ui.py
   publish:
+    needs: article-check
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -155,7 +180,6 @@ jobs:
       - name: Build public interactive website
         run: python scripts/build_pages.py
       - name: Validate article entrance and navigation on desktop and mobile
-        if: github.event_name == 'push'
         timeout-minutes: 3
         run: python scripts/test_why_overseas_ui.py
       - name: Validate exact payment assets before deployment

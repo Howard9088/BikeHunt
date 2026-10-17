@@ -23,7 +23,12 @@ def main():
             expect(entrance).to_be_visible()
             box=entrance.bounding_box();assert box['x']>=0 and box['x']+box['width']<=width
             assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-            expect(page.locator('#grid .card').first).to_be_visible()
+            try:
+                expect(page.locator('#grid .card').first).to_be_visible(timeout=15000)
+            except AssertionError:
+                print('CATALOG_DIAGNOSTIC', page.evaluate("async () => { const r = await fetch('/api/catalog'); const d = await r.json(); return {status: r.status, detail: d.detail, items: d.items?.length, secure: isSecureContext, root: document.querySelector('script[src*=\"pages-adapter\"]').src}; }"), flush=True)
+                print('HTTP_DIAGNOSTIC', responses, flush=True)
+                raise
             cards=page.locator('#grid .card').count()
             assert cards>0
             page.screenshot(path=str(out/f'why_overseas_home_{mode}.png'))
