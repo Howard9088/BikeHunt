@@ -196,6 +196,25 @@ def _explicit_stock_error(value: dict) -> bool:
     return False
 
 
+# Image-only recovery metadata from the previously published, manually verified
+# exact CN product/color observations. Never used for price, stock or freshness.
+VERIFIED_IMAGE_SEEDS = ({'identity': {'brand': 'VAN RYSEL', 'model': 'VAN RYSEL 男士骑行背带短裤 RCR-R 5 - 黑色', 'mpn': '8969603', 'size': 'M - 180/80A', 'color': '烟熏黑', 'gender': 'male'}, 'image': 'https://pixl.decathlon.com.cn/p3043223/k$4140c9f5c953c033f539ba057e40434c/content.jpg', 'url': 'https://www.decathlon.com.cn/product-detail?dsm_code=367685&model_code=8969603', 'fetched_at': '2026-10-16T05:29:14Z'}, {'identity': {'brand': 'VAN RYSEL', 'model': 'VAN RYSEL 男女同款迪卡侬 CMA CGM队版复刻版公路骑行服 RCR竞赛系列', 'mpn': '8987878', 'size': 'M', 'color': '孔雀蓝', 'gender': 'unisex'}, 'image': 'https://pixl.decathlon.com.cn/p3154827/k$0847c4ceacd8c8f51fc26bdc6b51d0b8/content.jpg', 'url': 'https://www.decathlon.com.cn/product-detail?dsm_code=355348', 'fetched_at': '2026-10-16T05:29:14Z'})
+
+
+def _official_image(value: object) -> str | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        asset = urlsplit(value)
+        if (asset.scheme == "https" and asset.hostname == "pixl.decathlon.com.cn"
+                and asset.port in (None, 443) and not asset.username and not asset.password
+                and not asset.fragment):
+            return value
+    except ValueError:
+        pass
+    return None
+
+
 def _dom_stock(panel: Selector) -> int | None:
     labels = [node for node in panel.css("span") if re.fullmatch(r"线上库存\s*\d+", _text(node))]
     empty = [node for node in panel.css("span") if _text(node) == "缺货"]
@@ -264,7 +283,7 @@ def parse_decathlon_cn(html: str, source: dict, page_url: str, fetched_at: datet
         codes = base[0].css('span[class~="text-16"][class~="text-[#B3BAC3]"]')
         prices = base[0].css(".p-price > .price-format-display")
         colors = panel.css(".sku-color > div:first-child > span")
-        images = [n.attrib.get("src") for n in panel.css(".sku-color .color-list > img")
+        images = [n for n in panel.css(".sku-color .color-list > img")
                   if SELECTED in n.attrib.get("class", "").split()]
         for values, gate in ((names, "title"), (brands, "brand"), (codes, "model"),
                              (prices, "price"), (colors, "color"), (images, "swatch")):
@@ -284,14 +303,8 @@ def parse_decathlon_cn(html: str, source: dict, page_url: str, fetched_at: datet
         # real asset after onload. Thumbnail loading is not identity evidence:
         # keep the exact selected swatch and textual color checks above, but omit
         # absent/placeholder/unsupported images instead of discarding valid stock.
-        image = None
-        try:
-            asset = urlsplit(images[0] or "")
-            if (asset.scheme == "https" and asset.hostname == "pixl.decathlon.com.cn"
-                    and asset.port in (None, 443) and not asset.username and not asset.password):
-                image = images[0]
-        except (ValueError, TypeError):
-            pass
+        image = (_official_image(images[0].attrib.get("src"))
+                 or _official_image(images[0].attrib.get("data-bh-bound-image-src")))
         name = brand + " " + title
         gender = "unisex" if "男女" in title else "male" if "男士" in title else "female" if "女士" in title else None
         model_url = "https://www.decathlon.com.cn/product-detail?" + urlencode({"dsm_code": params["dsm_code"][0], "model_code": model})
@@ -401,7 +414,22 @@ def decathlon_cn_page_action(captures: list[bytes], max_variants: int = 20,
                       return quantity > 0 ? labels.filter(s => /^线上库存\\s*\\d+$/.test(s)).length === 1 && labels.includes('线上库存 ' + quantity)
                         : labels.filter(s => s === '缺货').length === 1 || labels.includes('线上库存 0');
                     }""", arg={"size": size, "quantity": quantity}, timeout=15000)
-                    panel = page.locator(PANEL).evaluate("node => node.outerHTML.replace(/src=\"data:[^\"]+\"/g, 'src=\"\"')")
+                    panel = page.locator(PANEL).evaluate("""node => {
+                      const copy = node.cloneNode(true);
+                      const original = [...node.querySelectorAll('.sku-color .color-list > img')];
+                      const cloned = [...copy.querySelectorAll('.sku-color .color-list > img')];
+                      original.forEach((img, index) => {
+                        if (img.classList.contains('border-[#3643BA]') && typeof img.$data_src === 'string') {
+                          try {
+                            const url = new URL(img.$data_src);
+                            if (url.protocol === 'https:' && url.hostname === 'pixl.decathlon.com.cn'
+                                && !url.username && !url.password && !url.port && !url.hash)
+                              cloned[index].setAttribute('data-bh-bound-image-src', img.$data_src);
+                          } catch (_) {}
+                        }
+                      });
+                      return copy.outerHTML.replace(/src="data:[^"]+"/g, 'src=""');
+                    }""")
                     if _selected_size(Selector(panel)) != size or _dom_stock(Selector(panel)) != quantity:
                         raise CollectionError("Decathlon selected stock DOM did not settle")
                     # Recheck AFTER reading the panel: same-quantity variants must
@@ -458,5 +486,20 @@ def preserve_decathlon_cn_identity(fresh: list[Offer], existing: list[Offer]) ->
                 "model": old.identity.model, "color": old.identity.color,
                 "gender": old.identity.gender, "year": old.identity.year})
             row = row.model_copy(update={"identity": identity, "name": old.name, "family_hint": old.family_hint})
+        if not row.image and row.source_code == "decathlon_cn" and row.price.currency == "CNY":
+            # A thumbnail is shared across sizes only for this exact model,
+            # brand, textual product name and color. Ambiguous history is not used.
+            candidates = {_official_image(old.image) for old in matches if _official_image(old.image)}
+            provenance = "图片沿用此前同型号同颜色已验证图片；本次库存观察不代表图片重新验证。"
+            if not candidates:
+                seeds = [seed for seed in VERIFIED_IMAGE_SEEDS
+                         if (seed["identity"].get("mpn"), compact(seed["identity"].get("brand")),
+                             compact(seed["identity"].get("color")), compact(seed["identity"].get("model"))) == key(row)[1:]]
+                candidates = {_official_image(seed["image"]) for seed in seeds if _official_image(seed["image"])}
+                if len(seeds) == 1:
+                    provenance = "图片沿用 " + seeds[0]["fetched_at"] + " 核实的同型号同颜色官网图片；本次库存观察不代表图片重新验证。"
+            if len(candidates) == 1:
+                row = row.model_copy(update={"image": next(iter(candidates)),
+                    "identity_evidence": row.identity_evidence + "；" + provenance})
         result.append(row)
     return result

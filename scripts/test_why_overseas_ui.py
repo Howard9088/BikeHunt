@@ -23,6 +23,7 @@ def main():
             expect(entrance).to_be_visible()
             box=entrance.bounding_box();assert box['x']>=0 and box['x']+box['width']<=width
             assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+            expect(page.locator('#grid .card').first).to_be_visible()
             cards=page.locator('#grid .card').count()
             assert cards>0
             page.screenshot(path=str(out/f'why_overseas_home_{mode}.png'))
@@ -43,7 +44,7 @@ def main():
                 page.get_by_role('link',name='← 返回首页',exact=True).click()
                 expect(page).to_have_url(base)
                 expect(entrance).to_be_visible()
-                assert page.locator('#grid .card').count()==cards
+                expect(page.locator('#grid .card')).to_have_count(cards)
             page.goto(base+'why-overseas/')
             page.get_by_role('link',name='← 返回首页，继续看好价',exact=True).click()
             expect(entrance).to_be_visible()

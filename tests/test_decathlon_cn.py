@@ -155,6 +155,57 @@ class ParserTests(unittest.TestCase):
         changed = fresh.model_copy(update={"identity": fresh.identity.model_copy(update={"color": "浅暖灰"})})
         self.assertEqual(preserve_decathlon_cn_identity([changed], [old])[0], changed)
 
+    def test_live_bound_selected_image_survives_disabled_image_loading(self):
+        image = "https://pixl.decathlon.com.cn/p3043223/live-bound.jpg"
+        html = dom().replace('src="https://pixl.decathlon.com.cn/p3043223/content.jpg"',
+            'src="https://www.decathlon.com.cn/static/default-img.png" data-bh-bound-image-src="' + image + '"')
+        row = self.parse(fixture(html=html))[0]
+        self.assertEqual(row.image, image)
+        for invalid in ['https://evil.example/a.jpg', 'javascript:alert(1)',
+                        'https://user:secret@pixl.decathlon.com.cn/a.jpg']:
+            self.assertIsNone(self.parse(fixture(html=html.replace(image, invalid)))[0].image)
+        # Current loaded selected image wins over an older bound hint.
+        current = dom().replace('class="border-[#3643BA]" src=',
+            'class="border-[#3643BA]" data-bh-bound-image-src="' + image + '" src=')
+        self.assertEqual(self.parse(fixture(html=current))[0].image,
+                         'https://pixl.decathlon.com.cn/p3043223/content.jpg')
+
+    def test_missing_image_preserves_verified_exact_family_for_all_sizes(self):
+        old = self.parse()[0].model_copy(update={"image": "https://pixl.decathlon.com.cn/verified/history.jpg",
+            "fetched_at": NOW-timedelta(days=1), "stock_quantity": 999})
+        fresh = self.parse()[0].model_copy(update={"image": None})
+        for size in ['M - 180/80A', 'S - 175/76A']:
+            selected = fresh.model_copy(update={"identity": fresh.identity.model_copy(update={"size": size})})
+            result = preserve_decathlon_cn_identity([selected], [old])[0]
+            self.assertEqual(result.image, old.image)
+            self.assertEqual((result.fetched_at, result.stock_quantity, result.price),
+                             (selected.fetched_at, selected.stock_quantity, selected.price))
+            self.assertIn('本次库存观察不代表图片重新验证', result.identity_evidence)
+
+    def test_already_empty_cache_recovers_both_exact_verified_image_seeds(self):
+        previous = json.loads((Path(__file__).parents[1]/'data/offers/decathlon_cn.json').read_text())['offers']
+        for raw in previous:
+            old = Offer.model_validate(raw)
+            fresh = old.model_copy(update={"image": None, "fetched_at": NOW, "stock_quantity": 7})
+            for size in [old.identity.size, 'new verified size']:
+                candidate = fresh.model_copy(update={"identity": fresh.identity.model_copy(update={"size": size})})
+                row = preserve_decathlon_cn_identity([candidate], [fresh])[0]
+                self.assertEqual(row.image, old.image)
+                self.assertEqual((row.fetched_at, row.stock_quantity), (NOW, 7))
+                self.assertIn(raw['fetched_at'], row.identity_evidence)
+
+    def test_wrong_identity_or_ambiguous_images_never_inherit(self):
+        old = self.parse()[0]
+        fresh = old.model_copy(update={"image": None})
+        for field, value in [('color', '浅暖灰'), ('mpn', '9999999'), ('brand', 'OTHER'), ('model', 'Other product')]:
+            changed = fresh.model_copy(update={"identity": fresh.identity.model_copy(update={field: value})})
+            self.assertIsNone(preserve_decathlon_cn_identity([changed], [old])[0].image)
+        other = old.model_copy(update={"image": 'https://pixl.decathlon.com.cn/different/history.jpg',
+            "identity": old.identity.model_copy(update={"size": 'different size'})})
+        self.assertIsNone(preserve_decathlon_cn_identity([fresh], [old, other])[0].image)
+        current = fresh.model_copy(update={"image": 'https://pixl.decathlon.com.cn/current/live.jpg'})
+        self.assertEqual(preserve_decathlon_cn_identity([current], [old])[0].image, current.image)
+
     def test_stock_response_must_identify_one_item_and_successful_numeric_quantity(self):
         self.assertEqual(_stock_request(STOCK_URL), "1234567")
         for url in [STOCK_URL.replace("api-cn.decathlon.com.cn", "evil.example"), STOCK_URL.replace("1234567", "1234567,7654321"), STOCK_URL.replace("city=", "city=Shanghai")]:
