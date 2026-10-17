@@ -154,6 +154,10 @@ jobs:
           PY
       - name: Build public interactive website
         run: python scripts/build_pages.py
+      - name: Validate article entrance and navigation on desktop and mobile
+        if: github.event_name == 'push'
+        timeout-minutes: 3
+        run: python scripts/test_why_overseas_ui.py
       - name: Validate exact payment assets before deployment
         run: python scripts/verify_payment_methods.py --local-dir _site
       - name: Validate built manifest and market labels before deployment

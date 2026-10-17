@@ -33,6 +33,7 @@ class PagesTests(unittest.TestCase):
         (web/'payment-methods.json').write_bytes((repo/'tests/fixtures/payment-methods.json').read_bytes())
         atomic_json(web/'registration-guides.json', {'schemaVersion': 1, 'revision': 'empty-test', 'entries': []})
         (web/'index.html').write_text('<a href="/web/">Home</a><script src="/web/profile.js" defer></script>',encoding='utf-8')
+        (web/'why-overseas.html').write_text((repo/'web/why-overseas.html').read_text(), encoding='utf-8')
         (web/'group').mkdir()
         (web/'group/index.html').write_text(Path(__file__).resolve().parents[1].joinpath('web/group/index.html').read_text(), encoding='utf-8')
         (web/'assets/brands').mkdir(parents=True)
@@ -42,6 +43,19 @@ class PagesTests(unittest.TestCase):
         OfferRepository(self.root/'data').save('a',[make_offer()],NOW,[])
         (self.root/'config').mkdir()
         (self.root/'config/notifications.json').write_text('{"app_token":"AT_private_do_not_publish"}',encoding='utf-8')
+
+    def test_why_overseas_article_is_public_and_links_home(self):
+        repo = Path(__file__).resolve().parents[1]
+        (self.root/'web/index.html').write_text((repo/'web/index.html').read_text(), encoding='utf-8')
+        build_public_site(self.root, make_fx())
+        home = (self.root/'_site/index.html').read_text()
+        article = (self.root/'_site/why-overseas/index.html').read_text()
+        self.assertIn('href="./why-overseas/">为什么海淘？</a>', home)
+        self.assertIn('href="../"', article)
+        self.assertIn('src="../web/icons/bikehunt-logo.svg"', article)
+        self.assertIn('各有所爱，不必说服谁。', article)
+        self.assertIn('便宜不能直接等于假货。', article)
+        self.assertNotIn('<script', article)
 
     def test_private_collection_errors_are_projected_before_pages_and_cache(self):
         marker = 'SYNTHETIC_PRIVATE_ERROR_BODY'

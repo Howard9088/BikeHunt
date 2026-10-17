@@ -81,3 +81,8 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
  .card .original-name{margin:-3px 0 5px}
  .card .product-meta,.card .buyline{margin-bottom:6px}
 }
+
+/* A quiet article entrance, without reducing the large product cards. */
+.topnav .why-overseas-link{display:inline-flex;align-items:center;min-height:40px;font-size:13px;font-weight:600;color:var(--blue);white-space:nowrap}
+.topnav .why-overseas-link:hover{text-decoration:underline}
+@media(max-width:600px){.topnav .why-overseas-link{font-size:11px}.topnav .nav-tools{gap:9px}}
