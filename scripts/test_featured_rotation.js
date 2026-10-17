@@ -38,3 +38,16 @@ now=noon;open=true;handler();assert.equal(renders,0,'An open detail/guide is not
 open=false;c.refreshFeaturedBatch();assert.equal(renders,1);c.refreshFeaturedBatch();assert.equal(renders,1,'No repeated same-slot repaint');
 c.activeTab='brands';now=evening;c.refreshFeaturedBatch();assert.equal(renders,1);c.activeTab='products';c.refreshFeaturedBatch();assert.equal(renders,2);
 console.log('PASS Beijing boundaries, stable batches, real new priority, tiny pools, sold-out exclusion, images/ledger intact, deferred dialogs and unchanged latest ordering');
+async function testRefreshPosition(){
+ const flows=fs.readFileSync('web/flows.js','utf8');let anchor;
+ const c=vm.createContext({console,currentIndex:0,currentProduct:null,guideContext:null,activeTab:'products',catalogLoadState:'ready',items:[],fx:{},sourceCount:1,roadReferenceData:{},gallery:{querySelectorAll:()=>[{dataset:{id:'old-first'}},{dataset:{id:'middle'}}]},sheet:{classList:{contains:()=>false}},document:{getElementById:()=>null},publicCatalogData:x=>x,getJson:async()=>({items:[],fx:{},source_count:1}),updateFxLabel(){},refreshRoadReferenceDetail(){},render:id=>{anchor=id}});
+ const start=flows.indexOf('async function refreshCatalogSilently('),end=flows.indexOf('async function bootFlows(',start);assert.ok(start>=0&&end>start);
+ vm.runInContext(flows.slice(start,end),c);
+ await c.refreshCatalogSilently(false);assert.equal(anchor,null,'Refresh at the top must reveal the new leading card');
+ c.currentIndex=1;await c.refreshCatalogSilently(false);assert.equal(anchor,'middle','Reading farther down retains the exact anchor');
+ const a=flows.indexOf('function expireLocalInventory('),b=flows.indexOf('// Run independently',a);vm.runInContext(flows.slice(a,b),c);
+ c.currentIndex=0;c.expireLocalInventory();assert.equal(anchor,null,'Focus/clock refresh cannot re-anchor the old first photo');
+ c.currentIndex=1;c.expireLocalInventory();assert.equal(anchor,'middle');
+ console.log('PASS new content reaches the visible first screen; middle reading positions and dialogs remain protected');
+}
+testRefreshPosition().catch(error=>{console.error(error);process.exitCode=1});
