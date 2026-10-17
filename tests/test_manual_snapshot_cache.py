@@ -10,7 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 class AutomatedSnapshotCacheTests(unittest.TestCase):
     def test_cache_is_restored_after_fixture_tests_before_collection(self):
         workflow = (ROOT / '.github/workflows/pages.yml').read_text()
-        steps = re.split(r'(?m)^      - ', workflow)[1:]
+        # Each job has its own workspace; the read-only article preflight does
+        # not run fixture writers. Enforce ordering within the publishing job.
+        publish = re.split(r'(?m)^  publish:\n', workflow, maxsplit=1)[1]
+        steps = re.split(r'(?m)^      - ', publish)[1:]
         cache = next(i for i, step in enumerate(steps)
                      if 'uses: actions/cache/restore@' in step and 'data/offers' in step)
         tests = next(i for i, step in enumerate(steps) if 'python -m unittest discover' in step)
@@ -21,6 +24,17 @@ class AutomatedSnapshotCacheTests(unittest.TestCase):
         self.assertIn("if: always() && steps.public_data_restore.outcome == 'success'", workflow)
         self.assertNotIn('git restore --source=HEAD -- data/offers', workflow)
         self.assertEqual(workflow.count("cron: '8,23,38,53 * * * *'"), 1)
+
+    def test_article_gate_covers_scheduled_and_push_releases(self):
+        workflow = (ROOT / '.github/workflows/pages.yml').read_text()
+        preflight, publish = re.split(r'(?m)^  publish:\n', workflow, maxsplit=1)
+        self.assertIn('  article-check:', preflight)
+        self.assertIn('python scripts/test_why_overseas_ui.py', preflight)
+        self.assertNotIn('python scripts/collect_offers.py', preflight)
+        self.assertIn('    needs: article-check', publish)
+        article_step = next(step for step in re.split(r'(?m)^      - ', publish)
+                            if 'python scripts/test_why_overseas_ui.py' in step)
+        self.assertNotIn('if:', article_step)
 
     def test_all_three_sources_use_existing_pipeline(self):
         config = {row['code']: row for row in json.loads((ROOT/'data/crawl_sources.json').read_text())}
