@@ -95,6 +95,25 @@ def oakley_fixture():
     return {'catalog':{'items':[card.model_dump(mode='json') for card in cards],'fx':fx.model_dump(mode='json'),'categories':CATEGORIES,'category_groups':CATEGORY_GROUPS,'source_count':1},'details':details,'directories':{'brands':[oakley],'teams':[]},'chosen':chosen,'clock_ms':int(now.timestamp()*1000),'images':{row.image for row in offers if row.image},'detail_requests':[]}
 
 
+
+def assert_product_action_reachable(page, card, viewport):
+    """Large mobile images keep their size; all original details remain scroll-reachable."""
+    card.scroll_into_view_if_needed()
+    if viewport['width'] <= 600:
+        image = card.locator('.product-visual').bounding_box()
+        expected = max(300, min(viewport['height'] * .48, 480))
+        assert image and abs(image['height'] - expected) < 2, (viewport, image, expected)
+        assert page.locator('#grid').evaluate("node => getComputedStyle(node).touchAction").startswith('pan-y')
+        for selector in ['.listing-time', '.data-time', '.compare-button']:
+            card.locator(selector).scroll_into_view_if_needed()
+            expect(card.locator(selector)).to_be_in_viewport()
+    else:
+        # Locate this product rather than assuming rotation always puts it first.
+        expect(card.locator('.compare-button')).to_be_in_viewport()
+    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+    cta = card.locator('.compare-button').bounding_box()
+    assert cta and cta['y'] >= 0 and cta['y'] + cta['height'] <= viewport['height'], cta
+
 def exercise_oakley_flow(browser,base,mode,viewport,checks,errors):
     """Isolated Oakley real-data flow; external navigation is fulfilled locally."""
     from urllib.parse import parse_qs
@@ -371,6 +390,8 @@ def exercise_gobik_catalog(browser, base, checks, errors, external):
                 for selector in ['.listing-time', '.data-time', '.compare-button']:
                     label = card.locator(selector)
                     expect(label).to_be_visible()
+                    if viewport['width'] <= 600:
+                        label.scroll_into_view_if_needed()
                     bounds = label.evaluate("""node => {
                         const r=node.getBoundingClientRect();
                         let top=0,bottom=innerHeight,left=0,right=innerWidth;
@@ -508,8 +529,7 @@ def main():
                     expect(deal).to_contain_text(text)
                 expect(deal).not_to_contain_text('350.00');expect(deal).not_to_contain_text('限时')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-                cta=deal.locator('.compare-button').bounding_box()
-                assert cta and cta['y']+cta['height']<=viewport['height'],cta
+                assert_product_action_reachable(page, deal, viewport)
                 page.screenshot(path=str(OUT/f'featured_{mode}.png'))
                 page.locator('#q').fill('Stamp Hoodie')
                 expect(page.locator('.card')).to_have_count(1);expect(page.locator('#browseLabel')).to_have_text('搜索结果')
@@ -559,8 +579,7 @@ def main():
                 expect(first).not_to_contain_text('商家原价')
                 expect(first).to_contain_text('不是同类比价或全网最低价')
                 assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-                cta=first.locator('.compare-button').bounding_box()
-                assert cta and cta['y']+cta['height']<=viewport['height'],cta
+                assert_product_action_reachable(page, first, viewport)
                 first.locator('.compare-button').click()
                 assert page.evaluate('window.__openedRecommendation')=={'id':'helmet-0','variant':'helmet-variant-0'}
                 page.screenshot(path=str(OUT/f'channel_selection_{mode}.png'))
