@@ -17,6 +17,8 @@ class AutomatedSnapshotCacheTests(unittest.TestCase):
         collect = next(i for i, step in enumerate(steps) if 'python scripts/collect_offers.py' in step)
         self.assertLess(tests, cache)
         self.assertLess(cache, collect)
+        self.assertIn('id: public_data_restore', steps[cache])
+        self.assertIn("if: always() && steps.public_data_restore.outcome == 'success'", workflow)
         self.assertNotIn('git restore --source=HEAD -- data/offers', workflow)
         self.assertEqual(workflow.count("cron: '8,23,38,53 * * * *'"), 1)
 

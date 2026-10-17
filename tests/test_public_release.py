@@ -288,11 +288,12 @@ class PublicReleaseTests(unittest.TestCase):
 
     def test_command_reads_environment_and_prints_json_receipt(self):
         receipt = {'commit': COMMIT, 'verified_public_url': BASE}
-        with patch.dict(os.environ, {'GITHUB_SHA': COMMIT, 'BIKEHUNT_PUBLIC_URL': BASE}), \
+        with patch.dict(os.environ, {'GITHUB_SHA': COMMIT, 'BIKEHUNT_PUBLIC_URL': BASE,
+                                     'GITHUB_RUN_ID': 'fixture-run', 'GITHUB_RUN_ATTEMPT': '7'}), \
                 patch.object(verifier, 'verify_public_release', return_value=receipt) as verify, \
                 patch('sys.stdout', new_callable=io.StringIO) as output:
             verifier.main([])
-        verify.assert_called_once_with(BASE, COMMIT, expected_run_id=None, expected_run_attempt=None)
+        verify.assert_called_once_with(BASE, COMMIT, expected_run_id='fixture-run', expected_run_attempt='7')
         self.assertEqual(json.loads(output.getvalue()), receipt)
 
 class SplitPublicReleaseTests(unittest.TestCase):

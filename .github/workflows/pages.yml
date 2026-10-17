@@ -125,6 +125,7 @@ jobs:
         timeout-minutes: 3
         run: python scripts/test_bundle_selection_ui.py
       - uses: actions/cache/restore@v6
+        id: public_data_restore
         with:
           path: |
             data/offers
@@ -158,7 +159,7 @@ jobs:
       - name: Validate built manifest and market labels before deployment
         run: python scripts/verify_public_release.py --local-dir _site
       - uses: actions/cache/save@v6
-        if: always()
+        if: always() && steps.public_data_restore.outcome == 'success'
         with:
           path: |
             data/offers
