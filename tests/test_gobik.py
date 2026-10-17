@@ -14,7 +14,8 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.collectors.gobik import (collect_gobik_catalog, parse_gobik,
-                                  preserve_gobik_identity)
+                                  preserve_gobik_identity, GobikCollectionError,
+                                  PUBLIC_DIAGNOSTICS)
 from app.collectors.transport import CollectionError, PublicPageFetcher
 from app.catalog.models import FxSnapshot
 from app.catalog.service import ComparisonCatalog
@@ -81,6 +82,37 @@ def old_row():
 
 
 class GobikParserTests(unittest.TestCase):
+    def test_public_diagnostics_are_finite_and_do_not_repeat_external_text(self):
+        self.assertIsInstance(PUBLIC_DIAGNOSTICS, frozenset)
+        arbitrary = 'untrusted page token=do-not-log https://private.example/value'
+        error = GobikCollectionError(arbitrary)
+        self.assertEqual(error.diagnostics, ['gobik_validation_failed'])
+        self.assertTrue(set(error.diagnostics) <= PUBLIC_DIAGNOSTICS)
+        self.assertNotIn(arbitrary, json.dumps(error.diagnostics))
+
+    def test_market_diagnostics_distinguish_wrong_currency_country_and_missing_evidence(self):
+        cases = [
+            (page().replace('"ES"', '"US"'), 'gobik_market_country_mismatch'),
+            (page().replace('"active":"EUR"', '"active":"USD"'), 'gobik_market_currency_mismatch'),
+            (page().replace('Shopify.country = "ES";', ''), 'gobik_market_country_unverified'),
+            (page().replace('Shopify.currency = {"active":"EUR"};', ''), 'gobik_market_currency_unverified'),
+            (page() + '<script>Shopify.country="US";</script>', 'gobik_market_country_unverified'),
+        ]
+        for html, expected in cases:
+            with self.subTest(expected=expected), self.assertRaises(GobikCollectionError) as raised:
+                parse_gobik(html, SOURCE, URL, NOW)
+            self.assertEqual(raised.exception.diagnostics, [expected])
+            self.assertIn(expected, PUBLIC_DIAGNOSTICS)
+
+    def test_schema_and_reconciliation_diagnostics_are_classified(self):
+        with self.assertRaises(GobikCollectionError) as raised:
+            parse_gobik(page().replace('class="size-variant-picker"', 'class="other"'), SOURCE, URL, NOW)
+        self.assertEqual(raised.exception.diagnostics, ['gobik_size_picker_unverified'])
+        prior = old_row(); prior.identity = prior.identity.model_copy(update={'model':'Other'})
+        with self.assertRaises(GobikCollectionError) as raised:
+            preserve_gobik_identity(parse_gobik(page(), SOURCE, URL, NOW), [prior])
+        self.assertEqual(raised.exception.diagnostics, ['gobik_reconciliation_unverified'])
+
     def test_price_and_stock_are_exact_per_size_and_color(self):
         rows = parse_gobik(page(), SOURCE, URL, NOW)
         self.assertEqual([str(x.price.amount) for x in rows], ["120.0", "121.0"])

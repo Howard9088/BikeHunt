@@ -25,10 +25,70 @@ SIZES = PANEL + " .sku-size .size-list > div"
 SELECTED = "border-[#3643BA]"
 STOCK_PATH = "/facade_order/api/v4/stock/online_stocks"
 STOCK_HOSTS = {"api-cn.decathlon.com.cn"}
+PUBLIC_DIAGNOSTICS = frozenset({
+    "decathlon_root_object", "decathlon_root_array", "decathlon_root_other_type",
+    "decathlon_code_missing", "decathlon_code_zero", "decathlon_code_200",
+    "decathlon_code_other_integer", "decathlon_code_string_zero",
+    "decathlon_code_string_200", "decathlon_code_other_string", "decathlon_code_other_type",
+    "decathlon_data_missing", "decathlon_data_array", "decathlon_data_object", "decathlon_data_other_type",
+    "decathlon_rows_empty", "decathlon_rows_one", "decathlon_rows_many",
+    "decathlon_quantity_missing", "decathlon_quantity_integer", "decathlon_quantity_float",
+    "decathlon_quantity_string", "decathlon_quantity_boolean", "decathlon_quantity_other_type",
+    "decathlon_item_missing", "decathlon_item_matches", "decathlon_item_mismatch",
+})
 
 
 class DecathlonAccessDenied(CollectionError):
     """Terminal public-page denial; do not retry with another route/session."""
+
+
+class DecathlonStockShapeUnverified(CollectionError):
+    """Finite diagnostic flags only; never retain a response or credentials."""
+
+    def __init__(self, payload: object, item_code: str) -> None:
+        super().__init__("Decathlon selected stock response is unverified")
+        self.diagnostics = _stock_shape_flags(payload, item_code)
+
+
+def _stock_shape_flags(payload: object, item_code: str) -> list[str]:
+    """Inspect known fields without emitting arbitrary field names or values.
+
+    This is diagnostic only. An unfamiliar shape is still rejected and the
+    collector never logs the body, request headers, anonymous tokens or URLs.
+    """
+    flags = []
+    if isinstance(payload, dict):
+        flags.append("decathlon_root_object")
+        code = payload.get("code")
+        if "code" not in payload:
+            flags.append("decathlon_code_missing")
+        elif type(code) is int:
+            flags.append("decathlon_code_zero" if code == 0 else "decathlon_code_200" if code == 200 else "decathlon_code_other_integer")
+        elif isinstance(code, str):
+            flags.append("decathlon_code_string_zero" if code == "0" else "decathlon_code_string_200" if code == "200" else "decathlon_code_other_string")
+        else:
+            flags.append("decathlon_code_other_type")
+        if "data" not in payload:
+            flags.append("decathlon_data_missing")
+        else:
+            flags.append("decathlon_data_array" if isinstance(payload["data"], list) else "decathlon_data_object" if isinstance(payload["data"], dict) else "decathlon_data_other_type")
+        payload = payload.get("data")
+    elif isinstance(payload, list):
+        flags.append("decathlon_root_array")
+    else:
+        return ["decathlon_root_other_type"]
+    if isinstance(payload, list):
+        flags.append("decathlon_rows_empty" if not payload else "decathlon_rows_one" if len(payload) == 1 else "decathlon_rows_many")
+        if len(payload) == 1 and isinstance(payload[0], dict):
+            row = payload[0]
+            quantity = row.get("quantity")
+            if "quantity" not in row:
+                flags.append("decathlon_quantity_missing")
+            else:
+                names = {int: "decathlon_quantity_integer", float: "decathlon_quantity_float", str: "decathlon_quantity_string", bool: "decathlon_quantity_boolean"}
+                flags.append(names.get(type(quantity), "decathlon_quantity_other_type"))
+            flags.append("decathlon_item_missing" if "item_code" not in row else "decathlon_item_matches" if str(row["item_code"]) == item_code else "decathlon_item_mismatch")
+    return flags
 
 
 def _text(node) -> str:
@@ -212,9 +272,10 @@ def decathlon_cn_page_action(captures: list[bytes], max_variants: int = 20,
                 if response.status != 200 or response.finished():
                     raise CollectionError("Decathlon selected stock request failed")
                 item_code = _stock_request(response.url)
-                quantity = _stock_quantity(response.json(), item_code)
+                payload = response.json()
+                quantity = _stock_quantity(payload, item_code)
                 if quantity is None:
-                    raise CollectionError("Decathlon selected stock response is unverified")
+                    raise DecathlonStockShapeUnverified(payload, item_code)
                 # Response body completion precedes Vue's DOM update. Wait for
                 # both selected size and displayed stock to equal THIS response.
                 page.wait_for_function("""({size, quantity}) => {

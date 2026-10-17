@@ -9,7 +9,7 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.catalog.models import Offer
 from app.collectors.decathlon_cn import (
-    SCHEMA, DecathlonAccessDenied, _stock_quantity, _stock_request,
+    SCHEMA, PUBLIC_DIAGNOSTICS, DecathlonAccessDenied, DecathlonStockShapeUnverified, _stock_quantity, _stock_request,
     decathlon_cn_page_action, parse_decathlon_cn, preserve_decathlon_cn_identity,
 )
 from app.collectors.fetch_policy import CapturedPage
@@ -121,6 +121,19 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(_stock_quantity({"code": 0, "data": [{"item_code": "1234567", "quantity": 443}]}, "1234567"), 443)
         for payload in [{"code": 1, "data": [{"quantity": 443}]}, [{"quantity": True}], [{"quantity": -1}], [{"quantity": "443"}], [{"quantity": 0}, {"quantity": 443}], [{"item_code": "other", "quantity": 443}]]:
             self.assertIsNone(_stock_quantity(payload, "1234567"))
+
+    def test_shape_diagnostics_never_leak_body_keys_values_or_credentials(self):
+        payload = {"code": "private-token-value", "credential-secret-key": "private-token-value",
+                   "data": [{"item_code": "7654321", "quantity": "443", "extra-private-key": "private-token-value"}]}
+        error = DecathlonStockShapeUnverified(payload, "1234567")
+        self.assertEqual(error.diagnostics, ["decathlon_root_object", "decathlon_code_other_string", "decathlon_data_array", "decathlon_rows_one", "decathlon_quantity_string", "decathlon_item_mismatch"])
+        self.assertTrue(set(error.diagnostics) <= PUBLIC_DIAGNOSTICS)
+        self.assertFalse(any(secret in str(error.__dict__) + str(error) for secret in ["private-token-value", "credential-secret-key", "7654321", "443"]))
+        self.assertFalse(hasattr(error, "payload"))
+        self.assertIsNone(_stock_quantity(payload, "1234567"))
+        candidate = {"code": 200, "data": [{"quantity": 443}]}
+        self.assertIn("decathlon_code_200", DecathlonStockShapeUnverified(candidate, "1234567").diagnostics)
+        self.assertIsNone(_stock_quantity(candidate, "1234567"))
 
 
 class FakeLocator:

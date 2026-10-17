@@ -12,7 +12,7 @@ from types import SimpleNamespace
 from app.catalog.models import ProductIdentity
 from app.collectors.fetch_policy import CapturedPage
 from app.collectors.oakley import (
-    collect_oakley_product, oakley_variant_urls, parse_oakley, preserve_oakley_identity,
+    PUBLIC_DIAGNOSTICS, collect_oakley_product, oakley_variant_urls, parse_oakley, preserve_oakley_identity,
 )
 from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
 
@@ -82,6 +82,26 @@ class FakeFetcher:
 class OakleyParserTests(unittest.TestCase):
     def parse(self, body=None, url=URL, source=None, at=NOW):
         return parse_oakley(body or document(), source or SOURCE, url, at)
+
+    def test_diagnostic_codes_are_finite_and_never_include_page_contents(self):
+        cases = [
+            (document().replace('"Page_Country": "US"', '"Page_Country": "PRIVATE_MARKET_SENTINEL"'), "oakley_market_country"),
+            (document().replace('"site_currency": "USD"', '"site_currency": "PRIVATE_CURRENCY_SENTINEL"'), "oakley_site_currency"),
+            (document().replace('Oakley VELO MACH MIPS in', 'PRIVATE_TITLE_SENTINEL in'), "oakley_page_title"),
+            (document().replace('data-isdisabled="false"', 'data-isdisabled="true"'), "oakley_stock_cart"),
+            ('<html><p>PRIVATE_BODY_SENTINEL</p></html>', "oakley_canonical_url"),
+        ]
+        for body, expected in cases:
+            diagnostics = []
+            self.assertEqual(parse_oakley(body, SOURCE, URL, NOW, diagnostics=diagnostics), [])
+            self.assertEqual(diagnostics, [expected])
+            self.assertTrue(set(diagnostics) <= PUBLIC_DIAGNOSTICS)
+            self.assertNotIn("PRIVATE", json.dumps(diagnostics))
+        diagnostics = []
+        self.assertEqual(len(parse_oakley(document(), SOURCE, URL, NOW, diagnostics=diagnostics)), 1)
+        self.assertEqual(diagnostics, [])
+        self.assertTrue(all(code.startswith("oakley_") and code.replace("_", "").isalnum()
+                            and len(code) < 64 for code in PUBLIC_DIAGNOSTICS))
 
     def test_exact_selected_variant_price_stock_and_observation_time(self):
         row, = self.parse()
@@ -367,6 +387,14 @@ class OakleyCollectorTests(unittest.TestCase):
         result = collect_oakley_product(FakeFetcher({URL: page(body)}), URL, SOURCE)
         self.assertFalse(result.coverage["complete"])
         self.assertTrue(result.errors)
+
+    def test_collector_exports_only_allowlisted_parse_diagnostic(self):
+        body = document().replace('"site_currency": "USD"', '"site_currency": "PRIVATE_CURRENCY_SENTINEL"')
+        result = collect_oakley_product(FakeFetcher({URL: page(body)}), URL, SOURCE)
+        self.assertEqual(result.errors[0]["diagnostics"], ["oakley_site_currency"])
+        self.assertTrue(set(result.errors[0]["diagnostics"]) <= PUBLIC_DIAGNOSTICS)
+        self.assertNotIn("PRIVATE", json.dumps(result.errors))
+        self.assertFalse(result.offers)
 
     def test_base_failure_does_not_load_previous_snapshot_as_new(self):
         old, = parse_oakley(document(), SOURCE, URL, NOW - timedelta(days=1))

@@ -25,6 +25,21 @@ from app.collectors.variants import formatted_money
 ORIGIN = "https://www.oakley.com"
 PRODUCT_PATH = re.compile(r"/en-us/product/[A-Z0-9]+")
 AVAILABLE = {"Available", "Available-oneLeft", "Available-twoLeft", "Available-fewLeft"}
+# Public diagnostics are a closed vocabulary: never page text, data or exceptions.
+OAKLEY_DIAGNOSTICS = frozenset({
+    "request_scope", "canonical_url", "analytics_literal", "selected_controls",
+    "requested_upc", "analytics_upc", "product_object", "market_country",
+    "site_currency", "order_currency", "page_type", "selected_color",
+    "selected_size", "product_heading", "dom_size", "analytics_size",
+    "analytics_name", "analytics_model_name", "analytics_sku", "analytics_id",
+    "sku_format", "article_number", "analytics_url", "dom_sku", "variant_option",
+    "page_title", "color_swatch", "swatch_url", "selected_price",
+    "visible_price_missing", "visible_price_mismatch", "dom_currency",
+    "original_price_mismatch", "stock_state", "stock_selected_disabled",
+    "stock_post_code", "stock_hidden", "stock_cart", "soldout_state",
+    "soldout_selected_disabled", "soldout_cart", "offer_schema", "no_selected_offer",
+})
+PUBLIC_DIAGNOSTICS = frozenset("oakley_" + code for code in OAKLEY_DIAGNOSTICS)
 
 
 def _text(value: str) -> str:
@@ -126,65 +141,94 @@ def _selected(page: Selector) -> tuple[str, str, str] | None:
 
 
 def parse_oakley(html: str, source: dict, page_url: str,
-                 fetched_at: datetime) -> list[Offer]:
-    """One current selected variant only. Caller supplies actual observation time."""
+                 fetched_at: datetime, *, diagnostics: list[str] | None = None) -> list[Offer]:
+    """One selected variant; optional failures use a finite content-free vocabulary."""
+    def reject(code: str) -> list[Offer]:
+        if code not in OAKLEY_DIAGNOSTICS:
+            raise ValueError("Unknown Oakley diagnostic code")
+        if diagnostics is not None:
+            diagnostics.append("oakley_" + code)
+        return []
+
     requested = _product_url(page_url)
     if (not requested or fetched_at.tzinfo is None or source.get("code") != "oakley"
             or source.get("currency", "USD") != "USD"):
-        return []
+        return reject("request_scope")
     canonical, requested_upc = requested
     page = Selector(html)
     if _sole(page.css('link[rel="canonical"]::attr(href)').getall()) != canonical:
-        return []
+        return reject("canonical_url")
     data = _utag(page)
     selected = _selected(page)
-    if not data or not selected:
-        return []
+    if not data:
+        return reject("analytics_literal")
+    if not selected:
+        return reject("selected_controls")
     upc, size, disabled = selected
     if requested_upc and requested_upc != upc:
-        return []
+        return reject("requested_upc")
     products = data.get("Products")
     if not isinstance(products, dict) or set(products) != {upc}:
-        return []
+        return reject("analytics_upc")
     product = products[upc]
     if not isinstance(product, dict):
-        return []
-    if (data.get("Page_Country") != "US" or data.get("site_currency") != "USD"
-            or data.get("Order_Currency") != "USD"
-            or data.get("Page_Type") not in ("Pdp", "product")):
-        return []
+        return reject("product_object")
+    for field, expected, code in (
+        ("Page_Country", "US", "market_country"),
+        ("site_currency", "USD", "site_currency"),
+        ("Order_Currency", "USD", "order_currency"),
+    ):
+        if data.get(field) != expected:
+            return reject(code)
+    if data.get("Page_Type") not in ("Pdp", "product"):
+        return reject("page_type")
     color = _sole(page.css('form.pdhero-form input[name="selectedColor"]::attr(value)').getall())
     dom_size = _sole(page.css('form.pdhero-form input[name="selectedSize"]::attr(value)').getall())
     name = _sole(str(node.get_all_text(strip=True)) for node in page.css('h1[data-test="product-name"]'))
     sku = product.get("Sku")
-    if (not color or len(color) > 150 or not size or len(size) > 24 or not name
-            or dom_size != size or data.get("product_size") != [size]
-            or data.get("product_name") != [name]
-            or str(product.get("ModelName", "")).replace("\\'", "'") != name
-            or data.get("product_sku") != [sku] or data.get("product_id") != [sku]
-            or not isinstance(sku, str) or not re.fullmatch(r"[A-Z0-9]+-[A-Z0-9]+", sku)
-            or _sole(page.css('.product-attributes input[name="articleNumber"]::attr(value)').getall()) != canonical.rsplit("/", 1)[-1]
-            or product.get("Url") != canonical
-            or _sole(page.css('.product-attributes input[name="sku"]::attr(value)').getall()) != sku
-            or _sole(page.css('input#variantOption::attr(value)').getall()) != upc):
-        return []
+    if not color or len(color) > 150:
+        return reject("selected_color")
+    if not size or len(size) > 24:
+        return reject("selected_size")
+    if not name:
+        return reject("product_heading")
+    for valid, code in (
+        (dom_size == size, "dom_size"),
+        (data.get("product_size") == [size], "analytics_size"),
+        (data.get("product_name") == [name], "analytics_name"),
+        (str(product.get("ModelName", "")).replace("\\'", "'") == name, "analytics_model_name"),
+        (data.get("product_sku") == [sku], "analytics_sku"),
+        (data.get("product_id") == [sku], "analytics_id"),
+        (isinstance(sku, str) and re.fullmatch(r"[A-Z0-9]+-[A-Z0-9]+", sku), "sku_format"),
+        (_sole(page.css('.product-attributes input[name="articleNumber"]::attr(value)').getall())
+         == canonical.rsplit("/", 1)[-1], "article_number"),
+        (product.get("Url") == canonical, "analytics_url"),
+        (_sole(page.css('.product-attributes input[name="sku"]::attr(value)').getall()) == sku, "dom_sku"),
+        (_sole(page.css('input#variantOption::attr(value)').getall()) == upc, "variant_option"),
+    ):
+        if not valid:
+            return reject(code)
     # The chosen colour swatch supplies an independent visible colour label.
     title = _sole(page.css('title::text').getall())
     if title != f"Oakley {name} in {color} | Oakley® US":
-        return []
+        return reject("page_title")
     swatches = page.css('[data-test="colors-box"] .selected a[title]')
     if swatches and _sole(node.attrib["title"].casefold() for node in swatches) != color.casefold():
-        return []
+        return reject("color_swatch")
     for swatch in swatches:
         swatch_url = _product_url(urljoin(canonical, swatch.attrib.get("href", "")))
         if not swatch_url or swatch_url[0] != canonical:
-            return []
+            return reject("swatch_url")
     price = money(product.get("Price"), "USD")
     visible = page.css('.pdhero-price [data-test="sale-price"]')
-    if (not price or price.amount <= 0 or not visible
-            or any(formatted_money(str(node.get_all_text(strip=True)), "USD") != price for node in visible)
-            or _sole(v for v in page.css('.pdhero-price [content]::attr(content)').getall() if v) != "USD"):
-        return []
+    if not price or price.amount <= 0:
+        return reject("selected_price")
+    if not visible:
+        return reject("visible_price_missing")
+    if any(formatted_money(str(node.get_all_text(strip=True)), "USD") != price for node in visible):
+        return reject("visible_price_mismatch")
+    if _sole(v for v in page.css('.pdhero-price [content]::attr(content)').getall() if v) != "USD":
+        return reject("dom_currency")
     original = money(product.get("PriceFull"), "USD")
     if original and original.amount <= price.amount:
         original = None
@@ -193,7 +237,7 @@ def parse_oakley(html: str, source: dict, page_url: str,
     old_labels = [_text(str(node.get_all_text(strip=True)))
                   for node in page.css('.pdhero-price [data-test="original-price"]')]
     if any(label and formatted_money(label, "USD") != original for label in old_labels):
-        return []
+        return reject("original_price_mismatch")
     status = product.get("Status")
     state = data.get("product_state")
     hidden = set(page.css('form.pdhero-form input[name="hiddenAvailability"]::attr(value)').getall())
@@ -204,13 +248,24 @@ def parse_oakley(html: str, source: dict, page_url: str,
     future = product.get("BackOrder") != "0" or product.get("Preorder") != "0"
     if not future and status in AVAILABLE:
         expected_state = "instock" if status == "Available" else "lowstock"
-        if (state != expected_state or disabled != "false" or post_codes != {upc}
-                or not hidden or not hidden.issubset(AVAILABLE) or not cart_enabled):
-            return []
+        for valid, code in (
+            (state == expected_state, "stock_state"),
+            (disabled == "false", "stock_selected_disabled"),
+            (post_codes == {upc}, "stock_post_code"),
+            (bool(hidden) and hidden.issubset(AVAILABLE), "stock_hidden"),
+            (cart_enabled, "stock_cart"),
+        ):
+            if not valid:
+                return reject(code)
         stock = "in_stock"
     elif not future and status in {"SoldOut", "Out-of-stock"}:
-        if state != "outofstock" or disabled != "true" or cart_enabled:
-            return []
+        for valid, code in (
+            (state == "outofstock", "soldout_state"),
+            (disabled == "true", "soldout_selected_disabled"),
+            (not cart_enabled, "soldout_cart"),
+        ):
+            if not valid:
+                return reject(code)
         stock = "out_of_stock"
     else:
         stock = "unknown"
@@ -237,7 +292,7 @@ def parse_oakley(html: str, source: dict, page_url: str,
             ] + (["预订、延期交付或未知可售状态；不能视为现货。"] if stock == "unknown" else []),
         )]
     except (ValueError, KeyError, TypeError):
-        return []
+        return reject("offer_schema")
 
 
 def oakley_variant_urls(html: str, page_url: str) -> list[str]:
@@ -352,10 +407,18 @@ def collect_oakley_product(fetcher: PublicPageFetcher, url: str, source: dict,
             final = _product_url(page.url)
             if not final or final[0] != requested[0]:
                 raise ValueError("Oakley response changed product or US market")
+            diagnostics: list[str] = []
             rows = parse_oakley(page.body.decode("utf-8", errors="replace"), source,
-                                request_url, page.observed_at)
+                                request_url, page.observed_at, diagnostics=diagnostics)
             if len(rows) != 1:
-                raise ValueError("No validated selected Oakley variant; snapshot not refreshed")
+                result.errors.append({
+                    "url": request_url,
+                    "error": "No validated selected Oakley variant; snapshot not refreshed",
+                    "diagnostics": diagnostics[:1] or ["oakley_no_selected_offer"],
+                })
+                if base_row is None:
+                    break
+                continue
             row = rows[0]
             if final[1] and final[1] != row.identity.gtin:
                 raise ValueError("Oakley final URL disagrees with selected UPC")

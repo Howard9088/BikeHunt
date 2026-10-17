@@ -83,6 +83,12 @@ def persist_deferrals(data_dir: Path, code: str, errors: list[dict], now: dateti
     atomic_json(data_dir / 'source_deferrals' / f'{code}.json', safe)
 
 
+def public_diagnostic_codes() -> set[str]:
+    from app.collectors import gobik, oakley, decathlon_cn
+    return set().union(*(getattr(module, 'PUBLIC_DIAGNOSTICS', frozenset())
+                         for module in (gobik, oakley, decathlon_cn)))
+
+
 def error_record(url: str, exc: Exception) -> dict:
     row = {"url": url, "error": str(exc)}
     # A finite diagnostic vocabulary lets CI locate failures without exposing
@@ -99,8 +105,12 @@ def error_record(url: str, exc: Exception) -> dict:
         "Dynamic variant capture did not finish": "variant_capture_failed",
     }
     diagnostic, current, seen = [], exc, set()
+    allowed = public_diagnostic_codes()
     while current is not None and id(current) not in seen:
         seen.add(id(current))
+        markers = getattr(current, 'diagnostics', ())
+        if isinstance(markers, (list, tuple)):
+            diagnostic.extend(item for item in markers if isinstance(item, str) and item in allowed)
         if str(current) in reasons:
             diagnostic.append(reasons[str(current)])
         if type(current).__name__ == 'TimeoutError':
@@ -119,7 +129,7 @@ def print_public_collection_result(code: str, count: int, errors: list[dict]) ->
              for row in errors]
     allowed = {'stock_request_failed', 'stock_shape_unverified', 'stock_dom_mismatch',
                'selected_size_unverified', 'ambiguous_size_selector', 'size_list_unverified',
-               'source_access_denied', 'no_validated_variants', 'variant_capture_failed', 'browser_timeout'}
+               'source_access_denied', 'no_validated_variants', 'variant_capture_failed', 'browser_timeout'} | public_diagnostic_codes()
     diagnostics = sorted({reason for row in errors for reason in row.get('diagnostics', [])
                           if isinstance(reason, str) and reason in allowed})
     result = {'source': code, 'offers': count, 'errors': kinds}

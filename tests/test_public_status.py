@@ -59,6 +59,26 @@ class PublicStatusTests(unittest.TestCase):
         self.assertIn('collection_deferred',out.getvalue())
         self.assertEqual(repository.save.call_args.args[3][0]['error'],SECRET)
 
+    def test_parser_diagnostics_are_finite_and_cause_chain_safe(self):
+        import io
+        from contextlib import redirect_stdout
+        from unittest.mock import patch
+        from scripts.collect_offers import error_record, print_public_collection_result
+        cause = ValueError(SECRET)
+        cause.diagnostics = ['safe_parser_gate', SECRET, {'arbitrary': SECRET}]
+        wrapper = RuntimeError(SECRET)
+        wrapper.__cause__ = cause
+        with patch('scripts.collect_offers.public_diagnostic_codes', return_value={'safe_parser_gate'}):
+            record = error_record(URL, wrapper)
+            self.assertEqual(record['diagnostics'], ['safe_parser_gate'])
+            record['diagnostics'].append(SECRET)
+            out = io.StringIO()
+            with redirect_stdout(out):
+                print_public_collection_result('mock', 0, [record])
+            self.assertNotIn(SECRET, out.getvalue())
+            self.assertEqual(json.loads(out.getvalue())['diagnostics'], ['safe_parser_gate'])
+        self.assertEqual(record['error'], SECRET)
+
     def test_collector_warning_sinks_do_not_interpolate_exception_bodies(self):
         root=Path(__file__).resolve().parents[1]
         for file in ['app/collectors/parsers.py','app/collectors/transport.py','scripts/collect_offers.py']:
