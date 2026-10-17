@@ -215,7 +215,7 @@ def exercise_oakley_flow(browser,base,mode,viewport,checks,errors):
         assert outbound==[target] and len(context.pages)==1
         page.go_back(wait_until='networkidle');expect(page).to_have_url(base)
         expect(page.locator('[data-route-select=forwarding]')).to_have_attribute('aria-pressed','true')
-        assert page.evaluate("activeSource === 'oakley' && activeCategoryGroup === 'helmets'")
+        assert page.evaluate("activeSource === null && activeCategoryGroup === 'helmets'")
         assert_exact_selected();page.reload(wait_until='networkidle')
         expect(page.locator('[data-route-select=forwarding]')).to_have_attribute('aria-pressed','true')
         assert_exact_selected();page.locator('#routeBack').click();expect(size).to_have_attribute('aria-pressed','true')

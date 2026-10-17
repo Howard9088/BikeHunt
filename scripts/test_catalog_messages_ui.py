@@ -609,18 +609,19 @@ def main():
                 # All three fresh channel products are shown, beyond the homepage cap of two.
                 assert_card_ids(page, ['partial', 'maap-jersey', 'maap-helmet'])
                 page.locator('[data-category-group=clothing]').click()
-                assert_card_ids(page, ['partial', 'maap-jersey'])
-                expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌 · 骑行服饰')
-                # Clicking the selected group clears only that group, keeping the source.
+                assert_card_ids(page, ['partial', 'maap-jersey', 'other-jersey'])
+                expect(page.locator('#browseLabel')).to_have_text('精选好价 · 骑行服饰')
+                # Global category navigation clears the previous merchant scope.
                 page.locator('[data-category-group=clothing]').click()
                 expect(page.locator('[data-category-group][aria-pressed=true]')).to_have_count(0)
-                assert_card_ids(page, ['partial', 'maap-jersey', 'maap-helmet'])
-                expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌')
+                assert page.evaluate('activeSource === null && featuredBrowse()')
+                expect(page.locator('#grid .card')).to_have_count(4)
+                expect(page.locator('#browseLabel')).to_have_text('精选好价')
                 page.locator('[data-tab=products]').click()
                 page.locator('[data-category-group=clothing]').click()
                 assert_card_ids(page, ['partial', 'maap-jersey', 'other-jersey'])
                 expect(page.locator('#browseLabel')).to_have_text('精选好价 · 骑行服饰')
-                checks.append(mode+': exact single four-category layer; brand group/toggle retains source; explicit精选好价 clears source; clothing includes both bibs and jerseys and excludes helmets')
+                checks.append(mode+': exact single four-category layer; global group/toggle clears previous source; explicit精选好价 clears source; clothing includes both bibs and jerseys and excludes helmets')
                 return_tab,return_source,return_label=('brands','maap','MAAP 品牌 · 骑行服饰') if mode=='desktop' else ('teams','other','测试车队 · 骑行服饰')
                 page.locator(f'[data-tab={return_tab}]').click();page.locator(f'[data-source={return_source}]').click()
                 # Directory entry resets scope; users can then explicitly filter clothing.
@@ -630,6 +631,10 @@ def main():
                 assert not page.locator('#channelInfo').evaluate('el => el.open')
                 page.locator('[data-category-group=clothing]').click()
                 expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
+                assert_card_ids(page, ['partial', 'maap-jersey', 'other-jersey'])
+                assert page.evaluate('activeSource === null')
+                # Independently retain coverage of legacy scoped history and purchase returns.
+                page.evaluate('(source)=>{activeSource=source;updateBrowseLabel();render();saveBrowseState()}',return_source)
                 scoped_ids = ['partial', 'maap-jersey'] if mode == 'desktop' else ['other-jersey']
                 assert_card_ids(page, scoped_ids);expect(page.locator('#browseLabel')).to_have_text(return_label)
                 page.locator('#priceMessages').click();expect(page.locator('.message-card')).to_have_count(4);expect(page.locator('#messageBadge')).to_be_hidden()
