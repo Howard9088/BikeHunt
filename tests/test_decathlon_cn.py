@@ -9,7 +9,7 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.catalog.models import Offer
 from app.collectors.decathlon_cn import (
-    SCHEMA, PUBLIC_DIAGNOSTICS, DecathlonAccessDenied, DecathlonStockShapeUnverified, _stock_quantity, _stock_request,
+    SCHEMA, PUBLIC_DIAGNOSTICS, DecathlonAccessDenied, DecathlonCaptureRejected, DecathlonStockShapeUnverified, _stock_quantity, _stock_request,
     decathlon_cn_page_action, parse_decathlon_cn, preserve_decathlon_cn_identity,
 )
 from app.collectors.fetch_policy import CapturedPage
@@ -51,6 +51,14 @@ class ParserTests(unittest.TestCase):
     def parse(self, value=None, url=URL, source=SOURCE, at=NOW):
         return parse_decathlon_cn(value or fixture(), source, url, at)
 
+    def assert_rejected(self, value=None, gate=None, **kwargs):
+        with self.assertRaises(DecathlonCaptureRejected) as rejected:
+            self.parse(value, **kwargs)
+        self.assertTrue(set(rejected.exception.diagnostics) <= PUBLIC_DIAGNOSTICS)
+        if gate:
+            self.assertEqual(rejected.exception.diagnostics, ["decathlon_parse_" + gate])
+        return rejected.exception
+
     def test_exact_selected_price_color_size_quantity_and_time(self):
         row = self.parse()[0]
         self.assertEqual((row.identity.mpn, row.identity.color, row.identity.size), ("8969603", "烟熏黑", "M - 180/80A"))
@@ -61,31 +69,64 @@ class ParserTests(unittest.TestCase):
         self.assertIn("model_code=8969603", row.collection_url)
 
     def test_raw_html_manual_snapshot_and_old_envelope_cannot_refresh(self):
-        for value in [dom(), json.dumps({"offers": [{"price": 399.9}]}), fixture(observed_at=(NOW-timedelta(days=1)).isoformat())]:
+        for value in [dom(), json.dumps({"offers": [{"price": 399.9}]}), "null", "[]", "{}"]:
             self.assertEqual(self.parse(value), [])
-        self.assertEqual(self.parse(fixture(observed_at=(NOW+timedelta(seconds=1)).isoformat())), [])
-        self.assertEqual(self.parse(fixture(observed_at=NOW.replace(tzinfo=None).isoformat())), [])
+        for observed_at in [(NOW-timedelta(days=1)).isoformat(), (NOW+timedelta(seconds=1)).isoformat(), NOW.replace(tzinfo=None).isoformat()]:
+            self.assert_rejected(fixture(observed_at=observed_at), "time")
 
     def test_wrong_market_currency_host_and_model_rejected(self):
         for url in [URL.replace("https", "http"), URL.replace(".com.cn", ".fr"), URL.replace("8969603", "8987878"), URL + "&dsm_code=999999"]:
-            self.assertEqual(self.parse(url=url), [])
+            self.assert_rejected(url=url, gate="capture_url")
         for source in [dict(SOURCE, market="US"), dict(SOURCE, currency="USD"), dict(SOURCE, code="decathlon")]:
-            self.assertEqual(self.parse(source=source), [])
+            self.assert_rejected(source=source, gate="source")
 
     def test_stale_previous_size_stock_is_rejected(self):
-        self.assertEqual(self.parse(fixture(html=dom(quantity=123))), [])
-        self.assertEqual(self.parse(fixture(selected_size="S - 175/76A")), [])
-        self.assertEqual(self.parse(fixture(html=dom().replace("font_maincolor", ""))), [])
+        self.assert_rejected(fixture(html=dom(quantity=123)), "stock")
+        self.assert_rejected(fixture(selected_size="S - 175/76A"), "size")
+        self.assert_rejected(fixture(html=dom().replace("font_maincolor", "")), "size")
 
     def test_explicit_zero_is_oos_but_missing_conflicting_or_store_stock_is_not(self):
         row = self.parse(fixture(quantity=0, html=dom(quantity=0)))[0]
         self.assertEqual((row.stock, row.stock_quantity), ("out_of_stock", 0))
         for value in [dom().replace("线上库存", "门店库存"), dom().replace("线上库存", "库存待查"), dom().replace("</button>", "</button><span>缺货</span>")]:
-            self.assertEqual(self.parse(fixture(html=value)), [])
+            self.assert_rejected(fixture(html=value), "stock")
 
     def test_coupon_or_recommendation_price_cannot_replace_product_price(self):
-        self.assertEqual(self.parse(fixture(html=dom().replace('class="p-price"', 'class="other"'))), [])
-        self.assertEqual(self.parse(fixture(html=dom().replace('￥399', '$399'))), [])
+        self.assert_rejected(fixture(html=dom().replace('class="p-price"', 'class="other"')), "price")
+        self.assert_rejected(fixture(html=dom().replace('￥399', '$399')), "price")
+
+    def test_blocked_optional_image_keeps_exact_swatch_identity(self):
+        original = 'src="https://pixl.decathlon.com.cn/p3043223/content.jpg"'
+        for replacement in ['src="https://www.decathlon.com.cn/static/d-assets/images/common/default-img.png"',
+                            'src=""', '', 'src="data:image/png;base64,untrusted"',
+                            'src="https://unrelated.example/content.jpg"',
+                            'src="https://user:secret@pixl.decathlon.com.cn/content.jpg"']:
+            row = self.parse(fixture(html=dom().replace(original, replacement)))[0]
+            self.assertIsNone(row.image)
+            self.assertEqual((row.identity.mpn, row.identity.color, row.identity.size), ("8969603", "烟熏黑", "M - 180/80A"))
+            self.assertEqual((row.stock_quantity, str(row.price.amount)), (443, "399.90"))
+        self.assertEqual(self.parse()[0].image, "https://pixl.decathlon.com.cn/p3043223/content.jpg")
+        self.assert_rejected(fixture(html=dom().replace('<img class="border-[#3643BA]"', '<img class="unselected"')), "swatch")
+        self.assert_rejected(fixture(html=dom().replace('</div></div>\n      <div class="sku-size">', '<img class="border-[#3643BA]"></div></div>\n      <div class="sku-size">')), "swatch")
+
+    def test_recognized_capture_diagnostics_are_finite_and_model_is_atomic(self):
+        cases = [(dict(stock_response_status=403), "response_status"), (dict(item_code=None), "item"),
+                 (dict(quantity=True), "quantity"), (dict(html="<div></div>"), "panel"),
+                 (dict(html=dom().replace('class="pdp-base-info-box"', 'class="other"')), "base"),
+                 (dict(html=dom().replace('text-1A2A34 text-24', 'text-1A2A34')), "title"),
+                 (dict(html=dom().replace('text-16 mb-4', 'text-16')), "brand"),
+                 (dict(html=dom().replace('8969603</span>', '8987878</span>')), "model_url"),
+                 (dict(html=dom().replace('烟熏黑</span>', '</span>')), "color")]
+        for update, gate in cases:
+            error = self.assert_rejected(fixture(**update), gate)
+            self.assertEqual(str(error), "Decathlon selected capture failed validation")
+            self.assertFalse(hasattr(error, "capture"))
+        bad = fixture(item_code="private-untrusted-value")
+        error = self.assert_rejected(bad, "item")
+        self.assertNotIn("private-untrusted-value", str(error.__dict__) + str(error))
+        page = CapturedPage(dom().encode(), 200, URL, {}, "dynamic", NOW, [fixture().encode(), bad.encode()])
+        with self.assertRaises(DecathlonCaptureRejected):
+            collect_variants(page, SOURCE, parse_decathlon_cn)
 
     def test_each_capture_keeps_own_observation_time_and_fingerprint(self):
         body = fixture().encode()

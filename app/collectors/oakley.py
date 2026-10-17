@@ -38,6 +38,12 @@ OAKLEY_DIAGNOSTICS = frozenset({
     "canonical_invalid", "canonical_other_path", "canonical_analytics_us",
     "canonical_analytics_other_country", "canonical_analytics_missing",
     "canonical_locale_en_us", "canonical_locale_other", "canonical_locale_missing",
+    "response_empty", "response_gzip", "response_utf16", "response_json",
+    "response_escaped_html", "response_non_html", "response_html_text",
+    "response_script_shell", "response_html_empty", "response_hydration_marker",
+    "response_javascript_required", "response_under_1k_chars", "response_1k_10k_chars",
+    "response_10k_100k_chars", "response_over_100k_chars",
+    "access_denied", "human_verification", "captcha_challenge", "source_access_stopped",
     "analytics_literal", "selected_controls",
     "requested_upc", "analytics_upc", "product_object", "market_country",
     "site_currency", "order_currency", "page_type", "selected_color",
@@ -51,6 +57,9 @@ OAKLEY_DIAGNOSTICS = frozenset({
     "soldout_selected_disabled", "soldout_cart", "offer_schema", "no_selected_offer",
 })
 PUBLIC_DIAGNOSTICS = frozenset("oakley_" + code for code in OAKLEY_DIAGNOSTICS)
+ACCESS_DIAGNOSTICS = frozenset({
+    "oakley_access_denied", "oakley_human_verification", "oakley_captcha_challenge",
+})
 
 
 def _text(value: str) -> str:
@@ -209,6 +218,82 @@ def _canonical_context(page: Selector) -> tuple[str, str]:
     return market, locale
 
 
+def _access_restriction(page: Selector) -> str | None:
+    """Recognize explicit restriction UI, not cookies or ordinary sensor scripts.
+
+    A product page may legitimately embed a newsletter CAPTCHA or security JS.
+    Only a non-product response can trigger this terminal source-level signal.
+    Missing markup or a JavaScript requirement by themselves are not denials.
+    """
+    denied = {"access denied", "access to this page has been denied", "request rejected",
+              "forbidden", "you have been blocked", "sorry, you have been blocked",
+              "access blocked", "access restricted"}
+    verification = {"just a moment", "pardon our interruption", "verify you are human",
+                    "human verification", "are you a human", "are you human",
+                    "are you a robot", "robot or human", "security verification",
+                    "attention required! | cloudflare"}
+    titles = {_text(str(node.get_all_text(strip=True))).casefold().rstrip(".!?")
+              for node in page.css('title')[:4]}
+    if titles & denied:
+        return "access_denied"
+    if titles & verification:
+        return "human_verification"
+    if page.css('form.pdhero-form') or page.css('[data-test="sizes-selection"]'):
+        return None
+    headings = {_text(str(node.get_all_text(strip=True))).casefold().rstrip(".!?")
+                for node in page.css('h1, h2')[:8]}
+    if headings & denied:
+        return "access_denied"
+    if headings & verification:
+        return "human_verification"
+    # Explicit challenge UI/path only. Do not match generic Akamai/bot cookies,
+    # analytics strings, vendor names, or JavaScript found on ordinary pages.
+    if page.css('#challenge-form, #cf-challenge-running, iframe[src*="challenges.cloudflare.com/"], '
+                'script[src*="/_sec/cp_challenge/"]'):
+        return "human_verification"
+    if page.css('form[action*="/captcha"], .g-recaptcha, .h-captcha, '
+                'iframe[src*="/recaptcha/"], iframe[src*="hcaptcha.com/captcha"]'):
+        return "captcha_challenge"
+    return None
+
+
+def _response_shape(html: str, page: Selector) -> str:
+    """Content-free description for pages lacking every expected product marker.
+
+    This never authorizes hydration or another request. In particular a script
+    shell is ambiguous and must remain unrefreshed until its role is established.
+    """
+    start = html.lstrip()[:256].casefold()
+    if not start:
+        return "response_empty"
+    if html.startswith("\x1f\ufffd") or html.startswith("\x1f\x8b"):
+        return "response_gzip"
+    if html.startswith(("\ufffd\ufffd", "\ufeff")) and "\x00" in html[:128]:
+        return "response_utf16"
+    if start.startswith(("{", "[")):
+        return "response_json"
+    if start.startswith(("&lt;!doctype", "&lt;html", "&lt;head", "&lt;body")):
+        return "response_escaped_html"
+    if not re.search(r"<(?:!doctype|html|head|body|script|div|p|title)\b", html[:4096], re.I):
+        return "response_non_html"
+    if page.css('script#__NEXT_DATA__, script#__NUXT_DATA__, script#ng-state'):
+        return "response_hydration_marker"
+    # Inspect a small sample of non-script text only, never publish its contents.
+    visible = _text(" ".join(page.xpath('//text()[not(ancestor::script) and not(ancestor::style)]').getall()[:64]))[:4096].casefold()
+    if any(phrase in visible for phrase in ("enable javascript", "javascript is required", "turn on javascript")):
+        return "response_javascript_required"
+    if not visible:
+        return "response_script_shell" if page.css("script") else "response_html_empty"
+    return "response_html_text"
+
+
+def _response_size(html: str) -> str:
+    length = len(html)
+    return ("response_under_1k_chars" if length < 1024 else
+            "response_1k_10k_chars" if length < 10240 else
+            "response_10k_100k_chars" if length < 102400 else "response_over_100k_chars")
+
+
 def _selected(page: Selector) -> tuple[str, str, str] | None:
     """Both duplicated desktop/mobile controls must select the same size/UPC."""
     selections = set()
@@ -250,8 +335,14 @@ def parse_oakley(html: str, source: dict, page_url: str,
         return reject("request_scope")
     canonical, requested_upc = requested
     page = Selector(html)
+    restriction = _access_restriction(page)
+    if restriction:
+        return reject(restriction, _response_size(html))
     if _sole(page.css('link[rel="canonical"]::attr(href)').getall()) != canonical:
-        return reject(_canonical_failure(page, canonical), *_canonical_context(page))
+        failure, context = _canonical_failure(page, canonical), _canonical_context(page)
+        if failure == "canonical_missing" and context == ("canonical_analytics_missing", "canonical_locale_missing"):
+            return reject(failure, _response_shape(html, page), _response_size(html))
+        return reject(failure, *context)
     data = _utag(page)
     selected = _selected(page)
     if not data:
@@ -482,6 +573,14 @@ def collect_oakley_product(fetcher: PublicPageFetcher, url: str, source: dict,
     if not requested:
         result.errors.append({"url": url, "error": "Not an exact Oakley US product URL"})
         return result
+    stopped = getattr(fetcher, "_oakley_access_restriction", None)
+    if stopped in ACCESS_DIAGNOSTICS:
+        result.errors.append({
+            "url": url, "error": "Oakley source stopped after explicit access restriction; snapshot not refreshed",
+            "diagnostics": [stopped, "oakley_source_access_stopped"],
+        })
+        result.coverage["source_stopped"] = True
+        return result
     existing_offers = list(existing_offers)
     prior_colors = {_text(row.identity.color).casefold()
                     for row in existing_offers if _match_key(row) is not None
@@ -505,11 +604,20 @@ def collect_oakley_product(fetcher: PublicPageFetcher, url: str, source: dict,
             rows = parse_oakley(page.body.decode("utf-8", errors="replace"), source,
                                 request_url, page.observed_at, diagnostics=diagnostics)
             if len(rows) != 1:
+                restriction = next((code for code in diagnostics if code in ACCESS_DIAGNOSTICS), None)
                 result.errors.append({
                     "url": request_url,
-                    "error": "No validated selected Oakley variant; snapshot not refreshed",
+                    "error": ("Oakley source stopped after explicit access restriction; snapshot not refreshed"
+                              if restriction else "No validated selected Oakley variant; snapshot not refreshed"),
                     "diagnostics": diagnostics[:3] or ["oakley_no_selected_offer"],
                 })
+                if restriction:
+                    # The same per-run fetcher is reused for the source. Once a
+                    # restriction is observed, do not request another size or
+                    # product, retry through a browser, or reuse old observations.
+                    fetcher._oakley_access_restriction = restriction
+                    result.coverage["source_stopped"] = True
+                    break
                 if base_row is None:
                     break
                 continue

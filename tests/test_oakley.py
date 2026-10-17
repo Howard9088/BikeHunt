@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import gzip
 import html
 import json
 import unittest
@@ -158,6 +159,56 @@ class OakleyParserTests(unittest.TestCase):
         self.assertNotIn("PRIVATE", json.dumps(diagnostics))
         result = collect_oakley_product(FakeFetcher({URL: page(body)}), URL, SOURCE)
         self.assertEqual(result.errors[0]["diagnostics"], diagnostics)
+
+    def test_missing_page_shape_is_finite_and_does_not_authorize_hydration(self):
+        cases = [
+            ("", "response_empty"),
+            (gzip.compress(document().encode()).decode("utf-8", errors="replace"), "response_gzip"),
+            ('<html><body>PRIVATE_UTF16_SENTINEL</body></html>'.encode("utf-16").decode("utf-8", errors="replace"), "response_utf16"),
+            ('{"message":"PRIVATE_JSON_SENTINEL"}', "response_json"),
+            (html.escape('<html>PRIVATE_ESCAPED_SENTINEL</html>'), "response_escaped_html"),
+            ('PRIVATE_TEXT_SENTINEL', "response_non_html"),
+            ('<html><body><p>PRIVATE_BODY_SENTINEL</p></body></html>', "response_html_text"),
+            ('<html><script src="/PRIVATE_SCRIPT_SENTINEL"></script></html>', "response_script_shell"),
+            ('<html><body></body></html>', "response_html_empty"),
+            ('<html><script id="__NEXT_DATA__">{"secret":"PRIVATE_JSON_SENTINEL"}</script></html>', "response_hydration_marker"),
+            ('<html><noscript>Please enable JavaScript. PRIVATE_NOSCRIPT_SENTINEL</noscript></html>', "response_javascript_required"),
+        ]
+        for body, code in cases:
+            with self.subTest(shape=code):
+                diagnostics = []
+                self.assertEqual(parse_oakley(body, SOURCE, URL, NOW, diagnostics=diagnostics), [])
+                self.assertEqual(diagnostics[:2], ["oakley_canonical_missing", "oakley_" + code])
+                self.assertEqual(len(diagnostics), 3)
+                self.assertTrue(set(diagnostics) <= PUBLIC_DIAGNOSTICS)
+                self.assertNotIn("PRIVATE", json.dumps(diagnostics))
+
+    def test_explicit_access_restriction_markers_are_closed_and_never_page_text(self):
+        cases = [
+            ('<title>Access Denied</title><p>PRIVATE_DENIAL_SENTINEL</p>', "access_denied"),
+            ('<h1>Sorry, you have been blocked</h1>', "access_denied"),
+            ('<title>Just a moment...</title>', "human_verification"),
+            ('<h2>Verify you are human</h2>', "human_verification"),
+            ('<form id="challenge-form" action="/PRIVATE_ACTION_SENTINEL"></form>', "human_verification"),
+            ('<script src="/_sec/cp_challenge/PRIVATE_PATH_SENTINEL"></script>', "human_verification"),
+            ('<form action="/captcha/PRIVATE_PATH_SENTINEL"></form>', "captcha_challenge"),
+        ]
+        for body, code in cases:
+            diagnostics = []
+            self.assertEqual(parse_oakley('<html>' + body + '</html>', SOURCE, URL, NOW,
+                                          diagnostics=diagnostics), [])
+            self.assertEqual(diagnostics, ["oakley_" + code, "oakley_response_under_1k_chars"])
+            self.assertTrue(set(diagnostics) <= PUBLIC_DIAGNOSTICS)
+            self.assertNotIn("PRIVATE", json.dumps(diagnostics))
+
+    def test_normal_product_security_assets_or_newsletter_captcha_are_not_denial(self):
+        added = ('<script>var data={message:"Access Denied", cookie:"_abck"};</script>'
+                 '<script src="/security/sensor.js"></script><div class="g-recaptcha"></div>'
+                 '<h2>Human verification</h2>')
+        diagnostics = []
+        self.assertEqual(len(parse_oakley(document().replace('</body>', added + '</body>'),
+                                         SOURCE, URL, NOW, diagnostics=diagnostics)), 1)
+        self.assertEqual(diagnostics, [])
 
     def test_exact_selected_variant_price_stock_and_observation_time(self):
         row, = self.parse()
@@ -354,6 +405,63 @@ class OakleyCollectorTests(unittest.TestCase):
         for row in result.offers:
             self.assertEqual(row.evidence_sha256, result.pages[row.collection_url].evidence_sha256)
             self.assertEqual(row.fetch_mode, "static")
+
+    def test_explicit_restriction_stops_other_products_on_same_fetcher(self):
+        other_url = URL.replace("FOS902243", "FOS902248")
+        fetcher = FakeFetcher({URL: page('<html><title>Access Denied</title>PRIVATE_SENTINEL</html>')})
+        first = collect_oakley_product(fetcher, URL, SOURCE)
+        second = collect_oakley_product(fetcher, other_url, SOURCE)
+        self.assertEqual(fetcher.calls, [URL])
+        self.assertEqual(first.errors[0]["diagnostics"], ["oakley_access_denied", "oakley_response_under_1k_chars"])
+        self.assertEqual(second.errors[0]["diagnostics"], ["oakley_access_denied", "oakley_source_access_stopped"])
+        for result in [first, second]:
+            self.assertFalse(result.offers)
+            self.assertFalse(result.coverage["complete"])
+            self.assertTrue(result.coverage["source_stopped"])
+            self.assertNotIn("PRIVATE", json.dumps(result.errors))
+        self.assertEqual(second.coverage["attempted_variants"], 0)
+        # Terminal state belongs only to this fetcher/run, not future sessions.
+        fresh = collect_oakley_product(FakeFetcher(self.responses()), URL, SOURCE)
+        self.assertTrue(fresh.coverage["complete"])
+
+    def test_challenged_size_stops_remaining_sizes_and_retains_only_verified_page(self):
+        responses = self.responses()
+        size_url = URL + "?variant=" + UPCS["S"]
+        responses[size_url] = page('<html><title>Just a moment...</title></html>', size_url)
+        fetcher = FakeFetcher(responses)
+        result = collect_oakley_product(fetcher, URL, SOURCE)
+        self.assertEqual(fetcher.calls, [URL, size_url])
+        self.assertEqual([row.identity.size for row in result.offers], ["L"])
+        self.assertFalse(result.coverage["complete"])
+        self.assertTrue(result.coverage["source_stopped"])
+        self.assertEqual(result.errors[0]["diagnostics"][0], "oakley_human_verification")
+
+    def test_unknown_script_shell_is_not_denial_or_permission_to_retry_in_browser(self):
+        body = '<html><script src="/PRIVATE_SCRIPT_SENTINEL"></script></html>'
+        other_url = URL.replace("FOS902243", "FOS902248")
+        fetcher = FakeFetcher({URL: page(body), other_url: page(body, other_url)})
+        for target in [URL, other_url]:
+            result = collect_oakley_product(fetcher, target, SOURCE)
+            self.assertFalse(result.offers)
+            self.assertFalse(result.coverage["complete"])
+            self.assertNotIn("source_stopped", result.coverage)
+            self.assertEqual(result.errors[0]["diagnostics"], ["oakley_canonical_missing",
+                             "oakley_response_script_shell", "oakley_response_under_1k_chars"])
+        self.assertEqual(fetcher.calls, [URL, other_url])
+
+    def test_real_transport_explicit_denial_makes_no_other_product_request(self):
+        calls = []
+        def request(url, **kwargs):
+            calls.append(url)
+            body = (b"User-agent: *\nAllow: /\n" if url.endswith("/robots.txt") else
+                    b'<html><h1>Access Denied</h1><p>PRIVATE_SENTINEL</p></html>')
+            return SimpleNamespace(status=200, url=url, headers={}, cookies={}, body=body)
+        fetcher = PublicPageFetcher({"www.oakley.com"}, request=request, sleep=lambda _: None)
+        first = collect_oakley_product(fetcher, URL, SOURCE)
+        second = collect_oakley_product(fetcher, URL.replace("FOS902243", "FOS902248"), SOURCE)
+        self.assertEqual(calls, ["https://www.oakley.com/robots.txt", URL])
+        self.assertTrue(first.coverage["source_stopped"])
+        self.assertTrue(second.coverage["source_stopped"])
 
     def test_redirect_to_default_variant_cannot_refresh_requested_size(self):
         responses = self.responses()

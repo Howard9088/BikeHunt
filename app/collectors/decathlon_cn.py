@@ -35,6 +35,12 @@ PUBLIC_DIAGNOSTICS = frozenset({
     "decathlon_quantity_missing", "decathlon_quantity_integer", "decathlon_quantity_float",
     "decathlon_quantity_string", "decathlon_quantity_boolean", "decathlon_quantity_other_type",
     "decathlon_item_missing", "decathlon_item_matches", "decathlon_item_mismatch",
+    "decathlon_parse_source", "decathlon_parse_capture_url", "decathlon_parse_time",
+    "decathlon_parse_response_status", "decathlon_parse_item", "decathlon_parse_quantity",
+    "decathlon_parse_panel", "decathlon_parse_size", "decathlon_parse_stock",
+    "decathlon_parse_base", "decathlon_parse_title", "decathlon_parse_brand",
+    "decathlon_parse_model", "decathlon_parse_price", "decathlon_parse_color",
+    "decathlon_parse_swatch", "decathlon_parse_model_url", "decathlon_parse_fields",
 })
 
 
@@ -48,6 +54,19 @@ class DecathlonStockShapeUnverified(CollectionError):
     def __init__(self, payload: object, item_code: str) -> None:
         super().__init__("Decathlon selected stock response is unverified")
         self.diagnostics = _stock_shape_flags(payload, item_code)
+
+
+class DecathlonCaptureRejected(CollectionError):
+    """A recognized selection capture failed a fixed, public parser gate."""
+
+    def __init__(self, diagnostic: str) -> None:
+        super().__init__("Decathlon selected capture failed validation")
+        self.diagnostics = [diagnostic if diagnostic in PUBLIC_DIAGNOSTICS else "decathlon_parse_fields"]
+
+
+def _require_capture(condition: bool, diagnostic: str) -> None:
+    if not condition:
+        raise DecathlonCaptureRejected(diagnostic)
 
 
 def _stock_shape_flags(payload: object, item_code: str) -> list[str]:
@@ -195,33 +214,51 @@ def _selected_size(panel: Selector) -> str | None:
 
 
 def parse_decathlon_cn(html: str, source: dict, page_url: str, fetched_at: datetime) -> list[Offer]:
-    """Only accepted selected-response captures can become fresh CNY offers."""
-    canonical = _canonical(page_url)
-    if not canonical or source.get("code") != "decathlon_cn" or source.get("currency") != "CNY" or source.get("market") != "CN":
-        return []
+    """Only accepted selected-response captures can become fresh CNY offers.
+
+    Ignore the unverified initial HTML and unrelated formats. A rejected capture
+    with our schema is terminal for this model, so a missing size cannot silently
+    become a partially refreshed model. Diagnostics contain fixed gate names only.
+    """
     try:
         capture = json.loads(html)
-        observed = datetime.fromisoformat(capture["observed_at"].replace("Z", "+00:00"))
-        if (capture.get("schema") != SCHEMA or _canonical(capture["url"]) != canonical
-                or observed.tzinfo is None or fetched_at.tzinfo is None
-                or not timedelta(0) <= fetched_at - observed <= timedelta(minutes=15)
-                or capture.get("stock_response_status") != 200
-                or not re.fullmatch(r"\d{5,12}", capture["item_code"])
-                or type(capture.get("quantity")) is not int
-                or not 0 <= capture["quantity"] <= 10_000_000):
-            return []
+    except (ValueError, TypeError):
+        return []
+    if not isinstance(capture, dict) or capture.get("schema") != SCHEMA:
+        return []
+    try:
+        _require_capture(source.get("code") == "decathlon_cn" and source.get("currency") == "CNY"
+                         and source.get("market") == "CN", "decathlon_parse_source")
+        try:
+            canonical = _canonical(page_url)
+            matching_url = canonical and _canonical(capture["url"]) == canonical
+        except (ValueError, KeyError, TypeError, AttributeError):
+            matching_url = False
+        _require_capture(bool(matching_url), "decathlon_parse_capture_url")
+        try:
+            observed = datetime.fromisoformat(capture["observed_at"].replace("Z", "+00:00"))
+            current = (observed.tzinfo is not None and fetched_at.tzinfo is not None
+                       and timedelta(0) <= fetched_at - observed <= timedelta(minutes=15))
+        except (ValueError, KeyError, TypeError, AttributeError, OverflowError):
+            current = False
+        _require_capture(current, "decathlon_parse_time")
+        _require_capture(type(capture.get("stock_response_status")) is int
+                         and capture["stock_response_status"] == 200, "decathlon_parse_response_status")
+        _require_capture(isinstance(capture.get("item_code"), str)
+                         and bool(re.fullmatch(r"\d{5,12}", capture["item_code"])), "decathlon_parse_item")
+        _require_capture(type(capture.get("quantity")) is int
+                         and 0 <= capture["quantity"] <= 10_000_000, "decathlon_parse_quantity")
+        _require_capture(isinstance(capture.get("html"), str) and bool(capture["html"]), "decathlon_parse_panel")
         panels = Selector(capture["html"]).css(PANEL)
-        if len(panels) != 1:
-            return []
+        _require_capture(len(panels) == 1, "decathlon_parse_panel")
         panel = panels[0]
         selected = _selected_size(panel)
-        if not selected or selected != capture["selected_size"] or _dom_stock(panel) != capture["quantity"]:
-            return []
+        _require_capture(bool(selected) and selected == capture.get("selected_size"), "decathlon_parse_size")
+        _require_capture(_dom_stock(panel) == capture["quantity"], "decathlon_parse_stock")
         # The fixed/sticky header duplicates these values; use the actual PDP
         # details and direct .p-price child, not recommendations or coupon price.
         base = panel.css(".pdp-base-info-box")
-        if len(base) != 1:
-            return []
+        _require_capture(len(base) == 1, "decathlon_parse_base")
         names = base[0].css('div[class~="text-1A2A34"][class~="text-24"]')
         brands = base[0].css('div[class~="text-16"][class~="mb-4"]')
         codes = base[0].css('span[class~="text-16"][class~="text-[#B3BAC3]"]')
@@ -229,21 +266,32 @@ def parse_decathlon_cn(html: str, source: dict, page_url: str, fetched_at: datet
         colors = panel.css(".sku-color > div:first-child > span")
         images = [n.attrib.get("src") for n in panel.css(".sku-color .color-list > img")
                   if SELECTED in n.attrib.get("class", "").split()]
-        if any(len(values) != 1 for values in (names, brands, codes, prices, colors, images)):
-            return []
+        for values, gate in ((names, "title"), (brands, "brand"), (codes, "model"),
+                             (prices, "price"), (colors, "color"), (images, "swatch")):
+            _require_capture(len(values) == 1, "decathlon_parse_" + gate)
         title, brand, model, color = _text(names[0]), _text(brands[0]), _text(codes[0]), _text(colors[0])
-        if not all((title, brand, color)) or not re.fullmatch(r"\d{7,9}", model):
-            return []
+        _require_capture(bool(title), "decathlon_parse_title")
+        _require_capture(bool(brand), "decathlon_parse_brand")
+        _require_capture(bool(color), "decathlon_parse_color")
+        _require_capture(bool(re.fullmatch(r"\d{7,9}", model)), "decathlon_parse_model")
         params = parse_qs(urlsplit(page_url).query)
-        if params.get("model_code", [model]) != [model]:
-            return []
+        _require_capture(params.get("model_code", [model]) == [model], "decathlon_parse_model_url")
         quoted = re.fullmatch(r"￥\s*(\d[\d,]*)\s*(\.\d{2})?", _text(prices[0]))
         price = money(quoted[1].replace(",", "") + (quoted[2] or ".00"), "CNY") if quoted else None
-        if not price or price.amount <= 0:
-            return []
-        image = images[0]
-        if not image or urlsplit(image).scheme != "https" or urlsplit(image).hostname != "pixl.decathlon.com.cn":
-            return []
+        _require_capture(price is not None and price.amount > 0, "decathlon_parse_price")
+        # PublicPageFetcher intentionally disables image downloads. The official
+        # lazyImg directive first installs default-img.png and only swaps in the
+        # real asset after onload. Thumbnail loading is not identity evidence:
+        # keep the exact selected swatch and textual color checks above, but omit
+        # absent/placeholder/unsupported images instead of discarding valid stock.
+        image = None
+        try:
+            asset = urlsplit(images[0] or "")
+            if (asset.scheme == "https" and asset.hostname == "pixl.decathlon.com.cn"
+                    and asset.port in (None, 443) and not asset.username and not asset.password):
+                image = images[0]
+        except (ValueError, TypeError):
+            pass
         name = brand + " " + title
         gender = "unisex" if "男女" in title else "male" if "男士" in title else "female" if "女士" in title else None
         model_url = "https://www.decathlon.com.cn/product-detail?" + urlencode({"dsm_code": params["dsm_code"][0], "model_code": model})
@@ -264,7 +312,7 @@ def parse_decathlon_cn(html: str, source: dict, page_url: str, fetched_at: datet
             identity_evidence="迪卡侬中国官网公开页面逐个选择尺码；等待该次线上库存请求成功完成，核对选中颜色/尺码、型号、人民币商品价与库存数量；不使用默认规格、优惠券预估价或门店库存。",
         )]
     except (ValueError, KeyError, TypeError, AttributeError, OverflowError):
-        return []
+        raise DecathlonCaptureRejected("decathlon_parse_fields") from None
 
 
 def decathlon_cn_page_action(captures: list[bytes], max_variants: int = 20,
