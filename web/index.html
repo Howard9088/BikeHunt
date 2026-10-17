@@ -22,8 +22,11 @@
 <script src="/web/registration-guides.js?v=20261016-domestic1" defer></script>
 <script src="/web/bundle-variants.js?v=20261015-bundle1" defer></script>
 <script src="/web/listing-order.js?v=20261016-first-listed1" defer></script>
+<script src="/web/product-images.js?v=20261017-originals1" defer></script>
 <script src="/web/gallery.js?v=20261016-first-listed1" defer></script>
 <script src="/web/flows.js?v=20261016-domestic-policy1" defer></script>
+<script src="/web/traveler-experiences.js?v=20261017-experiences1" defer></script>
+<script src="/web/featured-rotation.js?v=20261017-slots1" defer></script>
 <script src="/web/purchase-flow.js?v=20261016-domestic-help1" defer></script>
 <script src="/web/external-exit.js?v=20261015-exit2" defer></script>
 <script src="/web/visitor-stats.js?v=20261016-visits1" defer></script>
@@ -34,11 +37,11 @@
   <button type="button" id="wechatCommunity" class="community-primary">加入骑游海淘交流群</button>
   <div class="search"><label for="q" class="sr-only">搜索商品或品牌</label><span class="search-icon" aria-hidden="true"></span><input id="q" type="search" placeholder="搜索商品或品牌" autocomplete="off"><button class="clear" id="clear" aria-label="清空搜索" type="button">×</button></div>
 </div></header>
-<nav class="topnav" aria-label="发现入口"><button type="button" data-tab="products" aria-current="page">精选好价</button><button type="button" data-tab="brands">品牌官网</button><button type="button" data-tab="teams">世巡车队</button><div class="nav-tools"><a class="why-overseas-link" href="/web/why-overseas.html">为什么海淘？</a><button type="button" id="priceMessages">消息<span id="messageBadge" class="notification-dot" hidden></span></button></div></nav>
+<nav class="topnav" aria-label="发现入口"><button type="button" data-tab="products" aria-current="page">精选好价</button><button type="button" data-tab="brands">品牌官网</button><button type="button" data-tab="teams">世巡车队</button><button type="button" data-tab="experiences">淘友经验</button><div class="nav-tools"><a class="why-overseas-link" href="/web/why-overseas.html">为什么海淘？</a><button type="button" id="priceMessages">消息<span id="messageBadge" class="notification-dot" hidden></span></button></div></nav>
 <nav class="category-group-nav" id="categoryGroupNav" aria-label="商品分类"></nav>
 <div class="road-reference-strip" id="roadReferenceStrip" hidden><button type="button" id="roadReferencesButton">查看当前分类的官网参考 →</button><span>库存未核实</span></div>
 <div class="profile-bar" aria-label="个人筛选"><div id="genderFilter" role="group" aria-label="款式性别" hidden><button type="button" data-gender="all" aria-pressed="true">全部</button><button type="button" data-gender="male" aria-pressed="false">男款</button><button type="button" data-gender="female" aria-pressed="false">女款</button></div><button type="button" id="bodyProfile">身高 / 体重</button></div>
-<div class="toolbar"><div class="toolbar-title"><strong id="browseLabel">精选好价</strong><span id="count">加载中</span></div><div class="toolbar-actions"><details id="channelInfo" class="channel-info" hidden><summary>渠道说明</summary><div class="channel-info-body"></div></details><button type="button" id="refreshPrices">核对最新价格</button><button type="button" id="browseSettings">浏览设置</button></div></div>
+<div class="toolbar"><div class="toolbar-title"><strong id="browseLabel">精选好价</strong><span id="count">加载中</span><span id="featuredSchedule" class="featured-schedule" hidden></span></div><div class="toolbar-actions"><details id="channelInfo" class="channel-info" hidden><summary>渠道说明</summary><div class="channel-info-body"></div></details><button type="button" id="refreshPrices">核对最新价格</button><button type="button" id="browseSettings">浏览设置</button></div></div>
 <main class="gallery" id="grid" aria-label="骑行商品图库" tabindex="0"></main>
 <section class="directory-page" id="directoryPage" aria-label="品牌与世巡车队入口" hidden></section>
 <footer class="footer"><span class="footer-description"><span id="publicationInfo"></span> · <span id="sourceCount"></span> · 仅提供信息，不参与交易</span><button type="button" id="purchaseDisclaimerInfo">购买提示与免责声明</button><span id="visitorStats" role="status" aria-label="网页访问统计">访问统计加载中</span><span id="fxDate"></span></footer>

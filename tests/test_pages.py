@@ -26,7 +26,7 @@ class PagesTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         web = self.root/'web'; web.mkdir()
-        for name in ('listing-order.js','public-visibility.js','gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','payment-methods.js','payment-methods.json','payment-channels.json','purchase-flow.js','bundle-variants.js','external-exit.js','external-exit.css','visitor-stats.js'):
+        for name in ('featured-rotation.js','traveler-experiences.js','traveler-experiences.json','listing-order.js','public-visibility.js','gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','payment-methods.js','payment-methods.json','payment-channels.json','purchase-flow.js','bundle-variants.js','external-exit.js','external-exit.css','visitor-stats.js'):
             (web/name).write_text('/* Mock public asset */',encoding='utf-8')
         repo = Path(__file__).resolve().parents[1]
         (web/'payment-channels.json').write_bytes((repo/'web/payment-channels.json').read_bytes())

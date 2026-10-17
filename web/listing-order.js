@@ -30,17 +30,32 @@
     return [...cards].sort((a,b)=>Number(a.stock_state!=='in_stock')-Number(b.stock_state!=='in_stock')||
       (explicitCompare?explicitCompare(a,b):compareListing(a,b,now))||stableID(a,b));
   }
-  // Caller supplies existing exact-quote eligibility and model/channel keys.
-  function selectHome(cards,{eligible,channelKey,modelKey,now=Date.now(),explicitCompare=null}){
+  // Two Beijing slots: 11:30 and 18:00. The evening batch lasts overnight.
+  function homeSlot(now=Date.now()){
+    const day=86400000,local=now+8*3600000,date=Math.floor(local/day),minute=(local-date*day)/60000;
+    const index=minute<690?date*2-1:minute<1080?date*2:date*2+1;
+    const start=(minute<690?(date-1)*day+1080*60000:date*day+(minute<1080?690:1080)*60000)-8*3600000;
+    const next=(minute<690?date*day+690*60000:minute<1080?date*day+1080*60000:(date+1)*day+690*60000)-8*3600000;
+    return {index,start,next,label:minute>=690&&minute<1080?'午间精选':'晚间精选'};
+  }
+  // Caller supplies exact-quote eligibility and model/channel keys. Selection
+  // changes only presentation; the original cards and listing ledger stay intact.
+  function selectHome(cards,{eligible,channelKey,modelKey,now=Date.now(),explicitCompare=null,rotate=false}){
     const buckets=new Map(),cmp=explicitCompare||((a,b)=>compareHome(a,b,now));
     for(const card of cards){if(!eligible(card,now))continue;const key=channelKey(card);if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(card);}
     const chosen=[];
     for(const pool of buckets.values()){
-      const seen=new Set();let count=0;
-      for(const card of pool.sort((a,b)=>cmp(a,b)||stableID(a,b))){const key=modelKey(card);if(seen.has(key))continue;seen.add(key);chosen.push(card);if(++count===2)break;}
+      const seen=new Set(),models=[];
+      for(const card of pool.sort((a,b)=>cmp(a,b)||stableID(a,b))){const key=modelKey(card);if(!seen.has(key)){seen.add(key);models.push(card);}}
+      if(!rotate||models.length<=2){chosen.push(...models.slice(0,2));continue;}
+      // Real first publications get priority for 24h, up to the channel cap.
+      const fresh=models.filter(card=>{const stamp=listingTime(card,now);return stamp!==null&&now-stamp<86400000}).slice(0,2);
+      const rest=models.filter(card=>!fresh.includes(card)),take=2-fresh.length;
+      const offset=((homeSlot(now).index%rest.length)+rest.length)%rest.length;
+      chosen.push(...fresh,...Array.from({length:take},(_,i)=>rest[(offset+i)%rest.length]));
     }
     return chosen.sort((a,b)=>cmp(a,b)||stableID(a,b));
   }
-  const api={listingTime,listingLabel,compareListing,compareHome,orderCatalog,selectHome};
+  const api={listingTime,listingLabel,compareListing,compareHome,orderCatalog,selectHome,homeSlot};
   if(typeof module==='object'&&module.exports)module.exports=api;else root.BikeHuntListingOrder=Object.freeze(api);
 })(typeof globalThis==='object'?globalThis:this);

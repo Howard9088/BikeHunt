@@ -42,6 +42,7 @@ function harness() {
     e: x => String(x ?? ''), safeUrl: x => x || '', timeText: x => x || '',
     money: x => String(x), cny: x => String(x), tag: () => '', landedCostMarkup: () => '',
     render() { rendered++; }, updateFxLabel() {},
+    sheet: {classList:{contains:()=>false}},
     closeSheet() { closed++; context.guideContext = null; context.currentProduct = null; context.detailSequence++; elements.delete('variant'); },
     openPanel(title, content) { context.detailSequence++; panel = title + ' ' + content; elements.delete('variant'); },
     getJson: async () => ({documents: []}),

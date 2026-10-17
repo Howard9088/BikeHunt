@@ -1,0 +1,96 @@
+{
+  "verified_at": "2026-10-17",
+  "notice": "公开历史经历与品牌相关讨论的来源摘要，非本站亲测或投稿。网友个案不代表今天的政策，收货地、站点和型号不可混用。没有核实中国发行信用卡成功交易，也没有足够可靠的大陆／香港收货案例可作为现行购买保证。",
+  "cards": [
+    {
+      "id": "gobik-us-duty-2026", "brand": "Gobik", "channels": ["gobik"], "kind": "网友经历",
+      "title": "美国买家：到货快，额外税费改变了性价比",
+      "date": "2026-03-03", "market": "美国收货；不可外推中国大陆／香港",
+      "summary": "一位买家自述约 200 美元订单另付 80 美元税费，不到一周到货；过去退货顺利，但未确认现在的退货体验。另一位买家称 2025 年春季订单未被收费，说明不同时间的账单不能直接照搬。",
+      "warning": "匿名个案，订单未独立核验。税费仅属该美国订单，不是中国税率，也不是现在的美国税率。",
+      "url": "https://www.reddit.com/r/CyclingFashion/comments/1rjtkkb/gobik_usa_order_experience/",
+      "official": [{"url":"https://gobik.com/en/pages/delivery","text":"官方配送页说明国际订单可能另收税费，由买家承担；取得的页面版本较旧，具体目的地和价格须下单前核对。"},{"url":"https://gobik.com/en/blogs/faq/do-you-ship-international","text":"官方说明国际配送的费用与时效随目的地变化；这不能证明中国大陆可直邮。"}]
+    },
+    {
+      "id":"gobik-sizing-2022", "brand":"Gobik", "channels":["gobik"], "kind":"网友经历",
+      "title":"2022 旧帖：同品牌不同款，尺码体验也会相反",
+      "date":"2022-04-06；尺码回帖 04-16", "market":"美国、加拿大及西班牙买家讨论",
+      "summary":"美国买家称 DHL 从西班牙到俄亥俄州约 3–4 天，穿 M 合适；另一买家长袖保暖上衣未按建议加码，收到后过小，只能退货再换尺码。应按具体型号看尺寸，不能把一个人的 M 码套到全系列。",
+      "warning":"历史帖中的低税费、速度和退换办法均不是 2026 年承诺；身形与版型差异很大。",
+      "url":"https://www.reddit.com/r/CyclingFashion/comments/txlgz9/",
+      "official":[{"url":"https://gobik.com/en/blogs/faq/do-you-ship-international","text":"官方说明时效与费用取决于目的地。"}]
+    },
+    {
+      "id":"pissei-uk-duty-2025", "brand":"PISSEI / UAE", "channels":["uae"], "kind":"网友经历",
+      "title":"英国买家：折扣之外，还有税费和尺码重买成本",
+      "date":"2025-11-05", "market":"英国；马甲、冬季外套和长裤，非已证实的 UAE 同款",
+      "summary":"买家称首单享 10% 折扣后仍另付 87 英镑进口费用；及时收到货，但按尺码表买的上衣偏小，申请直接换货未获同意。可借鉴税费和退货重买成本提醒，不能证明 UAE 队服也同样偏小。",
+      "warning":"个人评价，订单未独立核验；英国账单不能外推中国，非队服的尺码反馈不能套用 UAE 全系列。正文在品牌评价列表核实，独立评价页未能单独打开，提供列表备用入口。",
+      "url":"https://www.trustpilot.com/reviews/690b7cf4cab6671cad6e0d1e", "backup":"https://nz.trustpilot.com/review/www.pissei.com",
+      "official":[{"url":"https://www.pissei.com/en/delivery.html","text":"官网说明从意大利发货，美国／英国不采用 DDP，进口费用由买家承担。"},{"url":"https://www.pissei.com/en/free-return.html","text":"收到后 14 天内申请退货；不直接换货，换码须退货重下单。从原收货国以外退回不享免费退货。"}]
+    },
+    {
+      "id":"pissei-germany-ups-2026", "brand":"PISSEI / UAE", "channels":["uae"], "kind":"网友经历",
+      "title":"德国买家后续更新：包裹折返后最终收到",
+      "date":"2026-07-24；更新 08-08", "market":"德国收货；具体车衣型号未说明",
+      "summary":"买家称 7 月 9 日下单，包裹到德国 UPS 自提点后、取件前被退回意大利；8 月 8 日更新称最终收到，车衣常穿，但物流经历让其对再买犹豫。应连同后续更新阅读。",
+      "warning":"德国物流个案，不代表香港／中国时效；买家归因于 UPS，本站无法判断责任。正文在品牌评价列表核实，独立评价页未能单独打开，提供列表备用入口。",
+      "url":"https://www.trustpilot.com/reviews/6a635fffd1d389487b59cff9", "backup":"https://nz.trustpilot.com/review/www.pissei.com",
+      "official":[{"url":"https://www.pissei.com/en/delivery.html","text":"官网要求持续查看物流，异常及时邮件联系。意大利以外通常在收款后 5 个工作日内发出，这是发出时间，非保证到货。"}]
+    },
+    {
+      "id":"maap-sale-delays-2022", "brand":"MAAP", "channels":["maap"], "kind":"网友经历",
+      "title":"大促旧帖：备货时间可能比运输时间更长",
+      "date":"2022-06-17 至 06-18", "market":"美国、加拿大、澳大利亚；非中国大陆",
+      "summary":"年中促销讨论中，有买家一周未出库，也有人称三天到洛杉矶、四天或九天收到；加拿大买家明确从国际站购买。促销期和仓库不同，不能拿最快的一单当统一时效。",
+      "warning":"历史匿名个案，仓库和政策可能已变；未证明中国卡可付或大陆可直邮。",
+      "url":"https://www.reddit.com/r/CyclingFashion/comments/veqvol/",
+      "official":[{"url":"https://support.maap.cc/hc/en-us/articles/4999519638157-How-long-will-delivery-take-all-countries-outside-Australia-NZ-USA-UK-and-the-EU","date":"2025-10-27","text":"国际站明确不直邮中国大陆，由本地经销商服务；香港列入 Zone 2。发出后 DHL 4–7 天或澳洲邮政 10–14 天为预计时间，不作保证。"}]
+    },
+    {
+      "id":"rapha-taiwan-dhl-2018", "brand":"Rapha", "channels":["rapha"], "kind":"网友经历",
+      "title":"台湾旧帖：免邮不等于税费全包",
+      "date":"2018-12-15", "market":"台湾收货；2018 年订单，非大陆／香港",
+      "summary":"PTT 作者买两件美丽诺底衫凑当时免运门槛，刷卡后收到 DHL 税费及服务费通知；联系后更新称首次代垫服务费减免。可借鉴先算落地总价、核对承运商账单，不能照搬当年收费和减免办法。",
+      "warning":"超过七年的历史经历，税额、门槛和减免都可能已变；台湾支付和清关经验不是大陆购买教程。",
+      "url":"https://www.ptt.cc/bbs/bicycle/M.1544865049.A.55A.html",
+      "official":[{"url":"https://support.rapha.cc/en/articles/26-canada-apac-rest-of-world-shipping-options","date":"2026-05-26","text":"APAC 页提醒香港、台湾等目的地可能另收税费；明确不寄货代、转运、储物柜及类似第三方地址。"}]
+    },
+    {
+      "id":"oakley-us-forwarder-cancel-2026", "brand":"Oakley", "channels":["oakley"], "kind":"网友经历",
+      "title":"美国站：加拿大买家使用转运地址仍被取消",
+      "date":"2026-10-05", "market":"加拿大买家尝试美国站定制处方眼镜；非普通头盔订单",
+      "summary":"买家自述美国站不接受其非美国账单地址信用卡，改用礼品卡与美国转运地址；9 月下单后等待，10 月 5 日称因地址问题取消。支付方式、账单地址和收货地址分别审核，不能只看卡组织。",
+      "warning":"单一匿名自述，未核验订单；涉及定制处方产品，不能推断所有 Oakley 订单或中国卡必定失败。礼品卡做法不是本站建议。",
+      "url":"https://www.reddit.com/r/Oakley/comments/1wyl01e/oakley_is_making_it_impossible_to_purchase_their/",
+      "official":[{"url":"https://www.oakley.com/en-us/support/shipping-returns","text":"美国官网只寄美国 50 州及指定属地，不国际配送；定制商品不接受退换。"},{"url":"https://www.oakley.com/en-jp/support/shipping-returns","text":"日本站另外明确拒绝海外转运地址；不能把美国站攻略直接用于日本站。"}]
+    },
+    {
+      "id":"poc-size-service-2023", "brand":"POC", "channels":["poc"], "kind":"网友经历",
+      "title":"北美旧帖：头盔太小，换码时担心错过折扣",
+      "date":"2023-08-03", "market":"北美；未明确美国或加拿大",
+      "summary":"作者称从 POC 官网买的头盔太小，想退掉重买大一码，询问能否保留促销价；当时邮件和电话约两周未回复。帖子没披露最终结果，不能写成退款或换货成功。",
+      "warning":"历史个案，型号和最终结果不详，不能概括为品牌目前的普遍服务水平。",
+      "url":"https://www.reddit.com/r/bicycling/comments/15hgvlz/poc_customer_support_issues_anyone_else/",
+      "official":[{"url":"https://poc.com/en-us/faq","text":"官方列出欧洲部分国家、北美、大洋洲和日本配送，并拒绝海外地址、转寄商和包裹转运服务，不应默认可转运。"}]
+    },
+    {
+      "id":"visma-hat-us-2024", "brand":"Team Visma | Lease a Bike", "channels":["visma"], "kind":"网友经历",
+      "title":"队帽买家：跨境运费高，两天到美国",
+      "date":"2024-06-30", "market":"荷兰寄往美国；未明确销售网站",
+      "summary":"买家晒 Visma 队帽，称帽子 27 美元、运费较高，约两天收到，认可质感。原帖没有商家网址，只能视作品牌相关经历，不能标成已核实官方商城成交。",
+      "warning":"卖家未明确，不证明官方店或中国路线的时效和价格。",
+      "url":"https://www.reddit.com/r/CyclingFashion/comments/1ds7tvp/",
+      "official":[{"url":"https://www.teamvismaleaseabike.com/frequently-asked-questions---webshop/","text":"官方店说明预售订单须全部到货后一起发；换码须退货重下单，已下多个订单不能合并。"},{"url":"https://www.teamvismaleaseabike.com/shop-terms-conditions/","text":"条款要求非欧盟买家承担进口税费及清关费用。"}]
+    },
+    {
+      "id":"decathlon-team-store-guide", "brand":"Decathlon / VAN RYSEL", "channels":["decathlon","decathlon_overseas","decathlon_cn"], "kind":"官方指南",
+      "title":"车队商城与中国官网：先分清买的是哪一家",
+      "date":"官方条款更新 2026-04-20", "market":"法国车队商城与中国零售官网；非英国站",
+      "summary":"未找到可靠的车队商城寄大陆／香港实购经历，此条为官方指南。海外渠道指向 DECATHLON CMA CGM TEAM 商城，由 SAS DECATHLON CYCLING TEAM 经营，与迪卡侬中国零售网站是不同渠道，英国站限制也不能套用。",
+      "warning":"不是买家体验。国外配送条款不证明中国地址可结账或中国卡可付，中国站售后不能默认承担车队商城订单。",
+      "url":"https://shop.decathloncmacgmteam.com/policies/terms-of-sale",
+      "official":[{"url":"https://shop.decathloncmacgmteam.com/policies/terms-of-sale","date":"2026-04-20","text":"车队商城条款列银行卡、PayPal、Apple Pay，国外配送条款写收款后 30 天内；目的地、费用及付款成功率未实测。"},{"url":"https://shop.decathloncmacgmteam.com/policies/legal-notice","text":"法律声明确认运营者是 SAS Decathlon Cycling Team。"},{"url":"https://www.decathlon.com.cn/","text":"BikeHunt 所列中国官网入口；本次研究没有核实其具体商品和退换条款。"}]
+    }
+  ]
+}

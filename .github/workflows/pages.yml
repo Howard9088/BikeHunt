@@ -91,7 +91,9 @@ jobs:
       - name: Validate verified featured deals and exact discount quotes
         run: node scripts/test_featured_deals.js
       - name: Verify first public listing order and Beijing time
-        run: node scripts/test_listing_order.js
+        run: |
+          node scripts/test_listing_order.js
+          node scripts/test_featured_rotation.js
       - name: Validate read-only merchant language guides
         run: node scripts/test_merchant_guides.js
       - name: Validate complete merchant and market payment matrices
@@ -165,8 +167,12 @@ jobs:
           restore-keys: bikehunt-public-data-v2-
       - name: Restore public event cursor
         run: python scripts/seed_updates.py
+      - name: Capture last valid catalog before collection
+        run: python scripts/check_catalog_health.py --capture --before artifacts/catalog-before.json
       - name: Collect public prices and stocks
         run: python scripts/collect_offers.py
+      - name: Detect empty categories, disappearing products and missing images
+        run: python scripts/check_catalog_health.py --before artifacts/catalog-before.json
       - name: Check policy changes once daily
         run: |
           python - <<'PY'
@@ -181,6 +187,11 @@ jobs:
           PY
       - name: Build public interactive website
         run: python scripts/build_pages.py
+      - name: Verify built category, image and inventory integrity
+        run: python scripts/check_catalog_health.py --before artifacts/catalog-before.json --built _site
+      - name: Check featured rotation and global categories in Chromium
+        timeout-minutes: 3
+        run: python scripts/test_featured_rotation_ui.py
       - name: Validate article entrance and navigation on desktop and mobile
         timeout-minutes: 3
         run: python scripts/test_why_overseas_ui.py

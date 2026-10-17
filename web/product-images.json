@@ -1,0 +1,222 @@
+{
+  "downloaded_at": "2026-10-17T07:15:34.940880+00:00",
+  "note": "Exact official image bytes for recorded product URLs; image download time does not renew price, stock or publication evidence.",
+  "assets": [
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c9563e0c-e637-46dc-a858-b37b016b45da/FOS900925__1KE__PIC07__noshad__qt.png",
+      "file": "b974a43d3f77bcfe7a73d980f338436dc4564357bb2a253a76f779c70ba3b103.png",
+      "sha256": "b974a43d3f77bcfe7a73d980f338436dc4564357bb2a253a76f779c70ba3b103",
+      "bytes": 1919253,
+      "offer_ids": [
+        "oakley-manual-ef662e1f5f7cdf94a7a5"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c86ca3a5-b79e-42b2-8336-b37c0004c6b7/FOS900927__11B_030A.png",
+      "file": "ea066022e3a9f359ef4d8b56d30bf47436ff92b39073dee8aa55c5300bead4bd.png",
+      "sha256": "ea066022e3a9f359ef4d8b56d30bf47436ff92b39073dee8aa55c5300bead4bd",
+      "bytes": 1364436,
+      "offer_ids": [
+        "oakley-manual-211608db7de581ea296e"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/895e4c64-f5d2-4687-a930-b37c0005115d/FOS900928__7C4_030A.png",
+      "file": "66064ef7886cc1346a54823e887dab3dabc95110497a5caa808926d458932536.png",
+      "sha256": "66064ef7886cc1346a54823e887dab3dabc95110497a5caa808926d458932536",
+      "bytes": 1655546,
+      "offer_ids": [
+        "oakley-manual-4b98a6061fc174ac2550"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/2401a460-e315-4bd5-85af-b37b0099dab6/FOS901112__1AA_030A.png",
+      "file": "563e7128cc095de3a607a2381c40718244fa66206f461daa0248685eb887375c.png",
+      "sha256": "563e7128cc095de3a607a2381c40718244fa66206f461daa0248685eb887375c",
+      "bytes": 1590510,
+      "offer_ids": [
+        "oakley-manual-539153a0e4f56442d6ae"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c72d7cb5-3054-4f04-bdf6-b37b008ddd30/FOS901113__09K_030A.png",
+      "file": "8fd5911fb5c3c08d8721e3b1fa2d299d9183f1d15f510ae14f6383a895232924.png",
+      "sha256": "8fd5911fb5c3c08d8721e3b1fa2d299d9183f1d15f510ae14f6383a895232924",
+      "bytes": 1544852,
+      "offer_ids": [
+        "oakley-manual-86f38fb91a0d0ad40f6c"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/ad1873b8-1399-4397-b331-b37b00999e15/FOS901114__09K_030A.png",
+      "file": "c597ba7dc831cf2b7400cc00289a4d75fecb50e8fa5efd442e6296fb6b3b1426.png",
+      "sha256": "c597ba7dc831cf2b7400cc00289a4d75fecb50e8fa5efd442e6296fb6b3b1426",
+      "bytes": 1734197,
+      "offer_ids": [
+        "oakley-manual-d60370432e04eb6c54bc"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/d1a5085d-8c9c-4402-af73-b37b008f157e/FOS901116__09Q_030A.png",
+      "file": "1a235babb72f79f56e9a04ee67cf7a6805bfe783141b04a1a635b497d778765d.png",
+      "sha256": "1a235babb72f79f56e9a04ee67cf7a6805bfe783141b04a1a635b497d778765d",
+      "bytes": 1982479,
+      "offer_ids": [
+        "oakley-manual-c5cab71dbf6aaaaad161"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6fb9b8be-6535-40cc-be20-b37b016cff85/FOS901117__05H_030A.png",
+      "file": "1400a63b4cf058a0d6d4a7b87d1985fd18dbad7da7c6dc0844c1a15d5291607a.png",
+      "sha256": "1400a63b4cf058a0d6d4a7b87d1985fd18dbad7da7c6dc0844c1a15d5291607a",
+      "bytes": 1535793,
+      "offer_ids": [
+        "oakley-manual-e2b0ef8c85a8145249a2"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fa25d8df-ac4e-47a3-8fa6-b37b016d842e/FOS901248__202_030A.png",
+      "file": "0aaea06240a833deb7266e892e7c96df9ac27ade24f9f33ddf84ba463aacbfab.png",
+      "sha256": "0aaea06240a833deb7266e892e7c96df9ac27ade24f9f33ddf84ba463aacbfab",
+      "bytes": 1874583,
+      "offer_ids": [
+        "oakley-manual-1b22b1f84ca123739dbc"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/39b46811-2fd7-475a-8cbf-b37b009c1522/FOS901249__09Q_030A.png",
+      "file": "6013f228638cfbe6c71c33abfa3b0ff6fffedee3f2981c0578027e69cfa69904.png",
+      "sha256": "6013f228638cfbe6c71c33abfa3b0ff6fffedee3f2981c0578027e69cfa69904",
+      "bytes": 2059319,
+      "offer_ids": [
+        "oakley-manual-23408e315f5b91e860ab"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/c2d7f5c7-9787-4d7f-9ed3-b37b00a7d122/FOS901511__9XM_030A.png",
+      "file": "beec46c805a7ec6a7daa44c009febc278a73b3236ea3c99356c6b6d91c3c8b60.png",
+      "sha256": "beec46c805a7ec6a7daa44c009febc278a73b3236ea3c99356c6b6d91c3c8b60",
+      "bytes": 1630440,
+      "offer_ids": [
+        "oakley-manual-2dc07a8e65c1ca9ba376"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/fe21a3f6-4cb9-404d-ac78-b37c000096cb/FOS901523__11B_030A.png",
+      "file": "4f8a245d9cdce763466723f42b98cde52bf83f7be50d4e7c2a067aacbd18b29c.png",
+      "sha256": "4f8a245d9cdce763466723f42b98cde52bf83f7be50d4e7c2a067aacbd18b29c",
+      "bytes": 1447621,
+      "offer_ids": [
+        "oakley-manual-6f237337e75305764bb9"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f045773d-783c-4e14-9398-b37100250471/FOS901772__27T_030A.png",
+      "file": "8df7bc14c177a1f02f0851ab2633716c44f61c03a7bc1f604b442f4042306813.png",
+      "sha256": "8df7bc14c177a1f02f0851ab2633716c44f61c03a7bc1f604b442f4042306813",
+      "bytes": 1545658,
+      "offer_ids": [
+        "oakley-manual-d40fea1afc92308a0e1b"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/8e0ca3f0-8a73-48e9-845f-b37b00c06d54/FOS901800__09K_030A.png",
+      "file": "6b1a771875ca3bfc57fa26546865fdaefeffb3678c467a67e0993596260be690.png",
+      "sha256": "6b1a771875ca3bfc57fa26546865fdaefeffb3678c467a67e0993596260be690",
+      "bytes": 1554698,
+      "offer_ids": [
+        "oakley-manual-017610d8bfdf990c5b79"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/6811cc2b-51cd-47bd-a8e6-b3710020cedf/FOS902123__02K__PIC07__noshad__qt.png",
+      "file": "7e785813cf671fe81673ff20fd4137f24ac7e45d2e3883e9448e55aff0d876ef.png",
+      "sha256": "7e785813cf671fe81673ff20fd4137f24ac7e45d2e3883e9448e55aff0d876ef",
+      "bytes": 608234,
+      "offer_ids": [
+        "oakley-manual-b7da3e5c2f2426023789"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/22f7b685-443c-44ec-991e-b37100250319/FOS902226__GBP__PIC07__noshad__qt.png",
+      "file": "d4ff9023461989c75df01edff4262b6524750cf8c2a7ba76d6e8312025011bb1.png",
+      "sha256": "d4ff9023461989c75df01edff4262b6524750cf8c2a7ba76d6e8312025011bb1",
+      "bytes": 3121250,
+      "offer_ids": [
+        "oakley-manual-aad2bc5191ebebb31382"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/0625ca9b-1283-48da-ae52-b3e600b6677a/FOS902243__BRP_dtl1.png",
+      "file": "3569caf7317453d47f31fa4a6d74ae4ae2d4d22c70b1d273c98021c05a43de49.png",
+      "sha256": "3569caf7317453d47f31fa4a6d74ae4ae2d4d22c70b1d273c98021c05a43de49",
+      "bytes": 1355120,
+      "offer_ids": [
+        "oakley-manual-5d32449dddc7772b43cb"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a830d988-ac3f-4250-808c-b3e500f543c2/FOS902248__02K__PIC07__noshad__qt.png",
+      "file": "c787d1e9b697d67369542447bd209f07d1365c0772508c1c2027b4fb032c4a4b.png",
+      "sha256": "c787d1e9b697d67369542447bd209f07d1365c0772508c1c2027b4fb032c4a4b",
+      "bytes": 724215,
+      "offer_ids": [
+        "oakley-manual-c6812195c26fba78d9bd"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a8c49e6b-916b-4b74-b295-b42c010c1d57/FOS902243__G26.png",
+      "file": "0756d743da7cb24ac5cb68850c3584b007e3bf781e69940ffbf300a1fc884422.jpg",
+      "sha256": "0756d743da7cb24ac5cb68850c3584b007e3bf781e69940ffbf300a1fc884422",
+      "bytes": 238341,
+      "offer_ids": [
+        "oakley-manual-9fb4d1986971c04325f8"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/46571bf4-1fe7-42d2-bce2-b37b017159c0/FOS901302__02T_030A.png",
+      "file": "0d02840d7681848897208d988066f3dac62f35856eb7588eb41d3d5f0ea534ec.png",
+      "sha256": "0d02840d7681848897208d988066f3dac62f35856eb7588eb41d3d5f0ea534ec",
+      "bytes": 1481509,
+      "offer_ids": [
+        "oakley-manual-1b862aa45119b1b779f2"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/54853125-98d0-4b4a-af2d-b3e500a40cde/FOA407902__7CE_omfr1.png",
+      "file": "ea2632ab5069ae842721766b398a3edb81dbf533f367e2428cac5a9a0b23da8e.jpg",
+      "sha256": "ea2632ab5069ae842721766b398a3edb81dbf533f367e2428cac5a9a0b23da8e",
+      "bytes": 307116,
+      "offer_ids": [
+        "oakley-manual-908d64ef030633e69080"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/1d482116-bb32-41df-a541-b3e20088b1cd/FOA406782__100_omfr1.png",
+      "file": "5bef5c037ad1c139c3a4b34629aab417bd14ca0f8219394fe4e705f717124d2b.jpg",
+      "sha256": "5bef5c037ad1c139c3a4b34629aab417bd14ca0f8219394fe4e705f717124d2b",
+      "bytes": 319052,
+      "offer_ids": [
+        "oakley-manual-135153f34ad7f558c9ac"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/a87dba4c-0a60-4f29-8cb1-b3590067c877/FOS901803__02E.png",
+      "file": "b31833796e105c6c269bb80642e4f92fed95ad392d7f220dcf53732b2f0fbae5.jpg",
+      "sha256": "b31833796e105c6c269bb80642e4f92fed95ad392d7f220dcf53732b2f0fbae5",
+      "bytes": 344979,
+      "offer_ids": [
+        "oakley-manual-0f4c0469f036089770bb"
+      ]
+    },
+    {
+      "source_url": "https://assets2.oakley.com/prod-onecp-record-files/piafa/f7d8572d-683c-470c-b4be-b37b00d171d5/FOS902106__021.png",
+      "file": "eaf6d795708d70f7688dda2e14945cecf1be31a6bc686123b3935ddae77676ed.jpg",
+      "sha256": "eaf6d795708d70f7688dda2e14945cecf1be31a6bc686123b3935ddae77676ed",
+      "bytes": 314954,
+      "offer_ids": [
+        "oakley-manual-6befa86b29f6834ed47e"
+      ]
+    }
+  ]
+}

@@ -545,8 +545,8 @@ def main():
                 # The same production render handles non-discount recommendations,
                 # narrow model samples, stale labels and exact-spec detail routing.
                 page.evaluate("""() => {
-                  const base=items.find(p=>p.name==='Sale Jersey');
-                  items=[100,200,300].map((price,i)=>({...base,product_id:'helmet-'+i,name:'Helmet '+i,name_zh:'头盔 '+i,brand:'Helmet Brand '+i,category:'helmets',category_group:'helmets',gender:'unisex',reference_cny:String(price),reference_price:{amount:String(price/7),currency:'USD'},reference_original_price:null,reference_url:'https://merchant.invalid/helmet-'+i,reference_stock:'in_stock',stock_state:'in_stock',reference_collection_state:'current',fetched_at:new Date().toISOString(),reference_price_valid_until:null,reference_variant_id:'helmet-variant-'+i}));
+                  const base=items.find(p=>p.name==='Sale Jersey'), listed=new Date().toISOString();
+                  items=[100,200,300].map((price,i)=>({...base,product_id:'helmet-'+i,first_listed_at:listed,name:'Helmet '+i,name_zh:'头盔 '+i,brand:'Helmet Brand '+i,category:'helmets',category_group:'helmets',gender:'unisex',reference_cny:String(price),reference_price:{amount:String(price/7),currency:'USD'},reference_original_price:null,reference_url:'https://merchant.invalid/helmet-'+i,reference_stock:'in_stock',stock_state:'in_stock',reference_collection_state:'current',fetched_at:new Date().toISOString(),reference_price_valid_until:null,reference_variant_id:'helmet-variant-'+i}));
                   for(const card of items){delete card.channel_quotes;card.discount_pct=null;}
                   render();window.__openedRecommendation=null;openProduct=(id,variant)=>{window.__openedRecommendation={id,variant}};
                 }""")

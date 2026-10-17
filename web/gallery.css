@@ -86,3 +86,5 @@ body:not(.grid-mode) .gallery{touch-action:pan-x pinch-zoom}
 .topnav .why-overseas-link{display:inline-flex;align-items:center;min-height:40px;font-size:13px;font-weight:600;color:var(--blue);white-space:nowrap}
 .topnav .why-overseas-link:hover{text-decoration:underline}
 @media(max-width:600px){.topnav .why-overseas-link{font-size:11px}.topnav .nav-tools{gap:9px}}
+
+.toolbar-title{flex-wrap:wrap;gap:4px 12px}.toolbar-title .featured-schedule{font-size:11px;color:var(--muted)}.directory-mode .featured-schedule{display:none}

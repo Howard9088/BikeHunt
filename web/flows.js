@@ -37,12 +37,12 @@ function restoreBrowseState(){
   activeCategory='all';
   activeSource=[...directoryData.brands,...directoryData.teams].some(entry=>entry.code===saved.source)?saved.source:null;
   document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===activeCategory)));
-  syncBrowseControls();updateBrowseLabel();navigate(['products','brands','teams'].includes(saved.tab)?saved.tab:'products');
+  syncBrowseControls();updateBrowseLabel();navigate(['products','brands','teams','experiences'].includes(saved.tab)?saved.tab:'products');
 }
 function browseQuery(value){return typeof value==='string'&&value.length<=200?value:''}
 function navigate(tab){activeTab=tab;saveBrowseState();document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));gallery.hidden=tab!=='products';directoryPage.hidden=tab==='products';document.querySelector('.scroll-controls').hidden=tab!=='products';document.getElementById('scrollHint').classList.toggle('hidden',tab!=='products');document.getElementById('categoryGroupNav').hidden=tab!=='products';syncBrowseControls();document.body.classList.toggle('directory-mode',tab!=='products');if(tab==='products'){render()}else{renderDirectory(tab)}if(typeof syncChannelInfo==='function')syncChannelInfo()}
 function chooseCategory(code){activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
-function chooseCategoryGroup(code){if(!publicCategoryGroupVisible(code))code=null;activeCategoryGroup=activeCategoryGroup===code?null:categoryGroups.some(c=>c.code===code)?code:null;activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
+function chooseCategoryGroup(code){if(!publicCategoryGroupVisible(code))code=null;activeCategoryGroup=activeCategoryGroup===code?null:categoryGroups.some(c=>c.code===code)?code:null;if(code)activeSource=null;activeCategory='all';syncBrowseControls();updateBrowseLabel();navigate('products')}
 function syncBrowseControls(){
   activeCategory='all';
   if(!publicCategoryGroupVisible(activeCategoryGroup))activeCategoryGroup=null;
@@ -55,6 +55,7 @@ function syncBrowseControls(){
 function updateBrowseLabel(){const entry=[...directoryData.brands,...directoryData.teams].find(x=>x.code===activeSource);const label=activeSource?(entry?.name_zh||entry?.name||activeSource):document.getElementById('q').value.trim()?'搜索结果':'精选好价';const group=categoryGroups.find(c=>c.code===activeCategoryGroup);document.getElementById('browseLabel').textContent=label+(group?' · '+group.name:'')}
 function channelProductCount(code){return items.filter(p=>channelCard(p,code)).length}
 function renderDirectory(section){
+  if(section==='experiences'){renderExperiences();return;}
   directoryData=publicDirectoryData(directoryData,roadReferenceData);
   const entries=directoryData[section]||[];document.getElementById('browseLabel').textContent=section==='brands'?'品牌官网':'世巡车队';document.getElementById('count').textContent=entries.length+' 个入口';
   const ranking=section==='teams'?directoryData.team_ranking:null;
@@ -677,7 +678,7 @@ function expireLocalInventory(now=Date.now()){
   changed=activeTab==='products';
   if(guideContext&&!guideContext.reference&&!offerAvailable(guideContext.quote,now))showInventoryInvalidated(guideContext.quote);
   else if(currentProduct&&(document.getElementById('variant')||document.getElementById('bundleChoices'))&&currentProduct.variants.some(v=>v.variant_id===currentProduct.variant_id&&v.in_stock)&&!currentProduct.offers.some(q=>offerAvailable(q,now)))showInventoryInvalidated(currentProduct.offers.find(q=>q.offer.stock==='in_stock')||currentProduct.offers[0]);
-  if(changed&&activeTab==='products'){const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;render(active)}
+  if(changed&&activeTab==='products'&&!sheet.classList.contains('open')){const active=gallery.querySelectorAll('.card')[currentIndex]?.dataset.id;render(active)}
 }
 // Run independently of network success and price-change events, including resumed tabs.
 const inventoryTimer=setInterval(()=>{expireLocalInventory();if(!window.BIKEHUNT_PAGES){refreshCatalogSilently(false);if(!guideContext&&currentProduct&&(document.getElementById('variant')||document.getElementById('bundleChoices')))refreshOpenProductDetail()}},60000);

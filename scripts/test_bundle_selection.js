@@ -31,6 +31,7 @@ function harness(){
     sheet:{classList:{contains:()=>open}},window:{BIKEHUNT_PAGES:false},history:{state:{unrelated:'keep',bikehuntBrowse:{source:'soudal',query:'Cycling outfit',category:'accessories'}},replaceState(value){this.state=value}},
     document:{getElementById:id=>id==='sheetBody'?body:staticElements.get(id)||elements.get(id)||null},
     e:value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char])),safeUrl:value=>value||'',cny:value=>'CNY '+value,money:(value,currency)=>currency+' '+value,timeText:value=>value,
+    productImageUrl:value=>value||'',
     cancelPurchaseContext(){c.guideContext=null},saveBrowseState(){},bindMerchantGuides(){},refreshFitReference(){fitCalls++},startGuide(d,offerId){guides.push([d.variant_id,offerId])},
     getJson:async url=>{requests.push(url);return typeof result==='function'?result(url):result},
   });

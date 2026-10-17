@@ -151,6 +151,12 @@ class OfferRepository:
                     and row.data_kind != "legacy_cache"]
         success_urls = {key for row in offers for key in row_collection_keys(row)}
         previous = {row.offer_id: row for row in existing}
+        # A missing optional image is not evidence that the exact product lost
+        # its photo. Reuse only its own recorded image, never another variant.
+        offers = [row.model_copy(update={"image": previous[row.offer_id].image})
+                  if not row.image and row.offer_id in previous
+                  and previous[row.offer_id].identity == row.identity
+                  and previous[row.offer_id].url == row.url else row for row in offers]
         # An unknown/omitted variant is not affirmative sold-out evidence.
         # Preserve the exact last-known record and its original observation time.
         incoming_ids = {row.offer_id for row in offers}
