@@ -94,6 +94,7 @@ jobs:
         run: |
           node scripts/test_listing_order.js
           node scripts/test_featured_rotation.js
+          node scripts/test_traveler_forum.js
       - name: Validate read-only merchant language guides
         run: node scripts/test_merchant_guides.js
       - name: Validate complete merchant and market payment matrices

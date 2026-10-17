@@ -17,6 +17,15 @@ for(const now of [noon,evening])assert.equal(api.selectHome([...cards.slice(0,6)
 const newest={...cards[5],first_listed_at:'2026-10-17T03:20:00Z'},manyNew=[...cards.slice(0,5),newest,fresh];
 assert.notDeepEqual(ids(manyNew,noon),ids(manyNew,evening),'Multiple new receipts must not freeze both featured slots for a whole day');
 for(const now of [noon,evening])assert.equal(api.selectHome(manyNew,{...opts,now})[0],newest);
+const yesterday={...cards[0],product_id:'dated-yesterday',first_listed_at:'2026-10-16T14:55:21Z',channel:'one'},unknown={...cards[1],product_id:'unknown-history',first_listed_at:null,channel:'two'};
+assert.equal(api.newToday(yesterday,noon),false,'Yesterday is not a new arrival even within 24h');
+assert.equal(api.newToday({...unknown,fetched_at:new Date(noon).toISOString()},noon),false,'Verification cannot manufacture a new publication');
+assert.notEqual(ids([yesterday,unknown],noon)[0],ids([yesterday,unknown],evening)[0],'Even tiny channel pools rotate the first position, rather than keeping yesterday above unknown history');
+assert.deepEqual(api.orderCatalog([unknown,yesterday],{now:noon}).map(p=>p.product_id),['dated-yesterday','unknown-history'],'Latest catalog remains based on authentic dates');
+const base=[{...cards[0],channel:'one'},{...cards[1],channel:'two'},{...cards[2],channel:'three'}],arrival={...cards[3],channel:'one',first_listed_at:'2026-10-17T03:25:00Z'};
+assert.deepEqual(ids([...base,arrival],noon),[arrival.product_id,...ids(base,noon)],'A real new product inserts at the top and existing cards move down in the same order');
+assert.equal(api.newToday({...arrival,first_listed_at:'2026-10-16T16:00:00Z'},noon),true);
+assert.equal(api.newToday({...arrival,first_listed_at:'2026-10-16T15:59:59Z'},noon),false);
 const sold={...cards[0],stock_state:'out_of_stock'};
 assert.ok(!ids([sold,...cards.slice(1)],noon).includes(sold.product_id));
 assert.equal(api.selectHome([...cards,...cards.map(p=>({...p,product_id:p.product_id+'-color'}))],{...opts,now:noon}).length,2);

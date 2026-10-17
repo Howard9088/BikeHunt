@@ -40,7 +40,7 @@ def build_public_site(root: Path, fx: FxSnapshot | None = None) -> dict:
     output.mkdir()
     web = root/"web"
     (output/"web").mkdir()
-    for name in ("traveler-experiences.js", "traveler-experiences.json", "featured-rotation.js", "listing-order.js", "public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "payment-methods.js", "payment-methods.json", "payment-channels.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
+    for name in ("traveler-experiences.js", "traveler-experiences.json", "traveler-forum-data.json", "featured-rotation.js", "listing-order.js", "public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "group.js", "group.css", "registration-guides.js", "purchase-readiness.js", "purchase-readiness.json", "payment-methods.js", "payment-methods.json", "payment-channels.json", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css"):
         shutil.copy2(web/name, output/"web"/name)
     if (web/"visitor-stats.js").is_file():
         shutil.copy2(web/"visitor-stats.js", output/"web/visitor-stats.js")

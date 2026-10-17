@@ -38,6 +38,11 @@
     const next=(minute<690?date*day+690*60000:minute<1080?date*day+1080*60000:(date+1)*day+690*60000)-8*3600000;
     return {index,start,next,label:minute>=690&&minute<1080?'午间精选':'晚间精选'};
   }
+  function newToday(card,now=Date.now()){
+    const stamp=listingTime(card,now),day=86400000;
+    const start=Math.floor((now+8*3600000)/day)*day-8*3600000;
+    return stamp!==null&&stamp>=start;
+  }
   // Caller supplies exact-quote eligibility and model/channel keys. Selection
   // changes only presentation; the original cards and listing ledger stay intact.
   function selectHome(cards,{eligible,channelKey,modelKey,now=Date.now(),explicitCompare=null,rotate=false}){
@@ -48,15 +53,23 @@
       const seen=new Set(),models=[];
       for(const card of pool.sort((a,b)=>cmp(a,b)||stableID(a,b))){const key=modelKey(card);if(!seen.has(key)){seen.add(key);models.push(card);}}
       if(!rotate||models.length<=2){chosen.push(...models.slice(0,2));continue;}
-      // Keep the newest real publication for 24h, leaving the second slot free
-      // to rotate even when many first-listing receipts arrive together.
-      const fresh=models.filter(card=>{const stamp=listingTime(card,now);return stamp!==null&&now-stamp<86400000}).slice(0,1);
+      // Only real additions from the current Beijing day lead the feed.
+      const fresh=models.filter(card=>newToday(card,now)).slice(0,1);
       const rest=models.filter(card=>!fresh.includes(card)),take=2-fresh.length;
       const offset=((homeSlot(now).index%rest.length)+rest.length)%rest.length;
       chosen.push(...fresh,...Array.from({length:take},(_,i)=>rest[(offset+i)%rest.length]));
     }
-    return chosen.sort((a,b)=>cmp(a,b)||stableID(a,b));
+    if(!rotate||explicitCompare)return chosen.sort((a,b)=>cmp(a,b)||stableID(a,b));
+    const fresh=chosen.filter(card=>newToday(card,now)).sort((a,b)=>cmp(a,b)||stableID(a,b));
+    const older=new Map();
+    for(const card of chosen){if(newToday(card,now))continue;const key=channelKey(card);if(!older.has(key))older.set(key,[]);older.get(key).push(card);}
+    // Dated historic cards and unknown history share the rotating positions.
+    // Round-robin channels so one old brand or cheap card cannot own the cover.
+    const keys=[...buckets.keys()].sort(),offset=((homeSlot(now).index%keys.length)+keys.length)%keys.length;
+    const channels=[...keys.slice(offset),...keys.slice(0,offset)],history=[];
+    while(older.size){for(const key of channels){const queue=older.get(key);if(!queue)continue;history.push(queue.shift());if(!queue.length)older.delete(key);}}
+    return [...fresh,...history];
   }
-  const api={listingTime,listingLabel,compareListing,compareHome,orderCatalog,selectHome,homeSlot};
+  const api={listingTime,listingLabel,compareListing,compareHome,orderCatalog,selectHome,homeSlot,newToday};
   if(typeof module==='object'&&module.exports)module.exports=api;else root.BikeHuntListingOrder=Object.freeze(api);
 })(typeof globalThis==='object'?globalThis:this);

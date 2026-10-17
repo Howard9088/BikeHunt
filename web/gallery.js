@@ -152,7 +152,7 @@ function render(preserveId=null){
   document.getElementById('count').textContent=featuredBrowse()&&list.length?list.length+' 件渠道精选 · '+verifiedCount+' 件有折扣':list.length+' 件商品';
   document.getElementById('sourceCount').textContent=sourceCount+' 个购买渠道';
   if(!list.length&&typeof renderEmptyReferences==='function'&&renderEmptyReferences()){updatePosition(0,0);return}
-  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款上次核实有货的商品，北京时间每天 11:30、18:00 换批；真实新发布优先，折扣另行标注。<br>暂时没有符合条件的商品，请稍后再看。</div>':activeSource?'<div class="empty"><strong>该渠道暂无已核实有货的商品</strong>售罄或库存待确认的商品暂不展示，请稍后再看。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
+  if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款上次核实有货的商品，北京时间每天 11:30、18:00 换批；当日真实新增优先，折扣另行标注。<br>暂时没有符合条件的商品，请稍后再看。</div>':activeSource?'<div class="empty"><strong>该渠道暂无已核实有货的商品</strong>售罄或库存待确认的商品暂不展示，请稍后再看。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
   gallery.innerHTML=list.map((p,i)=>{
     const deal=featuredDeal(p),low=!deal?lowPrices.get(p.product_id):null,channel=featuredBrowse()&&!deal;
     const domestic=p.source_codes?.includes('decathlon_cn')&&p.reference_source==='迪卡侬中国官网'&&p.reference_price?.currency==='CNY'&&safeUrl(p.reference_url).startsWith('https://www.decathlon.com.cn/');
@@ -175,7 +175,7 @@ function render(preserveId=null){
       '<div class="buyline"><div class="price-label">'+(historicalPrice?'上次记录商品价 · 当前价格请到官网核对':domestic?'中国官网商品价 · 配送费用另核':deal?'已核实折扣 · 商品价，不含运税':low||channel?'所示规格商品价 · 不含运税':sold?'所示报价已售罄':verifiedWithoutSizes?'已核实有货 · 所示商品价，规格请到官网核对':isVerified?'已核实商品参考价 · 先选规格':stockVerified&&p.available_sizes?.length?'现货商品参考起价 · 先选规格':expired?'历史参考价 · 库存待核实':'参考起价 · 库存待核实')+'</div>'+
       '<div class="best-price">'+e(cny(p.reference_cny))+(deal||low||channel?'':'<small> 起</small>')+'</div>'+
       '<div class="foreign-price">'+(deal?'<span class="original-price">商家原价 <s>'+e(money(p.reference_original_price.amount,p.reference_original_price.currency))+'</s></span> · 现价 ':'')+e(money(p.reference_price.amount,p.reference_price.currency))+' · '+e(p.reference_source)+'</div>'+
-      (deal?'<div class="deal-spec">未取得折扣结束时间</div>':channel?'<div class="deal-spec">该渠道上次核实有货的商品定时轮换，真实新发布优先；所选商品按本站发布时间倒序，不是同类比价或全网最低价。</div>':lowPriceMarkup(p,low))+'</div>'+
+      (deal?'<div class="deal-spec">未取得折扣结束时间</div>':channel?'<div class="deal-spec">当日真实新增置顶，历史精选定时轮换渠道与位置；首次发布时间保留原记录。不是同类比价或全网最低价。</div>':lowPriceMarkup(p,low))+'</div>'+
       '<button class="compare-button" type="button">选规格，比较 '+p.source_count+' 个渠道 <span aria-hidden="true">→</span></button>'+
       '</div></div></article>';
   }).join('');
