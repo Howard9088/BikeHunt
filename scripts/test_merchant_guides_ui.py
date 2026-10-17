@@ -56,7 +56,7 @@ def guide_fixture():
 def assert_scope(page, base, read_state):
     expect(page).to_have_url(base)
     expect(page.locator('#q')).to_have_value('Guide Bib')
-    expect(page.locator('#browseLabel')).to_have_text('MAAP 品牌 · 骑行服饰')
+    expect(page.locator('#browseLabel')).to_have_text('搜索结果 · 骑行服饰')
     expect(page.locator('[data-category-group=clothing]')).to_have_attribute('aria-pressed', 'true')
     expect(page.locator('.card')).to_have_count(1)
     assert page.evaluate("localStorage.getItem('bikehuntMessagesReadCursor')") == read_state
