@@ -20,6 +20,7 @@ from app.localization import title_zh
 from app.promotion import HOMEPAGE_URL, PromotionPreparer, timestamp
 
 SHANGHAI = ZoneInfo("Asia/Shanghai")
+PUBLISH_HOUR = 16
 
 
 class DailyPublisher:
@@ -62,7 +63,7 @@ class DailyPublisher:
         if now is None:
             raise ValueError("Timezone-aware time required")
         local = now.astimezone(SHANGHAI)
-        scheduled = local.replace(hour=18, minute=0, second=0, microsecond=0)
+        scheduled = local.replace(hour=PUBLISH_HOUR, minute=0, second=0, microsecond=0)
         preparation = scheduled - timedelta(minutes=15)
         closes = scheduled + timedelta(hours=1)
         if local < preparation:
@@ -177,10 +178,10 @@ class DailyPublisher:
         return payload
 
     def reserve(self, now: datetime | None = None) -> dict:
-        """Reserve only within today's 18:00 hour and stop on unresolved submissions."""
+        """Reserve only within the approved Shanghai hour; fence unresolved notes."""
         now = timestamp(now or datetime.now(timezone.utc))
-        if now is None or now.astimezone(SHANGHAI).hour != 18:
-            raise ValueError("Publishing is limited to 18:00–18:59 Asia/Shanghai")
+        if now is None or now.astimezone(SHANGHAI).hour != PUBLISH_HOUR:
+            raise ValueError(f"Publishing is limited to {PUBLISH_HOUR:02d}:00–{PUBLISH_HOUR:02d}:59 Asia/Shanghai")
         payload = self.prepare(now)
         with self.connect() as db:
             db.execute("BEGIN IMMEDIATE")
@@ -214,7 +215,7 @@ class DailyPublisher:
     def begin(self, job_id: str, now: datetime | None = None) -> dict:
         """Recheck just before the final browser click; subsequent crashes fence retries."""
         now = timestamp(now or datetime.now(timezone.utc))
-        if now is None or now.astimezone(SHANGHAI).hour != 18:
+        if now is None or now.astimezone(SHANGHAI).hour != PUBLISH_HOUR:
             raise ValueError("Outside the approved publishing hour")
         fresh = self.prepare(now)
         with self.connect() as db:

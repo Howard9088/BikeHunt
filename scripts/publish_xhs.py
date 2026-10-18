@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from app.catalog.storage import atomic_json
-from app.social_publishing import DailyPublisher, render_card
+from app.social_publishing import DailyPublisher, PUBLISH_HOUR, render_card
 
 
 def main() -> None:
@@ -28,7 +28,7 @@ def main() -> None:
     if args.action == "configure":
         DailyPublisher(ROOT, args.account or "")
         atomic_json(
-            config_path, {"account_id": args.account, "timezone": "Asia/Shanghai", "hour": 18}
+            config_path, {"account_id": args.account, "timezone": "Asia/Shanghai", "hour": PUBLISH_HOUR}
         )
         print(json.dumps({"status": "configured", "account_id": args.account}))
         return

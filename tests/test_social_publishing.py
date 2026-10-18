@@ -23,7 +23,7 @@ class DailyPublishingTests(unittest.TestCase):
     def setUp(self):
         evidence_tests.PromotionTests.setUp(self)
         self.publisher = DailyPublisher(self.root, "12345678")
-        self.at = datetime(2026, 10, 15, 10, 0, tzinfo=timezone.utc)
+        self.at = datetime(2026, 10, 15, 8, 0, tzinfo=timezone.utc)
 
     offer = evidence_tests.PromotionTests.offer
     snapshot = evidence_tests.PromotionTests.snapshot
@@ -38,12 +38,13 @@ class DailyPublishingTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.publisher.reserve(self.at - timedelta(hours=1))
 
-    def test_schedule_preparation_waits_until_18_shanghai(self):
+    def test_schedule_preparation_waits_until_16_shanghai(self):
         result = self.publisher.check_schedule(self.at - timedelta(minutes=15))
         self.assertEqual(result["status"], "waiting")
         self.assertEqual(result["wait_seconds"], 900)
         self.assertFalse(result["can_publish"])
-        self.assertEqual(result["scheduled_at"], "2026-10-15T18:00:00+08:00")
+        self.assertEqual(result["preparation_at"], "2026-10-15T15:45:00+08:00")
+        self.assertEqual(result["scheduled_at"], "2026-10-15T16:00:00+08:00")
         almost_open = self.publisher.check_schedule(self.at - timedelta(microseconds=1))
         self.assertEqual(almost_open["wait_seconds"], 1)
 
@@ -96,6 +97,28 @@ class DailyPublishingTests(unittest.TestCase):
             clock.now.return_value = self.at + timedelta(hours=1, minutes=49)
             publish_xhs.main()
         self.assertEqual(json.loads(output.getvalue())["status"], "missed")
+
+    def test_former_18_hour_cannot_reserve_or_submit(self):
+        job = self.ready()["job_id"]
+        old_hour = self.at + timedelta(hours=2)
+        self.assertEqual(self.publisher.check_schedule(old_hour)["status"], "missed")
+        with self.assertRaisesRegex(ValueError, "16:00"):
+            self.publisher.reserve(old_hour)
+        with self.assertRaisesRegex(ValueError, "Outside"):
+            self.publisher.begin(job, old_hour)
+
+    def test_cli_configuration_uses_16_shanghai(self):
+        from scripts import publish_xhs
+
+        with (
+            patch.object(publish_xhs, "ROOT", self.root),
+            patch.object(sys, "argv", ["publish_xhs.py", "configure", "--account", "12345678"]),
+            redirect_stdout(io.StringIO()),
+        ):
+            publish_xhs.main()
+        config = json.loads((self.publisher.folder / "config.json").read_text())
+        self.assertEqual(config["hour"], 16)
+        self.assertEqual(config["timezone"], "Asia/Shanghai")
 
     def test_daily_maximum_and_receipt_deduplication(self):
         result = self.ready()
