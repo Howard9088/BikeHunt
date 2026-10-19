@@ -25,6 +25,9 @@ from app.collectors.variants import parse_rapha, parse_visma
 from app.collectors.woocommerce import parse_woocommerce
 from app.collectors.saved_team_catalogs import parse_lotto, parse_redbull_catalog
 from app.collectors.shopify import collect_shopify_catalog
+from app.collectors.nutrition import parse_nutrition
+from app.collectors.pelotan import parse_pelotan
+from app.collectors.maurten_nutrition import parse_maurten_nutrition
 from app.collectors.embedded_catalogs import parse_assos, parse_pns, parse_kask
 from app.collectors.transport import CollectionError, PublicPageFetcher, SourceDeferred
 from app.collectors.fetch_policy import source_policy
@@ -218,13 +221,13 @@ def _collect_source(settings: dict, repository: OfferRepository, source_map: dic
                 errors.extend(result.errors)
                 continue
             response = fetch_gobik_product(fetcher, url) if code == "gobik" else fetcher.fetch(url)
-            if code == "gobik" and response.url != url:
+            if code in {"gobik", "maurten_nutrition", "sis_nutrition"} and response.url != url:
                 raise CollectionError("Gobik response changed the configured product or market URL")
             fetched_at = datetime.now(timezone.utc)
             raw_path = ROOT / "data" / "raw" / (code + "_" + hashlib.sha256(url.encode()).hexdigest()[:16] + ".html")
             raw_path.parent.mkdir(exist_ok=True)
             raw_path.write_bytes(response.body)
-            parse = {"gobik":parse_gobik,"specialized":parse_specialized,"colnago":parse_colnago_product,"canyon":parse_canyon_product,"redbull_product":parse_redbull_product,"topfanz":parse_topfanz,"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
+            parse = {"pelotan":parse_pelotan,"nutrition":parse_nutrition,"maurten_nutrition":parse_maurten_nutrition,"gobik":parse_gobik,"specialized":parse_specialized,"colnago":parse_colnago_product,"canyon":parse_canyon_product,"redbull_product":parse_redbull_product,"topfanz":parse_topfanz,"unox":parse_unox,"pissei":parse_pissei,"lotto":parse_lotto,"redbull_catalog":parse_redbull_catalog,"woocommerce":parse_woocommerce,"teamcycles":parse_teamcycles,"rapha":parse_rapha,"visma":parse_visma,"assos":parse_assos,"pns":parse_pns,"kask":parse_kask_rendered}.get(settings["parser"],parse_jsonld)
             if settings["parser"] == "decathlon_cn":
                 from app.collectors.decathlon_cn import parse_decathlon_cn
                 parse = parse_decathlon_cn

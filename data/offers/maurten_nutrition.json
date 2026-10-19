@@ -1,0 +1,91 @@
+{
+  "source_code": "maurten_nutrition",
+  "collected_at": "2026-10-19T01:34:00+00:00",
+  "offers": [
+    {
+      "offer_id": "9e6986849fc9d330752e",
+      "source_code": "maurten_nutrition",
+      "source_name": "Maurten 法国官网",
+      "identity": {
+        "brand": "Maurten",
+        "model": "Gel 100",
+        "gtin": null,
+        "mpn": null,
+        "size": "标准版 · 12袋/盒",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Gel 100",
+      "url": "https://www.maurten.com/fr/products/gel-100-box",
+      "image": "https://maurten.imgix.net/photos/Products/Entry-Card-Maurten-Gel-100-1.png?auto=compress%2Cformat&crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&fp-z=1&h=800&q=80&w=800&s=48c317b0ca10c4b45aa03659d57a05ee",
+      "price": {
+        "amount": "40.96",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "static",
+      "evidence_sha256": "57397310f49a525ea7125d56ff62e3b94dcbee7b4a15aba486e274eeea1c3a4a",
+      "collection_url": "https://www.maurten.com/fr/products/gel-100-box",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国配送及食品进口条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国发行银行卡支付条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T01:34:00Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "maurten-gel100-box-fr",
+      "identity_evidence": "官方法国商品页SKU12002、EUR逐商品报价、12袋包装及结构化库存；未混用其他市场",
+      "sales_region": "法国市场 · EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "12袋/盒标准版本；购买前核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    }
+  ]
+}

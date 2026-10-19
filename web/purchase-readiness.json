@@ -1355,6 +1355,93 @@
         "https://gobik.com/en/blogs/faq/does-a-return-have-shipping-costs",
         "https://gobik.com/en/blogs/faq/why-doesnt-paypal-appear-as-a-payment-method"
       ]
+    },
+    {
+      "sourceCode": "sis_nutrition",
+      "scope": "market",
+      "salesRegion": "UK",
+      "label": "SiS 英国官网",
+      "policyScope": "当前官网商品市场；支付、退换及进口条件尚待核实",
+      "merchantHosts": [
+        "www.scienceinsport.com"
+      ],
+      "checkedAt": "2026-10-19",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "未核实当前市场支付方式及中国发行卡适用性。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "尚未核实该商品可寄中国；不把海外库存视为中国可购买。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未核实商家转运许可、食品或防晒品运输及进口条件，不提供已可行的转运保证。"
+      },
+      "sources": [
+        "https://www.scienceinsport.com/beta-fuel-80?sku=131263"
+      ],
+      "sourceLimitations": "商品价格与库存的核实不等于支付、运输和进口条件已核实。"
+    },
+    {
+      "sourceCode": "maurten_nutrition",
+      "scope": "market",
+      "salesRegion": "法国市场 · EUR 报价；中国配送与支付待核实",
+      "label": "Maurten 法国官网",
+      "policyScope": "当前官网商品市场；支付、退换及进口条件尚待核实",
+      "merchantHosts": [
+        "www.maurten.com"
+      ],
+      "checkedAt": "2026-10-19",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "未核实当前市场支付方式及中国发行卡适用性。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "尚未核实该商品可寄中国；不把海外库存视为中国可购买。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未核实商家转运许可、食品或防晒品运输及进口条件，不提供已可行的转运保证。"
+      },
+      "sources": [
+        "https://www.maurten.com/fr/products/gel-100-box"
+      ],
+      "sourceLimitations": "商品价格与库存的核实不等于支付、运输和进口条件已核实。"
+    },
+    {
+      "sourceCode": "pelotan",
+      "scope": "market",
+      "salesRegion": "UK",
+      "label": "Pelotan 英国官网",
+      "policyScope": "当前官网商品市场；支付、退换及进口条件尚待核实",
+      "merchantHosts": [
+        "pelotan.cc"
+      ],
+      "checkedAt": "2026-10-19",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "未核实当前市场支付方式及中国发行卡适用性。"
+      },
+      "directChina": {
+        "status": "prohibited",
+        "note": "官网FAQ只配送英国与欧盟，不直邮中国大陆。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未核实商家转运许可、食品或防晒品运输及进口条件，不提供已可行的转运保证。"
+      },
+      "sources": [
+        "https://pelotan.cc/pages/contact"
+      ],
+      "sourceLimitations": "商品价格与库存的核实不等于支付、运输和进口条件已核实。"
     }
   ],
   "forwardingExplainer": "转运像海外代收点：先取得自己名下的仓库收件编号，商家把货寄到仓库；仓库称重、可按要求合箱，再收国际运费寄中国。你仍需自行向商家付款；转运不解决中国银行卡拒付，也不自动提供商家售后。只在商家允许、承运商允许商品且进口手续满足时使用。",

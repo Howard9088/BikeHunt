@@ -1,0 +1,170 @@
+{
+  "source_code": "sis_nutrition",
+  "collected_at": "2026-10-19T01:34:00+00:00",
+  "offers": [
+    {
+      "offer_id": "d72e86fa2f53b32c07a9",
+      "source_code": "sis_nutrition",
+      "source_name": "SiS 英国官网",
+      "identity": {
+        "brand": "SiS",
+        "model": "Beta Fuel 80",
+        "gtin": null,
+        "mpn": null,
+        "size": "Orange / 15 Pack",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "SiS Beta Fuel 80",
+      "url": "https://www.scienceinsport.com/beta-fuel-80?sku=131263",
+      "image": "https://www.scienceinsport.com/media/catalog/product/1/3/131263_gs.png?optimize=medium&fit=bounds&height=680&width=680&canvas=680:680",
+      "price": {
+        "amount": "42.00",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": 138,
+      "fetch_mode": "static",
+      "evidence_sha256": "a4a34d630988a59eef1cfb2e3e719644a4031db0db3304164b2b74f46f5e8611",
+      "collection_url": "https://www.scienceinsport.com/beta-fuel-80?sku=131263",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T01:34:00Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "sis:beta-fuel-80",
+      "identity_evidence": "SiS official JSON-LD SKU 131263 joined to Magento child 6256; flavour Orange and 15 Pack, matching price and stock.",
+      "sales_region": "UK",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    },
+    {
+      "offer_id": "f1f84870a78bf8d01297",
+      "source_code": "sis_nutrition",
+      "source_name": "SiS 英国官网",
+      "identity": {
+        "brand": "SiS",
+        "model": "Beta Fuel 80",
+        "gtin": null,
+        "mpn": null,
+        "size": "Strawberry and Lime / 15 Pack",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "SiS Beta Fuel 80",
+      "url": "https://www.scienceinsport.com/beta-fuel-80?sku=131265",
+      "image": "https://www.scienceinsport.com/media/catalog/product/b/e/beta_fuel_strawberrylime_sachet.jpg?optimize=medium&fit=bounds&height=680&width=680&canvas=680:680",
+      "price": {
+        "amount": "42.00",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": 163,
+      "fetch_mode": "static",
+      "evidence_sha256": "a4a34d630988a59eef1cfb2e3e719644a4031db0db3304164b2b74f46f5e8611",
+      "collection_url": "https://www.scienceinsport.com/beta-fuel-80?sku=131265",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T01:34:00Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "sis:beta-fuel-80",
+      "identity_evidence": "SiS official JSON-LD SKU 131265 joined to Magento child 6262; flavour Strawberry and Lime and 15 Pack, matching price and stock.",
+      "sales_region": "UK",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    }
+  ]
+}

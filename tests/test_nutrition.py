@@ -1,4 +1,4 @@
-"""Editorial nutrition is distinct from verified offers and domestic commerce."""
+"""Nutrition products require exact reviewed classification, not brand-only assumptions."""
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch

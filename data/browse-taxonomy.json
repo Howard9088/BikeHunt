@@ -3144,6 +3144,42 @@
       "reason": "Exact official Fizik product page technology specifications identify outsole type as Clipless road; reviewed 2026-10-16. Navigation only, not evidence of current price or stock.",
       "needs_type_review": false,
       "type_evidence_url": "https://www.fizik.com/en-us/products/shoes-tempo-decos-carbon-cn-iridescent_light_blue-tpr2bmr1c9910"
+    },
+    {
+      "product_id": "77f352e3644019cc6110",
+      "name": "SiS Beta Fuel 80 — Orange / 15 Pack",
+      "source_codes": [
+        "sis_nutrition"
+      ],
+      "source_url": "https://www.scienceinsport.com/beta-fuel-80?sku=131263",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official source product: packaging and flavor verified in public product evidence",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "3ab0f3cf202959045e34",
+      "name": "Gel 100",
+      "source_codes": [
+        "maurten_nutrition"
+      ],
+      "source_url": "https://www.maurten.com/fr/products/gel-100-box",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official source product: packaging and flavor verified in public product evidence",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "126a7e18cf8771a5c4e3",
+      "name": "Pelotan 200ml Spray",
+      "source_codes": [
+        "pelotan"
+      ],
+      "source_url": "https://pelotan.cc/products/pelotan-200ml-spray",
+      "category": "sunscreen",
+      "category_group": "other",
+      "reason": "Official exact 200ml single-bottle sunscreen product; image reuse permission pending",
+      "needs_type_review": false
     }
   ],
   "supplemental_reviews": [

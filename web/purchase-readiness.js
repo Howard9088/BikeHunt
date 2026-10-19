@@ -2,6 +2,9 @@
 // Dated, read-only policy summaries. These never alter an offer or cost estimate.
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
+  pelotan:["pelotan.cc"],
+  maurten_nutrition:["www.maurten.com"],
+  sis_nutrition:["www.scienceinsport.com"],
   oakley:["www.oakley.com"],
   soudal:["thewolfpack.shop"],
   ineos:["store.netcompanyineos.com"],
@@ -25,6 +28,9 @@ const READINESS_HOSTS=Object.freeze({
   myus:['www.myus.com'],forward2me:['www.forward2me.com','forward2me.zendesk.com'],tenso:['www.tenso.com','faq.tenso.com']
 });
 const READINESS_SCOPES=Object.freeze({
+  pelotan:["market", "UK", ["pelotan.cc"]],
+  maurten_nutrition:["market", "法国市场 · EUR 报价；中国配送与支付待核实", ["www.maurten.com"]],
+  sis_nutrition:["market", "UK", ["www.scienceinsport.com"]],
   gobik:["market", "西班牙站 EUR 报价", ["gobik.com"]],
   oakley:["market", "美国站 USD 报价", ["www.oakley.com"]],
   soudal:["market", "BE 市场 · EUR 报价；未验证其他市场库存", ["thewolfpack.shop"]],

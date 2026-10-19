@@ -727,5 +727,54 @@
       "max_products": 2,
       "wait_selector": "#product-right-content .sku-size .size-list > div"
     }
+  },
+  {
+    "code": "sis_nutrition",
+    "domains": [
+      "www.scienceinsport.com"
+    ],
+    "parser": "nutrition",
+    "urls": [
+      "https://www.scienceinsport.com/beta-fuel-80?sku=131263",
+      "https://www.scienceinsport.com/beta-fuel-80?sku=131265"
+    ],
+    "fetch_policy": {
+      "mode": "static",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 2
+    }
+  },
+  {
+    "code": "maurten_nutrition",
+    "domains": [
+      "www.maurten.com"
+    ],
+    "parser": "maurten_nutrition",
+    "urls": [
+      "https://www.maurten.com/fr/products/gel-100-box"
+    ],
+    "fetch_policy": {
+      "mode": "static",
+      "timeout_ms": 25000,
+      "max_pages": 2,
+      "max_products": 2
+    }
+  },
+  {
+    "code": "pelotan",
+    "domains": [
+      "pelotan.cc"
+    ],
+    "parser": "pelotan",
+    "urls": [
+      "https://pelotan.cc/products/pelotan-200ml-spray"
+    ],
+    "fetch_policy": {
+      "mode": "static",
+      "timeout_ms": 25000,
+      "max_pages": 1,
+      "max_products": 1
+    }
   }
 ]

@@ -35,7 +35,7 @@ def inspect(before, after):
     missing=set(before['offers'])-set(after['offers'])
     if missing: errors.append(f'{len(missing)} prior exact offer records disappeared without a sold-out observation')
     if set(old)-set(new): errors.append(f'{len(set(old)-set(new))} public product families disappeared')
-    for group in ['clothing','helmets','cleat_shoes','other']:
+    for group in ['clothing','helmets','cleat_shoes','other','nutrition']:
         previous=[row for row in old.values() if row['category_group']==group and row['stock_state']=='in_stock']
         current=[row for row in new.values() if row['category_group']==group and row['stock_state']=='in_stock']
         if previous and not current:
