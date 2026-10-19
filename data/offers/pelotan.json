@@ -1,0 +1,88 @@
+{
+  "source_code": "pelotan",
+  "collected_at": "2026-10-19T01:35:24+00:00",
+  "offers": [
+    {
+      "offer_id": "b6f8c4619969695cf8b0",
+      "source_code": "pelotan",
+      "source_name": "Pelotan 英国官网",
+      "identity": {
+        "brand": "Pelotan",
+        "model": "200ml Spray",
+        "gtin": "5017371154763",
+        "mpn": null,
+        "size": "200 ml · 喷雾 · 单瓶",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Pelotan 200ml Spray",
+      "url": "https://pelotan.cc/products/pelotan-200ml-spray?variant=47674080395595",
+      "image": null,
+      "price": {
+        "amount": "24.95",
+        "currency": "GBP"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "static",
+      "evidence_sha256": "ddef9e77ede5d3d809f0d70795c5d736bc1720dda2f06cb44c98cf7a75a80d0b",
+      "collection_url": "https://pelotan.cc/products/pelotan-200ml-spray",
+      "shipping_to_china": {
+        "status": "no",
+        "url": "https://pelotan.cc/pages/contact",
+        "checked_at": "2026-10-19T01:35:24Z",
+        "note": "官网FAQ仅配送英国与欧盟，中国不在配送范围；未验证转运条件",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国发行银行卡支付条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T01:35:24Z",
+      "price_valid_until": "2026-10-20",
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "pelotan:200ml-spray",
+      "identity_evidence": "Official Shopify product variant and JSON-LD match variant ID, SKU, GTIN, GBP price and stock. Single 200 ml spray.",
+      "sales_region": "UK",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": []
+    }
+  ]
+}

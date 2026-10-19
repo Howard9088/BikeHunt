@@ -860,5 +860,62 @@
       "status": "unknown",
       "note": "中国发行卡与账户资格未实际验证。"
     }
+  },
+  {
+    "code": "sis_nutrition",
+    "name": "SiS 英国官网",
+    "brand": "SiS",
+    "type": "brand_official",
+    "base_url": "https://www.scienceinsport.com",
+    "priority": 1,
+    "enabled": true,
+    "collection_strategy": "scrape_public_pages",
+    "china_shipping": {
+      "status": "unverified",
+      "note": "中国配送及食品进口条件未核实"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "note": "中国发行银行卡支付条件未核实"
+    }
+  },
+  {
+    "code": "maurten_nutrition",
+    "name": "Maurten 法国官网",
+    "brand": "Maurten",
+    "type": "brand_official",
+    "base_url": "https://www.maurten.com",
+    "priority": 1,
+    "enabled": true,
+    "collection_strategy": "scrape_public_pages",
+    "china_shipping": {
+      "status": "unverified",
+      "note": "中国配送及食品进口条件未核实"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "note": "中国发行银行卡支付条件未核实"
+    }
+  },
+  {
+    "code": "pelotan",
+    "name": "Pelotan 英国官网",
+    "brand": "Pelotan",
+    "type": "brand_official",
+    "base_url": "https://pelotan.cc",
+    "priority": 1,
+    "enabled": true,
+    "collection_strategy": "scrape_public_pages",
+    "china_shipping": {
+      "status": "no",
+      "scope": "site",
+      "evidence_url": "https://pelotan.cc/pages/contact",
+      "checked_at": "2026-10-19T01:35:24+00:00",
+      "note": "官网FAQ仅配送英国与欧盟，中国不在配送范围；未验证转运条件"
+    },
+    "china_credit_card": {
+      "status": "unverified",
+      "note": "中国发行银行卡支付条件未核实"
+    }
   }
 ]
