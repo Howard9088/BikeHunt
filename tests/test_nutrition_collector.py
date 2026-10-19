@@ -47,6 +47,20 @@ class NutritionCollectorTests(unittest.TestCase):
         self.assertEqual(berry.family_hint, orange.family_hint)
         self.assertNotEqual(berry.offer_id, orange.offer_id)
 
+    def test_live_selected_variant_titles(self):
+        for sku, flavour, quantity in [('131263', 'Orange', 154),
+                                      ('131265', 'Strawberry and Lime', 170)]:
+            fixture = (Path(__file__).parent / 'fixtures' / f'sis_selected_{sku}.html').read_text()
+            row, = parse_nutrition(fixture, SOURCE, URL.replace('131263', sku), NOW)
+            self.assertEqual(row.identity.size, f'{flavour} / 15 Pack')
+            self.assertEqual(row.stock_quantity, quantity)
+            self.assertEqual(row.price.amount, Decimal('42'))
+            wrong_flavour = 'Strawberry and Lime' if flavour == 'Orange' else 'Orange'
+            for wrong_name in [f'Beta Fuel 80 - {wrong_flavour} - 15 Pack',
+                               f'Beta Fuel 80 - {flavour} - Single', 'Beta Fuel 90']:
+                broken = fixture.replace(f'Beta Fuel 80 - {flavour} - 15 Pack', wrong_name)
+                self.assertEqual(parse_nutrition(broken, SOURCE, URL.replace('131263', sku), NOW), [])
+
     def test_price_and_stock_are_refreshed(self):
         def change(p, c):
             p['offers'][0]['price'] = '39.50'

@@ -53,7 +53,10 @@ def _parse_sis(html: str, source: dict, url: str,
     if len(products) != 1:
         return []
     product = products[0]
-    if product['name'].strip().casefold() != 'beta fuel 80':
+    # Selecting ?sku= changes the official JSON-LD name to this exact
+    # flavour/pack label. Do not accept another variant's selected title.
+    allowed_names = {'beta fuel 80', f'Beta Fuel 80 - {flavour} - 15 Pack'.casefold()}
+    if product['name'].strip().casefold() not in allowed_names:
         return []
     quotes = [q for q in product['offers'] if str(q.get('sku')) == sku]
     if len(quotes) != 1 or not _is_variant_url(quotes[0]['url'], sku):
