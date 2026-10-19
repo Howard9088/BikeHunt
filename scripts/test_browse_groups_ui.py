@@ -1,4 +1,4 @@
-"""Hermetic accessory detail/exit and four public groups with stale-payload rejection; run Chromium only in CI."""
+"""Hermetic accessory detail/exit and five public groups with stale-payload rejection; run Chromium only in CI."""
 from __future__ import annotations
 
 import json
@@ -450,7 +450,7 @@ def main():
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
-                expect(page.locator('[data-category-group]')).to_have_count(4)
+                expect(page.locator('[data-category-group]')).to_have_count(5)
                 assert page.locator('[data-category-group]').all_text_contents() == ['骑行服饰', '锁鞋', '头盔', '配件与周边', '运动补能']
                 expect(page.locator('#categoryNav')).to_have_count(0)
                 expect(page.locator('[data-category]')).to_have_count(0)
