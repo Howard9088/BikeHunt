@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SVG_NS = 'http://www.w3.org/2000/svg'
-EXPECTED_BRANDS = {'gobik', 'maap', 'rapha', 'assos', 'castelli', 'santini', 'pns', 'poc', 'kask', 'fizik', 'oakley', 'trek', 'specialized', 'canyon', 'colnago', 'decathlon_cn', 'decathlon_overseas'}
+EXPECTED_BRANDS = {'sis_nutrition', 'maurten_nutrition', 'enervit_nutrition', 'gobik', 'maap', 'rapha', 'assos', 'castelli', 'santini', 'pns', 'poc', 'kask', 'fizik', 'oakley', 'trek', 'specialized', 'canyon', 'colnago', 'decathlon_cn', 'decathlon_overseas'}
 # Hashes are of official source artwork, not a recreation in a substitute font.
 ASSETS = {
     'maap': ('664e49fc71db5831e45e76d7f3cc071d61e26d1e3d27cdf6bf2b8bcf4a30d279', '0 0 76 20', 'maap.cc'),

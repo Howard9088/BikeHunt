@@ -1,0 +1,346 @@
+{
+  "source_code": "enervit_nutrition",
+  "collected_at": "2026-10-19T07:40:50.151Z",
+  "offers": [
+    {
+      "offer_id": "ab5a7f8d0da3a66b5f51",
+      "source_code": "enervit_nutrition",
+      "source_name": "Enervit 欧洲官网",
+      "identity": {
+        "brand": "Enervit",
+        "model": "Carbo Gel Mango",
+        "gtin": null,
+        "mpn": null,
+        "size": "Mango · 60 ml × 1袋",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Carbo Gel Mango",
+      "url": "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-mango.html",
+      "image": "https://www.enervit.com/media/catalog/product/6/b/6b458769e5092f122ce91ce3392fd7f2470e02a0cca2a6f4047c124d3194f55c.jpeg?quality=80&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265",
+      "price": {
+        "amount": "2.95",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "dynamic",
+      "evidence_sha256": "011fb0350b4d99119c339429d1e6c2f9ec101c6b261c596c69593b067cf538be",
+      "collection_url": "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-mango.html",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:40:32.907000Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "enervit:96651",
+      "identity_evidence": "Official exact product URL, selected package, form SKU and purchase-control stock/price agree with product metadata.",
+      "sales_region": "欧洲站 EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "按所选包装核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    },
+    {
+      "offer_id": "ebb440a765f806a7040d",
+      "source_code": "enervit_nutrition",
+      "source_name": "Enervit 欧洲官网",
+      "identity": {
+        "brand": "Enervit",
+        "model": "Carbo Gel Cola Caffeine",
+        "gtin": null,
+        "mpn": null,
+        "size": "Cola · 100 mg咖啡因 · 60 ml × 1袋",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Carbo Gel Cola Caffeine",
+      "url": "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-caffeine.html",
+      "image": "https://www.enervit.com/media/catalog/product/8/6/8644281d42c99c5be965f4c6163b7b1571fef78d82c4d9fc184930931865acd8.jpeg?quality=80&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265",
+      "price": {
+        "amount": "2.95",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "dynamic",
+      "evidence_sha256": "5337349399556c27b3f84765cc174742689806ba85640a2c3cb2f92c1853902b",
+      "collection_url": "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-caffeine.html",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:40:37.134000Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "enervit:96631",
+      "identity_evidence": "Official exact product URL, selected package, form SKU and purchase-control stock/price agree with product metadata.",
+      "sales_region": "欧洲站 EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "按所选包装核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    },
+    {
+      "offer_id": "e11a05a358e3a59d8cb4",
+      "source_code": "enervit_nutrition",
+      "source_name": "Enervit 欧洲官网",
+      "identity": {
+        "brand": "Enervit",
+        "model": "Carbo Bar Brownie",
+        "gtin": null,
+        "mpn": null,
+        "size": "Brownie · 45 g × 1条",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Carbo Bar Brownie",
+      "url": "https://www.enervit.com/en/products/the-carbo-bar-c-2-1-pro-brownie.html",
+      "image": "https://www.enervit.com/media/catalog/product/c/8/c8d860fc50bc0daed9a1f7c363be5ab1b43c54d5403309fbd399c9143781d398.jpeg?quality=80&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265",
+      "price": {
+        "amount": "2.95",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "dynamic",
+      "evidence_sha256": "1e10c59b24a850f6911a214465b5d386bb3ff4462961bf68e73c96847a96d389",
+      "collection_url": "https://www.enervit.com/en/products/the-carbo-bar-c-2-1-pro-brownie.html",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:40:45.994000Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "enervit:99190",
+      "identity_evidence": "Official exact product URL, selected package, form SKU and purchase-control stock/price agree with product metadata.",
+      "sales_region": "欧洲站 EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "按所选包装核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    },
+    {
+      "offer_id": "a69ad7d650b14eb9d130",
+      "source_code": "enervit_nutrition",
+      "source_name": "Enervit 欧洲官网",
+      "identity": {
+        "brand": "Enervit",
+        "model": "Isocarb Lemon",
+        "gtin": null,
+        "mpn": null,
+        "size": "Lemon · 650 g × 1罐",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Isocarb Lemon",
+      "url": "https://www.enervit.com/en/products/isocarb-c-2-1-pro.html",
+      "image": "https://www.enervit.com/media/catalog/product/5/6/56cc205201847aa55908c65451b62bab42386daa4b5c958dd03bb9cb78dbf0e8.jpeg?quality=80&bg-color=255,255,255&fit=bounds&height=265&width=265&canvas=265:265",
+      "price": {
+        "amount": "19.9",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "dynamic",
+      "evidence_sha256": "9bf921dcdb46200fb89d3261464d84f974335fe097dbd305c67a90cc331243a3",
+      "collection_url": "https://www.enervit.com/en/products/isocarb-c-2-1-pro.html",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:40:50.151000Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "enervit:90938",
+      "identity_evidence": "Official exact product URL, selected package, form SKU and purchase-control stock/price agree with product metadata.",
+      "sales_region": "欧洲站 EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "按所选包装核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    }
+  ]
+}

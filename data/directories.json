@@ -302,6 +302,43 @@
       ],
       "logo_note": "品牌官网标识，按页面尺寸展示。",
       "logo_checked_on": "2026-10-16"
+    },
+    {
+      "code": "sis_nutrition",
+      "name": "SiS",
+      "name_zh": "SiS 运动补能",
+      "official_url": "https://www.scienceinsport.com",
+      "shop_url": "https://www.scienceinsport.com/beta-fuel-80",
+      "shop_evidence_url": "https://www.scienceinsport.com/beta-fuel-80",
+      "status": "official_link_found",
+      "source_codes": [
+        "sis_nutrition"
+      ]
+    },
+    {
+      "code": "maurten_nutrition",
+      "name": "Maurten",
+      "name_zh": "Maurten 运动补能",
+      "official_url": "https://www.maurten.com",
+      "shop_url": "https://www.maurten.com/fr/products",
+      "shop_evidence_url": "https://www.maurten.com/fr/products/gel-100-box",
+      "status": "official_link_found",
+      "source_codes": [
+        "maurten_nutrition"
+      ]
+    },
+    {
+      "code": "enervit_nutrition",
+      "name": "Enervit",
+      "name_zh": "Enervit 运动补能",
+      "official_url": "https://www.enervit.com/en/",
+      "shop_url": "https://www.enervit.com/en/",
+      "shop_evidence_url": "https://www.enervit.com/en/and-it-is-pogacar-right-away",
+      "reference_note": "Enervit 官方确认与波加查（Tadej Pogačar）及 UAE Team Emirates 合作开发 C2:1PRO 系列；不代表每款商品都是其本人使用的具体版本。",
+      "status": "official_link_found",
+      "source_codes": [
+        "enervit_nutrition"
+      ]
     }
   ],
   "teams": [

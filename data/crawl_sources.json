@@ -752,13 +752,17 @@
     ],
     "parser": "maurten_nutrition",
     "urls": [
-      "https://www.maurten.com/fr/products/gel-100-box"
+      "https://www.maurten.com/fr/products/gel-100-box",
+      "https://www.maurten.com/fr/products/gel-160-box",
+      "https://www.maurten.com/fr/products/gel-100-caf-100-box",
+      "https://www.maurten.com/fr/products/drink-mix-160",
+      "https://www.maurten.com/fr/products/drink-mix-320"
     ],
     "fetch_policy": {
       "mode": "static",
       "timeout_ms": 25000,
-      "max_pages": 2,
-      "max_products": 2
+      "max_pages": 5,
+      "max_products": 5
     }
   },
   {
@@ -775,6 +779,26 @@
       "timeout_ms": 25000,
       "max_pages": 1,
       "max_products": 1
+    }
+  },
+  {
+    "code": "enervit_nutrition",
+    "domains": [
+      "www.enervit.com"
+    ],
+    "parser": "enervit_nutrition",
+    "urls": [
+      "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-caffeine.html",
+      "https://www.enervit.com/en/products/the-carbo-bar-c-2-1-pro-brownie.html",
+      "https://www.enervit.com/en/products/isocarb-c-2-1-pro.html",
+      "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-mango.html"
+    ],
+    "fetch_policy": {
+      "mode": "dynamic",
+      "timeout_ms": 45000,
+      "max_pages": 4,
+      "max_products": 4,
+      "wait_selector": "#product-addtocart-button"
     }
   }
 ]

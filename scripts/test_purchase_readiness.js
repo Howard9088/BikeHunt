@@ -220,7 +220,7 @@ assert.equal(context.readinessPolicy(offer('alpecin','比利时商城 EUR 页面
 assert.equal(context.readinessPolicy(offer('decathlon','US 市场 · USD 报价；未验证其他市场库存','https://www.decathlon.com.cn/product')),null);
 const ae=context.readinessPolicy(offer('nsn','阿联酋站 USD 报价','https://www.ekoi.com/en-ae/item'));assert.equal(ae.payment.status,'conditional_checkout');assert.ok(ae.payment.methods.includes('PayPal'));
 for(const source of actualSources)assert.ok(data.entries.some(row=>row.sourceCode===source.code),'Missing researched source: '+source.code);
-assert.equal(data.entries.length,42);assert.ok(JSON.stringify(data).length<100000);assert.equal(data.checkedAt,'2026-10-15');
+assert.equal(data.entries.length,43);assert.ok(JSON.stringify(data).length<100000);assert.equal(data.checkedAt,'2026-10-15');
 console.log('Final batch passed: all 35 non-Amazon sources mapped, exact merchant/market boundaries, scoped exceptions, honest evidence gaps and no price/card guarantees.');
 
 const oakleyUS=offer('oakley','美国站 USD 报价','https://www.oakley.com/en-us/product/FOS902243');

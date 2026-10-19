@@ -3180,6 +3180,102 @@
       "category_group": "other",
       "reason": "Official exact 200ml single-bottle sunscreen product; image reuse permission pending",
       "needs_type_review": false
+    },
+    {
+      "product_id": "0fddf19a6c7a77025855",
+      "name": "Isocarb Lemon",
+      "source_codes": [
+        "enervit_nutrition"
+      ],
+      "source_url": "https://www.enervit.com/en/products/isocarb-c-2-1-pro.html",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "4170967c98129c9a840c",
+      "name": "Drink Mix 320",
+      "source_codes": [
+        "maurten_nutrition"
+      ],
+      "source_url": "https://www.maurten.com/fr/products/drink-mix-320",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "698678b51d5120d75efa",
+      "name": "Drink Mix 160",
+      "source_codes": [
+        "maurten_nutrition"
+      ],
+      "source_url": "https://www.maurten.com/fr/products/drink-mix-160",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "7e78f41c96b0e65943bb",
+      "name": "Gel 100 Caf 100",
+      "source_codes": [
+        "maurten_nutrition"
+      ],
+      "source_url": "https://www.maurten.com/fr/products/gel-100-caf-100-box",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "9ec022de84b4fd640752",
+      "name": "Carbo Bar Brownie",
+      "source_codes": [
+        "enervit_nutrition"
+      ],
+      "source_url": "https://www.enervit.com/en/products/the-carbo-bar-c-2-1-pro-brownie.html",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "abd1e3f0f70027693543",
+      "name": "Gel 160",
+      "source_codes": [
+        "maurten_nutrition"
+      ],
+      "source_url": "https://www.maurten.com/fr/products/gel-160-box",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "bded1b2d7d803b4a8565",
+      "name": "Carbo Gel Mango",
+      "source_codes": [
+        "enervit_nutrition"
+      ],
+      "source_url": "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-mango.html",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
+    },
+    {
+      "product_id": "fa72ef74bb7602d81abb",
+      "name": "Carbo Gel Cola Caffeine",
+      "source_codes": [
+        "enervit_nutrition"
+      ],
+      "source_url": "https://www.enervit.com/en/products/carbo-gel-c-2-1-pro-caffeine.html",
+      "category": "sports_nutrition",
+      "category_group": "nutrition",
+      "reason": "Exact official SKU and package verified 2026-10-19; source-bound product evidence, not brand-wide classification.",
+      "needs_type_review": false
     }
   ],
   "supplemental_reviews": [
