@@ -158,7 +158,7 @@ def exercise_oakley_flow(browser,base,mode,viewport,checks,errors):
     page.on('pageerror',lambda error:errors.append('Oakley '+mode+': '+str(error)))
     try:
         page.goto(base,wait_until='networkidle')
-        expect(page.locator('[data-category-group]')).to_have_text(['骑行服饰','锁鞋','头盔','配件与周边'])
+        expect(page.locator('[data-category-group]')).to_have_text(['骑行服饰','锁鞋','头盔','配件与周边','运动补能'])
         expect(page.locator('[data-category-group=road_equipment],[data-category]')).to_have_count(0)
         page.locator('[data-tab=brands]').click()
         directory=page.locator('.directory-card[data-source=oakley]')

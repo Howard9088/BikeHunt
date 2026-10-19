@@ -24,6 +24,7 @@ jobs:
       - run: python scripts/test_browse_groups_ui.py
       - run: python scripts/test_catalog_loading_ui.py
       - run: python scripts/test_catalog_messages_ui.py
+      - run: python scripts/test_featured_deals_ui.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
