@@ -145,12 +145,14 @@ function render(preserveId=null){
   if(typeof markFeaturedBatch==='function')markFeaturedBatch();
   if(observer)observer.disconnect();
   if(typeof resetReferenceFeed==='function')resetReferenceFeed();
+  if(typeof resetNutritionReferenceFeed==='function')resetNutritionReferenceFeed();
   if(typeof updateBrowseLabel==='function'&&activeTab==='products')updateBrowseLabel();
   if(typeof syncBrowseControls==='function')syncBrowseControls();
   const list=visibleItems(),lowPrices=new Map();
   const verifiedCount=list.filter(p=>featuredDeal(p)).length,lowCount=list.length-verifiedCount;
   document.getElementById('count').textContent=featuredBrowse()&&list.length?list.length+' 件渠道精选 · '+verifiedCount+' 件有折扣':list.length+' 件商品';
   document.getElementById('sourceCount').textContent=sourceCount+' 个购买渠道';
+  if(!list.length&&typeof renderNutritionReferences==='function'&&renderNutritionReferences()){updatePosition(0,0);return}
   if(!list.length&&typeof renderEmptyReferences==='function'&&renderEmptyReferences()){updatePosition(0,0);return}
   if(!list.length){gallery.innerHTML=featuredBrowse()?'<div class="empty"><strong>暂无已核实有货的渠道精选</strong>每个渠道选 1～2 款上次核实有货的商品，北京时间每天 11:30、18:00 换批；当日真实新增优先，折扣另行标注。<br>暂时没有符合条件的商品，请稍后再看。</div>':activeSource?'<div class="empty"><strong>该渠道暂无已核实有货的商品</strong>售罄或库存待确认的商品暂不展示，请稍后再看。</div>':'<div class="empty"><strong>没有找到这个商品</strong>试试商品名称或品牌。<br><button type="button" id="resetSearch">清空搜索</button></div>';const reset=document.getElementById('resetSearch');if(reset)reset.onclick=clearSearch;updatePosition(0,0);return}
   gallery.innerHTML=list.map((p,i)=>{
@@ -459,7 +461,7 @@ function renderProductDetail(detail,variantId,sequence,options={}){
   const colors=detail.colors?.filter(c=>c.in_stock)||[];
   const colorMarkup=colors.length>1?'<div class="variant-bar"><label for="colorChoice">现货颜色</label><select id="colorChoice">'+colors.map(c=>'<option value="'+e(c.product_id)+'" '+(c.product_id===id?'selected':'')+'>'+e(c.color)+'</option>').join('')+'</select></div>':'';
   const longLabels=!model&&detail.variants.some(v=>String(v.size).length>40);
-  const ordinaryMarkup='<div class="variant-bar"><label for="variant">先选现货尺码</label><select id="variant"><option value="">请选择剩余现货规格</option>'+available.map((v,index)=>'<option value="'+e(v.variant_id)+'" '+(selected&&v.variant_id===detail.variant_id?'selected':'')+'>'+e(compactVariantLabel(v.size,detail.variants.indexOf(v)))+' · '+v.source_count+' 个渠道 · 商品参考 '+e(cny(v.product_cny_from))+'</option>').join('')+'</select></div><div class="size-choices">'+available.map((v,index)=>'<button type="button" data-variant="'+e(v.variant_id)+'" aria-pressed="'+Boolean(selected&&v.variant_id===detail.variant_id)+'">'+e(compactVariantLabel(v.size,detail.variants.indexOf(v)))+'</button>').join('')+'</div>'+(longLabels?'<details class="variant-original"><summary>查看组合编号与商家原始规格</summary>'+detail.variants.map((v,index)=>'<p>'+e(compactVariantLabel(v.size,index))+(v.in_stock?'':v.stock_state==='out_of_stock'?'（已售罄）':'（库存待核实）')+'：'+e(v.size)+'</p>').join('')+'</details>':'');
+  const ordinaryMarkup='<div class="variant-bar"><label for="variant">先选现货'+e(typeof nutritionSpecLabel==='function'?nutritionSpecLabel(detail):'尺码')+'</label><select id="variant"><option value="">请选择剩余现货规格</option>'+available.map((v,index)=>'<option value="'+e(v.variant_id)+'" '+(selected&&v.variant_id===detail.variant_id?'selected':'')+'>'+e(compactVariantLabel(v.size,detail.variants.indexOf(v)))+' · '+v.source_count+' 个渠道 · 商品参考 '+e(cny(v.product_cny_from))+'</option>').join('')+'</select></div><div class="size-choices">'+available.map((v,index)=>'<button type="button" data-variant="'+e(v.variant_id)+'" aria-pressed="'+Boolean(selected&&v.variant_id===detail.variant_id)+'">'+e(compactVariantLabel(v.size,detail.variants.indexOf(v)))+'</button>').join('')+'</div>'+(longLabels?'<details class="variant-original"><summary>查看组合编号与商家原始规格</summary>'+detail.variants.map((v,index)=>'<p>'+e(compactVariantLabel(v.size,index))+(v.in_stock?'':v.stock_state==='out_of_stock'?'（已售罄）':'（库存待核实）')+'：'+e(v.size)+'</p>').join('')+'</details>':'');
   const retryGuards=model&&[...bundleQuoteGuards().values()].some(guard=>guard.productId===id&&!guard.confirmed)?'<button type="button" class="bundle-recheck" data-bundle-recheck>重新核对变化的组合</button>':'';
   const variants=colorMarkup+(model?bundleSelectorMarkup(model,selection,options.message||(variantId&&!selected?'原选组合已售罄、报价更新尚未同步或库存待核实，请重新选择。':'')):ordinaryMarkup)+retryGuards+'<p class="spec-note">颜色：'+e(detail.identity.color||'参照当前商品图，原站核对颜色')+'。列出上次核实有货的尺码及核验时间；已确认售罄或尚未核实的规格不作为现货展示，请到官网确认当前库存。</p>';
   const selectedLabel=compactVariantLabel(detail.identity.size,detail.variants.findIndex(v=>v.variant_id===detail.variant_id));
@@ -484,7 +486,7 @@ function renderProductDetail(detail,variantId,sequence,options={}){
   body.querySelectorAll('[data-bundle-recheck]').forEach(button=>button.onclick=()=>recheckBundleQuotes());
   body.querySelectorAll('.guide-start').forEach(button=>button.onclick=()=>startGuide(detail,button.dataset.offer));
   bindMerchantGuides(detail,selected?detail.variant_id:null);
-  if(!model)refreshFitReference(detail,sequence);
+  if(!model&&detail.category_group!=='nutrition')refreshFitReference(detail,sequence);
   if(typeof rememberPurchaseDetail==='function')rememberPurchaseDetail(detail,selected,model?selection:null);
 }
 function openProduct(id,variantId=null,allowSoldOut=false){

@@ -23,6 +23,7 @@ EXPECTED_GROUPS = [
     {"code": "cleat_shoes", "name": "锁鞋"},
     {"code": "helmets", "name": "头盔"},
     {"code": "other", "name": "配件与周边"},
+    {"code": "nutrition", "name": "运动补能"},
 ]
 EXPECTED_COUNTS = {"road_equipment": 0, "clothing": 150, "helmets": 24,
                    "cleat_shoes": 1, "other": 57}

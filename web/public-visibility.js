@@ -4,7 +4,8 @@
 const BICYCLES_PUBLIC=false;
 const PUBLIC_CATEGORY_GROUPS=Object.freeze([
   {code:'clothing',name:'骑行服饰'},{code:'cleat_shoes',name:'锁鞋'},
-  {code:'helmets',name:'头盔'},{code:'other',name:'配件与周边'}
+  {code:'helmets',name:'头盔'},{code:'other',name:'配件与周边'},
+  {code:'nutrition',name:'运动补能'}
 ]);
 const HIDDEN_PUBLIC_PRODUCT_IDS=new Set();
 const HIDDEN_BICYCLE_IDS=new Set(['specialized-4221796-5368180','canyon-4563-R101_P02','canyon-4066-R100_P08']);

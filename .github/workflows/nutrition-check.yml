@@ -1,0 +1,30 @@
+name: Validate sports fueling section
+on:
+  pull_request:
+  push:
+    branches: [nutrition-fueling]
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: python -m playwright install --with-deps chromium
+      - run: python -m unittest discover -s tests -p 'test_*.py'
+      - run: for script in scripts/test_*.js; do node "$script" || exit; done
+      - run: python scripts/build_pages.py
+      - run: python scripts/test_nutrition_ui.py
+      - run: python scripts/test_browse_groups_ui.py
+      - run: python scripts/test_catalog_loading_ui.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nutrition-visual-review
+          path: artifacts/nutrition

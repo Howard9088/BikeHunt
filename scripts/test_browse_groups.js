@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const gallery=fs.readFileSync('web/gallery.js','utf8'),flows=fs.readFileSync('web/flows.js','utf8'),profile=fs.readFileSync('web/profile.js','utf8');
 const data=JSON.parse(fs.readFileSync('data/road_equipment_references.json'));
-const groups=[['clothing','骑行服饰'],['cleat_shoes','锁鞋'],['helmets','头盔'],['other','配件与周边']].map(([code,name])=>({code,name}));
+const groups=[['clothing','骑行服饰'],['cleat_shoes','锁鞋'],['helmets','头盔'],['other','配件与周边'],['nutrition','运动补能']].map(([code,name])=>({code,name}));
 function section(source,start,end){return source.slice(source.indexOf(start),end?source.indexOf(end,source.indexOf(start)):undefined)}
 function freshCard(row){return {stock_state:'in_stock',reference_stock:'in_stock',reference_collection_state:'current',reference_data_kind:'live_snapshot',fetched_at:new Date().toISOString(),reference_offer_id:'fixture-offer',reference_variant_id:'M',reference_source:'Fixture',reference_url:'https://merchant.example/item',reference_price:{amount:10,currency:'USD'},reference_cny:70,...row};}
 function harness(){
@@ -38,7 +38,7 @@ function testPublicProjectionRejectsOldPayload(){
 }
 function testGroupLeafSourceSearchAndReset(){
  const {c,elem,groupButtons,productButton}=harness();c.items=[{name:'Jersey',brand:'Test',category:'jerseys',category_group:'clothing',source_codes:['team']},{name:'Bottle',brand:'Test',category:'accessories',category_group:'other',source_codes:['team']},{name:'Bottle',brand:'Other',category:'accessories',category_group:'other',source_codes:['other']}].map(freshCard);
- assert.equal(groups.length,4);assert.ok(!fs.readFileSync('web/index.html','utf8').includes('id="categoryNav"'));
+ assert.equal(groups.length,5);assert.ok(!fs.readFileSync('web/index.html','utf8').includes('id="categoryNav"'));
  c.chooseCategoryGroup('road_equipment');assert.equal(c.activeCategoryGroup,null);assert.equal(c.activeSource,'team');assert.equal(c.visibleItems().length,2);assert.equal(elem('browseLabel').textContent,'车队');assert.ok(groupButtons.every(button=>button['aria-pressed']==='false')); 
  c.chooseCategoryGroup('other');assert.equal(c.visibleItems().length,2);assert.equal(c.activeSource,null);assert.equal(elem('browseLabel').textContent,'精选好价 · 配件与周边');
  c.chooseCategory('frames');assert.equal(c.activeCategory,'all');assert.equal(c.activeCategoryGroup,'other');assert.equal(c.visibleItems().length,2);
@@ -177,4 +177,4 @@ function testChannelDirectFreshStockWithoutFeaturedCap(){
  assert.match(fs.readFileSync('web/index.html','utf8'),/<details id="channelInfo" class="channel-info" hidden>/);
 }
 for(const test of [testChannelDirectFreshStockWithoutFeaturedCap,testPublicProjectionRejectsOldPayload,testGroupLeafSourceSearchAndReset,testGroupHistoryAndOldState,testResearchSeparationFilteringAndExactGuard,testStalePayloadAndHiddenIdRejection,testInlineFallbackFilteringAndLiveGuard,testEquipmentGenderIndependence,testReferenceGuideAndCurrencySafety,testTrekAndSpecializedRestrictiveFallback,testNewBrandPaymentsStayUnknown]){test();console.log('PASS '+test.name)}
-console.log('Four public groups and accessory-reference tests: eleven groups passed.');
+console.log('Five public groups and accessory-reference tests: eleven groups passed.');
