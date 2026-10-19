@@ -20,6 +20,7 @@ jobs:
       - run: python -m unittest discover -s tests -p 'test_*.py'
       - run: for script in scripts/test_*.js; do node "$script" || exit; done
       - run: python scripts/build_pages.py
+      - run: python scripts/test_favorites_ui.py
       - run: python scripts/test_nutrition_ui.py
       - run: python scripts/test_browse_groups_ui.py
       - run: python scripts/test_catalog_loading_ui.py
@@ -29,4 +30,6 @@ jobs:
         if: always()
         with:
           name: nutrition-visual-review
-          path: artifacts/nutrition
+          path: |
+            artifacts/nutrition
+            artifacts/favorites

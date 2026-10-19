@@ -26,7 +26,7 @@ class PagesTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         web = self.root/'web'; web.mkdir()
-        for name in ('nutrition.js','nutrition.css','featured-rotation.js','traveler-experiences.js','traveler-experiences.json','traveler-forum-data.json','listing-order.js','public-visibility.js','gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','payment-methods.js','payment-methods.json','payment-channels.json','purchase-flow.js','bundle-variants.js','external-exit.js','external-exit.css','visitor-stats.js'):
+        for name in ('favorites.js','favorites.css','nutrition.js','nutrition.css','featured-rotation.js','traveler-experiences.js','traveler-experiences.json','traveler-forum-data.json','listing-order.js','public-visibility.js','gallery.css','flows.css','profile.js','gallery.js','flows.js','pages-adapter.js','group.js','group.css','registration-guides.js','purchase-readiness.js','purchase-readiness.json','payment-methods.js','payment-methods.json','payment-channels.json','purchase-flow.js','bundle-variants.js','external-exit.js','external-exit.css','visitor-stats.js'):
             (web/name).write_text('/* Mock public asset */',encoding='utf-8')
         repo = Path(__file__).resolve().parents[1]
         (web/'payment-channels.json').write_bytes((repo/'web/payment-channels.json').read_bytes())
@@ -77,7 +77,7 @@ class PagesTests(unittest.TestCase):
         with patch.dict(os.environ, {"GITHUB_SHA": commit}):
             build_public_site(self.root, make_fx())
         html = (self.root / "_site/index.html").read_text(encoding="utf-8")
-        for asset in ("nutrition.js", "nutrition.css", "public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "registration-guides.js", "purchase-readiness.js", "payment-methods.js", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css", "visitor-stats.js"):
+        for asset in ("favorites.js", "favorites.css", "nutrition.js", "nutrition.css", "public-visibility.js", "gallery.css", "flows.css", "profile.js", "gallery.js", "flows.js", "pages-adapter.js", "registration-guides.js", "purchase-readiness.js", "payment-methods.js", "purchase-flow.js", "bundle-variants.js", "external-exit.js", "external-exit.css", "visitor-stats.js"):
             self.assertIn(f'./web/{asset}?v={commit}', html)
         self.assertIn(f'data-release="{commit}"', html)
         self.assertEqual(index.read_text(encoding="utf-8"), original)

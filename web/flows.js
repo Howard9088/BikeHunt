@@ -208,7 +208,7 @@ async function showMessages(){
   document.getElementById('sheetBody').querySelectorAll('.message-card[data-message-product]').forEach(card=>card.onclick=event=>{const target=event.target.closest('[data-message-product]');if(target)openMessageProduct(target.dataset.messageProduct,target.dataset.messageVariant)});
   markMessagesRead(rows);
 }
-async function refreshCatalogSilently(invalidateGuide=true){if(catalogLoadState!=='ready')return init();try{if(invalidateGuide&&guideContext){guideContext=null;closeSheet();}const active=currentIndex>0||sheet.classList.contains('open')?gallery.querySelectorAll('.card')[currentIndex]?.dataset.id:null;const data=publicCatalogData(await getJson('/api/catalog'));items=data.items;if(currentProduct&&!publicProductVisible(currentProduct))closeSheet();fx=data.fx;roadReferenceData=data.road_equipment_references||{brands:[],products:[]};if(document.getElementById('roadReferencePanel')&&sheet.classList.contains('open'))document.getElementById('sheetBody').innerHTML=roadReferenceMarkup();updateFxLabel();sourceCount=data.source_count;if(activeTab==='products')render(active);refreshRoadReferenceDetail()}catch{}}
+async function refreshCatalogSilently(invalidateGuide=true){if(catalogLoadState!=='ready')return init();try{if(invalidateGuide&&guideContext){guideContext=null;closeSheet();}const active=currentIndex>0||sheet.classList.contains('open')?gallery.querySelectorAll('.card')[currentIndex]?.dataset.id:null;const data=publicCatalogData(await getJson('/api/catalog'));items=data.items;if(typeof refreshFavoritesPanel==='function')refreshFavoritesPanel();if(currentProduct&&!publicProductVisible(currentProduct))closeSheet();fx=data.fx;roadReferenceData=data.road_equipment_references||{brands:[],products:[]};if(document.getElementById('roadReferencePanel')&&sheet.classList.contains('open'))document.getElementById('sheetBody').innerHTML=roadReferenceMarkup();updateFxLabel();sourceCount=data.source_count;if(activeTab==='products')render(active);refreshRoadReferenceDetail()}catch{}}
 async function bootFlows(){
   const data=publicCatalogData(await getJson('/api/catalog'));categories=data.categories||[];categoryGroups=data.category_groups||[];roadReferenceData=data.road_equipment_references||{brands:[],products:[]};
   document.getElementById('categoryGroupNav').innerHTML=categoryGroups.map(c=>'<button type="button" data-category-group="'+e(c.code)+'" aria-pressed="false" title="再次点击可取消这个分组">'+e(c.name)+'</button>').join('');
@@ -672,6 +672,7 @@ function showInventoryInvalidated(quote){
   openPanel('库存待核实','<div class="summary-box"><h4>'+e(reason)+'</h4><p>'+(quote?.offer.stock==='out_of_stock'?'该规格已确认售罄，购买链接已停用。':'现货规格选择已停用；历史价格仍可参考。可去官网查看当前库存，重新核对尺码、颜色和价格。')+'</p>'+(typeof paymentFeasibilityMarkup==='function'?paymentFeasibilityMarkup(quote?.offer):'')+referenceLinkMarkup(quote)+'</div>');
 }
 function expireLocalInventory(now=Date.now()){
+  if(typeof refreshFavoritesPanel==='function')refreshFavoritesPanel();
   if(typeof refreshRoadReferenceFxLabels==='function')refreshRoadReferenceFxLabels();
   let changed=false;
   // Elapsed time or a failed refresh never rewrites a reliable stock observation.

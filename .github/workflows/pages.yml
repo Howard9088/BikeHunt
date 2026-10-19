@@ -86,6 +86,8 @@ jobs:
         run: node scripts/test_group.js
       - name: Validate five-group browsing and official research safety
         run: node scripts/test_browse_groups.js
+      - name: Validate local product favorites
+        run: node scripts/test_favorites.js
       - name: Validate nutrition editorial references and exact external links
         run: node scripts/test_nutrition.js
       - name: Validate scoped browsing and price messages
@@ -110,6 +112,9 @@ jobs:
       - name: Install Chromium for dynamic collection and browser regression
         timeout-minutes: 5
         run: python -m playwright install --with-deps chromium
+      - name: Validate favorites desktop and mobile behavior
+        if: github.event_name == 'push'
+        run: python scripts/test_favorites_ui.py
       - name: Validate desktop and mobile five-group browsing
         if: github.event_name == 'push'
         timeout-minutes: 3

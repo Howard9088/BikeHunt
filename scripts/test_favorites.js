@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {key,parse,create}=require('../web/favorites.js');
+let raw=null;const storage={getItem:()=>raw,setItem:(k,v)=>{assert.equal(k,key);raw=v}};
+let store=create(()=>storage);
+const row={productId:'stable-product',name:'Test',brand:'Brand',variantId:'size-m',size:'M',savedAt:'2026-10-19'};
+assert.equal(store.toggle(row),true);assert.equal(store.list().length,1);
+store=create(()=>storage);assert.equal(store.has(row.productId),true);assert.equal(store.list()[0].size,'M');
+assert.equal(store.toggle({...row,variantId:'size-l',size:'L'}),false);assert.equal(store.list().length,0);
+store.toggle(row);assert.equal(parse(JSON.stringify({version:1,items:[row,row]})).length,1);
+assert.equal(parse(JSON.stringify({version:1,items:[{},null,{productId:'<script>'},row]})).length,1);
+raw='{bad';store=create(()=>storage);assert.equal(store.list().length,0);assert.ok(store.warning());store.toggle(row);assert.equal(create(()=>storage).list().length,1);
+const denied=create(()=>{throw Error('Denied')});denied.toggle(row);assert.equal(denied.has(row.productId),true);assert.ok(denied.warning());denied.toggle(row);assert.equal(denied.list().length,0);
+raw=JSON.stringify({version:1,items:[]});store.reload();assert.equal(store.list().length,0);
+const clean=parse(JSON.stringify({version:1,items:[{...row,price:1,stock:'in_stock',url:'javascript:evil'}]}))[0];assert.equal(clean.price,undefined);assert.equal(clean.stock,undefined);assert.equal(clean.url,undefined);
+raw=JSON.stringify({version:1,items:Array.from({length:1000},(_,i)=>({...row,productId:'product-'+i}))});store=create(()=>storage);assert.equal(store.toggle({...row,productId:'overflow'}),null);assert.equal(store.has('overflow'),false);assert.equal(store.list().length,1000);assert.match(store.warning(),/1,000/);assert.equal(store.toggle({...row,productId:'product-0'}),false);assert.equal(store.toggle({...row,productId:'overflow'}),true);
+console.log('PASS favorites persistence, product deduplication, removal, malformed storage, denied storage, reload and no cached price/stock.');

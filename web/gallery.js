@@ -164,7 +164,7 @@ function render(preserveId=null){
     const expired=['库存核实已过期','库存待核实'].includes(p.status)||p.stock_state==='in_stock'&&!stockVerified;
     const sold=p.stock_state==='out_of_stock';
     return '<article class="card'+(deal?' has-deal':low||channel?' has-low-price':'')+'" data-id="'+e(p.product_id)+'" aria-label="商品 '+(i+1)+'：'+e(p.name)+'"><div class="card-inner">'+
-      '<div class="product-visual">'+imageMarkup(p.image,p.name,i,p)+
+      '<div class="product-visual">'+imageMarkup(p.image,p.name,i,p)+(typeof favoriteButtonMarkup==='function'?favoriteButtonMarkup(p.product_id,p.name):'')+
       (deal?'<span class="discount">'+e(discountLabel(p))+'</span>':low||channel?'<span class="low-price-label">渠道精选</span>':'')+
       '<span class="slide-index">'+String(i+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0')+'</span></div>'+
       '<div class="product-info"><div class="brand">'+e(p.brand)+'</div>'+
@@ -191,6 +191,7 @@ function render(preserveId=null){
     if(viewMode!=='feed'||swipe||performance.now()<animationUntil)return;
     for(const entry of entries)if(entry.isIntersecting&&entry.intersectionRatio>.6){currentIndex=cards.indexOf(entry.target);updatePosition(currentIndex,cards.length);if(currentIndex>0)document.getElementById('scrollHint').classList.add('hidden')}
   },{root:gallery,threshold:[.6,.8]});cards.forEach(card=>observer.observe(card));
+  if(typeof syncFavoriteControls==='function')syncFavoriteControls();
   positionHint();
   if(preserveId){const target=cards.find(c=>c.dataset.id===preserveId);if(target)gallery.scrollTop=target.offsetTop}
 }
@@ -467,20 +468,21 @@ function renderProductDetail(detail,variantId,sequence,options={}){
   const retryGuards=model&&[...bundleQuoteGuards().values()].some(guard=>guard.productId===id&&!guard.confirmed)?'<button type="button" class="bundle-recheck" data-bundle-recheck>重新核对变化的组合</button>':'';
   const variants=colorMarkup+(model?bundleSelectorMarkup(model,selection,options.message||(variantId&&!selected?'原选组合已售罄、报价更新尚未同步或库存待核实，请重新选择。':'')):ordinaryMarkup)+retryGuards+'<p class="spec-note">'+(noFit?'':('颜色：'+e(detail.identity.color||'参照当前商品图，原站核对颜色')+'。'))+'列出上次核实有货的'+spec+'及核验时间；已确认售罄或尚未核实的规格不作为现货展示，请到官网确认当前库存。</p>';
   const selectedLabel=variantLabel(detail.identity.size,detail.variants.findIndex(v=>v.variant_id===detail.variant_id));
-  body.innerHTML=variants+(noFit?'':'<div id="fitReference"></div>')+
+  body.innerHTML=(typeof favoriteButtonMarkup==='function'?favoriteButtonMarkup(id,detail.name,true):'')+variants+(noFit?'':'<div id="fitReference"></div>')+
     (detail.identity.mpn?'<div class="model-code">制造商型号 '+e(detail.identity.mpn)+(detail.identity.color?' · '+e(detail.identity.color):'')+'</div>':'')+
     (selected?summary+'<div class="offers"><h4>已选 '+e(selectedLabel)+' · '+e(detail.identity.color||'当前款')+' · '+detail.offers.length+' 条同规格报价</h4>'+detail.offers.map(offerMarkup).join('')+'</div>':'<div class="summary-box"><h4>'+(model?'选齐三件套后，显示对应价格':confirmedSoldOut?'所示规格 '+e(selectedLabel)+' 已售罄':available.length?'选择上方'+spec+'后，显示对应价格':inventoryExpired?'库存待核实':'尚未取得可选的现货规格')+'</h4><p>'+(model?'每个完整组合对应商家的一个实际规格；未选齐时不显示购买入口。':confirmedSoldOut?'该规格已确认售罄，目前没有购买链接。其他'+spec+'请分别核对。':available.length?'不同'+spec+'的库存与价格可能不同，先选规格再比较。':inventoryExpired?'历史价格仅供参考；当前规格库存尚未确认，可前往官网核对。':'当前报价可供参考；未知库存不会作为现货'+spec+'显示。可前往官网商品页自行核对。')+'</p></div>')+
     (!selected&&!model?referenceOffersMarkup(detail):'')+
     (typeof nutritionDetailMarkup==='function'?nutritionDetailMarkup(detail):'')+
     '<div class="service-note">汇率日期 '+e(detail.fx.rate_date||'待获取')+(detail.fx.stale?' · 使用过期缓存':'')+'。人民币金额为参考，信用卡入账及手续费以发卡行为准。<br>BikeHunt 只提供信息与外链，付款、订单及售后由第三方网站负责。</div>';
-  const single=document.getElementById('variant');if(single)single.onchange=event=>loadDetail(id,event.target.value||null);
-  const colorSelect=document.getElementById('colorChoice');if(colorSelect)colorSelect.onchange=event=>loadDetail(event.target.value,null);
-  body.querySelectorAll('[data-variant]').forEach(button=>button.onclick=()=>loadDetail(id,button.dataset.variant));
+  const single=document.getElementById('variant');if(single)single.onchange=event=>{if(typeof favoriteSelectionChanged==='function')favoriteSelectionChanged(id,event.target.value);loadDetail(id,event.target.value||null)};
+  const colorSelect=document.getElementById('colorChoice');if(colorSelect)colorSelect.onchange=event=>{if(typeof favoriteSelectionChanged==='function')favoriteSelectionChanged(null,null);loadDetail(event.target.value,null)};
+  body.querySelectorAll('[data-variant]').forEach(button=>button.onclick=()=>{if(typeof favoriteSelectionChanged==='function')favoriteSelectionChanged(id,button.dataset.variant);loadDetail(id,button.dataset.variant)});
   body.querySelectorAll('[data-bundle-part]').forEach(select=>select.onchange=()=>{
     const index=BUNDLE_PARTS.findIndex(part=>part.key===select.dataset.bundlePart),next={};
     for(const part of BUNDLE_PARTS.slice(0,index))next[part.key]=selection[part.key];
     next[select.dataset.bundlePart]=select.value;
     const clean=normalizeBundleSelection(model,next),exact=exactBundleVariant(model,clean),focusId='bundle-'+BUNDLE_PARTS[Math.min(index+1,2)].key;
+    if(typeof favoriteSelectionChanged==='function')favoriteSelectionChanged(id,exact?.variant_id);
     if(exact){loadDetail(id,exact.variant_id,{bundleSelection:clean,focusId});return}
     if(typeof cancelPurchaseContext==='function')cancelPurchaseContext();
     renderProductDetail(detail,null,++detailSequence,{bundleSelection:clean});
@@ -490,9 +492,11 @@ function renderProductDetail(detail,variantId,sequence,options={}){
   body.querySelectorAll('.guide-start').forEach(button=>button.onclick=()=>startGuide(detail,button.dataset.offer));
   bindMerchantGuides(detail,selected?detail.variant_id:null);
   if(!model&&!noFit)refreshFitReference(detail,sequence);
+  if(typeof syncFavoriteControls==='function')syncFavoriteControls();
   if(typeof rememberPurchaseDetail==='function')rememberPurchaseDetail(detail,selected,model?selection:null);
 }
 function openProduct(id,variantId=null,allowSoldOut=false){
+  if(typeof favoriteSelectionChanged==='function')favoriteSelectionChanged(null,null);
   const known=items.find(p=>p.product_id===id);if(!publicProductVisible(known||{product_id:id}))return;
   if(!allowSoldOut&&items.find(p=>p.product_id===id)?.stock_state==='out_of_stock')return;
   lastFocus=document.activeElement;gallery.inert=true;sheet.inert=false;
@@ -510,6 +514,7 @@ function init(){
     try{
       const data=publicCatalogData(await getJson('/api/catalog'));
       items=data.items;fx=data.fx;sourceCount=data.source_count;catalogLoadState='ready';
+      if(typeof refreshFavoritesPanel==='function')refreshFavoritesPanel();
       updateFxLabel();
       try{viewMode=localStorage.getItem('bikehuntView')||'feed'}catch{viewMode='feed'}setView(viewMode,false);
       document.getElementById('sourceCount').textContent=data.source_count+' 个购买渠道';
