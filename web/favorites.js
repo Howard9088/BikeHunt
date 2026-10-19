@@ -23,6 +23,7 @@ const BikeHuntFavorites = (() => {
       toggle(row){
         if(!id(row.productId))return false;
         const exists=rows.some(saved=>saved.productId===row.productId);
+        if(!exists&&rows.length>=1000){warning='最多收藏 1,000 件商品；请先移除一些收藏。';return null;}
         rows=exists?rows.filter(saved=>saved.productId!==row.productId):parse(JSON.stringify({version:1,items:[...rows,row]}));
         try{storage().setItem(key,JSON.stringify({version:1,items:rows}));warning=''}catch{warning='浏览器未能保存收藏；刷新或离开后，本次更改可能丢失。'}
         return !exists;
@@ -51,7 +52,7 @@ if(typeof document!=='undefined'){
     const product=items.find(row=>row.product_id===productId),saved=favorites.list().find(row=>row.productId===productId);
     const explicit=detail&&explicitSelection?.productId===productId&&explicitSelection.variantId===detail.variant_id;
     const added=favorites.toggle({productId,name:product?.name||detail?.name||saved?.name||'商品',brand:product?.brand||detail?.identity?.brand||saved?.brand||'',color:product?.color||detail?.identity?.color||'',variantId:explicit?detail.variant_id:null,size:explicit?detail.identity.size:'',savedAt:new Date().toISOString()});
-    sync();announce(added?'已加入收藏':'已取消收藏');
+    sync();announce(added===null?'暂未加入收藏':added?'已加入收藏':'已取消收藏');
   }
   function listMarkup(){
     const rows=favorites.list();

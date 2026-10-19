@@ -39,6 +39,8 @@ def main():
           expect(heart).to_be_visible();heart.focus();page.keyboard.press('Space')
           expect(heart).to_have_attribute('aria-pressed','true');expect(page.locator('#sheet')).not_to_have_class('sheet open')
           expect(page.locator('#myFavorites')).to_contain_text('(1)')
+          assert page.locator('#myFavorites').evaluate('(node)=>node.getBoundingClientRect().left+44 <= innerWidth'), 'Favorites label must be discoverable on narrow phones'
+          page.screenshot(path=str(OUT/f'favorite-card-{width}.png'),full_page=True)
           stored=page.evaluate('JSON.parse(localStorage.getItem("bikehuntFavoritesV1"))');assert stored['items'][0]['variantId'] is None
           page.reload(wait_until='networkidle');expect(heart).to_have_attribute('aria-pressed','true')
           page.locator('#grid .compare-button').first.click();expect(page.locator('.favorite-detail')).to_have_attribute('aria-pressed','true')
@@ -59,6 +61,10 @@ def main():
           card.update(stock_state='out_of_stock',reference_price={'amount':'99','currency':'GBP'},reference_collection_state='retained')
           page.reload(wait_until='networkidle');page.locator('#myFavorites').click()
           expect(page.locator('.favorite-item')).to_contain_text('售罄');expect(page.locator('.favorite-item')).to_contain_text('99.00')
+          card.update(stock_state='unknown',reference_collection_state='retained')
+          page.reload(wait_until='networkidle');page.locator('#myFavorites').click()
+          expect(page.locator('.favorite-item')).to_contain_text('保留的历史报价 · 库存待重新核实')
+          expect(page.locator('.favorite-item')).not_to_contain_text('上次核验有货')
           # Missing catalog entries are bookmarks only, no old price or purchase button.
           state['catalog']['items']=[c for c in state['catalog']['items'] if c['brand']!='SiS']
           page.reload(wait_until='networkidle');page.locator('#myFavorites').click()
