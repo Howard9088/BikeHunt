@@ -1,0 +1,431 @@
+{
+  "source_code": "maurten_nutrition",
+  "collected_at": "2026-10-19T07:36:43.412786Z",
+  "offers": [
+    {
+      "offer_id": "9e6986849fc9d330752e",
+      "source_code": "maurten_nutrition",
+      "source_name": "Maurten 法国官网",
+      "identity": {
+        "brand": "Maurten",
+        "model": "Gel 100",
+        "gtin": null,
+        "mpn": null,
+        "size": "标准版 · 12袋/盒",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Gel 100",
+      "url": "https://www.maurten.com/fr/products/gel-100-box",
+      "image": "https://maurten.imgix.net/photos/Products/Entry-Card-Maurten-Gel-100-1.png?auto=compress%2Cformat&crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&fp-z=1&h=800&q=80&w=800&s=48c317b0ca10c4b45aa03659d57a05ee",
+      "price": {
+        "amount": "40.96",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "static",
+      "evidence_sha256": "ecf95f75764df2fc8b579b426455f9539ab549645e887eeff435d51fa550186d",
+      "collection_url": "https://www.maurten.com/fr/products/gel-100-box",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国配送及食品进口条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国发行银行卡支付条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:36:43.403579Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "maurten-gel100-box-fr",
+      "identity_evidence": "官方法国选定市场、商品页SKU12002、EUR逐商品报价、Boîte de 12 sachets包装及结构化库存；未混用其他市场",
+      "sales_region": "法国市场 · EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "标准版 · 12袋/盒；购买前核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    },
+    {
+      "offer_id": "10287b67c8b7fbe8c420",
+      "source_code": "maurten_nutrition",
+      "source_name": "Maurten 法国官网",
+      "identity": {
+        "brand": "Maurten",
+        "model": "Gel 160",
+        "gtin": null,
+        "mpn": null,
+        "size": "标准版 · 12袋/盒",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Gel 160",
+      "url": "https://www.maurten.com/fr/products/gel-160-box",
+      "image": "https://maurten.imgix.net/photos/Products/Entry-Card-Maurten-Gel-160-1_2026-07-27-140715_knpt.png?auto=compress%2Cformat&crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&fp-z=1&h=800&q=80&w=800&s=a2095d6f9ad4f7ecf36a303287926bec",
+      "price": {
+        "amount": "54.95",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "static",
+      "evidence_sha256": "fe4490f65234ab99731c38a3ae8c2d7159024df14b83c3900c83170c5c1000a1",
+      "collection_url": "https://www.maurten.com/fr/products/gel-160-box",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国配送及食品进口条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国发行银行卡支付条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:36:43.412786Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "maurten-gel160-box-fr",
+      "identity_evidence": "官方法国选定市场、商品页SKU12103、EUR逐商品报价、Boîte de 12 portions包装及结构化库存；未混用其他市场",
+      "sales_region": "法国市场 · EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "标准版 · 12袋/盒；购买前核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    },
+    {
+      "offer_id": "0c953e136bf903be1d40",
+      "source_code": "maurten_nutrition",
+      "source_name": "Maurten 法国官网",
+      "identity": {
+        "brand": "Maurten",
+        "model": "Gel 100 Caf 100",
+        "gtin": null,
+        "mpn": null,
+        "size": "Caf 100咖啡因版 · 12袋/盒",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Gel 100 Caf 100",
+      "url": "https://www.maurten.com/fr/products/gel-100-caf-100-box",
+      "image": "https://maurten.imgix.net/photos/Products/Entry-Card-Maurten-Gel-100-Caf-100-1.png?auto=compress%2Cformat&crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&fp-z=1&h=800&q=80&w=800&s=076238783999626ce25854e7c5fc4fde",
+      "price": {
+        "amount": "47.50",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "static",
+      "evidence_sha256": "324715d61d82ec6dc4e27a834a92f1b5b73676b67341c158214d920edcb99d99",
+      "collection_url": "https://www.maurten.com/fr/products/gel-100-caf-100-box",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国配送及食品进口条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国发行银行卡支付条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:36:43.408140Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "maurten-gel100-caf100-box-fr",
+      "identity_evidence": "官方法国选定市场、商品页SKU13002、EUR逐商品报价、Boîte de 12 sachets包装及结构化库存；未混用其他市场",
+      "sales_region": "法国市场 · EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "Caf 100咖啡因版 · 12袋/盒；购买前核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    },
+    {
+      "offer_id": "01be88ecf706f8217ffd",
+      "source_code": "maurten_nutrition",
+      "source_name": "Maurten 法国官网",
+      "identity": {
+        "brand": "Maurten",
+        "model": "Drink Mix 160",
+        "gtin": null,
+        "mpn": null,
+        "size": "标准版 · 18袋/盒",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Drink Mix 160",
+      "url": "https://www.maurten.com/fr/products/drink-mix-160",
+      "image": "https://maurten.imgix.net/photos/Products/Entry-Card-Maurten-Drink-Mix-160-1.png?auto=compress%2Cformat&crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&fp-z=1&h=800&q=80&w=800&s=9cd66c85040ae77dcb0e51174bdbcfba",
+      "price": {
+        "amount": "39.95",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "static",
+      "evidence_sha256": "56bcde84788b79421abd312c85ff3aca99385a0533ae8fbe124d404475f75954",
+      "collection_url": "https://www.maurten.com/fr/products/drink-mix-160",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国配送及食品进口条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国发行银行卡支付条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:36:43.392209Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "maurten-drinkmix160-box-fr",
+      "identity_evidence": "官方法国选定市场、商品页SKU10102、EUR逐商品报价、Box of 18 servings包装及结构化库存；未混用其他市场",
+      "sales_region": "法国市场 · EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "标准版 · 18袋/盒；购买前核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    },
+    {
+      "offer_id": "9578b033a7f60b0b249f",
+      "source_code": "maurten_nutrition",
+      "source_name": "Maurten 法国官网",
+      "identity": {
+        "brand": "Maurten",
+        "model": "Drink Mix 320",
+        "gtin": null,
+        "mpn": null,
+        "size": "标准版 · 14袋/盒",
+        "color": null,
+        "year": null,
+        "gender": null
+      },
+      "name": "Drink Mix 320",
+      "url": "https://www.maurten.com/fr/products/drink-mix-320",
+      "image": "https://maurten.imgix.net/photos/Products/Entry-Card-Maurten-Drink-Mix-320-1.png?auto=compress%2Cformat&crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&fp-z=1&h=800&q=80&w=800&s=ae33adff6746042d1294550803a3262f",
+      "price": {
+        "amount": "46.95",
+        "currency": "EUR"
+      },
+      "original_price": null,
+      "shipping": null,
+      "tax": null,
+      "import_tax_handling": "unknown",
+      "import_tax_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "clearance": null,
+      "stock": "in_stock",
+      "stock_quantity": null,
+      "fetch_mode": "static",
+      "evidence_sha256": "a4726dcf9a74d458472365180917e7c9eb517f46745d56d24fe5174daaea31d2",
+      "collection_url": "https://www.maurten.com/fr/products/drink-mix-320",
+      "shipping_to_china": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国配送及食品进口条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "china_issued_card": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "中国发行银行卡支付条件未核实",
+        "scope": "site",
+        "content_hash": null
+      },
+      "accepted_card_networks": [],
+      "card_networks_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "fetched_at": "2026-10-19T07:36:43.398483Z",
+      "price_valid_until": null,
+      "collection_state": "current",
+      "data_kind": "live_snapshot",
+      "family_hint": "maurten-drinkmix320-box-fr",
+      "identity_evidence": "官方法国选定市场、商品页SKU10202、EUR逐商品报价、Box of 14 servings包装及结构化库存；未混用其他市场",
+      "sales_region": "法国市场 · EUR 报价；中国配送与支付待核实",
+      "dispatch_origin": null,
+      "dispatch_origin_evidence": {
+        "status": "unknown",
+        "url": null,
+        "checked_at": null,
+        "note": "",
+        "scope": "offer",
+        "content_hash": null
+      },
+      "purchase_requirements": [
+        "标准版 · 14袋/盒；购买前核对配方、咖啡因和过敏原标签",
+        "运费税费另计；中国配送及食品进口条件待核实"
+      ]
+    }
+  ]
+}

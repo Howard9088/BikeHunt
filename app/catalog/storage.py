@@ -109,6 +109,39 @@ class OfferRepository:
                         logger.warning("隔离无效报价 {} {}", path.name, exc)
             except (OSError, json.JSONDecodeError, AttributeError) as exc:
                 logger.error("来源快照不可读 {} {}", path.name, exc)
+        # A restored CI cache may predate newly reviewed exact nutrition products.
+        # Merge that bounded public seed without resetting observation times, and
+        # never let an older seed replace a newer cache (including sold-out rows).
+        seed_path = self.data_dir / "reviewed_nutrition" / "maurten_nutrition.json"
+        if seed_path.exists():
+            from app.collectors.maurten_nutrition import PRODUCTS
+            try:
+                seed = json.loads(seed_path.read_text(encoding="utf-8"))
+                current = {row.offer_id: row for row in rows}
+                for item in seed.get("offers", []):
+                    candidate = Offer.model_validate(item)
+                    spec = PRODUCTS.get(candidate.url)
+                    if (candidate.source_code != "maurten_nutrition" or not spec
+                            or candidate.identity.brand != "Maurten"
+                            or candidate.identity.model != spec["name"]
+                            or candidate.identity.size != spec["size"]
+                            or candidate.family_hint != spec["family_hint"]
+                            or candidate.offer_id != offer_id("maurten_nutrition", candidate.url, spec["sku"])
+                            or candidate.price.currency != "EUR"
+                            or candidate.data_kind != "live_snapshot"
+                            or not candidate.fetched_at or not candidate.fetched_at.tzinfo
+                            or not candidate.evidence_sha256):
+                        continue
+                    existing = current.get(candidate.offer_id)
+                    if existing is not None and (existing.fetched_at is None
+                            or existing.fetched_at >= candidate.fetched_at):
+                        continue
+                    # A bootstrap observation is historical until a fresh scrape
+                    # succeeds. It must not clear any failed-attempt diagnostics.
+                    current[candidate.offer_id] = candidate.model_copy(update={"collection_state": "retained"})
+                rows = list(current.values())
+            except (OSError, ValueError, TypeError, AttributeError):
+                logger.warning("Reviewed nutrition bootstrap unavailable")
         # 使用实际 URL 去重：新版逐规格抓取替代旧版同页第一规格缓存。
         refreshed_urls = {row.url.split("?", 1)[0] for row in rows if row.source_code == "maap"}
         source = next((s for s in self.sources() if s["code"] == "maap"),
