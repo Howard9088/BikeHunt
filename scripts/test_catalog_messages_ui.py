@@ -78,9 +78,9 @@ def fixture():
 
 
 def assert_single_category_layer(page):
-    """The only category controls are the four exact public groups, in order."""
+    """The only category controls are the five exact public groups, in order."""
     groups = page.locator('#categoryGroupNav [data-category-group]')
-    expect(groups).to_have_text(['骑行服饰', '锁鞋', '头盔', '配件与周边'])
+    expect(groups).to_have_text(['骑行服饰', '锁鞋', '头盔', '配件与周边', '运动补能'])
     assert groups.evaluate_all('buttons => buttons.map(button => button.dataset.categoryGroup)') == [
         'clothing', 'cleat_shoes', 'helmets', 'other', 'nutrition']
     expect(page.locator('#categoryNav,[data-category]')).to_have_count(0)
@@ -621,7 +621,7 @@ def main():
                 page.locator('[data-category-group=clothing]').click()
                 assert_card_ids(page, ['partial', 'maap-jersey', 'other-jersey'])
                 expect(page.locator('#browseLabel')).to_have_text('精选好价 · 骑行服饰')
-                checks.append(mode+': exact single four-category layer; global group/toggle clears previous source; explicit精选好价 clears source; clothing includes both bibs and jerseys and excludes helmets')
+                checks.append(mode+': exact single five-category layer; global group/toggle clears previous source; explicit精选好价 clears source; clothing includes both bibs and jerseys and excludes helmets')
                 return_tab,return_source,return_label=('brands','maap','MAAP 品牌 · 骑行服饰') if mode=='desktop' else ('teams','other','测试车队 · 骑行服饰')
                 page.locator(f'[data-tab={return_tab}]').click();page.locator(f'[data-source={return_source}]').click()
                 # Directory entry resets scope; users can then explicitly filter clothing.
