@@ -38,7 +38,7 @@ class AutomatedSnapshotCacheTests(unittest.TestCase):
 
     def test_all_three_sources_use_existing_pipeline(self):
         config = {row['code']: row for row in json.loads((ROOT/'data/crawl_sources.json').read_text())}
-        self.assertEqual(len(config), 38)
+        self.assertEqual(len(config), 39)
         for code in ('gobik', 'oakley', 'decathlon_cn'):
             self.assertEqual(config[code]['parser'], code)
             self.assertTrue(config[code]['urls'])

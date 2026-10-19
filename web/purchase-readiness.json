@@ -1442,6 +1442,35 @@
         "https://pelotan.cc/pages/contact"
       ],
       "sourceLimitations": "商品价格与库存的核实不等于支付、运输和进口条件已核实。"
+    },
+    {
+      "sourceCode": "enervit_nutrition",
+      "scope": "market",
+      "salesRegion": "欧洲站 EUR 报价；中国配送与支付待核实",
+      "label": "Enervit 欧洲官网",
+      "policyScope": "当前官网商品市场；支付、退换及进口条件尚待核实",
+      "merchantHosts": [
+        "www.enervit.com"
+      ],
+      "checkedAt": "2026-10-19",
+      "payment": {
+        "status": "unknown",
+        "methods": [],
+        "chinaIssuedCard": "unknown",
+        "note": "未核实当前市场支付方式及中国发行卡适用性。"
+      },
+      "directChina": {
+        "status": "unknown",
+        "note": "尚未核实该商品可寄中国；不把海外库存视为中国可购买。"
+      },
+      "forwarding": {
+        "status": "unknown",
+        "note": "未核实商家转运许可、食品或防晒品运输及进口条件，不提供已可行的转运保证。"
+      },
+      "sources": [
+        "https://www.enervit.com/en/"
+      ],
+      "sourceLimitations": "商品价格与库存的核实不等于支付、运输和进口条件已核实。"
     }
   ],
   "forwardingExplainer": "转运像海外代收点：先取得自己名下的仓库收件编号，商家把货寄到仓库；仓库称重、可按要求合箱，再收国际运费寄中国。你仍需自行向商家付款；转运不解决中国银行卡拒付，也不自动提供商家售后。只在商家允许、承运商允许商品且进口手续满足时使用。",

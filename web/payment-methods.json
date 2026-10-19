@@ -9,9 +9,10 @@
     "additional_market_entries": 1,
     "total_entries": 39,
     "actual_payment_tests": 0,
-    "registered_source_registry_total": 42,
+    "registered_source_registry_total": 43,
     "unmapped_registered_sources": [
       "canyon",
+      "enervit_nutrition",
       "maurten_nutrition",
       "pelotan",
       "sis_nutrition",

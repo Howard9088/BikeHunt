@@ -61,8 +61,8 @@ class OakleyManualSnapshotTests(unittest.TestCase):
         self.assertFalse(ComparisonCatalog([o],self.fx,self.now).available(o))
     def test_manual_source_and_strict_taxonomy_identity(self):
         reviews=json.loads((ROOT/'data/browse-taxonomy.json').read_text())['products']
-        self.assertEqual(len(reviews),263)
-        self.assertEqual(len({x['product_id'] for x in reviews}),263)
+        self.assertEqual(len(reviews),271)
+        self.assertEqual(len({x['product_id'] for x in reviews}),271)
         self.assertEqual(sum(x['source_codes']==['oakley'] for x in reviews),24)
         source=next(x for x in json.loads((ROOT/'data/sources.json').read_text()) if x['code']=='oakley')
         self.assertEqual(source['collection_strategy'],'automatic_verified_public_variant')

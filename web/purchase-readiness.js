@@ -3,6 +3,7 @@
 const READINESS_BASE=new URL('./',document.currentScript.src);
 const READINESS_HOSTS=Object.freeze({
   pelotan:["pelotan.cc"],
+  enervit_nutrition:["www.enervit.com"],
   maurten_nutrition:["www.maurten.com"],
   sis_nutrition:["www.scienceinsport.com"],
   oakley:["www.oakley.com"],
@@ -29,6 +30,7 @@ const READINESS_HOSTS=Object.freeze({
 });
 const READINESS_SCOPES=Object.freeze({
   pelotan:["market", "UK", ["pelotan.cc"]],
+  enervit_nutrition:["market", "欧洲站 EUR 报价；中国配送与支付待核实", ["www.enervit.com"]],
   maurten_nutrition:["market", "法国市场 · EUR 报价；中国配送与支付待核实", ["www.maurten.com"]],
   sis_nutrition:["market", "UK", ["www.scienceinsport.com"]],
   gobik:["market", "西班牙站 EUR 报价", ["gobik.com"]],

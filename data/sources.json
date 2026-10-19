@@ -917,5 +917,24 @@
       "status": "unverified",
       "note": "中国发行银行卡支付条件未核实"
     }
+  },
+  {
+    "code": "enervit_nutrition",
+    "name": "Enervit 欧洲官网",
+    "brand": "Enervit",
+    "type": "brand_official",
+    "base_url": "https://www.enervit.com",
+    "priority": 1,
+    "enabled": true,
+    "sales_region": "欧洲站 EUR 报价；中国配送与支付待核实",
+    "collection_strategy": "scrape_public_pages",
+    "china_shipping": {
+      "status": "unknown",
+      "note": "中国配送及食品进口条件未核实"
+    },
+    "china_credit_card": {
+      "status": "unknown",
+      "note": "中国发行银行卡支付条件未核实"
+    }
   }
 ]

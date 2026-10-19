@@ -18,12 +18,12 @@ class NutritionOfferTests(unittest.TestCase):
   for altered in [html.replace('Boîte de 12','Boîte de 6'),html.replace('"EUR"','"USD"'),html.replace('"12002"','"other"')]:
    with self.assertRaises(CollectionError):parse_maurten_nutrition(altered,source,URL,now)
   with self.assertRaises(CollectionError):parse_maurten_nutrition(html,source,URL.replace('/fr/','/us/'),now)
- def test_real_snapshots_export_as_two_cards_and_two_sis_choices(self):
+ def test_real_snapshots_export_as_six_cards_and_two_sis_choices(self):
   offers=[o for o in OfferRepository(ROOT/'data').load() if o.source_code in {'sis_nutrition','maurten_nutrition'}]
   now=max(o.fetched_at for o in offers)
   catalog=ComparisonCatalog(offers,FxSnapshot(snapshot_id='test',rates={'GBP':'9','EUR':'8'}),now)
   cards=catalog.search()
-  self.assertEqual(len(cards),2)
+  self.assertEqual(len(cards),6)
   self.assertTrue(all(c.category_group=='nutrition' for c in cards))
   sis=next(c for c in cards if c.brand=='SiS')
   self.assertEqual(sis.variant_count,2)
