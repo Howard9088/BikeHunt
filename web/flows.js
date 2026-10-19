@@ -47,6 +47,7 @@ function syncBrowseControls(){
   activeCategory='all';
   if(!publicCategoryGroupVisible(activeCategoryGroup))activeCategoryGroup=null;
   if(typeof syncGenderScope==='function')syncGenderScope();
+  const profileBar=document.querySelector?.('.profile-bar');if(profileBar)profileBar.hidden=activeCategoryGroup==='nutrition';
   document.querySelectorAll('[data-category-group]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.categoryGroup===activeCategoryGroup)));
   const visible=activeTab==='products'&&publicCategoryGroupVisible(activeCategoryGroup)&&['road_equipment','other'].includes(activeCategoryGroup)&&(!activeSource||roadReferenceData.brands.some(b=>b.code===activeSource));
   const strip=document.getElementById('roadReferenceStrip');if(strip)strip.hidden=!visible;
@@ -687,5 +688,6 @@ window.addEventListener('pagehide',()=>clearInterval(inventoryTimer),{once:true}
 
 // Returning from a same-tab merchant visit must restart timers cleared on pagehide.
 window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload()});
+
 
 

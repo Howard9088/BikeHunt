@@ -82,7 +82,7 @@ def assert_single_category_layer(page):
     groups = page.locator('#categoryGroupNav [data-category-group]')
     expect(groups).to_have_text(['骑行服饰', '锁鞋', '头盔', '配件与周边'])
     assert groups.evaluate_all('buttons => buttons.map(button => button.dataset.categoryGroup)') == [
-        'clothing', 'cleat_shoes', 'helmets', 'other']
+        'clothing', 'cleat_shoes', 'helmets', 'other', 'nutrition']
     expect(page.locator('#categoryNav,[data-category]')).to_have_count(0)
     assert page.evaluate("activeCategory === 'all'")
 

@@ -19,7 +19,7 @@ from app.road_equipment import BROWSE_CATEGORIES, read_road_references
 from app.update_views import enrich_events
 from test_catalog import NOW, make_fx, make_offer
 
-PUBLIC_GROUPS = ['clothing', 'cleat_shoes', 'helmets', 'other']
+PUBLIC_GROUPS = ['clothing', 'cleat_shoes', 'helmets', 'other', 'nutrition']
 MIDLOADER = 'canyon-9102039'
 
 
@@ -37,12 +37,12 @@ def classify(_product_id, rows, **_kwargs):
 
 
 class PublicVisibilityTests(unittest.TestCase):
-    def test_public_groups_are_four_but_internal_categories_are_preserved(self):
+    def test_public_groups_include_nutrition_and_keep_bicycles_hidden(self):
         original = copy.deepcopy((CATEGORY_GROUPS, BROWSE_CATEGORIES))
         self.assertFalse(BICYCLES_PUBLIC)
         self.assertEqual([row['code'] for row in public_category_groups()], PUBLIC_GROUPS)
         self.assertEqual([row['name'] for row in public_category_groups()],
-                         ['骑行服饰', '锁鞋', '头盔', '配件与周边'])
+                         ['骑行服饰', '锁鞋', '头盔', '配件与周边', '运动补能'])
         self.assertTrue({'road_bikes', 'frames'}.isdisjoint(row['code'] for row in public_categories()))
         self.assertIn('bike_parts', {row['code'] for row in public_categories()})
         self.assertEqual([row['code'] for row in CATEGORY_GROUPS], ['road_equipment'] + PUBLIC_GROUPS)

@@ -18,15 +18,16 @@ from app.localization import category_of
 if TYPE_CHECKING:
     from app.catalog.models import Offer
 
-CategoryGroup = Literal["road_equipment", "clothing", "helmets", "cleat_shoes", "other"]
+CategoryGroup = Literal["road_equipment", "clothing", "helmets", "cleat_shoes", "other", "nutrition"]
 
-# The all/reset state is internal compatibility data, never a sixth visible group.
+# The all/reset state is internal compatibility data, never a visible group.
 CATEGORY_GROUPS = [
     {"code": "road_equipment", "name": "自行车"},
     {"code": "clothing", "name": "骑行服饰"},
     {"code": "cleat_shoes", "name": "锁鞋"},
     {"code": "helmets", "name": "头盔"},
     {"code": "other", "name": "配件与周边"},
+    {"code": "nutrition", "name": "运动补能"},
 ]
 
 _TAXONOMY_PATH = Path(__file__).resolve().parents[1] / "data/browse-taxonomy.json"

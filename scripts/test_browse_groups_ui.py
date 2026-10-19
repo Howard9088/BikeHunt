@@ -1,4 +1,4 @@
-"""Hermetic accessory detail/exit and four public groups with stale-payload rejection; run Chromium only in CI."""
+"""Hermetic accessory detail/exit and five public groups with stale-payload rejection; run Chromium only in CI."""
 from __future__ import annotations
 
 import json
@@ -243,7 +243,7 @@ def check_gender_scope(page):
 
 def check_hidden_bicycle_paths(page, references):
     hidden = [row for row in references if row['category_group'] == 'road_equipment']
-    assert page.evaluate("categoryGroups.map(row => row.code)") == ['clothing', 'cleat_shoes', 'helmets', 'other']
+    assert page.evaluate("categoryGroups.map(row => row.code)") == ['clothing', 'cleat_shoes', 'helmets', 'other', 'nutrition']
     assert page.evaluate("roadReferenceData.products.map(row => row.id)") == [MIDLOADER]
     assert page.evaluate("items.every(row => row.category_group !== 'road_equipment' && !['road_bikes','frames'].includes(row.category))")
     for row in hidden:
@@ -450,8 +450,8 @@ def main():
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.goto(base, wait_until='networkidle')
-                expect(page.locator('[data-category-group]')).to_have_count(4)
-                assert page.locator('[data-category-group]').all_text_contents() == ['骑行服饰', '锁鞋', '头盔', '配件与周边']
+                expect(page.locator('[data-category-group]')).to_have_count(5)
+                assert page.locator('[data-category-group]').all_text_contents() == ['骑行服饰', '锁鞋', '头盔', '配件与周边', '运动补能']
                 expect(page.locator('#categoryNav')).to_have_count(0)
                 expect(page.locator('[data-category]')).to_have_count(0)
                 assert_last_known_home_cards(page)
