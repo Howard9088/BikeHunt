@@ -1,0 +1,16 @@
+.favorite-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:44px;height:44px;border:1px solid #dce1e8;border-radius:50%;background:#fff;color:#647080;cursor:pointer;flex-shrink:0}
+.favorite-toggle svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+.favorite-toggle[aria-pressed=true]{color:#bd3453;border-color:#e7adba;background:#fff7f9}
+.favorite-toggle[aria-pressed=true] svg{fill:currentColor}
+.favorite-toggle:focus-visible,.favorite-open:focus-visible,#myFavorites:focus-visible{outline:3px solid var(--blue,#2868df);outline-offset:3px}
+.product-visual>.favorite-toggle{position:absolute;right:14px;top:14px;z-index:2}
+.favorite-detail{width:auto;padding:0 15px;border-radius:24px;margin-bottom:18px;font-size:13px;font-weight:600}
+.favorites-note,.favorites-warning,.favorite-item p{font-size:13px;line-height:1.65;color:#69717d;overflow-wrap:anywhere}
+.favorites-warning:empty{display:none}.favorites-warning{color:#9a5427}
+.favorite-item{padding:18px 0;border-bottom:1px solid var(--line,#e5e7eb)}.favorite-item-title{display:flex;gap:12px;align-items:center;justify-content:space-between}.favorite-item h4{margin:0;font-size:17px;overflow-wrap:anywhere}.favorite-item p{margin:8px 0}.favorite-availability{font-weight:600}
+.favorite-open,.favorites-empty button{border:1px solid var(--line,#e5e7eb);background:white;border-radius:10px;padding:12px;color:var(--blue,#2868df);font-size:13px;cursor:pointer}
+.favorites-empty{padding:36px 0;text-align:center}.favorites-empty p{font-size:14px;color:#69717d;line-height:1.7}
+.topnav{overflow-x:auto;scrollbar-width:thin}.topnav>button,.topnav .nav-tools{flex-shrink:0;white-space:nowrap}
+@media(max-width:600px){.product-visual>.favorite-toggle{top:10px;right:10px}.topnav .nav-tools #myFavorites{font-size:11px}}
+
+.favorite-storage-warning{position:fixed;bottom:12px;left:12px;right:12px;z-index:100;padding:12px 16px;border:1px solid #d6b78e;background:#fff8ec;color:#75441f;border-radius:10px;font-size:13px;line-height:1.5;pointer-events:none}
