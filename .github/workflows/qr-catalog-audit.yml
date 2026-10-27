@@ -1,0 +1,57 @@
+name: Read-only QR release catalog audit
+on:
+  push:
+    branches: [codex/qr-catalog-audit]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - uses: actions/cache/restore@v6
+        id: before
+        with:
+          path: |
+            data/offers
+            data/rules
+            data/fx_latest.json
+            data/public_updates.json
+            data/publication_cache
+            data/source_deferrals
+          key: bikehunt-public-data-v2-39357432651-1
+      - name: Capture last successfully published catalog
+        run: |
+          test '${{ steps.before.outputs.cache-hit }}' = 'true'
+          python scripts/check_catalog_health.py --capture --before artifacts/audit-before.json
+      - uses: actions/cache/restore@v6
+        id: after
+        with:
+          path: |
+            data/offers
+            data/rules
+            data/fx_latest.json
+            data/public_updates.json
+            data/publication_cache
+            data/source_deferrals
+          key: bikehunt-public-data-v2-40436424286-1
+      - name: Compare retained offers and missing families
+        run: |
+          test '${{ steps.after.outputs.cache-hit }}' = 'true'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.check_catalog_health import capture, inspect
+          before=json.loads(Path('artifacts/audit-before.json').read_text())
+          after=capture()
+          old={c['product_id']:c for c in before['cards']}
+          new={c['product_id']:c for c in after['cards']}
+          summary=inspect(before,after)
+          print(json.dumps({'old_cards':len(old),'new_cards':len(new),'missing_offer_count':len(set(before['offers'])-set(after['offers'])),'missing_families':[old[k] for k in sorted(set(old)-set(new))], 'errors':summary['errors']},ensure_ascii=False))
+          PY
