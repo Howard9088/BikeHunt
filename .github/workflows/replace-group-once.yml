@@ -1,0 +1,36 @@
+name: Replace expired group QR once
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: bikehunt-pages
+  cancel-in-progress: false
+jobs:
+  replace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-dev.txt
+      - run: node scripts/test_group.js
+      - run: python scripts/build_pages.py
+      - run: python scripts/replace_group_on_published_site.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          name: bikehunt-qr-${{ github.run_id }}
+          path: _site
+      - name: Deploy unchanged public site with new group QR
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: bikehunt-qr-${{ github.run_id }}
