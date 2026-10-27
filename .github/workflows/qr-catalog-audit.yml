@@ -54,4 +54,12 @@ jobs:
           new={c['product_id']:c for c in after['cards']}
           summary=inspect(before,after)
           print(json.dumps({'old_cards':len(old),'new_cards':len(new),'missing_offer_count':len(set(before['offers'])-set(after['offers'])),'missing_families':[old[k] for k in sorted(set(old)-set(new))], 'errors':summary['errors']},ensure_ascii=False))
+          for key in sorted(set(old)-set(new)):
+              card=old[key]
+              offer_id=card['reference_offer_id']
+              prev=before['offers'].get(offer_id,{})
+              curr=after['offers'].get(offer_id,{})
+              fields=['offer_id','name','source_code','url','identity','family_hint','fetched_at','stock','collection_state']
+              matches=[{'product_id':row['product_id'],'name':row['name'],'color':row['color'],'source_codes':row['source_codes'],'stock_state':row['stock_state']} for row in new.values() if row['name']==card['name'] and row['brand']==card['brand']]
+              print(json.dumps({'audit_family':key,'prior':{k:prev.get(k) for k in fields},'current':{k:curr.get(k) for k in fields},'same_name_current_cards':matches},ensure_ascii=False))
           PY
