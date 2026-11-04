@@ -21,7 +21,13 @@ class AutomatedSnapshotCacheTests(unittest.TestCase):
         self.assertLess(tests, cache)
         self.assertLess(cache, collect)
         self.assertIn('id: public_data_restore', steps[cache])
-        self.assertIn("if: always() && steps.public_data_restore.outcome == 'success'", workflow)
+        save = next(i for i, step in enumerate(steps)
+                    if 'uses: actions/cache/save@' in step and 'data/offers' in step)
+        verified = next(i for i, step in enumerate(steps)
+                        if 'verify_public_release.py --record-listings' in step)
+        self.assertLess(verified, save)
+        self.assertNotIn('always()', steps[save])
+        self.assertIn("if: steps.public_data_restore.outcome == 'success'", steps[save])
         self.assertNotIn('git restore --source=HEAD -- data/offers', workflow)
         self.assertEqual(workflow.count("cron: '8,23,38,53 * * * *'"), 1)
 
@@ -51,7 +57,8 @@ class AutomatedSnapshotCacheTests(unittest.TestCase):
         for forbidden in ['storage/updates.sqlite3', 'storage/policy_raw', 'storage/policy_history',
                           'data/raw', 'manual_evidence', 'data/collection_status', 'actions/upload-artifact@']:
             self.assertNotIn(forbidden, workflow)
-        self.assertIn('restore-keys: bikehunt-public-data-v2-', workflow)
+        self.assertIn('bikehunt-public-data-v3-', workflow)
+        self.assertIn('bikehunt-public-data-v2-39357432651-1', workflow)
         self.assertIn('python scripts/seed_updates.py', workflow)
         self.assertIn('uses: actions/upload-pages-artifact@', workflow)
 
