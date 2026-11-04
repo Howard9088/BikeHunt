@@ -36,8 +36,10 @@ jobs:
             data/public_updates.json
             data/publication_cache
             data/source_deferrals
-          key: bikehunt-public-data-v2-article-${{ github.run_id }}
-          restore-keys: bikehunt-public-data-v2-
+          key: bikehunt-public-data-v3-article-${{ github.run_id }}
+          restore-keys: |
+            bikehunt-public-data-v3-
+            bikehunt-public-data-v2-39357432651-1
       - run: python -m playwright install --with-deps chromium
       - run: python scripts/build_pages.py
       - run: python scripts/test_why_overseas_ui.py
@@ -171,8 +173,10 @@ jobs:
             data/public_updates.json
             data/publication_cache
             data/source_deferrals
-          key: bikehunt-public-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: bikehunt-public-data-v2-
+          key: bikehunt-public-data-v3-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            bikehunt-public-data-v3-
+            bikehunt-public-data-v2-39357432651-1
       - name: Restore public event cursor
         run: python scripts/seed_updates.py
       - name: Capture last valid catalog before collection
@@ -207,17 +211,6 @@ jobs:
         run: python scripts/verify_payment_methods.py --local-dir _site
       - name: Validate built manifest and market labels before deployment
         run: python scripts/verify_public_release.py --local-dir _site
-      - uses: actions/cache/save@v6
-        if: always() && steps.public_data_restore.outcome == 'success'
-        with:
-          path: |
-            data/offers
-            data/rules
-            data/fx_latest.json
-            data/public_updates.json
-            data/publication_cache
-            data/source_deferrals
-          key: bikehunt-public-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
@@ -231,6 +224,17 @@ jobs:
 
       - name: Verify public release receipt
         run: python scripts/verify_public_release.py --record-listings
+      - uses: actions/cache/save@v6
+        if: steps.public_data_restore.outcome == 'success'
+        with:
+          path: |
+            data/offers
+            data/rules
+            data/fx_latest.json
+            data/public_updates.json
+            data/publication_cache
+            data/source_deferrals
+          key: bikehunt-public-data-v3-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Persist successfully verified first listing receipts
         uses: actions/cache/save@v6
         with:

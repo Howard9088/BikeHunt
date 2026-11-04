@@ -190,14 +190,14 @@ class OfferRepository:
                   if not row.image and row.offer_id in previous
                   and previous[row.offer_id].identity == row.identity
                   and previous[row.offer_id].url == row.url else row for row in offers]
-        # An unknown/omitted variant is not affirmative sold-out evidence.
-        # Preserve the exact last-known record and its original observation time.
+        # An omitted variant is not evidence of any stock change. Preserve both
+        # in-stock and sold-out observations with their original timestamps.
         incoming_ids = {row.offer_id for row in offers}
         merged = [row.model_copy(update={"collection_state": "retained"})
                   if row_collection_keys(row) & success_urls else row
                   for row in existing if row.offer_id not in incoming_ids
                   and (not row_collection_keys(row) & success_urls
-                       or (row.stock == "in_stock" and row.fetched_at is not None
+                       or (row.stock in ("in_stock", "out_of_stock") and row.fetched_at is not None
                            and row.fetched_at.tzinfo is not None and row.fetched_at <= fetched_at))]
         offers = [previous[row.offer_id].model_copy(update={"collection_state": "retained"})
                   if (row.stock == "unknown" and row.offer_id in previous
